@@ -1,8 +1,58 @@
 <%- contentFor('body') %>
 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-  <h1 class="h2">Simple Ledger Explorer</h1>
+  <h1 class="h2">View Token Details</h1>
 </div>
-<h2>Token</h2>
+<div class="table-responsive">
+  <table class="table table-striped table-sm" id="token-details-table">
+    <thead class="thead-dark">
+      <tr>
+        <th>token id</th>
+        <th>name</th>
+        <th>symbol</th>
+        <th>timestamp</th>
+        <th>quantity</th>
+        <th>decimals</th>
+        <th>document uri</th>
+        <th>document sha256hex</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+</div>
+<div class="table-responsive">
+  <table class="table table-striped table-sm" id="token-stats-table">
+    <thead class="thead-dark">
+      <tr>
+        <th>block created</th>
+        <th>block last active send</th>
+        <th>block last active mint</th>
+        <th>qty valid txns since genesis</th>
+        <th>qty valid token utxos</th>
+        <th>qty valid token addresses</th>
+        <th>qty token minted</th>
+        <th>qty token burned</th>
+        <th>qty token circulating supply</th>
+        <th>qty satoshis locked up</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+</div>
+<div class="table-responsive">
+  <table class="table table-striped table-sm" id="token-addresses-table">
+    <thead class="thead-dark">
+      <tr>
+        <th>address</th>
+        <th>satoshi balance</th>
+        <th>token balance</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+</div>
 <div class="table-responsive">
   <table class="table table-striped table-sm" id="token-transactions-table">
     <thead class="thead-dark">

@@ -67,6 +67,17 @@ const query_tx = (txid) => ({
   }
 });
 
+const query_token = (tokenIdHex) => ({
+  "v": 3,
+  "q": {
+    "db": ["t"],
+    "find": {
+      "tokenDetails.tokenIdHex": tokenIdHex
+    },
+    "limit": 1
+  }
+});
+
 
 
 const query_slpdb = (query) => new Promise((resolve, reject) => {
