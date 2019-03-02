@@ -1,88 +1,7 @@
 const app = {};
 
-app.query_get_all_tokens = (limit=100, skip=0) => ({
-  "v": 3,
-  "q": {
-    "db": ["t"],
-    "find": {},
-    "limit": limit,
-	"skip": skip
-  },
-  "r": {
-    "f": `[.[] | {
-      tokenId: .tokenDetails.tokenIdHex,
-      name: .tokenDetails.name,
-      symbol: .tokenDetails.symbol,
-      circulatingSupply: .tokenStats.qty_token_circulating_supply,
-      burnedQty: .tokenStats.qty_token_burned,
-      mintedQty: .tokenStats.qty_token_minted
-    } ]`
-  }
-});
-
-app.query_token_transaction_history = (tokenIdHex, address, limit=100, skip=0) => {
-  let q = {
-    "v": 3,
-    "q": {
-      "db": ["c", "u"],
-      "find": {
-        "$query": {
-          "slp.detail.tokenIdHex": tokenIdHex
-        },
-        "$orderby": {
-          "blk.i": -1
-        }
-      },
-      "limit": limit,
-      "skip": skip
-    },
-    "r": {
-      "f": "[.[] | { tx: .tx, tokenDetails: .slp, blk: .blk } ]"
-    }
-  };
-
-  if (typeof address !== 'undefined') {
-    q['q']['find']['$query']['$or'] = [
-      { "in.e.a":  address },
-      { "out.e.a": address }
-    ];
-  }
-
-  return q;
-};
-
-app.query_tx = (txid) => ({
-  "v": 3,
-  "q": {
-	"db": ["c", "u"],
-    "find": {
-      "$query": {
-        "tx.h": txid
-      },
-      "$orderby": {
-        "blk.i": -1
-      }
-    }
-  },
-  "r": {
-    "f": "[.[] | { outputs: .out, inputs: .in, tokenDetails: .slp, blk: .blk } ]"
-  }
-});
-
-app.query_token = (tokenIdHex) => ({
-  "v": 3,
-  "q": {
-    "db": ["t"],
-    "find": {
-      "tokenDetails.tokenIdHex": tokenIdHex
-    },
-    "limit": 1
-  }
-});
-
-
-
-app.query_slpdb = (query) => new Promise((resolve, reject) => {
+app.slpdb = {
+  query: (query) => new Promise((resolve, reject) => {
     const b64 = btoa(JSON.stringify(query));
     const url = "https://slpdb.fountainhead.cash/q/" + b64;
 
@@ -91,7 +10,88 @@ app.query_slpdb = (query) => new Promise((resolve, reject) => {
         fetch(url)
         .then((r) => r.json())
     );
-});
+  }),
+
+  all_tokens: (limit=100, skip=0) => ({
+    "v": 3,
+    "q": {
+      "db": ["t"],
+      "find": {},
+      "limit": limit,
+      "skip": skip
+    },
+    "r": {
+      "f": `[.[] | {
+        tokenId: .tokenDetails.tokenIdHex,
+        name: .tokenDetails.name,
+        symbol: .tokenDetails.symbol,
+        circulatingSupply: .tokenStats.qty_token_circulating_supply,
+        burnedQty: .tokenStats.qty_token_burned,
+        mintedQty: .tokenStats.qty_token_minted
+      } ]`
+    }
+  }),
+
+  token_transaction_history: (tokenIdHex, address, limit=100, skip=0) => {
+    let q = {
+      "v": 3,
+      "q": {
+        "db": ["c", "u"],
+        "find": {
+          "$query": {
+            "slp.detail.tokenIdHex": tokenIdHex
+          },
+          "$orderby": {
+            "blk.i": -1
+          }
+        },
+        "limit": limit,
+        "skip": skip
+      },
+      "r": {
+        "f": "[.[] | { tx: .tx, tokenDetails: .slp, blk: .blk } ]"
+      }
+    };
+
+    if (typeof address !== 'undefined') {
+      q['q']['find']['$query']['$or'] = [
+        { "in.e.a":  address },
+        { "out.e.a": address }
+      ];
+    }
+
+    return q;
+  },
+
+  tx: (txid) => ({
+    "v": 3,
+    "q": {
+      "db": ["c", "u"],
+      "find": {
+        "$query": {
+          "tx.h": txid
+        },
+        "$orderby": {
+          "blk.i": -1
+        }
+      }
+    },
+    "r": {
+      "f": "[.[] | { outputs: .out, inputs: .in, tokenDetails: .slp, blk: .blk } ]"
+    }
+  }),
+
+  token: (tokenIdHex) => ({
+    "v": 3,
+    "q": {
+      "db": ["t"],
+      "find": {
+        "tokenDetails.tokenIdHex": tokenIdHex
+      },
+      "limit": 1
+    }
+  }),
+};
 
 app.init_tx_page = (txid) => {
   const tx_template = ejs.compile(`
@@ -158,13 +158,13 @@ app.init_tx_page = (txid) => {
 
 
 
-  app.query_slpdb(app.query_tx(txid))
+  app.slpdb.query(app.slpdb.tx(txid))
   .then((data) => {
     console.log(data);
     data.u.forEach((o) => {
       tx_table_el.insertAdjacentHTML('beforeend', tx_template(o));
 
-      app.query_slpdb(app.query_token(o.tokenIdHex))
+      app.slpdb.query(app.slpdb.token(o.tokenIdHex))
       .then((data) => {
         data.t.forEach((o) => {
           token_details_table_el.insertAdjacentHTML('beforeend', token_details_template(o.tokenDetails));
@@ -174,7 +174,7 @@ app.init_tx_page = (txid) => {
     data.c.forEach((o) => {
       tx_table_el.insertAdjacentHTML('beforeend', tx_template(o));
 
-      app.query_slpdb(app.query_token(o.tokenIdHex))
+      app.slpdb.query(app.slpdb.token(o.tokenIdHex))
       .then((data) => {
         data.t.forEach((o) => {
           token_details_table_el.insertAdjacentHTML('beforeend', token_details_template(o.tokenDetails));
@@ -236,7 +236,7 @@ app.init_token_page = (tokenIdHex) => {
   const token_transactions_table_el = document.getElementById('token-transactions-table');
   
   
-  app.query_slpdb(app.query_token(tokenIdHex))
+  app.slpdb.query(app.slpdb.token(tokenIdHex))
   .then((data) => {
     data.t.forEach((o) => {
       token_details_table_el.insertAdjacentHTML('beforeend', token_details_template(o.tokenDetails));
@@ -252,7 +252,7 @@ app.init_token_page = (tokenIdHex) => {
     });
   });
   
-  app.query_slpdb(app.query_token_transaction_history(tokenIdHex))
+  app.slpdb.query(app.slpdb.token_transaction_history(tokenIdHex))
   .then((data) => {
     data.u.forEach((o) => {
       token_transactions_table_el.insertAdjacentHTML('beforeend', txid_template(o));
@@ -277,7 +277,7 @@ app.init_all_tokens_page = () => {
   
   const tokens_table_el = document.getElementById('tokens-table');
   
-  app.query_slpdb(app.query_get_all_tokens())
+  app.slpdb.query(app.slpdb.all_tokens())
   .then((data) => {
       data.t.forEach((o) => {
         tokens_table_el.insertAdjacentHTML('beforeend', template(o));
