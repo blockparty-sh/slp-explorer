@@ -58,6 +58,8 @@
     <thead class="thead-dark">
       <tr>
         <th>txid</th>
+        <th>block height</th>
+        <th>block time</th>
       </tr>
     </thead>
     <tbody>
@@ -65,4 +67,4 @@
   </table>
 </div>
 
-<script src="js/token.js"></script>
+<script>app.init_token_page(window.location.hash.substring(1))</script>

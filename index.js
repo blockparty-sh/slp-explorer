@@ -31,4 +31,10 @@ app.get('/tx', (req, res) => {
   });
 })
 
+app.get('/address', (req, res) => {
+  res.render('address', {
+    title:   'view address'
+  });
+})
+
 app.listen(port, () => console.log(`app listening on port ${port}!`))
