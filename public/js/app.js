@@ -2,10 +2,7 @@ const query_get_all_tokens = (limit=100, skip=0) => ({
   "v": 3,
   "q": {
     "db": ["t"],
-    "find":
-    {
-      "$query": { }
-    },
+    "find": {},
     "limit": limit,
 	"skip": skip
   },
@@ -21,29 +18,55 @@ const query_get_all_tokens = (limit=100, skip=0) => ({
   }
 });
 
-const query_token_transaction_history = (tokenIdHex, address, limit=100, skip=0) => ({
+const query_token_transaction_history = (tokenIdHex, address, limit=100, skip=0) => {
+  let q = {
+    "v": 3,
+    "q": {
+      "db": ["c", "u"],
+      "find": {
+        "$query": {
+          "slp.detail.tokenIdHex": tokenIdHex
+        },
+        "$orderby": {
+          "blk.i": -1
+        }
+      },
+      "limit": limit,
+      "skip": skip
+    },
+    "r": {
+      "f": "[.[] | { txid: .tx.h, tokenDetails: .slp } ]"
+    }
+  };
+
+  if (typeof address !== 'undefined') {
+    q['q']['find']['$query']['$or'] = [
+      { "in.e.a":  address },
+      { "out.e.a": address }
+    ];
+  }
+
+  return q;
+};
+
+const query_tx = (txid) => ({
   "v": 3,
   "q": {
+	"db": ["c", "u"],
     "find": {
-      "db": ["c", "u"],
       "$query": {
-        "$or": [
-          { "in.e.a":  address },
-          { "out.e.a": address }
-        ],
-        "slp.detail.tokenIdHex": tokenIdHex
+        "tx.h": txid
       },
       "$orderby": {
         "blk.i": -1
       }
-    },
-    "limit": limit,
-	"skip": skip
+    }
   },
   "r": {
-    "f": "[.[] | { txid: .tx.h, tokenDetails: .slp } ]"
+    "f": "[.[] | { outputs: .out, inputs: .in, tokenDetails: .slp, blk: .blk } ]"
   }
 });
+
 
 
 const query_slpdb = (query) => new Promise((resolve, reject) => {

@@ -1,6 +1,6 @@
 const template = ejs.compile(`
   <tr>
-    <td><%= tokenId %></td>
+    <td><a href="/token#<%= tokenId %>"><%= tokenId %></a></td>
     <td><%= name %></td>
     <td><%= symbol %></td>
     <td><%= circulatingSupply %></td>

@@ -19,4 +19,16 @@ app.get('/', (req, res) => {
   });
 })
 
+app.get('/token', (req, res) => {
+  res.render('token', {
+    title:   'view token'
+  });
+})
+
+app.get('/tx', (req, res) => {
+  res.render('tx', {
+    title:   'view tx'
+  });
+})
+
 app.listen(port, () => console.log(`app listening on port ${port}!`))
