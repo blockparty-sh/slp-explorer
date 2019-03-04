@@ -4,31 +4,10 @@
 </div>
 <div id="token-details-table-container"></div>
 <div id="token-stats-table-container"></div>
-<div class="table-responsive">
-  <table class="table table-striped table-sm" id="token-addresses-table">
-    <thead class="thead-dark">
-      <tr>
-        <th>address</th>
-        <th>satoshi balance</th>
-        <th>token balance</th>
-      </tr>
-    </thead>
-    <tbody>
-    </tbody>
-  </table>
-</div>
-<div class="table-responsive">
-  <table class="table table-striped table-sm" id="token-transactions-table">
-    <thead class="thead-dark">
-      <tr>
-        <th>txid</th>
-        <th>block height</th>
-        <th>block time</th>
-      </tr>
-    </thead>
-    <tbody>
-    </tbody>
-  </table>
-</div>
+<h2>Addresses</h2>
+<div id="token-addresses-table-container"></div>
+<h2>Transactions</h2>
+<div id="token-transactions-table-container"></div>
+
 
 <script>app.init_token_page(window.location.hash.substring(1))</script>

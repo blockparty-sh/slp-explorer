@@ -19,16 +19,6 @@ app.slpdb = {
       "find": {},
       "limit": limit,
       "skip": skip
-    },
-    "r": {
-      "f": `[.[] | {
-        tokenId: .tokenDetails.tokenIdHex,
-        name: .tokenDetails.name,
-        symbol: .tokenDetails.symbol,
-        circulatingSupply: .tokenStats.qty_token_circulating_supply,
-        burnedQty: .tokenStats.qty_token_burned,
-        mintedQty: .tokenStats.qty_token_minted
-      } ]`
     }
   }),
 
@@ -174,22 +164,26 @@ app.init_all_tokens_page = () => {
         <thead class="thead-dark">
           <tr>
             <th>tokenId</th>
-            <th>name</th>
             <th>symbol</th>
-            <th>circulatingSupply</th>
-            <th>burnedQty</th>
-            <th>mintedQty</th>
+            <th>name</th>
+            <th>minted-burned</th>
+            <th>supply</th>
+            <th>transactions</th>
+            <th>utxos</th>
+            <th>addresses</th>
           </tr>
         </thead>
         <tbody>
         <% for (let m of t) { %>
           <tr>
-            <td><a href="/token#<%= m.tokenId %>"><%= m.tokenId %></a></td>
-            <td><%= m.name %></td>
-            <td><%= m.symbol %></td>
-            <td><%= m.circulatingSupply %></td>
-            <td><%= m.burnedQty %></td>
-            <td><%= m.mintedQty %></td>
+            <td><a href="/token#<%= m.tokenDetails.tokenIdHex %>"><%= m.tokenDetails.tokenIdHex %></a></td>
+            <td><%= m.tokenDetails.symbol %></td>
+            <td><%= m.tokenDetails.name %></td>
+            <td><%= m.tokenStats.qty_token_minted %> - <%= m.tokenStats.qty_token_burned %></td>
+            <td><%= m.tokenStats.qty_token_circulating_supply %></td>
+            <td><%= m.tokenStats.qty_valid_txns_since_genesis %></td>
+            <td><%= m.tokenStats.qty_valid_token_utxos %></td>
+            <td><%= m.tokenStats.qty_valid_token_addresses %></td>
           </tr>
         <% } %>
         </tbody>
@@ -199,9 +193,10 @@ app.init_all_tokens_page = () => {
   
   const tokens_table_container_el = document.getElementById('tokens-table-container');
   
-  app.slpdb.query(app.slpdb.all_tokens())
+  app.slpdb.query(app.slpdb.all_tokens(1000))
   .then((data) => {
     tokens_table_container_el.insertAdjacentHTML('beforeend', template(data));
+    $('#tokens-table').DataTable();
   });
 };
 
@@ -279,59 +274,81 @@ app.init_tx_page = (txid) => {
 };
 
 app.init_token_page = (tokenIdHex) => {
-  const token_stats_table_container_el = document.getElementById('token-stats-table-container');
-  
-  const token_details_table_container_el = document.getElementById('token-details-table-container');
-  
-  
-  const token_address_template = ejs.compile(`
-    <tr>
-      <td><a href="/address#<%= address %>"><%= address %></a></td>
-      <td><%= balance_satoshis %></a></td>
-      <td><%= balance_tokens %></a></td>
-    </tr>
+  const token_addresses_template = ejs.compile(`
+    <div class="table-responsive">
+      <table class="table table-striped table-sm" id="token-addresses-table">
+        <thead class="thead-dark">
+          <tr>
+            <th>address</th>
+            <th>satoshi balance</th>
+            <th>token balance</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (let o of addresses) { %>
+            <tr>
+              <td><a href="/address#<%= o[0] %>"><%= o[0] %></a></td>
+              <td><%= o[1].bch_balance_satoshis %></a></td>
+              <td><%= o[1].token_balance %></a></td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
   `);
-  const token_address_table_el = document.getElementById('token-addresses-table');
   
   
-  const txid_template = ejs.compile(`
-    <tr>
-      <td><a href="/tx#<%= tx.h %>"><%= tx.h %></a></td>
-      <td><%= blk.i %></td>
-      <td><%= blk.t %></td>
-    </tr>
+  const token_transactions_template = ejs.compile(`
+    <div class="table-responsive">
+      <table class="table table-striped table-sm" id="token-transactions-table">
+        <thead class="thead-dark">
+          <tr>
+            <th>txid</th>
+            <th>block height</th>
+            <th>block time</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (let o of u) { %>
+            <tr>
+              <td><a href="/tx#<%= o.tx.h %>"><%= o.tx.h %></a></td>
+              <td><%= o.blk.i %></td>
+              <td><%= o.blk.t %></td>
+            </tr>
+          <% } %>
+          <% for (let o of c) { %>
+            <tr>
+              <td><a href="/tx#<%= o.tx.h %>"><%= o.tx.h %></a></td>
+              <td><%= o.blk.i %></td>
+              <td><%= o.blk.t %></td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
   `);
-  const token_transactions_table_el = document.getElementById('token-transactions-table');
   
   
   app.slpdb.query(app.slpdb.token(tokenIdHex))
   .then((data) => {
     if (data.t.length > 0) {
-      token_details_table_container_el
-      .insertAdjacentHTML('beforeend', app.template.token_details(data.t[0].tokenDetails));
+      $('#token-details-table-container')
+      .append(app.template.token_details(data.t[0].tokenDetails));
 
-      token_stats_table_container_el
-      .insertAdjacentHTML('beforeend', app.template.token_stats(data.t[0].tokenStats));
+      $('#token-stats-table-container')
+      .append(app.template.token_stats(data.t[0].tokenStats));
   
-      data.t[0].addresses.forEach((v) => {
-        token_address_table_el
-        .insertAdjacentHTML('beforeend', token_address_template({
-          address: v[0],
-          balance_satoshis: v[1]['bch_balance_satoshis'],
-          balance_tokens:   v[1]['token_balance']
-  	  })
-      )});
+      $('#token-addresses-table-container')
+      .append(token_addresses_template(data.t[0]))
+      .find('#token-addresses-table').DataTable();
     }
   });
   
   app.slpdb.query(app.slpdb.token_transaction_history(tokenIdHex))
   .then((data) => {
-    data.u.forEach((o) => {
-      token_transactions_table_el.insertAdjacentHTML('beforeend', txid_template(o));
-    });
-    data.c.forEach((o) => {
-      token_transactions_table_el.insertAdjacentHTML('beforeend', txid_template(o));
-    });
+    $('#token-transactions-table-container')
+    .append(token_transactions_template(data))
+    .find('#token-transactions-table').DataTable();
   });
 };
 
