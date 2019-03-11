@@ -203,13 +203,14 @@ app.init_all_tokens_page = () => new Promise((resolve, reject) => {
         <h2 class="mb-0 text-white lh-100">All Tokens</h2>
       </div>
     </div>
-	<div id="tokens-table-container" class="my-3 p-3 bg-white rounded box-shadow"></div>
+	<div id="tokens-table-container" class="my-3 p-3 bg-white rounded box-shadow">
+    </div>
   `);
 
   const template = ejs.compile(`
     <div class="table-responsive">
       <table class="table" id="tokens-table">
-        <thead class="thead-dark">
+        <thead>
           <tr>
             <th>Token Id</th>
             <th>Symbol</th>
@@ -246,6 +247,7 @@ app.init_all_tokens_page = () => new Promise((resolve, reject) => {
     $('#tokens-table-container')
     .append(template(data))
     .find('#tokens-table').DataTable();
+	$('body').removeClass('loading');
   });
 });
 
@@ -367,13 +369,15 @@ app.init_tx_page = (txid) => new Promise((resolve, reject) => {
           console.log(tx);
 
           let outputs = [];
-          for (let i=0; i<tx.tokenDetails.detail.sendOutputs.length; ++i) {
-            outputs.push({
-              'address': tx.outputs[i+1].e.a,
-              'amount': tx.tokenDetails.detail.sendOutputs[i]
-            })
+          if (tx.tokenDetails.detail.transactionType === 'SEND') {
+            for (let i=0; i<tx.tokenDetails.detail.sendOutputs.length; ++i) {
+              outputs.push({
+                'address': tx.outputs[i+1].e.a,
+                'amount': tx.tokenDetails.detail.sendOutputs[i]
+              })
+            }
+            tx['outputs'] = outputs;
           }
-          tx['outputs'] = outputs;
 
           $('main[role=main]').html(tx_template(tx));
 
@@ -382,6 +386,8 @@ app.init_tx_page = (txid) => new Promise((resolve, reject) => {
         } else {
           window.alert('token not found');
         }
+
+		$('body').removeClass('loading');
       });
     });
 
@@ -444,6 +450,7 @@ app.init_token_page = (tokenIdHex) => new Promise((resolve, reject) => {
         <thead>
           <tr>
             <th>Txid</th>
+			<th>Type</th>
             <th>Block Height</th>
             <th>Block Time</th>
           </tr>
@@ -452,6 +459,7 @@ app.init_token_page = (tokenIdHex) => new Promise((resolve, reject) => {
           <% for (let o of u) { %>
             <tr>
               <td><a href="/#tx/<%= o.tx.h %>"><%= o.tx.h %></a></td>
+			  <td><%= o.tokenDetails.detail.transactionType %></td>
               <td><%= o.blk.i %></td>
               <td><%= o.blk.t %></td>
             </tr>
@@ -459,6 +467,7 @@ app.init_token_page = (tokenIdHex) => new Promise((resolve, reject) => {
           <% for (let o of c) { %>
             <tr>
               <td><a href="/#tx/<%= o.tx.h %>"><%= o.tx.h %></a></td>
+			  <td><%= o.tokenDetails.detail.transactionType %></td>
               <td><%= o.blk.i %></td>
               <td><%= o.blk.t %></td>
             </tr>
@@ -488,6 +497,8 @@ app.init_token_page = (tokenIdHex) => new Promise((resolve, reject) => {
     $('#token-transactions-table-container')
     .append(token_transactions_template(data))
     .find('#token-transactions-table').DataTable();
+
+	$('body').removeClass('loading');
   });
 });
 
@@ -527,6 +538,7 @@ app.router = (whash, push_history = true) => {
       return;
   }
 
+  $('body').addClass('loading');
   method();
 }
 

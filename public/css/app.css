@@ -123,3 +123,25 @@ a[onclick]:hover {
 
 .box-shadow { box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05); }
 
+
+.loading-modal {
+    display:    none;
+    position:   fixed;
+    z-index:    1000;
+    top:        0;
+    left:       0;
+    height:     100%;
+    width:      100%;
+    background: rgba( 255, 255, 255, .8 ) 
+                url('/img/Double\ Ring-2.2s-200px.svg') /* from loading.io */
+                50% 50% 
+                no-repeat;
+}
+
+body.loading .loading-modal {
+    overflow: hidden;   
+}
+
+body.loading .loading-modal {
+    display: block;
+}

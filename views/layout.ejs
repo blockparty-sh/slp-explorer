@@ -16,14 +16,13 @@
     <title><%= title %> | SLP Explorer</title>
   </head>
   <body>
-    <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
+    <nav class="navbar navbar-dark sticky-top flex-md-nowrap p-0 bg-dark">
       <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">SLP Explorer</a>
-      <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
-      <ul class="navbar-nav px-3">
-        <li class="nav-item text-nowrap">
-          <a class="nav-link" href="https://github.com/blockparty-sh/slp-explorer">GitHub</a>
-        </li>
-      </ul>
+	  <form class="form-inline">
+        <div class="md-form my-0">
+          <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+        </div>
+      </form>
     </nav>
 
 
@@ -63,6 +62,8 @@
         </div>
       </div>
     </footer>
+
+	<div class="loading-modal"></div>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
