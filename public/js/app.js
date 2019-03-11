@@ -483,20 +483,24 @@ app.init_token_page = (tokenIdHex) => new Promise((resolve, reject) => {
         </thead>
         <tbody>
           <% for (let o of u) { %>
-            <tr>
-              <td><a href="/#tx/<%= o.tx.h %>"><%= o.tx.h %></a></td>
-              <td><%= o.tokenDetails.detail.transactionType %></td>
-              <td><%= o.blk.i %></td>
-              <td><%= o.blk.t %></td>
-            </tr>
+            <% if (o.blk) { %>
+              <tr>
+                <td><a href="/#tx/<%= o.tx.h %>"><%= o.tx.h %></a></td>
+                <td><%= o.tokenDetails.detail.transactionType %></td>
+                <td><%= o.blk.i %></td>
+                <td><%= o.blk.t %></td>
+              </tr>
+            <% } else { console.error(o); } %>
           <% } %>
           <% for (let o of c) { %>
-            <tr>
-              <td><a href="/#tx/<%= o.tx.h %>"><%= o.tx.h %></a></td>
-              <td><%= o.tokenDetails.detail.transactionType %></td>
-              <td><%= o.blk.i %></td>
-              <td><%= o.blk.t %></td>
-            </tr>
+            <% if (o.blk) { %>
+              <tr>
+                <td><a href="/#tx/<%= o.tx.h %>"><%= o.tx.h %></a></td>
+                <td><%= o.tokenDetails.detail.transactionType %></td>
+                <td><%= o.blk.i %></td>
+                <td><%= o.blk.t %></td>
+              </tr>
+            <% } else { console.error(o); } %>
           <% } %>
         </tbody>
       </table>
