@@ -104,3 +104,22 @@ nav.navbar.navbar-dark > .form-control.form-control-dark {
 nav.navbar.navbar-dark > .form-control.form-control-dark:focus {
   box-shadow: none;
 }
+
+nav.navbar-brand {
+  color: #fff!important;
+}
+
+a[onclick] {
+  color:#007bff;
+}
+
+a[onclick]:hover {
+  cursor:pointer;
+}
+
+.bg-purple { background-color: var(--purple); }
+
+.border-bottom { border-bottom: 1px solid #e5e5e5; }
+
+.box-shadow { box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05); }
+
