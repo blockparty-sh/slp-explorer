@@ -81,6 +81,35 @@ app.slpdb = {
       "limit": 1
     }
   }),
+  transactions_by_slp_address: (address, limit=100, skip=0) => ({
+    "v": 3,
+    "q": {
+      "db": ["c", "u"],
+      "find": {
+        "$query": {
+          "$or": [
+            { "in.e.a":  address },
+            { "out.e.a": address }
+          ]
+        },
+        "$orderby": { "blk.i": -1 }
+      },
+      "limit": limit,
+      "skip": skip
+    }
+  }),
+  tokens_by_address: (address, limit=100, skip=0) => ({
+    "v": 3,
+    "q": {
+      "db": ["t"],
+      "find": {
+        "addresses.address": address,
+        /* "$orderby": { "tokenStats.block_created": -1 } */
+      },
+      "limit": limit,
+      "skip": skip
+    }
+  }),
 };
 
 
@@ -101,7 +130,7 @@ app.template = {
           <tr>
             <th scope="row">Token Id</th>
             <td><a href="/#token/<%= tokenIdHex %>"><%= tokenIdHex %></a></td>
-		  </tr>
+          </tr>
           <tr>
             <th scope="row">Name</th>
             <td><%= name %></td>
@@ -198,12 +227,11 @@ app.template = {
 app.init_all_tokens_page = () => new Promise((resolve, reject) => {
   $('main[role=main]').html(`
     <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
-      <img class="mr-3" src="https://getbootstrap.com/assets/brand/bootstrap-outline.svg" alt="" width="48" height="48">
       <div class="lh-100">
         <h2 class="mb-0 text-white lh-100">All Tokens</h2>
       </div>
     </div>
-	<div id="tokens-table-container" class="my-3 p-3 bg-white rounded box-shadow">
+    <div id="tokens-table-container" class="my-3 p-3 bg-white rounded box-shadow">
     </div>
   `);
 
@@ -247,7 +275,7 @@ app.init_all_tokens_page = () => new Promise((resolve, reject) => {
     $('#tokens-table-container')
     .append(template(data))
     .find('#tokens-table').DataTable();
-	$('body').removeClass('loading');
+    $('body').removeClass('loading');
   });
 });
 
@@ -256,7 +284,6 @@ app.init_all_tokens_page = () => new Promise((resolve, reject) => {
 app.init_tx_page = (txid) => new Promise((resolve, reject) => {
   const tx_template = ejs.compile(`
     <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
-      <img class="mr-3" src="https://getbootstrap.com/assets/brand/bootstrap-outline.svg" alt="" width="48" height="48">
       <div class="lh-100">
         <h2 class="mb-0 text-white lh-100">View Transaction</h2>
       </div>
@@ -322,7 +349,7 @@ app.init_tx_page = (txid) => new Promise((resolve, reject) => {
                   <% for (let m of inputs) { %>
                     <tr>
                       <td><a href="/#tx/<%= m.e.h %>"><i class="material-icons">exit_to_app</i></a></td>
-                      <td><a href="/#address/<%= m.e.a %>"><%= m.e.a %></a></td>
+                      <td><a href="/#address/<%= slpjs.Utils.toSlpAddress(m.e.a) %>"><%= slpjs.Utils.toSlpAddress(m.e.a) %></a></td>
                     </tr>
                   <% } %>
                 </tbody>
@@ -345,7 +372,7 @@ app.init_tx_page = (txid) => new Promise((resolve, reject) => {
                   <% for (let m of outputs) { %>
                     <tr>
                       <td><%= m.amount %></td>
-                      <td><a href="/#address/<%= m.address %>"><%= m.address %></a></td>
+                      <td><a href="/#address/<%= slpjs.Utils.toSlpAddress(m.address) %>"><%= slpjs.Utils.toSlpAddress(m.address) %></a></td>
                     </tr>
                   <% } %>
                 </tbody>
@@ -356,7 +383,7 @@ app.init_tx_page = (txid) => new Promise((resolve, reject) => {
       </div>
     <% } %>
 
-	<!--<div id="tokens-details-table-container" class="my-3 p-3 bg-white rounded box-shadow"></div>-->
+    <!--<div id="tokens-details-table-container" class="my-3 p-3 bg-white rounded box-shadow"></div>-->
   `);
 
   return app.slpdb.query(app.slpdb.tx(txid))
@@ -387,7 +414,7 @@ app.init_tx_page = (txid) => new Promise((resolve, reject) => {
           window.alert('token not found');
         }
 
-		$('body').removeClass('loading');
+        $('body').removeClass('loading');
       });
     });
 
@@ -399,7 +426,6 @@ app.init_tx_page = (txid) => new Promise((resolve, reject) => {
 app.init_token_page = (tokenIdHex) => new Promise((resolve, reject) => {
   $('main[role=main]').html(`
     <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
-      <img class="mr-3" src="https://getbootstrap.com/assets/brand/bootstrap-outline.svg" alt="" width="48" height="48">
       <div class="lh-100">
         <h2 class="mb-0 text-white lh-100">View Token</h2>
       </div>
@@ -413,11 +439,11 @@ app.init_token_page = (tokenIdHex) => new Promise((resolve, reject) => {
       </div>
     </div>
     <div id="token-addresses-table-container" class="my-3 p-3 bg-white rounded box-shadow">
-	  <h3 class="border-bottom border-gray pb-1 mb-3">Addresses</h3>
-	</div>
+      <h3 class="border-bottom border-gray pb-1 mb-3">Addresses</h3>
+    </div>
     <div id="token-transactions-table-container" class="my-3 p-3 bg-white rounded box-shadow">
-	  <h3 class="border-bottom border-gray pb-1 mb-3">Transactions</h3>
-	</div>
+      <h3 class="border-bottom border-gray pb-1 mb-3">Transactions</h3>
+    </div>
   `);
 
   const token_addresses_template = ejs.compile(`
@@ -450,7 +476,7 @@ app.init_token_page = (tokenIdHex) => new Promise((resolve, reject) => {
         <thead>
           <tr>
             <th>Txid</th>
-			<th>Type</th>
+            <th>Type</th>
             <th>Block Height</th>
             <th>Block Time</th>
           </tr>
@@ -459,7 +485,7 @@ app.init_token_page = (tokenIdHex) => new Promise((resolve, reject) => {
           <% for (let o of u) { %>
             <tr>
               <td><a href="/#tx/<%= o.tx.h %>"><%= o.tx.h %></a></td>
-			  <td><%= o.tokenDetails.detail.transactionType %></td>
+              <td><%= o.tokenDetails.detail.transactionType %></td>
               <td><%= o.blk.i %></td>
               <td><%= o.blk.t %></td>
             </tr>
@@ -467,7 +493,7 @@ app.init_token_page = (tokenIdHex) => new Promise((resolve, reject) => {
           <% for (let o of c) { %>
             <tr>
               <td><a href="/#tx/<%= o.tx.h %>"><%= o.tx.h %></a></td>
-			  <td><%= o.tokenDetails.detail.transactionType %></td>
+              <td><%= o.tokenDetails.detail.transactionType %></td>
               <td><%= o.blk.i %></td>
               <td><%= o.blk.t %></td>
             </tr>
@@ -498,9 +524,112 @@ app.init_token_page = (tokenIdHex) => new Promise((resolve, reject) => {
     .append(token_transactions_template(data))
     .find('#token-transactions-table').DataTable();
 
-	$('body').removeClass('loading');
+    $('body').removeClass('loading');
   });
 });
+
+
+app.init_address_page = (address) => new Promise((resolve, reject) => {
+  $('main[role=main]').html(`
+    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
+      <div class="lh-100">
+        <h2 class="mb-0 text-white lh-100">View Address</h2>
+      </div>
+    </div>
+    <div id="address-tokens-table-container" class="my-3 p-3 bg-white rounded box-shadow">
+      <h3 class="border-bottom border-gray pb-1 mb-3">Tokens</h3>
+    </div>
+    <div id="address-transactions-table-container" class="my-3 p-3 bg-white rounded box-shadow">
+      <h3 class="border-bottom border-gray pb-1 mb-3">Transactions</h3>
+    </div>
+  `);
+
+  const address_token_template = ejs.compile(`
+    <div class="table-responsive">
+      <table class="table" id="address-tokens-table">
+        <thead>
+          <tr>
+            <th>Token Id</th>
+            <th>Name</th>
+            <th>Symbol</th>
+            <th>Balance</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (let o of t) { %>
+            <tr>
+              <td><a href="/#token/<%= o.tokenDetails.tokenIdHex %>"><%= o.tokenDetails.tokenIdHex %></a></td>
+              <td><%= o.tokenDetails.name %></td>
+              <td><%= o.tokenDetails.symbol %></td>
+              <td><%= o.addresses.filter(v => v.address == address)[0].token_balance %></td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  `);
+  
+  const address_transactions_template = ejs.compile(`
+    <div class="table-responsive">
+      <table class="table" id="address-transactions-table">
+        <thead>
+          <tr>
+            <th>Txid</th>
+            <th>Block</th>
+            <th>Token Id</th>
+            <th>Name</th>
+            <th>Symbol</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (let o of c) { %>
+            <% /* TODO why do some transactions not have these? */ %>
+            <% if (o.blk && o.slp.detail && token_data[o.slp.detail.tokenIdHex]) { %>
+              <tr>
+                <td><a href="/#tx/<%= o.tx.h %>"><%= o.tx.h %></a></td>
+                <td><%= o.blk.i %></td>
+                <td><a href="/#token/<%= o.slp.detail.tokenIdHex %>"><%= o.slp.detail.tokenIdHex %></td>
+                <td><%= token_data[o.slp.detail.tokenIdHex].name %></td>
+                <td><%= token_data[o.slp.detail.tokenIdHex].symbol %></td>
+              </tr>
+            <% } else { console.error(o) } %>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  `);
+  
+
+  app.slpdb.query(app.slpdb.tokens_by_address(address))
+  .then((data) => {
+    console.log(data);
+    if (data.t.length > 0) {
+      $('#address-tokens-table-container')
+      .append(address_token_template({ t: data.t, address: address }))
+      .find('#address-tokens-table').DataTable();
+    }
+    let tokens = [];
+    for (let t of data.t) {
+      tokens[t.tokenDetails.tokenIdHex] = {
+        name:   t.tokenDetails.name,
+        symbol: t.tokenDetails.symbol
+      };
+    }
+    return tokens;
+  })
+  .then((tokens) => {
+    app.slpdb.query(app.slpdb.transactions_by_slp_address(slpjs.Utils.toCashAddress(address).split(':')[1]))
+    .then((data) => {
+      console.log(data)
+      $('#address-transactions-table-container')
+      .append(address_transactions_template({ c: data.c, token_data: tokens }))
+      .find('#address-transactions-table').DataTable();
+
+      $('body').removeClass('loading');
+    })
+  });
+});
+
 
 app.router = (whash, push_history = true) => {
   if (! whash) {
@@ -531,6 +660,10 @@ app.router = (whash, push_history = true) => {
     case '#token':
       document.title = 'Token(' + key + ') | slp-explorer';
       method = () => app.init_token_page(key);
+      break;
+    case '#address':
+      document.title = 'Address(' + key + ') | slp-explorer';
+      method = () => app.init_address_page(key);
       break;
     default:
       document.title = '404 | slp-explorer';
