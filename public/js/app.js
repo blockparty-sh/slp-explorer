@@ -30,11 +30,9 @@ app.slpdb = {
         "find": {
           "$query": {
             "slp.detail.tokenIdHex": tokenIdHex
-          },
-          "$orderby": {
-            "blk.i": -1
           }
         },
+        "sort": { "blk.i": -1 },
         "limit": limit,
         "skip": skip
       },
@@ -61,10 +59,8 @@ app.slpdb = {
         "$query": {
           "tx.h": txid
         },
-        "$orderby": {
-          "blk.i": -1
-        }
-      }
+      },
+      "sort": { "blk.i": -1 }
     },
     "r": {
       "f": "[.[] | { outputs: .out, inputs: .in, tokenDetails: .slp, blk: .blk, tx: .tx } ]"
@@ -81,6 +77,18 @@ app.slpdb = {
       "limit": 1
     }
   }),
+  tokens: (tokenIdHexs) => ({
+    "v": 3,
+    "q": {
+      "db": ["t"],
+      "find": {
+        "tokenDetails.tokenIdHex": {
+          "$in": tokenIdHexs
+        }
+      },
+      "limit": 1
+    }
+  }),
   transactions_by_slp_address: (address, limit=100, skip=0) => ({
     "v": 3,
     "q": {
@@ -91,9 +99,9 @@ app.slpdb = {
             { "in.e.a":  address },
             { "out.e.a": address }
           ]
-        },
-        "$orderby": { "blk.i": -1 }
+        }
       },
+      "sort": { "blk.i": -1 },
       "limit": limit,
       "skip": skip
     }
@@ -104,8 +112,8 @@ app.slpdb = {
       "db": ["t"],
       "find": {
         "addresses.address": address,
-        /* "$orderby": { "tokenStats.block_created": -1 } */
       },
+      "sort": { "tokenStats.block_created": -1 },
       "limit": limit,
       "skip": skip
     }
@@ -129,7 +137,7 @@ app.template = {
         <tbody>
           <tr>
             <th scope="row">Token Id</th>
-            <td><a href="/#token/<%= tokenIdHex %>"><%= tokenIdHex %></a></td>
+            <td><span class="mono"><a href="/#token/<%= tokenIdHex %>"><%= tokenIdHex %></a></span></td>
           </tr>
           <tr>
             <th scope="row">Name</th>
@@ -157,7 +165,7 @@ app.template = {
           </tr>
           <tr>
             <th scope="row">Document Checksum</th>
-            <td><%= documentSha256Hex %></td>
+            <td><span class="mono"><%= documentSha256Hex %></span></td>
           </tr>
         </tbody>
       </table>
@@ -226,12 +234,12 @@ app.template = {
 
 app.init_all_tokens_page = () => new Promise((resolve, reject) => {
   $('main[role=main]').html(`
-    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
+    <div class="d-flex align-items-center p-3 my-3 text-white-50 page-header rounded box-shadow">
       <div class="lh-100">
         <h2 class="mb-0 text-white lh-100">All Tokens</h2>
       </div>
     </div>
-    <div id="tokens-table-container" class="my-3 p-3 bg-white rounded box-shadow">
+    <div id="tokens-table-container" class="my-3 p-3 bg-white rounded box-shadow table-container">
     </div>
   `);
 
@@ -254,7 +262,7 @@ app.init_all_tokens_page = () => new Promise((resolve, reject) => {
         <tbody>
         <% for (let m of t) { %>
           <tr>
-            <td><a href="/#token/<%= m.tokenDetails.tokenIdHex %>"><%= m.tokenDetails.tokenIdHex %></a></td>
+            <td><span class="mono"><a href="/#token/<%= m.tokenDetails.tokenIdHex %>"><%= m.tokenDetails.tokenIdHex %></a></span></td>
             <td><%= m.tokenDetails.symbol %></td>
             <td><%= m.tokenDetails.name %></td>
             <td><%= m.tokenStats.qty_token_minted %></td>
@@ -283,15 +291,15 @@ app.init_all_tokens_page = () => new Promise((resolve, reject) => {
 
 app.init_tx_page = (txid) => new Promise((resolve, reject) => {
   const tx_template = ejs.compile(`
-    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
+    <div class="d-flex align-items-center p-3 my-3 text-white-50 page-header rounded box-shadow">
       <div class="lh-100">
-        <h2 class="mb-0 text-white lh-100">View Transaction</h2>
+        <h2 class="mb-0 text-white lh-100">Transaction</h2>
       </div>
     </div>
 
     <div class="row">
       <div class="col-md">
-        <div class="bg-white rounded box-shadow mb-4">
+        <div class="bg-white rounded box-shadow mb-3">
           <div class="table-responsive">
             <table class="table">
               <thead>
@@ -302,11 +310,11 @@ app.init_tx_page = (txid) => new Promise((resolve, reject) => {
               <tbody>
                 <tr>
                   <th role="col">Type</th>
-                  <td><%= tokenDetails.detail.transactionType %></td>
+                  <td><span class="mono"><%= tokenDetails.detail.transactionType %></span></td>
                 </tr>
                 <tr>
                   <th role="col">Txid</th>
-                  <td><a href="#tx/<%= tx.h %>"><%= tx.h %></td>
+                  <td><span class="mono"><a href="#tx/<%= tx.h %>"><%= tx.h %></a></span></td>
                 </tr>
                 <tr>
                   <th role="col">Block</th>
@@ -314,7 +322,7 @@ app.init_tx_page = (txid) => new Promise((resolve, reject) => {
                 </tr>
                 <tr>
                   <th role="col">Token Id</th>
-                  <td><a href="#token/<%= tokenDetails.detail.tokenIdHex %>"><%= tokenDetails.detail.tokenIdHex %></td>
+                  <td><span class="mono"><a href="#token/<%= tokenDetails.detail.tokenIdHex %>"><%= tokenDetails.detail.tokenIdHex %></a></span></td>
                 </tr>
                 <tr>
                   <th role="col">Token Name</th>
@@ -335,7 +343,7 @@ app.init_tx_page = (txid) => new Promise((resolve, reject) => {
     <% if (tokenDetails.detail.transactionType == 'SEND') { %>
       <div class="row">
         <div class="col-md">
-          <div class="bg-white rounded box-shadow mb-4">
+          <div class="bg-white rounded box-shadow mb-3">
             <h3 class="pl-3 pt-3 pb-1 mb-1">Inputs</h3>
             <div class="table-responsive">
               <table class="table">
@@ -358,7 +366,7 @@ app.init_tx_page = (txid) => new Promise((resolve, reject) => {
           </div>
         </div>
         <div class="col-md">
-          <div class="bg-white rounded box-shadow mb-4">
+          <div class="bg-white rounded box-shadow mb-3">
             <h3 class="pl-3 pt-3 pb-1 mb-1">Outputs</h3>
             <div class="table-responsive">
               <table class="table">
@@ -425,23 +433,23 @@ app.init_tx_page = (txid) => new Promise((resolve, reject) => {
 
 app.init_token_page = (tokenIdHex) => new Promise((resolve, reject) => {
   $('main[role=main]').html(`
-    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
+    <div class="d-flex align-items-center p-3 my-3 text-white-50 page-header rounded box-shadow">
       <div class="lh-100">
-        <h2 class="mb-0 text-white lh-100">View Token</h2>
+        <h2 class="mb-0 text-white lh-100">Token</h2>
       </div>
     </div>
     <div class="row">
       <div class="col-md">
-        <div id="token-details-table-container" class="bg-white rounded box-shadow"></div>
+        <div id="token-details-table-container" class="bg-white rounded box-shadow mb-3 table-container"></div>
       </div>
       <div class="col-md">
-        <div id="token-stats-table-container" class="bg-white rounded box-shadow"></div>
+        <div id="token-stats-table-container" class="bg-white rounded box-shadow table-container"></div>
       </div>
     </div>
-    <div id="token-addresses-table-container" class="my-3 p-3 bg-white rounded box-shadow">
+    <div id="token-addresses-table-container" class="my-3 p-3 bg-white rounded box-shadow table-container">
       <h3 class="border-bottom border-gray pb-1 mb-3">Addresses</h3>
     </div>
-    <div id="token-transactions-table-container" class="my-3 p-3 bg-white rounded box-shadow">
+    <div id="token-transactions-table-container" class="my-3 p-3 bg-white rounded box-shadow table-container">
       <h3 class="border-bottom border-gray pb-1 mb-3">Transactions</h3>
     </div>
   `);
@@ -459,7 +467,7 @@ app.init_token_page = (tokenIdHex) => new Promise((resolve, reject) => {
         <tbody>
           <% for (let o of addresses) { %>
             <tr>
-              <td><a href="/#address/<%= o.address %>"><%= o.address %></a></td>
+              <td><span class="mono"><a href="/#address/<%= o.address %>"><%= o.address %></a></span></td>
               <td><%= o.satoshis_balance %></a></td>
               <td><%= o.token_balance %></a></td>
             </tr>
@@ -483,24 +491,20 @@ app.init_token_page = (tokenIdHex) => new Promise((resolve, reject) => {
         </thead>
         <tbody>
           <% for (let o of u) { %>
-            <% if (o.blk) { %>
-              <tr>
-                <td><a href="/#tx/<%= o.tx.h %>"><%= o.tx.h %></a></td>
-                <td><%= o.tokenDetails.detail.transactionType %></td>
-                <td><%= o.blk.i %></td>
-                <td><%= o.blk.t %></td>
-              </tr>
-            <% } else { console.error(o); } %>
+            <tr>
+              <td><span class="mono"><a href="/#tx/<%= o.tx.h %>"><%= o.tx.h %></a></span></td>
+              <td><%= o.tokenDetails.detail.transactionType %></td>
+              <td><% if (o.blk) { %><%= o.blk.i %><% } %></td>
+              <td><% if (o.blk) { %><%= o.blk.t %><% } %></td>
+            </tr>
           <% } %>
           <% for (let o of c) { %>
-            <% if (o.blk) { %>
-              <tr>
-                <td><a href="/#tx/<%= o.tx.h %>"><%= o.tx.h %></a></td>
-                <td><%= o.tokenDetails.detail.transactionType %></td>
-                <td><%= o.blk.i %></td>
-                <td><%= o.blk.t %></td>
-              </tr>
-            <% } else { console.error(o); } %>
+            <tr>
+              <td><span class="mono"><a href="/#tx/<%= o.tx.h %>"><%= o.tx.h %></a></span></td>
+              <td><%= o.tokenDetails.detail.transactionType %></td>
+              <td><% if (o.blk) { %><%= o.blk.i %><% } %></td>
+              <td><% if (o.blk) { %><%= o.blk.t %><% } %></td>
+            </tr>
           <% } %>
         </tbody>
       </table>
@@ -535,15 +539,15 @@ app.init_token_page = (tokenIdHex) => new Promise((resolve, reject) => {
 
 app.init_address_page = (address) => new Promise((resolve, reject) => {
   $('main[role=main]').html(`
-    <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-purple rounded box-shadow">
+    <div class="d-flex align-items-center p-3 my-3 text-white-50 page-header rounded box-shadow">
       <div class="lh-100">
-        <h2 class="mb-0 text-white lh-100">View Address</h2>
+        <h2 class="mb-0 text-white lh-100">Address</h2>
       </div>
     </div>
-    <div id="address-tokens-table-container" class="my-3 p-3 bg-white rounded box-shadow">
+    <div id="address-tokens-table-container" class="my-3 p-3 bg-white rounded box-shadow table-container">
       <h3 class="border-bottom border-gray pb-1 mb-3">Tokens</h3>
     </div>
-    <div id="address-transactions-table-container" class="my-3 p-3 bg-white rounded box-shadow">
+    <div id="address-transactions-table-container" class="my-3 p-3 bg-white rounded box-shadow table-container">
       <h3 class="border-bottom border-gray pb-1 mb-3">Transactions</h3>
     </div>
   `);
@@ -562,7 +566,7 @@ app.init_address_page = (address) => new Promise((resolve, reject) => {
         <tbody>
           <% for (let o of t) { %>
             <tr>
-              <td><a href="/#token/<%= o.tokenDetails.tokenIdHex %>"><%= o.tokenDetails.tokenIdHex %></a></td>
+              <td><span class="mono"><a href="/#token/<%= o.tokenDetails.tokenIdHex %>"><%= o.tokenDetails.tokenIdHex %></a></span></td>
               <td><%= o.tokenDetails.name %></td>
               <td><%= o.tokenDetails.symbol %></td>
               <td><%= o.addresses.filter(v => v.address == address)[0].token_balance %></td>
@@ -578,8 +582,8 @@ app.init_address_page = (address) => new Promise((resolve, reject) => {
       <table class="table" id="address-transactions-table">
         <thead>
           <tr>
-            <th>Txid</th>
             <th>Block</th>
+            <th>Txid</th>
             <th>Token Id</th>
             <th>Name</th>
             <th>Symbol</th>
@@ -590,9 +594,9 @@ app.init_address_page = (address) => new Promise((resolve, reject) => {
             <% /* TODO why do some transactions not have these? */ %>
             <% if (o.blk && o.slp.detail && token_data[o.slp.detail.tokenIdHex]) { %>
               <tr>
-                <td><a href="/#tx/<%= o.tx.h %>"><%= o.tx.h %></a></td>
                 <td><%= o.blk.i %></td>
-                <td><a href="/#token/<%= o.slp.detail.tokenIdHex %>"><%= o.slp.detail.tokenIdHex %></td>
+                <td><span class="mono"><a href="/#tx/<%= o.tx.h %>"><%= o.tx.h %></a></span></td>
+                <td><span class="mono"><a href="/#token/<%= o.slp.detail.tokenIdHex %>"><%= o.slp.detail.tokenIdHex %></span></td>
                 <td><%= token_data[o.slp.detail.tokenIdHex].name %></td>
                 <td><%= token_data[o.slp.detail.tokenIdHex].symbol %></td>
               </tr>
