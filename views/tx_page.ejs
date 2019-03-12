@@ -1,0 +1,102 @@
+<div class="d-flex align-items-center p-3 my-3 text-white-50 page-header rounded box-shadow">
+  <div class="lh-100">
+    <h2 class="mb-0 text-white lh-100">Transaction</h2>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md">
+    <div class="bg-white rounded box-shadow mb-3">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th><h3 class="pl-3 pt-3 pb-1 mb-1">Transaction Details</h3></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th role="col">Type</th>
+              <td><span class="mono"><%= tokenDetails.detail.transactionType %></span></td>
+            </tr>
+            <tr>
+              <th role="col">Txid</th>
+              <td><span class="mono"><a href="#tx/<%= tx.h %>"><%= tx.h %></a></span></td>
+            </tr>
+            <tr>
+              <th role="col">Block</th>
+              <td><%= blk.i %></td>
+            </tr>
+            <tr>
+              <th role="col">Token Id</th>
+              <td><span class="mono"><a href="#token/<%= tokenDetails.detail.tokenIdHex %>"><%= tokenDetails.detail.tokenIdHex %></a></span></td>
+            </tr>
+            <tr>
+              <th role="col">Token Name</th>
+              <td><%= tokenDetails.full.name %></td>
+            </tr>
+            <tr>
+              <th role="col">Token Symbol</th>
+              <td><%= tokenDetails.full.symbol %></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<% if (tokenDetails.detail.transactionType == 'SEND') { %>
+  <div class="row">
+    <div class="col-md">
+      <div class="bg-white rounded box-shadow mb-3">
+        <h3 class="pl-3 pt-3 pb-1 mb-1">Inputs</h3>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>txid</th>
+                <th>address</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for (let m of inputs) { %>
+                <tr>
+                  <td><a href="/#tx/<%= m.e.h %>"><i class="material-icons">exit_to_app</i></a></td>
+                  <td><a href="/#address/<%= slpjs.Utils.toSlpAddress(m.e.a) %>"><%= slpjs.Utils.toSlpAddress(m.e.a) %></a></td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-md">
+      <div class="bg-white rounded box-shadow mb-3">
+        <h3 class="pl-3 pt-3 pb-1 mb-1">Outputs</h3>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>amount</th>
+                <th>address</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for (let m of outputs) { %>
+                <tr>
+                  <td><%= m.amount %></td>
+                  <td><a href="/#address/<%= slpjs.Utils.toSlpAddress(m.address) %>"><%= slpjs.Utils.toSlpAddress(m.address) %></a></td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+<% } %>
+
+<!--<div id="tokens-details-table-container" class="my-3 p-3 bg-white rounded box-shadow"></div>-->
+

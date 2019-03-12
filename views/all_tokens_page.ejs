@@ -1,0 +1,39 @@
+<div class="d-flex align-items-center p-3 my-3 text-white-50 page-header rounded box-shadow">
+  <div class="lh-100">
+    <h2 class="mb-0 text-white lh-100">All Tokens</h2>
+  </div>
+</div>
+<div id="tokens-table-container" class="my-3 p-3 bg-white rounded box-shadow table-container">
+  <div class="table-responsive">
+    <table class="table" id="tokens-table">
+      <thead>
+        <tr>
+          <th>Token Id</th>
+          <th>Symbol</th>
+          <th>Name</th>
+          <th>Minted</th>
+          <th>Burned</th>
+          <th>Supply</th>
+          <th>Transactions</th>
+          <th>Utxos</th>
+          <th>Addresses</th>
+        </tr>
+      </thead>
+      <tbody>
+      <% for (let m of t) { %>
+        <tr>
+          <td><span class="mono"><a href="/#token/<%= m.tokenDetails.tokenIdHex %>"><%= m.tokenDetails.tokenIdHex %></a></span></td>
+          <td><%= m.tokenDetails.symbol %></td>
+          <td><%= m.tokenDetails.name %></td>
+          <td><%= m.tokenStats.qty_token_minted %></td>
+          <td><%= m.tokenStats.qty_token_burned %></td>
+          <td><%= m.tokenStats.qty_token_circulating_supply %></td>
+          <td><%= m.tokenStats.qty_valid_txns_since_genesis %></td>
+          <td><%= m.tokenStats.qty_valid_token_utxos %></td>
+          <td><%= m.tokenStats.qty_valid_token_addresses %></td>
+        </tr>
+      <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>

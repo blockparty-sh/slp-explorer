@@ -1,0 +1,60 @@
+<div class="d-flex align-items-center p-3 my-3 text-white-50 page-header rounded box-shadow">
+  <div class="lh-100">
+    <h2 class="mb-0 text-white lh-100">Address</h2>
+  </div>
+</div>
+<div id="address-tokens-table-container" class="my-3 p-3 bg-white rounded box-shadow table-container">
+  <h3 class="border-bottom border-gray pb-1 mb-3">Tokens</h3>
+  <div class="table-responsive">
+    <table class="table" id="address-tokens-table">
+      <thead>
+        <tr>
+          <th>Token Id</th>
+          <th>Name</th>
+          <th>Symbol</th>
+          <th>Balance</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (let o of tokens) { %>
+          <tr>
+            <td><span class="mono"><a href="/#token/<%= o.tokenDetails.tokenIdHex %>"><%= o.tokenDetails.tokenIdHex %></a></span></td>
+            <td><%= o.tokenDetails.name %></td>
+            <td><%= o.tokenDetails.symbol %></td>
+            <td><%= o.addresses.filter(v => v.address == address)[0].token_balance %></td>
+          </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div id="address-transactions-table-container" class="my-3 p-3 bg-white rounded box-shadow table-container">
+  <h3 class="border-bottom border-gray pb-1 mb-3">Transactions</h3>
+  <div class="table-responsive">
+    <table class="table" id="address-transactions-table">
+      <thead>
+        <tr>
+          <th>Block</th>
+          <th>Txid</th>
+          <th>Token Id</th>
+          <th>Name</th>
+          <th>Symbol</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (let o of transactions.c) { %>
+          <% /* TODO why do some transactions not have these? */ %>
+          <% if (o.blk && o.slp && o.slp.detail && tx_tokens[o.slp.detail.tokenIdHex]) { %>
+            <tr>
+              <td><%= o.blk.i %></td>
+              <td><span class="mono"><a href="/#tx/<%= o.tx.h %>"><%= o.tx.h %></a></span></td>
+              <td><span class="mono"><a href="/#token/<%= o.slp.detail.tokenIdHex %>"><%= o.slp.detail.tokenIdHex %></span></td>
+              <td><%= tx_tokens[o.slp.detail.tokenIdHex].tokenDetails.name %></td>
+              <td><%= tx_tokens[o.slp.detail.tokenIdHex].tokenDetails.symbol %></td>
+            </tr>
+          <% } else { console.error(o) } %>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
