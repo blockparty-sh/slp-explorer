@@ -6,10 +6,110 @@
 </div>
 <div class="row">
   <div class="col-md">
-    <div id="token-details-table-container" class="bg-white rounded box-shadow mb-3 table-container"></div>
+    <div id="token-details-table-container" class="bg-white rounded box-shadow mb-3 table-container">
+      <div class="table-responsive">
+        <table class="table" id="token-details-table">
+          <thead>
+            <tr>
+              <td>
+                  <h3 class="pb-1 mb-1">Details</h3>
+              </td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Token Id</th>
+              <td><span class="mono"><a href="/#token/<%= token.tokenDetails.tokenIdHex %>"><%= token.tokenDetails.tokenIdHex %></a></span></td>
+            </tr>
+            <tr>
+              <th scope="row">Name</th>
+              <td><%= token.tokenDetails.name %></td>
+            </tr>
+            <tr>
+              <th scope="row">Symbol</th>
+              <td><%= token.tokenDetails.symbol %></td>
+            </tr>
+            <tr>
+              <th scope="row">Timestamp</th>
+              <td><%= token.tokenDetails.timestamp %></td>
+            </tr>
+            <tr>
+              <th scope="row">Quantity</th>
+              <td><%= token.tokenDetails.genesisOrMintQuantity %></td>
+            </tr>
+            <tr>
+              <th scope="row">Decimals</th>
+              <td><%= token.tokenDetails.decimals %></td>
+            </tr>
+            <tr>
+              <th scope="row">Document URI</th>
+              <td><a href="<%= token.tokenDetails.documentUri %>" target="_blank"><%= token.tokenDetails.documentUri %></a></td>
+            </tr>
+            <tr>
+              <th scope="row">Document Checksum</th>
+              <td><span class="mono"><%= token.tokenDetails.documentSha256Hex %></span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
   <div class="col-md">
-    <div id="token-stats-table-container" class="bg-white rounded box-shadow table-container"></div>
+    <div id="token-stats-table-container" class="bg-white rounded box-shadow table-container">
+      <div class="table-responsive">
+        <table class="table" id="token-stats-table">
+          <thead>
+            <tr>
+              <td>
+                  <h3 class="pb-1 mb-1">Stats</h3>
+              </td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>Block Created</th>
+              <td><%= token.tokenStats.block_created %></td>
+            </tr>
+            <tr>
+              <th scope="row">Block Last Active Send</th>
+              <td><%= token.tokenStats.block_last_active_send %></td>
+            </tr>
+            <tr>
+              <th scope="row">Block Last Active Mint</th>
+              <td><%= token.tokenStats.block_last_active_mint %></td>
+            </tr>
+            <tr>
+              <th scope="row">Qty. Valid Txns Since Genesis</th>
+              <td><%= token.tokenStats.qty_valid_txns_since_genesis %></td>
+            </tr>
+            <tr>
+              <th scope="row">Qty. Valid Token Utxos</th>
+              <td><%= token.tokenStats.qty_valid_token_utxos %></td>
+            </tr>
+            <tr>
+              <th scope="row">Qty. Valid Token Addresses</th>
+              <td><%= token.tokenStats.qty_valid_token_addresses %></td>
+            </tr>
+            <tr>
+              <th scope="row">Qty. Token Minted</th>
+              <td><%= token.tokenStats.qty_token_minted %></td>
+            </tr>
+            <tr>
+              <th scope="row">Qty. Token Burned</th>
+              <td><%= token.tokenStats.qty_token_burned %></td>
+            </tr>
+            <tr>
+              <th scope="row">Qty. Token Circulating Supply</th>
+              <td><%= token.tokenStats.qty_token_circulating_supply %></td>
+            </tr>
+            <tr>
+              <th scope="row">Qty. Satoshis Locked Up</th>
+              <td><%= token.tokenStats.qty_satoshis_locked_up %></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
 <div id="token-addresses-table-container" class="my-3 p-3 bg-white rounded box-shadow table-container">
