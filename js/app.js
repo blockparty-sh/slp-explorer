@@ -89,14 +89,15 @@ app.slpdb = {
       "limit": tokenIdHexs.length
     }
   }),
-  token_addresses: (tokenIdHex) => ({
+  token_addresses: (tokenIdHex, limit=100, skip=0) => ({
     "v": 3,
     "q": {
       "db": ["a"],
       "find": {
         "tokenDetails.tokenIdHex": tokenIdHex
       },
-      "limit": 1
+      "limit": limit,
+      "skip": skip
     }
   }),
   transactions_by_cash_address: (address, limit=100, skip=0) => ({
