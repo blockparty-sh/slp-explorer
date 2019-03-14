@@ -89,6 +89,16 @@ app.slpdb = {
       "limit": tokenIdHexs.length
     }
   }),
+  token_addresses: (tokenIdHex) => ({
+    "v": 3,
+    "q": {
+      "db": ["a"],
+      "find": {
+        "tokenDetails.tokenIdHex": tokenIdHex
+      },
+      "limit": 1
+    }
+  }),
   transactions_by_cash_address: (address, limit=100, skip=0) => ({
     "v": 3,
     "q": {
@@ -143,19 +153,6 @@ app.init_tx_page = (txid) =>
         return app.slpdb.query(app.slpdb.token(tx.tokenDetails.detail.tokenIdHex))
         .then((data) => {
           tx['tokenDetails']['full'] = data.t[0].tokenDetails;
-          console.log(tx);
-
-          let outputs = [];
-          if (tx.tokenDetails.detail.transactionType === 'SEND') {
-            for (let i=0; i<tx.tokenDetails.detail.sendOutputs.length; ++i) {
-              outputs.push({
-                'address': tx.outputs[i+1].e.a,
-                'amount': tx.tokenDetails.detail.sendOutputs[i]
-              })
-            }
-            tx['outputs'] = outputs;
-          }
-
           $('main[role=main]').html(app.template.tx_page(tx));
 
           $('body').removeClass('loading');
@@ -172,10 +169,12 @@ app.init_token_page = (tokenIdHex) =>
   new Promise((resolve, reject) =>
     Promise.all([
       app.slpdb.query(app.slpdb.token(tokenIdHex)),
+      app.slpdb.query(app.slpdb.token_addresses(tokenIdHex)),
       app.slpdb.query(app.slpdb.token_transaction_history(tokenIdHex))
     ])
-    .then(([token, transactions]) => {
+    .then(([token, addresses, transactions]) => {
       console.log(token);
+      console.log(addresses);
       console.log(transactions);
 
       if (token.t.length == 0) {
@@ -184,6 +183,7 @@ app.init_token_page = (tokenIdHex) =>
 
       $('main[role=main]').html(app.template.token_page({
         token:        token.t[0],
+        addresses:    addresses.a,
         transactions: transactions
       }));
 
@@ -205,7 +205,6 @@ app.init_address_page = (address) =>
       console.log(tokens);
       console.log(transactions);
 
-      // TODO split this with limit/skip for larger amounts of tokens.t
       let token_ids = [];
       for (let m of transactions.c) {
         if (m.slp) token_ids.push(m.slp.detail.tokenIdHex);

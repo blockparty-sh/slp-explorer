@@ -36,10 +36,10 @@
       <thead>
         <tr>
           <th>Block</th>
-          <th>Txid</th>
-          <th>Token Id</th>
           <th>Name</th>
           <th>Symbol</th>
+          <th>Txid</th>
+          <th>Token Id</th>
         </tr>
       </thead>
       <tbody>
@@ -48,10 +48,10 @@
           <% if (o.blk && o.slp && o.slp.detail && tx_tokens[o.slp.detail.tokenIdHex]) { %>
             <tr>
               <td><%= o.blk.i %></td>
-              <td><span class="mono"><a href="/#tx/<%= o.tx.h %>"><%= o.tx.h %></a></span></td>
-              <td><span class="mono"><a href="/#token/<%= o.slp.detail.tokenIdHex %>"><%= o.slp.detail.tokenIdHex %></span></td>
               <td><%= tx_tokens[o.slp.detail.tokenIdHex].tokenDetails.name %></td>
               <td><%= tx_tokens[o.slp.detail.tokenIdHex].tokenDetails.symbol %></td>
+              <td><span class="mono"><a href="/#tx/<%= o.tx.h %>"><%= o.tx.h %></a></span></td>
+              <td><span class="mono"><a href="/#token/<%= o.slp.detail.tokenIdHex %>"><%= o.slp.detail.tokenIdHex %></span></td>
             </tr>
           <% } else { console.error(o) } %>
         <% } %>

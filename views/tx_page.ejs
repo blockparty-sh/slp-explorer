@@ -85,10 +85,10 @@
               </tr>
             </thead>
             <tbody>
-              <% for (let m of outputs) { %>
+              <% for (let m of tokenDetails.detail.sendOutputs) { console.log(m); %>
                 <tr>
                   <td><%= m.amount %></td>
-                  <td><a href="/#address/<%= slpjs.Utils.toSlpAddress(m.address) %>"><%= slpjs.Utils.toSlpAddress(m.address) %></a></td>
+                  <td><a href="/#address/<%= m.address %>"><%= m.address %></a></td>
                 </tr>
               <% } %>
             </tbody>
