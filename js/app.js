@@ -118,11 +118,11 @@ app.slpdb = {
   tokens_by_slp_address: (address, limit=100, skip=0) => ({
     "v": 3,
     "q": {
-      "db": ["t"],
+      "db": ["a"],
       "find": {
-        "addresses.address": address,
+        "address": address,
       },
-      "sort": { "tokenStats.block_created": -1 },
+      "sort": { "token_balance": -1 },
       "limit": limit,
       "skip": skip
     }
@@ -140,7 +140,7 @@ app.init_all_tokens_page = () =>
     .then((data) => {
       $('main[role=main]')
         .html(app.template.all_tokens_page(data))
-        .find('#tokens-table').DataTable()
+        .find('#tokens-table').DataTable({order: [7, 'desc']}) // sort by transaction count
 
       $('body').removeClass('loading')
     })
@@ -188,8 +188,8 @@ app.init_token_page = (tokenIdHex) =>
         transactions: transactions
       }));
 
-      $('#token-transactions-table').DataTable();
-      $('#token-addresses-table').DataTable();
+      $('#token-transactions-table').DataTable({order: []});
+      $('#token-addresses-table').DataTable({order: [[1, 'desc']]}); // sort by token balance
       $('body').removeClass('loading');
     })
   )
@@ -235,12 +235,12 @@ app.init_address_page = (address) =>
 
         $('main[role=main]').html(app.template.address_page({
           address:      address,
-          tokens:       tokens.t,
+          tokens:       tokens.a,
           transactions: transactions,
           tx_tokens:    tx_tokens
         }));
-        $('#address-tokens-table').DataTable();
-        $('#address-transactions-table').DataTable();
+        $('#address-tokens-table').DataTable({order: []});
+        $('#address-transactions-table').DataTable({order: []});
 
         $('body').removeClass('loading');
       })

@@ -112,59 +112,63 @@
     </div>
   </div>
 </div>
-<div id="token-addresses-table-container" class="my-3 p-3 bg-white rounded box-shadow table-container">
-  <h3 class="border-bottom border-gray pb-1 mb-3">Addresses</h3>
-  <div class="table-responsive">
-    <table class="table" id="token-addresses-table">
-      <thead>
-        <tr>
-          <th>Address</th>
-          <th>Satoshi Balance</th>
-          <th>Token Balance</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% for (let o of addresses) { %>
-          <tr>
-            <td><span class="mono"><a href="/#address/<%= o.address %>"><%= o.address %></a></span></td>
-            <td><%= o.satoshis_balance %></a></td>
-            <td><%= o.token_balance %></a></td>
-          </tr>
-        <% } %>
-      </tbody>
-    </table>
+<div class="row">
+  <div class="col-md">
+    <div id="token-addresses-table-container" class="my-3 p-3 bg-white rounded box-shadow table-container">
+      <h3 class="border-bottom border-gray pb-1 mb-3">Addresses</h3>
+      <div class="table-responsive">
+        <table class="table" id="token-addresses-table">
+          <thead>
+            <tr>
+              <th>Address</th>
+              <th>Token Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (let o of addresses) { %>
+              <tr>
+                <td><span class="mono"><a href="/#address/<%= o.address %>"><%= o.address %></a></span></td>
+                <td><%= o.token_balance %></a></td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
-</div>
-<div id="token-transactions-table-container" class="my-3 p-3 bg-white rounded box-shadow table-container">
-  <h3 class="border-bottom border-gray pb-1 mb-3">Transactions</h3>
-  <div class="table-responsive">
-    <table class="table" id="token-transactions-table">
-      <thead>
-        <tr>
-          <th>Txid</th>
-          <th>Type</th>
-          <th>Block Height</th>
-          <th>Block Time</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% for (let o of transactions.u) { %>
-          <tr>
-            <td><span class="mono"><a href="/#tx/<%= o.tx.h %>"><%= o.tx.h %></a></span></td>
-            <td><%= o.tokenDetails.detail.transactionType %></td>
-            <td><% if (o.blk) { %><%= o.blk.i %><% } %></td>
-            <td><% if (o.blk) { %><%= o.blk.t %><% } %></td>
-          </tr>
-        <% } %>
-        <% for (let o of transactions.c) { %>
-          <tr>
-            <td><span class="mono"><a href="/#tx/<%= o.tx.h %>"><%= o.tx.h %></a></span></td>
-            <td><%= o.tokenDetails.detail.transactionType %></td>
-            <td><% if (o.blk) { %><%= o.blk.i %><% } %></td>
-            <td><% if (o.blk) { %><%= o.blk.t %><% } %></td>
-          </tr>
-        <% } %>
-      </tbody>
-    </table>
+  <div class="col-md">
+    <div id="token-transactions-table-container" class="my-3 p-3 bg-white rounded box-shadow table-container">
+      <h3 class="border-bottom border-gray pb-1 mb-3">Transactions</h3>
+      <div class="table-responsive">
+        <table class="table" id="token-transactions-table">
+          <thead>
+            <tr>
+              <th>Txid</th>
+              <th>Type</th>
+              <th>Block Height</th>
+              <th>Block Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (let o of transactions.u) { %>
+              <tr>
+                <td><span class="mono"><a href="/#tx/<%= o.tx.h %>"><%= o.tx.h %></a></span></td>
+                <td><%= o.tokenDetails.detail.transactionType %></td>
+                <td>Unconfirmed</td>
+                <td></td>
+              </tr>
+            <% } %>
+            <% for (let o of transactions.c) { %>
+              <tr>
+                <td><span class="mono"><a href="/#tx/<%= o.tx.h %>"><%= o.tx.h %></a></span></td>
+                <td><%= o.tokenDetails.detail.transactionType %></td>
+                <td><% if (o.blk) { %><%= o.blk.i %><% } %></td>
+                <td class="nowrap"><% if (o.blk) { %><%= new Date(o.blk.t*1000).toLocaleString() %><% } %></td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
