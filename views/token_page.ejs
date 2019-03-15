@@ -116,24 +116,28 @@
   <div class="col-md">
     <div id="token-addresses-table-container" class="my-3 p-3 bg-white rounded box-shadow table-container">
       <h3 class="border-bottom border-gray pb-1 mb-3">Addresses</h3>
-      <div class="table-responsive">
-        <table class="table" id="token-addresses-table">
-          <thead>
-            <tr>
-              <th>Address</th>
-              <th>Token Balance</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% for (let o of addresses) { %>
+      <% if (addresses.length === 0) { %>
+        <h6>This token has no addresses... he's dead Jim</h6></h6>
+      <% } else { %>
+        <div class="table-responsive">
+          <table class="table" id="token-addresses-table">
+            <thead>
               <tr>
-                <td><span class="mono"><a href="/#address/<%= o.address %>"><%= o.address %></a></span></td>
-                <td><%= o.token_balance %></a></td>
+                <th>Address</th>
+                <th>Token Balance</th>
               </tr>
-            <% } %>
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              <% for (let o of addresses) { %>
+                <tr>
+                  <td><span class="mono"><a href="/#address/<%= o.address %>"><%= o.address %></a></span></td>
+                  <td><%= o.token_balance %></a></td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
     </div>
   </div>
   <div class="col-md">

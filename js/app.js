@@ -215,8 +215,11 @@ app.init_tx_page = (txid) =>
       const tmp = (tx) => new Promise((resolve, reject) =>
         app.slpdb.query(app.slpdb.token(tx.tokenDetails.detail.tokenIdHex))
         .then((data) => {
-          tx['tokenDetails']['full'] = data.t[0].tokenDetails;
-          $('main[role=main]').html(app.template.tx_page(tx));
+          console.log(tx);
+          $('main[role=main]').html(app.template.tx_page({
+            tx:    tx,
+            token: data.t[0]
+          }));
 
           resolve();
         })
@@ -241,7 +244,7 @@ app.init_token_page = (tokenIdHex) =>
       console.log(transactions);
 
       if (token.t.length == 0) {
-        return app.init_404_page()
+        return resolve(app.init_404_page());
       } 
 
       $('main[role=main]').html(app.template.token_page({
@@ -258,13 +261,18 @@ app.init_token_page = (tokenIdHex) =>
   )
 
 
-app.init_address_page = (address) =>
-  new Promise((resolve, reject) =>
+app.init_address_page = (address) => {
+  let cash_address = address;
+  try {
+    cash_address = slpjs.Utils.toCashAddress(address).split(':')[1];
+  } catch (e) {
+    return app.init_404_page();
+  }
+
+  return new Promise((resolve, reject) =>
     Promise.all([
       app.slpdb.query(app.slpdb.tokens_by_slp_address(address, 1000)),
-      app.slpdb.query(app.slpdb.transactions_by_cash_address(
-        slpjs.Utils.toCashAddress(address).split(':')[1], 1000
-      ))
+      app.slpdb.query(app.slpdb.transactions_by_cash_address(cash_address, 1000))
     ]).then(([tokens, transactions]) => {
       console.log(tokens);
       console.log(transactions);
@@ -282,14 +290,18 @@ app.init_address_page = (address) =>
           transactions: transactions,
           tx_tokens:    tx_tokens
         }));
-        $('#address-tokens-table').DataTable({order: []});
-        $('#address-transactions-table').DataTable({order: []});
+        if (tokens.length > 0) {
+          $('#address-tokens-table').DataTable({order: []});
+        }
+        if (transactions.length > 0) {
+          $('#address-transactions-table').DataTable({order: []});
+        }
 
         resolve();
       })
     })
   )
-
+}
 
 app.router = (whash, push_history = true) => {
   if (! whash) {
@@ -332,7 +344,8 @@ app.router = (whash, push_history = true) => {
     default:
       document.title = '404 | slp-explorer';
       console.error('app.router path not found', whash);
-      return;
+      method = () => app.init_404_page();
+      break;
   }
 
   $('body').addClass('loading');
