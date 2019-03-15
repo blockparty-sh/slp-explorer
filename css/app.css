@@ -108,7 +108,11 @@ footer {
 }
 
 a {
-    color: var(--cyan);
+    color: #2f7ea4;
+}
+
+a i {
+  color: #6186d9;
 }
 
 a:hover {
@@ -126,7 +130,7 @@ table,
 }
 
 .page-header {
-    background-color: var(--blue);
+    background-color: #338cd3;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -135,11 +139,11 @@ h1, h2, h3, h4, h5, h6 {
 
 .page-link,
 .page-link:hover {
-    color: var(--cyan);
+    color: #2f7ea4;
 }
 .page-item.active .page-link {
-    background-color: var(--cyan);
-        border-color: var(--cyan);
+    background-color: rgba(47, 126, 164, 0.4);
+        border-color: #2f7ea4;
 }
 
 .nowrap {
@@ -174,4 +178,13 @@ h1, h2, h3, h4, h5, h6 {
 .autocomplete-group strong {
   display: block;
   border-bottom: 1px solid #000;
+}
+
+.custom-file-control, .form-control, .is-focused .custom-file-control, .is-focused .form-control {
+  background-image: linear-gradient(0deg,#a824b0 2px, rgba(0,150,136,0) 0),
+                    linear-gradient(0deg,rgba(0,0,0,.26) 1px,transparent 0);
+}
+
+#main-search:focus {
+  outline:0;
 }
