@@ -100,6 +100,20 @@ app.slpdb = {
       "skip": skip
     }
   }),
+  recent_transactions: (limit=100, skip=0) => ({
+    "v": 3,
+    "q": {
+      "db": ["c", "u"],
+      "find": {
+        "slp": {
+          "$exists": true
+        }
+      },
+      "sort": { "blk.i": -1 },
+      "limit": limit,
+      "skip": skip
+    }
+  }),
   transactions_by_cash_address: (address, limit=100, skip=0) => ({
     "v": 3,
     "q": {
@@ -129,10 +143,59 @@ app.slpdb = {
   }),
 };
 
-app.init_404_page = () => {
-  $('main[role=main]').html(app.template.error_404_page());
-  $('body').removeClass('loading');
+
+app.get_tokens_from_transactions = (transactions, chunk_size=50) => {
+  let token_ids = [];
+  for (let m of transactions) {
+    if (m.slp) token_ids.push(m.slp.detail.tokenIdHex);
+  }
+  token_ids = [...new Set(token_ids)]; // make unique
+
+  let reqs = [];
+  for (let i=0; i<Math.ceil(token_ids.length / chunk_size); ++i) {
+    reqs.push(app.slpdb.query(
+      app.slpdb.tokens(token_ids.slice(chunk_size*i, (chunk_size*i)+chunk_size))
+    ));
+  }
+
+  return Promise.all(reqs)
+  .then((results) => {
+    let tx_tokens = [];
+    results.map(v => v.t).flat().forEach(v => {
+      tx_tokens[v.tokenDetails.tokenIdHex] = v;
+    })
+
+    return tx_tokens;
+  });
 };
+
+app.init_404_page = () => new Promise((resolve, reject) => {
+  $('main[role=main]').html(app.template.error_404_page());
+  resolve();
+});
+
+app.init_index_page = () =>
+  new Promise((resolve, reject) =>
+    app.slpdb.query(app.slpdb.recent_transactions())
+    .then((data) => {
+
+      const transactions =  data.u.concat(data.c);
+
+      app.get_tokens_from_transactions(transactions)
+      .then((tx_tokens) => {
+        console.log(tx_tokens);
+
+        $('main[role=main]')
+        .html(app.template.index_page({
+          transactions: transactions,
+          tx_tokens: tx_tokens
+        }))
+        .find('#recent-transactions-table')
+        .DataTable({order: []}) // sort by transaction count
+        resolve();
+      })
+    })
+  )
 
 app.init_all_tokens_page = () =>
   new Promise((resolve, reject) =>
@@ -141,8 +204,7 @@ app.init_all_tokens_page = () =>
       $('main[role=main]')
         .html(app.template.all_tokens_page(data))
         .find('#tokens-table').DataTable({order: [7, 'desc']}) // sort by transaction count
-
-      $('body').removeClass('loading')
+      resolve();
     })
   )
 
@@ -150,19 +212,19 @@ app.init_tx_page = (txid) =>
   new Promise((resolve, reject) =>
     app.slpdb.query(app.slpdb.tx(txid))
     .then((data) => {
-      const tmp = (tx) => new Promise((resolve, reject) => {
-        return app.slpdb.query(app.slpdb.token(tx.tokenDetails.detail.tokenIdHex))
+      const tmp = (tx) => new Promise((resolve, reject) =>
+        app.slpdb.query(app.slpdb.token(tx.tokenDetails.detail.tokenIdHex))
         .then((data) => {
           tx['tokenDetails']['full'] = data.t[0].tokenDetails;
           $('main[role=main]').html(app.template.tx_page(tx));
 
-          $('body').removeClass('loading');
-        });
-      });
+          resolve();
+        })
+      );
 
-           if (data.u.length > 0) return tmp(data.u[0]);
-      else if (data.c.length > 0) return tmp(data.c[0]);
-      else                        return app.init_404_page();
+           if (data.u.length > 0) resolve(tmp(data.u[0]));
+      else if (data.c.length > 0) resolve(tmp(data.c[0]));
+      else                        resolve(app.init_404_page());
     })
   )
 
@@ -190,7 +252,8 @@ app.init_token_page = (tokenIdHex) =>
 
       $('#token-transactions-table').DataTable({order: []});
       $('#token-addresses-table').DataTable({order: [[1, 'desc']]}); // sort by token balance
-      $('body').removeClass('loading');
+
+      resolve();
     })
   )
 
@@ -206,30 +269,10 @@ app.init_address_page = (address) =>
       console.log(tokens);
       console.log(transactions);
 
-      let token_ids = [];
-      for (let m of transactions.c) {
-        if (m.slp) token_ids.push(m.slp.detail.tokenIdHex);
-      }
-      for (let m of transactions.u) {
-        if (m.slp) token_ids.push(m.slp.detail.tokenIdHex);
-      }
+      transactions = transactions.u.concat(transactions.c);
 
-      const chunk_size = 50;
-
-      let reqs = [];
-      for (let i=0; i<Math.ceil(token_ids.length / chunk_size); ++i) {
-        reqs.push(app.slpdb.query(
-          app.slpdb.tokens(token_ids.slice(chunk_size*i, (chunk_size*i)+chunk_size))
-        ));
-      }
-
-      return Promise.all(reqs)
-      .then((results) => {
-        let tx_tokens = [];
-        results.map(v => v.t).flat().forEach(v => {
-          tx_tokens[v.tokenDetails.tokenIdHex] = v;
-        })
-
+      app.get_tokens_from_transactions(transactions)
+      .then((tx_tokens) => {
         console.log(tx_tokens);
         console.log(transactions);
 
@@ -242,7 +285,7 @@ app.init_address_page = (address) =>
         $('#address-tokens-table').DataTable({order: []});
         $('#address-transactions-table').DataTable({order: []});
 
-        $('body').removeClass('loading');
+        resolve();
       })
     })
   )
@@ -267,6 +310,10 @@ app.router = (whash, push_history = true) => {
   switch (path) {
     case '':
     case '#':
+      document.title = 'slp-explorer';
+      method = () => app.init_index_page();
+      break;
+    case '#alltokens':
       document.title = 'All Tokens | slp-explorer';
       method = () => app.init_all_tokens_page();
       break;
@@ -289,7 +336,10 @@ app.router = (whash, push_history = true) => {
   }
 
   $('body').addClass('loading');
-  method();
+  method().then(() => {
+    console.log('done')
+    $('body').removeClass('loading');
+  });
 }
 
 $(document).ready(() => {
@@ -404,6 +454,7 @@ $(document).ready(() => {
   });
 
   const views = [
+    'index_page',
     'all_tokens_page',
     'tx_page',
     'token_page',

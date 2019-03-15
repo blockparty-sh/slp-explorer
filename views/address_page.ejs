@@ -47,7 +47,7 @@
             </tr>
           </thead>
           <tbody>
-            <% for (let o of transactions.c) { %>
+            <% for (let o of transactions) { %>
               <% /* TODO why do some transactions not have these? */ %>
               <% if (o.blk && o.slp && o.slp.detail && tx_tokens[o.slp.detail.tokenIdHex]) { %>
                 <tr>

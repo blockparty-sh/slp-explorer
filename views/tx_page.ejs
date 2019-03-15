@@ -26,7 +26,7 @@
             </tr>
             <tr>
               <th role="col">Block</th>
-              <td><%= blk.i %></td>
+              <td><% if(blk) { %><%= blk.i %><% } else { %>Unconfirmed<% } %></td>
             </tr>
             <tr>
               <th role="col">Token Id</th>
