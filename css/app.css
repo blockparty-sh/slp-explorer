@@ -188,6 +188,9 @@ h1, h2, h3, h4, h5, h6 {
                     linear-gradient(0deg,rgba(0,0,0,.26) 1px,transparent 0);
 }
 
-#main-search:focus {
-  outline:0;
+#main-search {
+  background-color: #555;
+  padding: 0.5rem;
+  color: #eee;
+  font-family: 'Raleway', serif;
 }
