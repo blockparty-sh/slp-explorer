@@ -86,6 +86,7 @@ app.slpdb = {
       "limit": tokenIdHexs.length
     }
   }),
+  // TODO filter token balances with 0
   token_addresses: (tokenIdHex, limit=100, skip=0) => ({
     "v": 3,
     "q": {
@@ -144,7 +145,7 @@ app.slpdb = {
 app.get_tokens_from_transactions = (transactions, chunk_size=50) => {
   let token_ids = [];
   for (let m of transactions) {
-    if (m.slp) token_ids.push(m.slp.detail.tokenIdHex);
+    if (m.slp && m.slp.detail) token_ids.push(m.slp.detail.tokenIdHex);
   }
   token_ids = [...new Set(token_ids)]; // make unique
 
