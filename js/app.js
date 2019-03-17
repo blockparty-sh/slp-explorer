@@ -417,19 +417,20 @@ $(document).ready(() => {
           "v": 3,
           "q": {
             "db": ["u", "c"],
-            "find": {"tx.h": search_value}
-          },
-          "limit": 1
+            "find": {"tx.h": search_value},
+            "limit": 1
+          }
         }),
         app.slpdb.query({
           "v": 3,
           "q": {
             "db": ["a"],
-            "find": {"address": search_value}
-          },
-          "limit": 1
+            "find": {"address": search_value},
+            "limit": 1
+          }
         })
       ]).then(([tokens, transactions, addresses]) => {
+          console.log(addresses);
         let sugs = [];
 
         for (let m of tokens.t) {
