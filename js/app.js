@@ -22,7 +22,7 @@ app.slpdb = {
     }
   }),
 
-  token_transaction_history: (tokenIdHex, address, limit=100, skip=0) => {
+  token_transaction_history: (tokenIdHex, address=null, limit=100, skip=0) => {
     let q = {
       "v": 3,
       "q": {
@@ -35,13 +35,10 @@ app.slpdb = {
         "sort": { "blk.i": -1 },
         "limit": limit,
         "skip": skip
-      },
-      "r": {
-        "f": "[.[] | { tx: .tx, tokenDetails: .slp, blk: .blk } ]"
       }
     };
 
-    if (typeof address !== 'undefined') {
+    if (address !== null) {
       q['q']['find']['$query']['$or'] = [
         { "in.e.a":  address },
         { "out.e.a": address }
@@ -169,6 +166,19 @@ app.get_tokens_from_transactions = (transactions, chunk_size=50) => {
   });
 };
 
+app.extract_sent_amount_from_tx = (tx) => {
+  const outer = [
+    ...new Set(tx.in.map(v => {
+      try      { return slpjs.Utils.toSlpAddress(v.e.a) }
+      catch(e) { return null; }
+  }))];
+
+  return tx.slp.detail.sendOutputs
+    .filter((e) => outer.indexOf(e.address) < 0)
+    .map(v => +v.amount)
+    .reduce((a, v) => a + v, 0);
+};
+
 app.init_404_page = () => new Promise((resolve, reject) => {
   $('main[role=main]').html(app.template.error_404_page());
   resolve();
@@ -235,8 +245,8 @@ app.init_token_page = (tokenIdHex) =>
   new Promise((resolve, reject) =>
     Promise.all([
       app.slpdb.query(app.slpdb.token(tokenIdHex)),
-      app.slpdb.query(app.slpdb.token_addresses(tokenIdHex)),
-      app.slpdb.query(app.slpdb.token_transaction_history(tokenIdHex))
+      app.slpdb.query(app.slpdb.token_addresses(tokenIdHex, 1000)),
+      app.slpdb.query(app.slpdb.token_transaction_history(tokenIdHex, null, 1000))
     ])
     .then(([token, addresses, transactions]) => {
       console.log(token);
@@ -250,7 +260,7 @@ app.init_token_page = (tokenIdHex) =>
       $('main[role=main]').html(app.template.token_page({
         token:        token.t[0],
         addresses:    addresses.a,
-        transactions: transactions
+        transactions: transactions.u.concat(transactions.c)
       }));
 
       $('#token-transactions-table').DataTable({order: []});
@@ -290,12 +300,9 @@ app.init_address_page = (address) => {
           transactions: transactions,
           tx_tokens:    tx_tokens
         }));
-        if (tokens.length > 0) {
-          $('#address-tokens-table').DataTable({order: []});
-        }
-        if (transactions.length > 0) {
-          $('#address-transactions-table').DataTable({order: []});
-        }
+
+        $('#address-tokens-table').DataTable({order: []});
+        $('#address-transactions-table').DataTable({order: []});
 
         resolve();
       })
@@ -349,6 +356,7 @@ app.router = (whash, push_history = true) => {
   }
 
   $('body').addClass('loading');
+  $('html').scrollTop(0);
   method().then(() => {
     console.log('done')
     $('body').removeClass('loading');
@@ -360,6 +368,8 @@ $(document).ready(() => {
     console.log('pop', window.location.pathname);
     app.router(window.location.pathname+window.location.hash, false);
   });
+
+  $('#header-nav form').submit(false);
 
   $('#main-search').autocomplete({
     groupBy: 'category',

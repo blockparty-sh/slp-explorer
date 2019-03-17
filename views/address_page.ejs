@@ -2,6 +2,9 @@
   <div class="lh-100">
     <h2 class="mb-0 text-white lh-100">Address</h2>
     <h6 class="mb-0"><%= address %></h6>
+    <a href="https://explorer.bitcoin.com/bch/address/<%= address %>">
+      <button type="button" class="btn btn-raised btn-success special-layover-btn">View on BCH Explorer</button>
+    </a>
   </div>
 </div>
 <div class="row">
@@ -47,24 +50,31 @@
             <thead>
               <tr>
                 <th>Block</th>
-                <th>Name</th>
-                <th>Symbol</th>
                 <th>Txid</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Symbol</th>
                 <th>Token Id</th>
               </tr>
             </thead>
             <tbody>
-              <% for (let o of transactions) { %>
-                <% /* TODO why do some transactions not have these? */ %>
-                <% if (o.blk && o.slp && o.slp.detail && tx_tokens[o.slp.detail.tokenIdHex]) { %>
-                  <tr>
-                    <td><%= o.blk.i %></td>
-                    <td><%= tx_tokens[o.slp.detail.tokenIdHex].tokenDetails.name %></td>
-                    <td><%= tx_tokens[o.slp.detail.tokenIdHex].tokenDetails.symbol %></td>
-                    <td><a href="/#tx/<%= o.tx.h %>"><i class="material-icons">exit_to_app</a></td>
-                    <td><span class="mono"><a href="/#token/<%= o.slp.detail.tokenIdHex %>"><%= o.slp.detail.tokenIdHex %></span></td>
-                  </tr>
-                <% } else { console.error(o) } %>
+              <% for (let o of transactions) { console.log(tx_tokens[o.slp.detail.tokenIdHex]); %>
+                <tr>
+                  <td><% if (o.blk) { %><%= o.blk.i %><% } %></td>
+                  <td><a href="/#tx/<%= o.tx.h %>"><i class="material-icons">exit_to_app</a></td>
+                  <td><%= o.slp.detail.transactionType %></td>
+                  <td>
+                    <% if (o.slp.detail.transactionType === 'SEND') { %>
+                      <%= app.extract_sent_amount_from_tx(o) %>
+                    <% } %>
+                    <% if (o.slp.detail.transactionType === 'GENESIS'
+                        || o.slp.detail.transactionType === 'MINT') { %>
+                      <%= o.slp.detail.genesisOrMintQuantity.amount %>
+                    <% } %>
+                  </td>
+                  <td><% if (tx_tokens.hasOwnProperty(o.slp.detail)) { %><%= tx_tokens[o.slp.detail.tokenIdHex].tokenDetails.symbol %><% } %></td>
+                  <td><span class="mono"><a href="/#token/<%= o.slp.detail.tokenIdHex %>"><%= o.slp.detail.tokenIdHex %></span></td>
+                </tr>
               <% } %>
             </tbody>
           </table>

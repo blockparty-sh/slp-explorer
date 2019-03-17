@@ -194,3 +194,17 @@ h1, h2, h3, h4, h5, h6 {
   color: #eee;
   font-family: 'Raleway', serif;
 }
+
+.special-layover-btn {
+  position:absolute;
+  right: 2rem;
+  z-index:1;
+}
+
+#header-nav {
+  z-index:2;
+}
+
+.word-break-all {
+  word-break: break-all;
+}

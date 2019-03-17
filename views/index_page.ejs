@@ -1,5 +1,5 @@
 <div class="jumbotron pb-2">
-  <h1 class="display-4">Welcome to SLP Explorer</h1>
+  <h1 class="display-4">Welcome to SLP Explorer (alpha)</h1>
   <p class="lead">View <a href="https://simpleledger.cash/">Simple Ledger Protocol</a> tokens and track their usage across the <a href="https://www.bitcoincash.org/">Bitcoin Cash</a> blockchain.</p>
   <hr class="my-4">
   <p>Uses <a href="https://github.com/simpleledger/SLPDB">SLPDB</a> as the backend. View the code and report bugs on <a href="https://github.com/blockparty-sh/slp-explorer">Github</a>.</p>
@@ -11,30 +11,45 @@
   <div class="col-md">
     <div id="recent-transactions-table-container" class="my-3 p-3 bg-white rounded box-shadow table-container">
       <h3 class="border-bottom border-gray pb-1 mb-3">Recent Transactions</h3>
-      <div class="table-responsive">
-        <table class="table" id="recent-transactions-table">
-          <thead>
-            <tr>
-              <th>Txid</th>
-              <th>Symbol</th>
-              <th>Type</th>
-              <th>Block Height</th>
-              <th>Block Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% for (let o of transactions) { %>
+
+      <% if (transactions.length === 0) { %>
+          <h6>No recent transactions... is the SLPDB endpoint working?</h6></h6>
+      <% } else { %>
+        <div class="table-responsive">
+          <table class="table" id="recent-transactions-table">
+            <thead>
               <tr>
-                <td><span class="mono"><a href="/#tx/<%= o.tx.h %>"><%= o.tx.h %></a></span></td>
-                <td><a href="#token/<%= o.slp.detail.tokenIdHex %>"><%= tx_tokens[o.slp.detail.tokenIdHex].tokenDetails.symbol %></a></td>
-                <td><%= o.slp.detail.transactionType %></td>
-                <td><% if (o.blk) { %><%= o.blk.i %><% } else { %>Unconfirmed<% } %></td>
-                <td class="nowrap"><% if (o.blk) { %><%= new Date(o.blk.t*1000).toLocaleString() %><% } %></td>
+                <th>Txid</th>
+                <th>Symbol</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Block Height</th>
+                <th>Block Time</th>
               </tr>
-            <% } %>
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              <% for (let o of transactions) { %>
+                <tr>
+                  <td><span class="mono"><a href="/#tx/<%= o.tx.h %>"><%= o.tx.h %></a></span></td>
+                  <td><a href="#token/<%= o.slp.detail.tokenIdHex %>"><%= tx_tokens[o.slp.detail.tokenIdHex].tokenDetails.symbol %></a></td>
+                  <td><%= o.slp.detail.transactionType %></td>
+                  <td>
+                    <% if (o.slp.detail.transactionType === 'SEND') { %>
+                      <%= app.extract_sent_amount_from_tx(o) %>
+                    <% } %>
+                    <% if (o.slp.detail.transactionType === 'GENESIS'
+                        || o.slp.detail.transactionType === 'MINT') { %>
+                      <%= o.slp.detail.genesisOrMintQuantity.amount %>
+                    <% } %>
+                  </td>
+                  <td><% if (o.blk) { %><%= o.blk.i %><% } else { %>Unconfirmed<% } %></td>
+                  <td class="nowrap"><% if (o.blk) { %><%= new Date(o.blk.t*1000).toLocaleString() %><% } %></td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
     </div>
   </div>
 </div>
