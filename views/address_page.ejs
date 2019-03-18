@@ -2,8 +2,11 @@
   <div class="lh-100">
     <h2 class="mb-0 text-white lh-100">Address</h2>
     <h6 class="mb-0"><%= address %></h6>
+    <a href="#addressgraph/<%= address %>">
+      <button type="button" class="btn btn-raised btn-warning mt-3">View AddressGraph</button>
+    </a>
     <a href="https://explorer.bitcoin.com/bch/address/<%= address %>">
-      <button type="button" class="btn btn-raised btn-success special-layover-btn">View on BCH Explorer</button>
+      <button type="button" class="btn btn-raised btn-success mt-3 special-layover-btn">View on BCH Explorer</button>
     </a>
   </div>
 </div>

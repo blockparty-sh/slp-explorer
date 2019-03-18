@@ -138,7 +138,9 @@ table,
 }
 
 .page-header {
-    background-color: #338cd3;
+    background: rgb(0,141,205);
+    background: linear-gradient(90deg, rgba(0,141,205,1) 28%, rgba(0,121,205,1) 95%);
+
 }
 
 h1, h2, h3, h4, h5, h6 {

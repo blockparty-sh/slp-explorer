@@ -59,9 +59,9 @@ app.slpdb = {
       },
       "sort": { "blk.i": -1 }
     },
-    "r": {
+    /*"r": {
       "f": "[.[] | { outputs: .out, inputs: .in, tokenDetails: .slp, blk: .blk, tx: .tx } ]"
-    }
+    }*/
   }),
 
   token: (tokenIdHex) => ({
@@ -112,21 +112,30 @@ app.slpdb = {
       "skip": skip
     }
   }),
-  transactions_by_cash_address: (address, limit=100, skip=0) => ({
-    "v": 3,
-    "q": {
-      "db": ["c", "u"],
-      "find": {
-        "$or": [
-          { "in.e.a":  address },
-          { "out.e.a": address }
-        ]
-      },
-      "sort": { "blk.i": -1 },
-      "limit": limit,
-      "skip": skip
+  transactions_by_slp_address: (address, limit=100, skip=0) => {
+    let cash_address = address;
+    try {
+      cash_address = slpjs.Utils.toCashAddress(address).split(':')[1];
+    } catch (e) {
+      return app.init_404_page();
     }
-  }),
+
+    return {
+      "v": 3,
+      "q": {
+        "db": ["c", "u"],
+        "find": {
+          "$or": [
+            { "in.e.a":  cash_address },
+            { "out.e.a": cash_address }
+          ]
+        },
+        "sort": { "blk.i": -1 },
+        "limit": limit,
+        "skip": skip
+      }
+    };
+  },
   tokens_by_slp_address: (address, limit=100, skip=0) => ({
     "v": 3,
     "q": {
@@ -190,6 +199,233 @@ app.extract_sent_amount_from_tx = (tx) => {
     .reduce((a, v) => a + v, 0);
 };
 
+app.create_cytoscape_context = (selector='.graph_container') => {
+  let cy = cytoscape({
+    container: $(selector),
+    style: [
+    {
+      selector: "node",
+      style: {
+        "width": 10,
+        "height": 10,
+        "background-color": "transparent",
+        "border-color": "data(color)",
+        "border-width": 2,
+        "padding": "data(padding)",
+        "shape": "data(type)",
+        "text-wrap": "wrap",
+        "text-rotation": "-20deg",
+        "font-size": 2,
+        "text-halign": "right",
+        "color": "rgba(0,0,0,0.5)",
+        "label": "data(val)"
+      }
+    },
+    {
+      selector: ":selected",
+      style: {
+        "padding": 5,
+        "background-color": "transparent",
+        "border-color": app.cytoscape_select_color,
+        "border-width": 4,
+      }
+    },
+    {
+      selector: "edge",
+      style: {
+        "width": 1,
+        "label": "data(val)",
+        "text-wrap": "wrap",
+        "text-halign": "right",
+        "font-size": 2,
+        "line-color": "data(color)",
+        "target-arrow-color": "data(color)",
+        "text-background-opacity": 1,
+        "text-background-color": "data(color)",
+        "text-border-color": "data(color)",
+        "text-border-width": 5,
+        "text-border-style": "solid",
+        "color": "white",
+        "text-border-color": "data(color)",
+        "text-rotation": "-20deg",
+        "text-border-width": 5,
+        "curve-style": "bezier",
+        "target-arrow-shape": "triangle"
+      }
+    }],
+    layout: {
+      name: 'klay',
+      animate: true
+    }
+  });
+
+  cy.once('render', (e) => {
+    cy.on('tap', (e) => {
+      const tdata = e.target.json();
+
+      if (tdata.data) switch(tdata.data.kind) {
+        case 'tx':
+          app.slpdb.query(app.slpdb.tx(tdata.data.id))
+          .then((tx) => {
+            let transactions = tx.u.concat(tx.c);
+            console.log(transactions);
+
+            app.get_tokens_from_transactions(transactions)
+            .then((tx_tokens) => {
+              console.log(tx_tokens);
+
+              cy.json({ elements: app.cytoscape_multitoken(tx_tokens, transactions) })
+                .layout({ name: 'klay', animate: true })
+                .run()
+            });
+          });
+
+          break;
+        case 'address':
+          app.slpdb.query(app.slpdb.transactions_by_slp_address(tdata.data.id, 1000))
+          .then((transactions) => {
+            transactions = transactions.u.concat(transactions.c);
+
+            app.get_tokens_from_transactions(transactions)
+            .then((tx_tokens) => {
+              console.log(tx_tokens);
+
+              cy.json({ elements: app.cytoscape_multitoken(tx_tokens, transactions) })
+                .layout({ name: 'klay', animate: true })
+                .run()
+            });
+          });
+
+          break;
+      }
+    });
+  });
+
+  return cy;
+}
+
+app.cytoscape_txin_color   = "#DE35E9";
+app.cytoscape_txout_color  = "#35C1E9";
+app.cytoscape_select_color = "#E9358F";
+
+
+app.cytoscape_singletoken = (token, transactions) => {
+  let items     = [];
+  let addresses = [];
+
+  for (let o of transactions) {
+    items.push({ data: {
+      id:      o.tx.h,
+      color:   "#333",
+      type:    "diamond",
+      kind:    "tx",
+      val:     o.tx.h,
+      padding: 0
+    }});
+
+    for (let m of o.in) {
+      const slp_addr = slpjs.Utils.toSlpAddress(m.e.a);
+      addresses.push(slp_addr);
+
+      items.push({ data: {
+        id:      m.e.a + "/" + o.tx.h + "/in",
+        source:  o.tx.h,
+        target:  slp_addr,
+        color:   app.cytoscape_txin_color,
+        kind:    "txin",
+        val:     '',
+        padding: 0
+      }});
+    }
+
+    if (o.slp.detail.sendOutputs) for (let m of o.slp.detail.sendOutputs) {
+      addresses.push(m.address);
+
+      items.push({ data: {
+        id:      m.address + "/" + o.tx.h + "/out",
+        source:  m.address,
+        target:  o.tx.h,
+        color:   app.cytoscape_txout_color,
+        kind:    "txout",
+        val:     m.amount + " " + token.tokenDetails.symbol,
+        padding: 0
+      }});
+    }
+  }
+
+  [...new Set(addresses)].forEach(v => {
+    items.push({ data: {
+      id:    v,
+      color: "#AAA",
+      type: "square",
+      kind:  "address",
+      val:   v,
+      padding: 0
+    }});
+  });
+
+  return items;
+};
+
+app.cytoscape_multitoken = (tx_tokens, transactions) => {
+  let items     = [];
+  let addresses = [];
+
+  for (let o of transactions) {
+    items.push({ data: {
+      id:      o.tx.h,
+      color:   "#333",
+      type:    "diamond",
+      kind:    "tx",
+      val:     o.tx.h,
+      padding: 0
+    }});
+
+    for (let m of o.in) {
+      const slp_addr = slpjs.Utils.toSlpAddress(m.e.a);
+      addresses.push(slp_addr);
+
+      items.push({ data: {
+        id:      m.e.a + "/" + o.tx.h + "/in",
+        source:  o.tx.h,
+        target:  slp_addr,
+        color:   app.cytoscape_txin_color,
+        kind:    "txin",
+        val:     '',
+        padding: 0
+      }});
+    }
+
+    if (o.slp.detail.sendOutputs) for (let m of o.slp.detail.sendOutputs) {
+      addresses.push(m.address);
+
+      items.push({ data: {
+        id:      m.address + "/" + o.tx.h + "/out",
+        source:  m.address,
+        target:  o.tx.h,
+        color:   app.cytoscape_txout_color,
+        kind:    "txout",
+        val:     m.amount + " " + tx_tokens[o.slp.detail.tokenIdHex].tokenDetails.symbol,
+        padding: 0
+      }});
+    }
+  }
+
+  [...new Set(addresses)].forEach(v => {
+    items.push({ data: {
+      id:    v,
+      color: "#AAA",
+      type: "square",
+      kind:  "address",
+      val:   v,
+      padding: 0
+    }});
+  });
+
+  return items;
+};
+
+
 app.init_404_page = () => new Promise((resolve, reject) => {
   $('main[role=main]').html(app.template.error_404_page());
   resolve();
@@ -213,6 +449,7 @@ app.init_index_page = () =>
         }))
         .find('#recent-transactions-table')
         .DataTable({order: []}) // sort by transaction count
+
         resolve();
       })
     })
@@ -232,23 +469,24 @@ app.init_all_tokens_page = () =>
 app.init_tx_page = (txid) =>
   new Promise((resolve, reject) =>
     app.slpdb.query(app.slpdb.tx(txid))
-    .then((data) => {
-      const tmp = (tx) => new Promise((resolve, reject) =>
-        app.slpdb.query(app.slpdb.token(tx.tokenDetails.detail.tokenIdHex))
-        .then((data) => {
-          console.log(tx);
-          $('main[role=main]').html(app.template.tx_page({
-            tx:    tx,
-            token: data.t[0]
-          }));
+    .then((tx) => {
+      tx = tx.u.concat(tx.c);
+      if (tx.length == 0) {
+        return app.init_404_page();
+      }
 
-          resolve();
-        })
-      );
+      tx = tx[0];
 
-           if (data.u.length > 0) resolve(tmp(data.u[0]));
-      else if (data.c.length > 0) resolve(tmp(data.c[0]));
-      else                        resolve(app.init_404_page());
+      app.slpdb.query(app.slpdb.token(tx.slp.detail.tokenIdHex))
+      .then((token) => {
+        console.log(tx);
+        $('main[role=main]').html(app.template.tx_page({
+          tx:    tx,
+          token: token.t[0]
+        }));
+
+        resolve();
+      });
     })
   )
 
@@ -256,138 +494,90 @@ app.init_tokengraph_page = (tokenIdHex) =>
   new Promise((resolve, reject) => 
     Promise.all([
       app.slpdb.query(app.slpdb.token(tokenIdHex)),
-      app.slpdb.query(app.slpdb.tokengraph(tokenIdHex))
-    ]).then(([token, graph]) => {
+      app.slpdb.query(app.slpdb.tokengraph(tokenIdHex)),
+      app.slpdb.query(app.slpdb.token_transaction_history(tokenIdHex, null, 1000)),
+    ]).then(([token, graph, transactions]) => {
       if (token.t.length === 0) {
         return resolve(app.init_404_page());
       }
-      console.log(graph.g);
-      let items = [];
+      transactions = transactions.u.concat(transactions.c);
+      token = token.t[0];
 
-      let addresses = [];
-
-      for (let g of graph.g) {
-        items.push({ data: {
-          id:    g.graphTxn.txid,
-          color: "#333",
-          type: "diamond",
-          kind:  "tx",
-          val:   g.graphTxn.txid,
-          padding: 0
-        }});
-
-
-        for (let e of g.graphTxn.outputs) {
-          // addresses.push(e.address);
-
-          /*
-          items.push({ data: {
-            source: g.graphTxn.txid,
-            target: e.address,
-            color: "#F0320C",
-            val:   e.slpAmount + " " + g.tokenDetails.symbol,
-            padding: 0
-          }});*/
-
-          if (e.status === 'SPENT_SAME_TOKEN') {
-            items.push({ data: {
-              id:     g.graphTxn.txid + "|" + e.spendTxid,
-              source: g.graphTxn.txid,
-              target: e.spendTxid,
-              color: "#9ACD32",
-              val:   e.slpAmount + " " + g.tokenDetails.symbol,
-              padding: 4
-            }});
-          }
-        }
-      }
-      /*[...new Set(addresses)].forEach(v => {
-        items.push({ data: {
-          id:    v,
-          color: "#AAA",
-          type: "square",
-          kind:  "address",
-          val:   v,
-          padding: 0
-        }});
-      });*/
-
-      console.log(items);
       $('main[role=main]').html(app.template.tokengraph_page({
-        token: token.t[0]
+        token: token
       }));
 
-      var cy = cytoscape({
-        container: $('.graph_container'),
-        elements: items,
-        style: [
-        {
-          selector: "node",
-          style: {
-            "width": 10,
-            "height": 10,
-            "background-color": "transparent",
-            "border-color": "data(color)",
-            "border-width": 2,
-            "padding": "data(padding)",
-            "shape": "data(type)",
-            "text-wrap": "wrap",
-            "text-rotation": "-20deg",
-            "font-size": 2,
-            "text-halign": "right",
-            "color": "rgba(0,0,0,0.5)",
-            "label": "data(val)"
-          }
-        },
-        {
-          selector: ":selected",
-          style: {
-            "padding": 5,
-            "background-color": "transparent",
-            "border-color": "gold",
-            "border-width": 4,
-          }
-        },
-        {
-          selector: "edge",
-          style: {
-            "width": 1,
-            "label": "data(val)",
-            "text-wrap": "wrap",
-            "text-halign": "right",
-            "font-size": 2,
-            "line-color": "data(color)",
-            "target-arrow-color": "data(color)",
-            "text-background-opacity": 1,
-            "text-background-color": "data(color)",
-            "text-border-color": "data(color)",
-            "text-border-width": 5,
-            "text-border-style": "solid",
-            "color": "white",
-            "text-border-color": "data(color)",
-            "text-rotation": "-20deg",
-            "text-border-width": 5,
-            "curve-style": "bezier",
-            "target-arrow-shape": "triangle"
-          }
-        }],
-        layout: {
-          name: 'klay',
-          animate: true
-        }
-      });
-      cy.once('render', (e) => {
-        cy.on('tap', (e) => {
-          const tdata = e.target.json();
-          if (tdata.data.kind === 'tx') {
-            console.log('tx', tdata);
-          }
-        });
-      })
+      const reload = () => {
+        cy.json({ elements: app.cytoscape_singletoken(token, transactions) })
+          .layout({ name: 'klay', animate: true })
+          .run()
+      };
+
+      $('#reset-button').click(reload);
+
+      let cy = app.create_cytoscape_context();
+      reload();
 
       resolve();
     })
   )
+
+app.init_addressgraph_page = (address) =>
+  app.slpdb.query(app.slpdb.transactions_by_slp_address(address, 1000))
+  .then((transactions) => {
+    transactions = transactions.u.concat(transactions.c);
+
+    return app.get_tokens_from_transactions(transactions)
+    .then((tx_tokens) => {
+      console.log(tx_tokens);
+
+      $('main[role=main]').html(app.template.addressgraph_page({
+        address: address
+      }));
+
+      const reload = () => {
+        cy.json({ elements: app.cytoscape_multitoken(tx_tokens, transactions) })
+          .layout({ name: 'klay', animate: true })
+          .run()
+      };
+
+      $('#reset-button').click(reload);
+
+      let cy = app.create_cytoscape_context();
+      reload();
+    })
+  })
+
+app.init_txgraph_page = (txid) =>
+  app.slpdb.query(app.slpdb.tx(txid))
+  .then((tx) => {
+    let transactions = tx.u.concat(tx.c);
+    console.log('TX TX', transactions);
+
+    if (transactions.length === 0) {
+      return app.init_404_page();
+    }
+
+    app.get_tokens_from_transactions(transactions)
+    .then((tx_tokens) => {
+      console.log(tx_tokens);
+
+      $('main[role=main]').html(app.template.txgraph_page({
+        tx: transactions[0]
+      }));
+
+      const reload = () => {
+        cy.json({ elements: app.cytoscape_multitoken(tx_tokens, transactions) })
+          .layout({ name: 'klay', animate: true })
+          .run()
+      };
+
+      $('#reset-button').click(reload);
+
+      let cy = app.create_cytoscape_context();
+      reload();
+    });
+  })
 
 app.init_token_page = (tokenIdHex) =>
   new Promise((resolve, reject) =>
@@ -419,18 +609,11 @@ app.init_token_page = (tokenIdHex) =>
   )
 
 
-app.init_address_page = (address) => {
-  let cash_address = address;
-  try {
-    cash_address = slpjs.Utils.toCashAddress(address).split(':')[1];
-  } catch (e) {
-    return app.init_404_page();
-  }
-
-  return new Promise((resolve, reject) =>
+app.init_address_page = (address) =>
+  new Promise((resolve, reject) =>
     Promise.all([
       app.slpdb.query(app.slpdb.tokens_by_slp_address(address, 1000)),
-      app.slpdb.query(app.slpdb.transactions_by_cash_address(cash_address, 1000))
+      app.slpdb.query(app.slpdb.transactions_by_slp_address(address, 1000))
     ]).then(([tokens, transactions]) => {
       console.log(tokens);
       console.log(transactions);
@@ -456,7 +639,6 @@ app.init_address_page = (address) => {
       })
     })
   )
-}
 
 app.router = (whash, push_history = true) => {
   if (! whash) {
@@ -488,10 +670,6 @@ app.router = (whash, push_history = true) => {
       document.title = 'Tx(' + key + ') | slp-explorer';
       method = () => app.init_tx_page(key);
       break;
-    case '#tokengraph':
-      document.title = 'Tokengraph(' + key + ') | slp-explorer';
-      method = () => app.init_tokengraph_page(key);
-      break;
     case '#token':
       document.title = 'Token(' + key + ') | slp-explorer';
       method = () => app.init_token_page(key);
@@ -499,6 +677,18 @@ app.router = (whash, push_history = true) => {
     case '#address':
       document.title = 'Address(' + key + ') | slp-explorer';
       method = () => app.init_address_page(key);
+      break;
+    case '#tokengraph':
+      document.title = 'TokenGraph(' + key + ') | slp-explorer';
+      method = () => app.init_tokengraph_page(key);
+      break;
+    case '#addressgraph':
+      document.title = 'AddressGraph(' + key + ') | slp-explorer';
+      method = () => app.init_addressgraph_page(key);
+      break;
+    case '#txgraph':
+      document.title = 'TxGraph(' + key + ') | slp-explorer';
+      method = () => app.init_txgraph_page(key);
       break;
     default:
       document.title = '404 | slp-explorer';
@@ -633,9 +823,11 @@ $(document).ready(() => {
     'index_page',
     'all_tokens_page',
     'tx_page',
-    'tokengraph_page',
     'token_page',
     'address_page',
+    'tokengraph_page',
+    'addressgraph_page',
+    'txgraph_page',
     'error_404_page',
   ];
 
