@@ -168,7 +168,7 @@
                   <% } %>
                   <% if (o.slp.detail.transactionType === 'GENESIS'
                       || o.slp.detail.transactionType === 'MINT') { %>
-                    <%= o.slp.detail.genesisOrMintQuantity.amount %>
+                    <%= o.slp.detail.outputs[0].amount %>
                   <% } %>
                 </td>
                 <td><% if (o.blk) { %><%= o.blk.i %><% } else { %>Unconfirmed<% } %></td>

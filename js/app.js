@@ -193,7 +193,7 @@ app.extract_sent_amount_from_tx = (tx) => {
       catch(e) { return null; }
   }))];
 
-  return tx.slp.detail.sendOutputs
+  return tx.slp.detail.outputs
     .filter((e) => outer.indexOf(e.address) < 0)
     .map(v => +v.amount)
     .reduce((a, v) => a + v, 0);
@@ -265,6 +265,7 @@ app.create_cytoscape_context = (selector='.graph_container') => {
 
       if (tdata.data) switch(tdata.data.kind) {
         case 'tx':
+          // TODO load tokengraph if type is genesis
           app.slpdb.query(app.slpdb.tx(tdata.data.id))
           .then((tx) => {
             let transactions = tx.u.concat(tx.c);
@@ -313,12 +314,16 @@ app.cytoscape_txout_color  = "#35C1E9";
 app.cytoscape_select_color = "#E9358F";
 
 
-app.cytoscape_extract_graph = (tx_tokens, transactions, prune=true) => {
+app.cytoscape_extract_graph = (tx_tokens, transactions, prune=false) => {
   let items     = [];
   let addresses = new Set();
   let addresses_out = new Set();
 
   for (let o of transactions) {
+    if (! o.slp) {
+      continue;
+    }
+
     let tcolor = "#333";
     let ttype = "diamond";
 
@@ -357,20 +362,20 @@ app.cytoscape_extract_graph = (tx_tokens, transactions, prune=true) => {
 
     if (o.slp.detail.transactionType === 'GENESIS' || o.slp.detail.transactionType === 'MINT') {
       console.log('genesis', o);
-      addresses.add(o.slp.detail.genesisOrMintQuantity.address);
-      addresses_out.add(o.slp.detail.genesisOrMintQuantity.address);
+      addresses.add(o.slp.detail.outputs[0].address);
+      addresses_out.add(o.slp.detail.outputs[0].address);
 
       items.push({ data: {
-        id:      o.slp.detail.genesisOrMintQuantity.address + "/" + o.tx.h + "/out",
+        id:      o.slp.detail.outputs[0].address + "/" + o.tx.h + "/out",
         source:  o.tx.h,
-        target:  o.slp.detail.genesisOrMintQuantity.address,
+        target:  o.slp.detail.outputs[0].address,
         color:   app.cytoscape_txout_color,
         kind:    "txout",
-        val:     o.slp.detail.genesisOrMintQuantity.amount + " " + tx_tokens[o.slp.detail.tokenIdHex].tokenDetails.symbol,
+        val:     o.slp.detail.outputs[0].amount + " " + tx_tokens[o.slp.detail.tokenIdHex].tokenDetails.symbol,
         padding: 0
       }});
     } else if (o.slp.detail.transactionType === 'SEND') {
-      for (let m of o.slp.detail.sendOutputs) {
+      for (let m of o.slp.detail.outputs) {
         addresses.add(m.address);
         addresses_out.add(m.address);
 
@@ -497,7 +502,7 @@ app.init_tokengraph_page = (tokenIdHex) =>
       }));
 
       const reload = () => {
-        cy.json({ elements: app.cytoscape_extract_graph({[token.tokenDetails.tokenIdHex]: token}, transactions) })
+        cy.json({ elements: app.cytoscape_extract_graph({[token.tokenDetails.tokenIdHex]: token}, transactions) }, true)
           .layout({ name: 'klay', animate: true })
           .run()
       };
@@ -562,7 +567,7 @@ app.init_txgraph_page = (txid) =>
       }));
 
       const reload = () => {
-        cy.json({ elements: app.cytoscape_extract_graph(tx_tokens, transactions, false) })
+        cy.json({ elements: app.cytoscape_extract_graph(tx_tokens, transactions) })
           .layout({ name: 'klay', animate: true })
           .run()
       };

@@ -136,7 +136,7 @@
               </tr>
             </thead>
             <tbody>
-              <% for (let m of tx.slp.detail.sendOutputs) { console.log(m); %>
+              <% for (let m of tx.slp.detail.outputs) { console.log(m); %>
                 <tr>
                   <td><%= m.amount %></td>
                   <td><a href="/#address/<%= m.address %>"><%= m.address %></a></td>
