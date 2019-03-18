@@ -38,7 +38,7 @@
             <% if (tx.slp.detail.transactionType == 'GENESIS') { %>
               <tr>
                 <th role="col">Creator</th>
-                <td><span class="mono"><a href="#address/<%= tx.slp.detail.genesisOrMintQuantity.address %>"><%= tx.slp.detail.genesisOrMintQuantity.address %></a></span></td>
+                <td><span class="mono"><a href="#address/<%= tx.slp.detail.outputs[0].address %>"><%= tx.slp.detail.outputs[0].address %></a></span></td>
               </tr>
             <% } %>
           </tbody>
