@@ -79,7 +79,17 @@
                       <%= o.slp.detail.genesisOrMintQuantity.amount %>
                     <% } %>
                   </td>
-                  <td><% if (tx_tokens.hasOwnProperty(o.slp.detail.tokenIdHex)) { %><%= tx_tokens[o.slp.detail.tokenIdHex].tokenDetails.symbol %><% } else {%><span class="mono">[none]</span><% } %></td>
+                  <td>
+                    <% if (tx_tokens.hasOwnProperty(o.slp.detail.tokenIdHex)) { %>
+                      <% if (tx_tokens[o.slp.detail.tokenIdHex].tokenDetails.symbol.length > 0) { %>
+                        <%= tx_tokens[o.slp.detail.tokenIdHex].tokenDetails.symbol %>
+                      <% } else { %>
+                        <span class="mono">[none]</span>
+                      <% } %>
+                    <% } else {%>
+                      <span class="mono">[not found]</span>
+                    <% } %>
+                  </td>
                   <td><span class="mono"><a href="/#token/<%= o.slp.detail.tokenIdHex %>"><%= o.slp.detail.tokenIdHex %></span></td>
                 </tr>
               <% } %>
