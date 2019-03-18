@@ -139,6 +139,16 @@ app.slpdb = {
       "skip": skip
     }
   }),
+  tokengraph: (tokenIdHex, limit=10000, skip=0) => ({
+    "v": 3,
+    "q": {
+      "db": ["g"],
+      "find": {
+        "tokenDetails.tokenIdHex": tokenIdHex,
+      },
+      "limit": 10000
+    }
+  }),
 };
 
 
@@ -242,6 +252,143 @@ app.init_tx_page = (txid) =>
     })
   )
 
+app.init_tokengraph_page = (tokenIdHex) =>
+  new Promise((resolve, reject) => 
+    Promise.all([
+      app.slpdb.query(app.slpdb.token(tokenIdHex)),
+      app.slpdb.query(app.slpdb.tokengraph(tokenIdHex))
+    ]).then(([token, graph]) => {
+      if (token.t.length === 0) {
+        return resolve(app.init_404_page());
+      }
+      console.log(graph.g);
+      let items = [];
+
+      let addresses = [];
+
+      for (let g of graph.g) {
+        items.push({ data: {
+          id:    g.graphTxn.txid,
+          color: "#333",
+          type: "diamond",
+          kind:  "tx",
+          val:   g.graphTxn.txid,
+          padding: 0
+        }});
+
+
+        for (let e of g.graphTxn.outputs) {
+          // addresses.push(e.address);
+
+          /*
+          items.push({ data: {
+            source: g.graphTxn.txid,
+            target: e.address,
+            color: "#F0320C",
+            val:   e.slpAmount + " " + g.tokenDetails.symbol,
+            padding: 0
+          }});*/
+
+          if (e.status === 'SPENT_SAME_TOKEN') {
+            items.push({ data: {
+              id:     g.graphTxn.txid + "|" + e.spendTxid,
+              source: g.graphTxn.txid,
+              target: e.spendTxid,
+              color: "#9ACD32",
+              val:   e.slpAmount + " " + g.tokenDetails.symbol,
+              padding: 4
+            }});
+          }
+        }
+      }
+      /*[...new Set(addresses)].forEach(v => {
+        items.push({ data: {
+          id:    v,
+          color: "#AAA",
+          type: "square",
+          kind:  "address",
+          val:   v,
+          padding: 0
+        }});
+      });*/
+
+      console.log(items);
+      $('main[role=main]').html(app.template.tokengraph_page({
+        token: token.t[0]
+      }));
+
+      var cy = cytoscape({
+        container: $('.graph_container'),
+        elements: items,
+        style: [
+        {
+          selector: "node",
+          style: {
+            "width": 10,
+            "height": 10,
+            "background-color": "transparent",
+            "border-color": "data(color)",
+            "border-width": 2,
+            "padding": "data(padding)",
+            "shape": "data(type)",
+            "text-wrap": "wrap",
+            "text-rotation": "-20deg",
+            "font-size": 2,
+            "text-halign": "right",
+            "color": "rgba(0,0,0,0.5)",
+            "label": "data(val)"
+          }
+        },
+        {
+          selector: ":selected",
+          style: {
+            "padding": 5,
+            "background-color": "transparent",
+            "border-color": "gold",
+            "border-width": 4,
+          }
+        },
+        {
+          selector: "edge",
+          style: {
+            "width": 1,
+            "label": "data(val)",
+            "text-wrap": "wrap",
+            "text-halign": "right",
+            "font-size": 2,
+            "line-color": "data(color)",
+            "target-arrow-color": "data(color)",
+            "text-background-opacity": 1,
+            "text-background-color": "data(color)",
+            "text-border-color": "data(color)",
+            "text-border-width": 5,
+            "text-border-style": "solid",
+            "color": "white",
+            "text-border-color": "data(color)",
+            "text-rotation": "-20deg",
+            "text-border-width": 5,
+            "curve-style": "bezier",
+            "target-arrow-shape": "triangle"
+          }
+        }],
+        layout: {
+          name: 'klay',
+          animate: true
+        }
+      });
+      cy.once('render', (e) => {
+        cy.on('tap', (e) => {
+          const tdata = e.target.json();
+          if (tdata.data.kind === 'tx') {
+            console.log('tx', tdata);
+          }
+        });
+      })
+
+      resolve();
+    })
+  )
+
 app.init_token_page = (tokenIdHex) =>
   new Promise((resolve, reject) =>
     Promise.all([
@@ -340,6 +487,10 @@ app.router = (whash, push_history = true) => {
     case '#tx':
       document.title = 'Tx(' + key + ') | slp-explorer';
       method = () => app.init_tx_page(key);
+      break;
+    case '#tokengraph':
+      document.title = 'Tokengraph(' + key + ') | slp-explorer';
+      method = () => app.init_tokengraph_page(key);
       break;
     case '#token':
       document.title = 'Token(' + key + ') | slp-explorer';
@@ -482,6 +633,7 @@ $(document).ready(() => {
     'index_page',
     'all_tokens_page',
     'tx_page',
+    'tokengraph_page',
     'token_page',
     'address_page',
     'error_404_page',
