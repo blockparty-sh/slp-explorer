@@ -387,8 +387,8 @@ app.cytoscape_multitoken = (tx_tokens, transactions) => {
 
       items.push({ data: {
         id:      m.e.a + "/" + o.tx.h + "/in",
-        source:  o.tx.h,
-        target:  slp_addr,
+        source:  slp_addr,
+        target:  o.tx.h,
         color:   app.cytoscape_txin_color,
         kind:    "txin",
         val:     '',
@@ -401,8 +401,8 @@ app.cytoscape_multitoken = (tx_tokens, transactions) => {
 
       items.push({ data: {
         id:      m.address + "/" + o.tx.h + "/out",
-        source:  m.address,
-        target:  o.tx.h,
+        source:  o.tx.h,
+        target:  m.address,
         color:   app.cytoscape_txout_color,
         kind:    "txout",
         val:     m.amount + " " + tx_tokens[o.slp.detail.tokenIdHex].tokenDetails.symbol,
