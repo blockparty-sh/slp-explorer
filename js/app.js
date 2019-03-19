@@ -100,9 +100,7 @@ app.slpdb = {
     "q": {
       "db": ["c", "u"],
       "find": {
-        "slp": {
-          "$exists": true
-        }
+        "slp.detail.transactionType": "SEND"
       },
       "sort": { "blk.i": -1 },
       "limit": limit,
