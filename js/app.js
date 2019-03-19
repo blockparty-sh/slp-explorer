@@ -58,10 +58,7 @@ app.slpdb = {
         },
       },
       "sort": { "blk.i": -1 }
-    },
-    /*"r": {
-      "f": "[.[] | { outputs: .out, inputs: .in, tokenDetails: .slp, blk: .blk, tx: .tx } ]"
-    }*/
+    }
   }),
 
   token: (tokenIdHex) => ({
