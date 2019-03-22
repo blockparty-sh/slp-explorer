@@ -1,17 +1,17 @@
-<div class="d-flex align-items-center p-3 my-3 text-white-50 page-header rounded box-shadow">
+<div class="transaction_box">
   <div class="lh-100">
     <h2 class="mb-0 text-white lh-100">Transaction</h2>
     <h6 class="mb-0"><%= tx.tx.h %></h6>
     <a href="#txgraph/<%= tx.tx.h %>">
-      <button type="button" class="btn btn-raised btn-warning mt-3">View TxGraph</button>
+      <button type="button" class="button button_red">View TxGraph</button>
     </a>
-    <a href="https://explorer.bitcoin.com/bch/tx/<%= tx.tx.h %>">
-      <button type="button" class="btn btn-raised btn-success mt-3 special-layover-btn">View on BCH Explorer</button>
+    <a target="_blank" href="https://explorer.bitcoin.com/bch/tx/<%= tx.tx.h %>">
+      <button type="button" class="button button_green right">View on BCH Explorer</button>
     </a>
   </div>
 </div>
 
-<div class="row">
+<div class="rounded_row">
   <div class="col-md-6">
     <div class="bg-white rounded box-shadow mb-3">
       <div class="table-responsive">
@@ -46,7 +46,9 @@
       </div>
     </div>
   </div>
+</div>
 
+<div class="rounded_row">
   <div class="col-md-6">
     <div id="token-details-table-container" class="bg-white rounded box-shadow mb-3 table-container">
       <div class="table-responsive">
@@ -54,7 +56,7 @@
           <thead>
             <tr>
               <td>
-                  <h3 class="pb-1 mb-1">Token</h3>
+                  <h3 class="pb-1 mb-1">Token Details</h3>
               </td>
             </tr>
           </thead>
@@ -99,8 +101,8 @@
 </div>
 
 
-<div class="row">
-  <div class="col-md-6">
+<div class="rounded_row">
+  <div class="input_output">
     <div class="bg-white rounded box-shadow mb-3">
       <h3 class="pl-3 pt-3 pb-1 mb-1">Inputs</h3>
       <div class="table-responsive">
@@ -124,7 +126,7 @@
     </div>
   </div>
   <% if (tx.slp.detail.transactionType == 'SEND') { %>
-    <div class="col-md-6">
+    <div class="input_output">
       <div class="bg-white rounded box-shadow mb-3">
         <h3 class="pl-3 pt-3 pb-1 mb-1">Outputs</h3>
         <div class="table-responsive">
