@@ -1,0 +1,216 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,600');
+
+html, body {
+    padding: 0px;
+    margin: 0px;
+    background: #ffffff;
+    font-family: 'Montserrat', sans-serif;
+    color: #000;
+    background: url(/img/top.svg) top right no-repeat;
+}
+
+header {
+    background: #373636;
+}
+
+header ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    width: 90%;
+    max-width: 1350px;
+    margin: auto;
+}
+  
+header li {
+    float: right;
+}
+
+header li:first-child {
+    float: left;
+}
+  
+header li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 22px 16px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1em;
+}
+  
+header li a:hover {
+    background-color: #111;
+}
+
+.header_infobox {
+    text-align: center;
+    padding-top: 120px;
+    max-width: 800px;
+    margin: auto;
+}
+
+.header_infobox img {
+    margin-bottom: 20px;
+}
+
+.header_infobox h2 {
+    font-size: 1.5em;
+    font-weight: lighter;
+    margin: 10px 0px;
+}
+
+.header_infobox p {
+    font-size: 1.3em;
+    font-weight: bold;
+    margin: 5px 0px;
+}
+
+.header_infobox .normal {
+    font-size: 1em;
+    font-weight:500;
+    margin-bottom: 35px;
+}
+
+.header_infobox input[type=text] {
+    width: 97%;
+    padding: 15px 20px;
+    margin: 45px 0px 14px 0px;
+    box-sizing: border-box;
+    outline: 0;
+    box-shadow: 0px 0px 9px 0px rgba(157,157,157,0.28);
+    border: 1px solid transparent;
+    border-image: linear-gradient(to right, #5dbc6c , #c8ebd0);
+    border-image-slice: 1;
+}
+
+.row {
+    max-width: 1350px;
+    margin: auto;
+}
+
+table {
+    width: 100%;
+}
+  
+th, td {
+    text-align: left;
+    padding: 15px 10px;
+}
+  
+tr:nth-child(even) {
+    background-color: #f6fbf9;
+}
+
+td a.txid {
+    color: #3caed4;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+a {
+    color: #3caed4;
+    text-decoration: none;
+}
+
+.normal a {
+    color: #0a6b8c;
+}
+
+.paginate_button {
+    display: inline-block;
+    padding: 10px;
+    color: #505050;
+}
+
+.active {
+    border-bottom: 3px solid #3DB474;
+}
+
+.pagination {
+    text-align: center;
+}
+
+.rounded_row {
+    max-width: 1350px;
+    margin: auto;
+    margin-top: 10px;
+    background: #ffffff;
+    border: 1px solid rgba(0,0,0,.125);
+    padding: 0px 15px 10px 15px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    -webkit-box-shadow: 0 1px 2px rgba(60,64,67,.15), 0 1px 3px 1px rgba(60,64,67,.1);
+    box-shadow: 0 1px 2px rgba(60,64,67,.15), 0 1px 3px 1px rgba(60,64,67,.1);
+}
+
+.input_output {
+    width: 49%;
+    margin: auto;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.transaction_box {
+    max-width: 1350px;
+    margin: auto;
+    margin-top: 10px;
+    background: #ffffff;
+    border: 1px solid rgba(0,0,0,.125);
+    padding: 0px 15px 10px 15px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    -webkit-box-shadow: 0 1px 2px rgba(60,64,67,.15), 0 1px 3px 1px rgba(60,64,67,.1);
+    box-shadow: 0 1px 2px rgba(60,64,67,.15), 0 1px 3px 1px rgba(60,64,67,.1);
+}
+
+.button {
+    padding: 10px 10px;
+    outline: none;
+    border: 1px solid #000;
+    background: #ffff;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    -webkit-box-shadow: 0 1px 2px rgba(60,64,67,.15), 0 1px 3px 1px rgba(60,64,67,.1);
+    box-shadow: 0 1px 2px rgba(60,64,67,.15), 0 1px 3px 1px rgba(60,64,67,.1);
+}
+
+.button_red {
+    background: rgb(255,59,48);
+    color: #fff;
+    border: 1px solid rgb(255,59,48);
+}
+
+.button_red:hover {
+    background: rgb(239, 43, 32);
+    border: 1px solid rgb(239, 43, 32);
+}
+
+.button_green {
+    background: rgb(76,217,100);
+    color: #fff;
+    border: 1px solid rgb(76,217,100);
+}
+
+.button_green:hover {
+    background: rgb(52, 197, 77);
+    border: 1px solid rgb(52, 197, 77);
+}
+
+.right {
+    float: right;
+}
+
+.left {
+    float: left;
+}
+
+h6 {
+    font-size: 0.8em;
+    color: #464646;
+    font-weight: unset;
+    margin: 17px 0px;
+}

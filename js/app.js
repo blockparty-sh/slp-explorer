@@ -58,7 +58,10 @@ app.slpdb = {
         },
       },
       "sort": { "blk.i": -1 }
-    }
+    },
+    /*"r": {
+      "f": "[.[] | { outputs: .out, inputs: .in, tokenDetails: .slp, blk: .blk, tx: .tx } ]"
+    }*/
   }),
 
   token: (tokenIdHex) => ({
@@ -100,7 +103,9 @@ app.slpdb = {
     "q": {
       "db": ["c", "u"],
       "find": {
-        "slp.detail.transactionType": "SEND"
+        "slp": {
+          "$exists": true
+        }
       },
       "sort": { "blk.i": -1 },
       "limit": limit,
@@ -437,7 +442,7 @@ app.init_index_page = () =>
           tx_tokens: tx_tokens
         }))
         .find('#recent-transactions-table')
-        .DataTable({order: []}) // sort by transaction count
+        .DataTable({searching:false,lengthChange:false,order: []}) // sort by transaction count
 
         resolve();
       })
@@ -653,35 +658,35 @@ app.router = (whash, push_history = true) => {
   switch (path) {
     case '':
     case '#':
-      document.title = 'slp-explorer';
+      document.title = 'SLP Explorer';
       method = () => app.init_index_page();
       break;
     case '#alltokens':
-      document.title = 'All Tokens | slp-explorer';
+      document.title = 'All Tokens - SLP Explorer';
       method = () => app.init_all_tokens_page();
       break;
     case '#tx':
-      document.title = 'Tx(' + key + ') | slp-explorer';
+      document.title = 'Transaction ' + key + ' - SLP Explorer';
       method = () => app.init_tx_page(key);
       break;
     case '#token':
-      document.title = 'Token(' + key + ') | slp-explorer';
+      document.title = 'Token ' + key + ' - SLP Explorer';
       method = () => app.init_token_page(key);
       break;
     case '#address':
-      document.title = 'Address(' + key + ') | slp-explorer';
+      document.title = 'Address ' + key + ' - SLP Explorer';
       method = () => app.init_address_page(key);
       break;
     case '#tokengraph':
-      document.title = 'TokenGraph(' + key + ') | slp-explorer';
+      document.title = 'TokenGraph ' + key + ' - SLP Explorer';
       method = () => app.init_tokengraph_page(key);
       break;
     case '#addressgraph':
-      document.title = 'AddressGraph(' + key + ') | slp-explorer';
+      document.title = 'AddressGraph ' + key + ' - SLP Explorer';
       method = () => app.init_addressgraph_page(key);
       break;
     case '#txgraph':
-      document.title = 'TxGraph(' + key + ') | slp-explorer';
+      document.title = 'TxGraph ' + key + ' - SLP Explorer';
       method = () => app.init_txgraph_page(key);
       break;
     default:
@@ -707,114 +712,6 @@ $(document).ready(() => {
   $(window).on('popstate', (e) => {
     console.log('pop', window.location.pathname);
     app.router(window.location.pathname+window.location.hash, false);
-  });
-
-  $('#header-nav form').submit(false);
-
-  $('#main-search').autocomplete({
-    groupBy: 'category',
-    preventBadQueries: false, // retry query in case slpdb hasnt yet indexed something
-    triggerSelectOnValidInput: false, // disables reload on clicking into box again
-    width: 'flex',
-    lookup: function (query, done) {
-      let search_value = $('#main-search').val().trim();
-
-      try {
-        if (slpjs.Utils.isCashAddress(search_value)) {
-          search_value = slpjs.Utils.toSlpAddress(search_value);
-        }
-      } catch (e) { /* this is to work around https://github.com/simpleledger/slpjs/issues/10 */ }
-
-      Promise.all([
-        app.slpdb.query({
-          "v": 3,
-          "q": {
-            "db": ["t"],
-            "find": {
-              "$or": [
-                {
-                  "tokenDetails.tokenIdHex": search_value
-                },
-                {
-                  "tokenDetails.name": {
-                    "$regex": "^"+search_value+".*",
-                    "$options": "i"
-                  }
-                },
-                {
-                  "tokenDetails.symbol": {
-                    "$regex": "^"+search_value+".*",
-                    "$options": "i"
-                  }
-                }
-              ]
-            },
-            "limit": 10
-          }
-        }),
-        app.slpdb.query({
-          "v": 3,
-          "q": {
-            "db": ["u", "c"],
-            "find": {"tx.h": search_value},
-            "limit": 1
-          }
-        }),
-        app.slpdb.query({
-          "v": 3,
-          "q": {
-            "db": ["a"],
-            "find": {"address": search_value},
-            "limit": 1
-          }
-        })
-      ]).then(([tokens, transactions, addresses]) => {
-          console.log(addresses);
-        let sugs = [];
-
-        for (let m of tokens.t) {
-          sugs.push({
-            value: m.tokenDetails.symbol,
-            data: {
-              url: '/#token/'+m.tokenDetails.tokenIdHex,
-              category: 'Tokens'
-            }
-          });
-        }
-        for (let m of transactions.u) {
-          sugs.push({
-            value: m.tx.h,
-            data: {
-              url: '/#tx/'+m.tx.h,
-              category: 'Tx'
-            }
-          });
-        }
-        for (let m of transactions.c) {
-          sugs.push({
-            value: m.tx.h,
-            data: {
-              url: '/#tx/'+m.tx.h,
-              category: 'Tx'
-            }
-          });
-        }
-        for (let m of addresses.a) {
-          sugs.push({
-            value: m.address,
-            data: {
-              url: '/#address/'+m.address,
-              category: 'Address'
-            }
-          });
-        }
-
-        done({ suggestions: sugs });
-      });
-    },
-    onSelect: function (sug) {
-      app.router(sug.data.url);
-    }
   });
 
   const views = [

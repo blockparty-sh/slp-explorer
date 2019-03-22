@@ -202,10 +202,14 @@ h1, h2, h3, h4, h5, h6 {
   font-family: 'Raleway', serif;
 }
 
+.lh-100 {
+  width: 100%;
+}
+
 .special-layover-btn {
-  position:absolute;
-  right: 2rem;
   z-index:1;
+  position: inherit;
+  float: right;
 }
 
 #header-nav {
@@ -219,4 +223,103 @@ h1, h2, h3, h4, h5, h6 {
 .graph_container {
   width: 100%;
   height: 100vh;
+}
+
+
+/* KOS's unorganized weird shit */
+
+.index-search-input {
+  width: 94%;
+  max-width: 750px;
+  border-radius: 8px;
+}
+
+.index-search-input::placeholder {
+  color: #f5f5f5;
+}
+
+.index-search-wrapper #windex-search {
+  margin: auto;
+  padding: 23px 18px;
+}
+
+#windex-search {
+  background-color: #555;
+  padding: 0.5rem;
+  color: #eee;
+  font-family: 'Raleway', serif;
+}
+
+.index-jumbo {
+  padding: 2rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: .3rem;
+}
+
+.index-jumbo .wafflesausemix {
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+.index-txrow-wrapper {
+  width: 100%;
+  max-width: 1350px;
+  margin: auto;
+}
+
+.rounded {
+  border-radius: 0.35rem!important;
+}
+
+.mb-md-5, .my-md-5 {
+  margin-bottom: 0rem!important;
+}
+
+.btn.btn-raised.btn-warning {
+  color: #fff;
+  background-color: rgb(255,59,48);
+  border-color: rgb(255,59,48);
+}
+
+.btn.btn-raised.btn-warning:hover {
+  color: #fff;
+  background-color: rgb(255,59,48);
+  border-color: rgb(255,59,48);
+}
+
+.btn.btn-raised.btn-success {
+  color: #fff;
+  background-color: rgb(76,217,100);
+  border-color: rgb(76,217,100);
+}
+
+.btn.btn-raised.btn-success:hover {
+  color: #fff;
+  background-color: rgb(76,217,100);
+  border-color: rgb(76,217,100);
+}
+
+.page-header {
+  background: rgba(0,141,205,1);
+  background: linear-gradient(90deg, rgba(0,141,205,1) 28%, rgba(0,121,205,1) 95%);
+}
+
+.navbar-item {
+  color: #fff;
+  font-size: 1rem;
+  padding: 10px 25px;
+  float: right;
+}
+
+.navbar-item:hover {
+  color: #fff;
+  border: none;
+  outline: none;
+  border: none;
+}
+
+.navbar_wrapper {
+  width: 100%;
+  margin: auto;
 }
