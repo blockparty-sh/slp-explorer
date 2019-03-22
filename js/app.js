@@ -58,10 +58,7 @@ app.slpdb = {
         },
       },
       "sort": { "blk.i": -1 }
-    },
-    /*"r": {
-      "f": "[.[] | { outputs: .out, inputs: .in, tokenDetails: .slp, blk: .blk, tx: .tx } ]"
-    }*/
+    }
   }),
 
   token: (tokenIdHex) => ({
@@ -103,9 +100,7 @@ app.slpdb = {
     "q": {
       "db": ["c", "u"],
       "find": {
-        "slp": {
-          "$exists": true
-        }
+        "slp.detail.transactionType": "SEND"
       },
       "sort": { "blk.i": -1 },
       "limit": limit,
