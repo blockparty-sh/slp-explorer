@@ -277,3 +277,8 @@ h6 {
 .super-wrapper {
     margin-top: 63px;
 }
+
+.graph_container {
+    width:100%;
+    height:100vh;
+}
