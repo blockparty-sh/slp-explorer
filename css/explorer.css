@@ -3,14 +3,20 @@
 html, body {
     padding: 0px;
     margin: 0px;
-    background: #ffffff;
     font-family: 'Montserrat', sans-serif;
     color: #000;
+}
+
+body {
+    background: #ffffff;
     background: url(/img/top.svg) top right no-repeat;
 }
 
 header {
     background: #373636;
+    position: fixed;
+    top: 0;
+    width: 100%;
 }
 
 header ul {
@@ -48,12 +54,14 @@ header li a:hover {
 .header_infobox {
     text-align: center;
     padding-top: 120px;
-    max-width: 800px;
+    max-width: 745px;
     margin: auto;
 }
 
 .header_infobox img {
     margin-bottom: 20px;
+    width: 50%;
+    max-width: 260px;
 }
 
 .header_infobox h2 {
@@ -69,21 +77,38 @@ header li a:hover {
 }
 
 .header_infobox .normal {
-    font-size: 1em;
+    font-size: 0.85em;
     font-weight:500;
     margin-bottom: 35px;
 }
 
 .header_infobox input[type=text] {
-    width: 97%;
+    width: 100%;
     padding: 15px 20px;
     margin: 45px 0px 14px 0px;
     box-sizing: border-box;
     outline: 0;
+    font-size: 0.92em;
     box-shadow: 0px 0px 9px 0px rgba(157,157,157,0.28);
     border: 1px solid transparent;
-    border-image: linear-gradient(to right, #5dbc6c , #c8ebd0);
+    border-image: linear-gradient(to right, #44e05d , #c8ebd0);
+    background: #fbfbfb;
     border-image-slice: 1;
+    -webkit-transition: background 0.25s;
+    -moz-transition: background 0.25s;
+    -ms-transition: background 0.25s;
+    -o-transition: background 0.25s;
+    transition: background 0.25s;
+}
+
+.header_infobox input[type=text]:active, .header_infobox input[type=text]:focus {
+    background: #ffffff;
+    border-image: linear-gradient(to right, #44e05d , #44e05d);
+    -webkit-transition: background 0.25s;
+    -moz-transition: background 0.25s;
+    -ms-transition: background 0.25s;
+    -o-transition: background 0.25s;
+    transition: background 0.25s;
 }
 
 .row {
@@ -97,7 +122,7 @@ table {
   
 th, td {
     text-align: left;
-    padding: 15px 10px;
+    padding: 12px 10px;
 }
   
 tr:nth-child(even) {
@@ -113,6 +138,7 @@ td a.txid {
 a {
     color: #3caed4;
     text-decoration: none;
+    outline: none;
 }
 
 .normal a {
@@ -211,4 +237,43 @@ h6 {
     color: #464646;
     font-weight: unset;
     margin: 17px 0px;
+}
+
+.loading {
+    opacity: 0.2;
+    background: #fff;
+    background-image: unset;
+    -webkit-transition: opacity 0.25s;
+    -moz-transition: opacity 0.25s;
+    -ms-transition: opacity 0.25s;
+    -o-transition: opacity 0.25s;
+    transition: opacity 0.25s;
+}
+
+.autocomplete-suggestions {
+    color: #000;
+    background: #f5f5f5;
+    padding: 10px 10px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.autocomplete-suggestion:hover {
+    cursor: pointer;
+    background: #ffffff;
+}
+
+.autocomplete-group {
+    color: #000;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.dataTables_info {
+    margin-top: 10px;
+}
+
+.super-wrapper {
+    margin-top: 63px;
 }

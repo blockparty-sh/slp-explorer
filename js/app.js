@@ -95,7 +95,7 @@ app.slpdb = {
       "skip": skip
     }
   }),
-  recent_transactions: (limit=100, skip=0) => ({
+  recent_transactions: (limit=150, skip=0) => ({
     "v": 3,
     "q": {
       "db": ["c", "u"],
@@ -173,7 +173,7 @@ app.get_tokens_from_transactions = (transactions, chunk_size=50) => {
   return Promise.all(reqs)
   .then((results) => {
     let tx_tokens = [];
-    results.map(v => v.t).flat().forEach(v => {
+    results.map(v => v.t).reduce((a, v) => a.concat(v), []).forEach(v => {
       tx_tokens[v.tokenDetails.tokenIdHex] = v;
     })
 
@@ -599,8 +599,8 @@ app.init_token_page = (tokenIdHex) =>
         transactions: transactions.u.concat(transactions.c)
       }));
 
-      $('#token-transactions-table').DataTable({order: []});
-      $('#token-addresses-table').DataTable({order: [[1, 'desc']]}); // sort by token balance
+      $('#token-transactions-table').DataTable({searching:false,order: []});
+      $('#token-addresses-table').DataTable({searching:false,order: [[1, 'desc']]}); // sort by token balance
 
       resolve();
     })
@@ -630,8 +630,8 @@ app.init_address_page = (address) =>
           tx_tokens:    tx_tokens
         }));
 
-        $('#address-tokens-table').DataTable({order: []});
-        $('#address-transactions-table').DataTable({order: []});
+        $('#address-tokens-table').DataTable({searching:false,order: []});
+        $('#address-transactions-table').DataTable({searching:false,order: []});
 
         resolve();
       })
@@ -691,11 +691,11 @@ app.router = (whash, push_history = true) => {
       break;
   }
 
-  $('body').addClass('loading');
+  $('html').addClass('loading');
   $('html').scrollTop(0);
   method().then(() => {
     console.log('done')
-    $('body').removeClass('loading');
+    $('html').removeClass('loading');
 
     if (push_history) {
       history.pushState({}, document.title, whash);
