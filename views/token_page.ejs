@@ -1,14 +1,13 @@
-<div class="d-flex align-items-center p-3 my-3 text-white-50 page-header rounded box-shadow">
+<div class="rounded_row">
   <div class="lh-100">
     <h2 class="mb-0 text-white lh-100">Token</h2>
     <h6 class="mb-0"><%= token.tokenDetails.tokenIdHex %></h6>
     <a href="#tokengraph/<%= token.tokenDetails.tokenIdHex %>">
-      <button type="button" class="btn btn-raised btn-warning mt-3">View TokenGraph</button>
+      <button type="button" class="button button_red">View Token Graph</button>
     </a>
   </div>
 </div>
-<div class="row">
-  <div class="col-md">
+  <div class="rounded_row">
     <div id="token-details-table-container" class="bg-white rounded box-shadow mb-3 table-container">
       <div class="table-responsive">
         <table class="table" id="token-details-table">
@@ -46,7 +45,7 @@
             </tr>
             <tr>
               <th scope="row">Document URI</th>
-              <td><a href="<%= token.tokenDetails.documentUri %>" target="_blank"><%= token.tokenDetails.documentUri %></a></td>
+              <td><!--<a href="<%= token.tokenDetails.documentUri %>" target="_blank">--><%= token.tokenDetails.documentUri %><!--</a>--></td>
             </tr>
             <tr>
               <th scope="row">Document Checksum</th>
@@ -57,7 +56,7 @@
       </div>
     </div>
   </div>
-  <div class="col-md">
+  <div class="rounded_row">
     <div id="token-stats-table-container" class="bg-white rounded box-shadow table-container">
       <div class="table-responsive">
         <table class="table" id="token-stats-table">
@@ -118,9 +117,7 @@
       </div>
     </div>
   </div>
-</div>
-<div class="row">
-  <div class="col-md">
+  <div class="rounded_row">
     <div id="token-addresses-table-container" class="my-3 p-3 bg-white rounded box-shadow table-container">
       <h3 class="border-bottom border-gray pb-1 mb-3">Addresses</h3>
       <% if (addresses.length === 0) { %>
@@ -147,7 +144,7 @@
       <% } %>
     </div>
   </div>
-  <div class="col-md">
+  <div class="rounded_row">
     <div id="token-transactions-table-container" class="my-3 p-3 bg-white rounded box-shadow table-container">
       <h3 class="border-bottom border-gray pb-1 mb-3">Transactions</h3>
       <div class="table-responsive">
@@ -184,4 +181,3 @@
       </div>
     </div>
   </div>
-</div>
