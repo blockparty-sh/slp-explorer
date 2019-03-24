@@ -126,7 +126,7 @@ th, td {
 }
   
 tr:nth-child(even) {
-    background-color: #f6fbf9;
+    background-color: #f9f9f9;
 }
 
 td a.txid {
@@ -162,11 +162,11 @@ a {
 .rounded_row {
     max-width: 1350px;
     margin: auto;
-    margin-top: 10px;
+    margin-top: 13px;
     background: #ffffff;
     border: 1px solid rgba(0,0,0,.125);
     padding: 0px 15px 10px 15px;
-    border-radius: 8px;
+    border-radius: 0px;
     box-sizing: border-box;
     -webkit-box-shadow: 0 1px 2px rgba(60,64,67,.15), 0 1px 3px 1px rgba(60,64,67,.1);
     box-shadow: 0 1px 2px rgba(60,64,67,.15), 0 1px 3px 1px rgba(60,64,67,.1);
@@ -184,44 +184,50 @@ a {
     background: #ffffff;
     border: 1px solid rgba(0,0,0,.125);
     padding: 0px 15px 10px 15px;
-    border-radius: 8px;
     box-sizing: border-box;
+    overflow: auto;
     -webkit-box-shadow: 0 1px 2px rgba(60,64,67,.15), 0 1px 3px 1px rgba(60,64,67,.1);
     box-shadow: 0 1px 2px rgba(60,64,67,.15), 0 1px 3px 1px rgba(60,64,67,.1);
 }
 
 .button {
-    padding: 10px 10px;
-    outline: none;
-    border: 1px solid #000;
-    background: #ffff;
-    border-radius: 5px;
+    display: inline-block;
+    font-weight: 500;
+    text-align: center;
+    white-space: nowrap;
     cursor: pointer;
-    font-size: 0.9em;
-    -webkit-box-shadow: 0 1px 2px rgba(60,64,67,.15), 0 1px 3px 1px rgba(60,64,67,.1);
-    box-shadow: 0 1px 2px rgba(60,64,67,.15), 0 1px 3px 1px rgba(60,64,67,.1);
+    vertical-align: middle;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: .46875rem 1rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 0.155rem;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
 
 .button_red {
-    background: rgb(255,59,48);
-    color: #fff;
-    border: 1px solid rgb(255,59,48);
+    border-color: currentColor;
+    color: #3f51b5;
+    background-color: transparent;
+    border: 1px solid #3f51b5;
 }
 
 .button_red:hover {
-    background: rgb(239, 43, 32);
     border: 1px solid rgb(239, 43, 32);
+    color: rgb(239, 43, 32);
 }
 
 .button_green {
-    background: rgb(76,217,100);
-    color: #fff;
-    border: 1px solid rgb(76,217,100);
+    border-color: currentColor;
+    color: #3f51b5;
+    background-color: transparent;
+    border: 1px solid #3f51b5;
 }
 
 .button_green:hover {
-    background: rgb(52, 197, 77);
     border: 1px solid rgb(52, 197, 77);
+    color: rgb(52, 197, 77);
 }
 
 .right {
@@ -233,7 +239,7 @@ a {
 }
 
 h6 {
-    font-size: 0.8em;
+    font-size: 0.85em;
     color: #464646;
     font-weight: unset;
     margin: 17px 0px;
@@ -245,6 +251,9 @@ h6 {
     padding: 10px 10px;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
+    width: 100%;
+    max-width: 745px;
+    box-sizing: border-box;
 }
 
 .autocomplete-suggestion:hover {
@@ -254,9 +263,14 @@ h6 {
 
 .autocomplete-group {
     color: #000;
-    font-size: 1.2em;
+    font-size: 1em;
     font-weight: bold;
     margin-top: 5px;
+}
+
+.autocomplete-suggestion {
+    padding: 2px 2px;
+    font-size: 0.9em;
 }
 
 .dataTables_info {
@@ -265,6 +279,7 @@ h6 {
 
 .super-wrapper {
     margin-top: 63px;
+    width: 95%;
 }
 
 .graph_container {
@@ -303,4 +318,21 @@ html.loading .loading-modal {
 
 main.container-fluid {
     padding-top: 1px;
+}
+
+.rounded_row h3::after {
+    content: "";
+    display: block;
+    width: 73px;
+    height: 5px;
+    margin-top: 6px;
+    background-color: #5dbc6c;
+}
+
+.col-sm-12 {
+    overflow: auto
+}
+
+.table-responsive {
+    overflow: auto;
 }

@@ -1,21 +1,21 @@
-<div class="d-flex align-items-center p-3 my-3 text-white-50 page-header rounded box-shadow">
+<div class="transaction_box">
   <div class="lh-100">
     <h2 class="mb-0 text-white lh-100">Address</h2>
     <h6 class="mb-0"><%= address %></h6>
     <a href="#addressgraph/<%= address %>">
-      <button type="button" class="btn btn-raised btn-warning mt-3">View AddressGraph</button>
+      <button type="button" class="button button_red">View AddressGraph</button>
     </a>
     <a target="_blank" href="https://explorer.bitcoin.com/bch/address/<%= address %>">
-      <button type="button" class="btn btn-raised btn-success mt-3 special-layover-btn">View on BCH Explorer</button>
+      <button type="button" class="button button_green right">View on BCH Explorer</button>
     </a>
   </div>
 </div>
-<div class="row">
-  <div class="col-md-6">
+
+  <div class="rounded_row">
     <div id="address-tokens-table-container" class="my-3 p-3 bg-white rounded box-shadow table-container">
       <h3 class="border-bottom border-gray pb-1 mb-3">Token Balances</h3>
       <% if (tokens.length === 0) { %>
-        <h6>This address must not have any balances</h6></h6>
+        <h6>This address must not have any token balances</h6></h6>
       <% } else { %>
         <div class="table-responsive">
           <table class="table" id="address-tokens-table">
@@ -42,7 +42,7 @@
       <% } %>
     </div>
   </div>
-  <div class="col-md-6">
+  <div class="rounded_row">
     <div id="address-transactions-table-container" class="my-3 p-3 bg-white rounded box-shadow table-container">
       <h3 class="border-bottom border-gray pb-1 mb-3">Transactions</h3>
       <% if (transactions.length === 0) { %>
@@ -56,16 +56,15 @@
                 <th>Txid</th>
                 <th>Type</th>
                 <th>Amount</th>
-                <th>Symbol</th>
-                <th>Token Id</th>
+                <th>Token</th>
               </tr>
             </thead>
             <tbody>
               <% const cash_address = slpjs.Utils.toCashAddress(address).split(':')[1]; %>
               <% for (let o of transactions) { %>
                 <tr>
-                  <td><% if (o.blk) { %><%= o.blk.i %><% } else { %>Unconfirmed<% } %></td>
-                  <td><a href="/#tx/<%= o.tx.h %>"><i class="material-icons">exit_to_app</a></td>
+                  <td><% if (o.blk) { %><%= o.blk.i %><% } else { %>Pending<% } %></td>
+                  <td><a href="/#tx/<%= o.tx.h %>"><i class="material-icons"><%= o.tx.h %></a></td>
                   <td>
                     <% if (o.slp.detail.transactionType === 'SEND') { %>
                       <% if (o.in.filter((v) => v.e.a === cash_address).length) {%>SENT<% } else { %>RECV<% } %>
@@ -85,15 +84,14 @@
                   <td>
                     <% if (tx_tokens.hasOwnProperty(o.slp.detail.tokenIdHex)) { %>
                       <% if (tx_tokens[o.slp.detail.tokenIdHex].tokenDetails.symbol.length > 0) { %>
-                        <%= tx_tokens[o.slp.detail.tokenIdHex].tokenDetails.symbol %>
+                        <a href="/#token/<%= o.slp.detail.tokenIdHex %>"><%= o.tokenDetails.name %> $<%= tx_tokens[o.slp.detail.tokenIdHex].tokenDetails.symbol %></a>
                       <% } else { %>
-                        <span class="mono">[none]</span>
+                        <span class="mono"><a href="/#token/<%= o.slp.detail.tokenIdHex %>">[none]</a></span>
                       <% } %>
                     <% } else {%>
-                      <span class="mono">[not found]</span>
+                      <span class="mono"><a href="/#token/<%= o.slp.detail.tokenIdHex %>">[not found]</a></span>
                     <% } %>
                   </td>
-                  <td><span class="mono"><a href="/#token/<%= o.slp.detail.tokenIdHex %>"><%= o.slp.detail.tokenIdHex %></span></td>
                 </tr>
               <% } %>
             </tbody>
@@ -102,4 +100,3 @@
       <% } %>
     </div>
   </div>
-</div>

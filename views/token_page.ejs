@@ -1,4 +1,4 @@
-<div class="rounded_row">
+<div class="transaction_box">
   <div class="lh-100">
     <h2 class="mb-0 text-white lh-100">Token</h2>
     <h6 class="mb-0"><%= token.tokenDetails.tokenIdHex %></h6>
@@ -172,8 +172,8 @@
                     <%= o.slp.detail.outputs[0].amount %>
                   <% } %>
                 </td>
-                <td><% if (o.blk) { %><%= o.blk.i %><% } else { %>Unconfirmed<% } %></td>
-                <td><% if (o.blk) { %><%= new Date(o.blk.t*1000).toLocaleString() %><% } %></td>
+                <td><% if (o.blk) { %><%= o.blk.i %><% } else { %>Pending<% } %></td>
+                <td><% if (o.blk) { %><%= new Date(o.blk.t*1000).toLocaleString() %><% } else { %>Pending<% } %></td>
               </tr>
             <% } %>
           </tbody>
