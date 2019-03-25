@@ -3,7 +3,7 @@
     <h2 class="mb-0 text-white lh-100">Transaction</h2>
     <h6 class="mb-0"><%= tx.tx.h %></h6>
     <a href="#txgraph/<%= tx.tx.h %>">
-      <button type="button" class="button button_red">View TxGraph</button>
+      <button type="button" class="button button_red">View Graph</button>
     </a>
     <a target="_blank" href="https://explorer.bitcoin.com/bch/tx/<%= tx.tx.h %>">
       <button type="button" class="button button_green right">View on BCH Explorer</button>
@@ -28,7 +28,7 @@
             </tr>
             <tr>
               <th role="col">Block</th>
-              <td><% if(tx.blk) { %><%= tx.blk.i %><% } else { %>Unconfirmed<% } %></td>
+              <td><% if(tx.blk) { %><%= tx.blk.i %><% } else { %>Pending<% } %></td>
             </tr>
             <tr>
               <th role="col">Txid</th>
@@ -87,7 +87,7 @@
             </tr>
             <tr>
               <th scope="row">Document URI</th>
-              <td><a href="<%= token.tokenDetails.documentUri %>" target="_blank"><%= token.tokenDetails.documentUri %></a></td>
+              <td><!--<a href="<%= token.tokenDetails.documentUri %>" target="_blank">--><%= token.tokenDetails.documentUri %><!--</a>--></td>
             </tr>
             <tr>
               <th scope="row">Document Checksum</th>
