@@ -177,9 +177,10 @@ app.get_tokens_from_transactions = (transactions, chunk_size=50) => {
   return Promise.all(reqs)
   .then((results) => {
     let tx_tokens = [];
-    results.map(v => v.t).reduce((a, v) => a.concat(v), []).forEach(v => {
-      tx_tokens[v.tokenDetails.tokenIdHex] = v;
-    })
+    results
+    .map(v => v.t)
+    .reduce((a, v) => a.concat(v), [])
+    .forEach(v => tx_tokens[v.tokenDetails.tokenIdHex] = v)
 
     return tx_tokens;
   });
