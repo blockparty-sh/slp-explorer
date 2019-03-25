@@ -9,7 +9,7 @@ html, body {
 
 body {
     background: #ffffff;
-    background: url(/img/top.svg) top right no-repeat;
+    background: url(/img/top.svg) top right no-repeat, url(/img/bottom.svg) bottom left no-repeat;
 }
 
 header {
@@ -127,6 +127,9 @@ th, td {
   
 tr:nth-child(even) {
     background-color: #f9f9f9;
+}
+tr:nth-child(odd) {
+    background-color: #fff;
 }
 
 td a.txid {
@@ -357,4 +360,41 @@ main.container-fluid {
 
 .table-responsive {
     overflow: auto;
+}
+
+#recent-transactions-table-container {
+  background-color:#fff;
+}
+
+footer {
+	background-color: #404040;
+	padding-top:3rem;
+	padding-left:7rem;
+	padding-bottom:2rem;
+	color: #fff;
+	margin-top:15rem;
+	box-shadow: 0 10px 5px 10px #404040;
+}
+
+footer a {
+	color: #fff;
+}
+
+footer ul {
+	list-style: none;
+	padding-left: 0;
+}
+
+footer ul li {
+	margin-top: 0.4rem;
+}
+
+footer .row {
+	overflow:hidden;
+}
+
+footer .col {
+	display:inline-block;
+	float:left;
+	width:25%;
 }
