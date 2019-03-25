@@ -580,7 +580,7 @@ app.init_charts_page = () =>
 
     
       let token_usage_monthly = token_usage.c;
-	  const total_slp_tx_month = monthly_usage_day.reduce  ((a, v) => a + v.txs, 0);
+      const total_slp_tx_month = monthly_usage_day.reduce  ((a, v) => a + v.txs, 0);
 
       token_usage_monthly.push({
         token_name: 'Other',
@@ -775,7 +775,7 @@ app.init_address_page = (address) =>
 
       app.get_tokens_from_transactions(transactions)
       .then((tx_tokens) => {
-        console.log(tx_tokens);
+        console.log(tokens)
         console.log(transactions);
 
         $('main[role=main]').html(app.template.address_page({
