@@ -131,8 +131,27 @@ tr:nth-child(even) {
 
 td a.txid {
     color: #3caed4;
-    font-weight: bold;
     text-decoration: none;
+    font-family: 'Source Code Pro', monospace;
+}
+
+td a.address {
+    color: #3caed4;
+    text-decoration: none;
+    font-family: 'Source Code Pro', monospace;
+}
+
+td a.tokenid {
+    color: #3caed4;
+    text-decoration: none;
+    font-family: 'Source Code Pro', monospace;
+}
+
+th.amount {
+    text-align:right;
+}
+td.amount {
+    text-align:right;
     font-family: 'Source Code Pro', monospace;
 }
 

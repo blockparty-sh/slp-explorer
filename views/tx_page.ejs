@@ -79,7 +79,7 @@
             </tr>
             <tr>
               <th scope="row">Quantity</th>
-              <td><%= token.tokenDetails.genesisOrMintQuantity %></td>
+              <td><%= Number(token.tokenDetails.genesisOrMintQuantity).toLocaleString() %></td>
             </tr>
             <tr>
               <th scope="row">Decimals</th>
@@ -133,14 +133,14 @@
           <table class="table">
             <thead>
               <tr>
-                <th>amount</th>
+                <th class="amount">Amount</th>
                 <th>address</th>
               </tr>
             </thead>
             <tbody>
               <% for (let m of tx.slp.detail.outputs) { console.log(m); %>
                 <tr>
-                  <td><%= m.amount %></td>
+                  <td class="amount"><%= m.amount %></td>
                   <td><a href="/#address/<%= m.address %>"><%= m.address %></a></td>
                 </tr>
               <% } %>

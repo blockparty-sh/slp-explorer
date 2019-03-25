@@ -1,7 +1,8 @@
 const app = {};
 
 app.util = {
-  compress_txid: (txid) => `${txid.substring(0, 12)}...${txid.substring(59)}`
+  compress_txid: (txid) => `${txid.substring(0, 12)}...${txid.substring(59)}`,
+  compress_tokenid: (tokenid) => `${tokenid.substring(0, 12)}...${tokenid.substring(59)}`
 };
 
 app.slpdb = {

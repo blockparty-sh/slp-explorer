@@ -21,7 +21,7 @@
           <tbody>
             <tr>
               <th scope="row">Token Id</th>
-              <td><span class="mono"><a href="/#token/<%= token.tokenDetails.tokenIdHex %>"><%= token.tokenDetails.tokenIdHex %></a></span></td>
+              <td><a href="/#token/<%= token.tokenDetails.tokenIdHex %>"><%= token.tokenDetails.tokenIdHex %></a></span></td>
             </tr>
             <tr>
               <th scope="row">Name</th>
@@ -128,14 +128,14 @@
             <thead>
               <tr>
                 <th>Address</th>
-                <th>Token Balance</th>
+                <th class="amount">Token Balance</th>
               </tr>
             </thead>
             <tbody>
               <% for (let o of addresses) { %>
                 <tr>
-                  <td><span class="mono"><a href="/#address/<%= o.address %>"><%= o.address %></a></span></td>
-                  <td><%= o.token_balance %></a></td>
+                  <td><a class="address" href="/#address/<%= o.address %>"><%= o.address %></a></td>
+                  <td class="amount"><%= o.token_balance %></a></td>
                 </tr>
               <% } %>
             </tbody>
@@ -153,7 +153,7 @@
             <tr>
               <th>Txid</th>
               <th>Type</th>
-              <th>Amount</th>
+              <th class="amount">Amount</th>
               <th>Block Height</th>
               <th>Block Time</th>
             </tr>
@@ -163,7 +163,7 @@
               <tr>
                 <td><a class="txid" href="/#tx/<%= o.tx.h %>"><%= app.util.compress_txid(o.tx.h) %></a></td>
                 <td><%= o.slp.detail.transactionType %></td>
-                <td>
+                <td class="amount">
                   <% if (o.slp.detail.transactionType === 'SEND') { %>
                     <%= app.extract_sent_amount_from_tx(o) %>
                   <% } %>
