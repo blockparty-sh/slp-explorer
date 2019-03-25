@@ -430,13 +430,73 @@ app.init_index_page = () =>
   new Promise((resolve, reject) =>
     app.slpdb.query(app.slpdb.recent_transactions())
     .then((data) => {
-
       const transactions =  data.u.concat(data.c);
 
-      app.get_tokens_from_transactions(transactions)
-      .then((tx_tokens) => {
-        console.log(tx_tokens);
-
+      Promise.all([
+		app.get_tokens_from_transactions(transactions),
+        app.slpdb.query({
+          "v": 3,
+          "q": {
+            "db": ["c"],
+            "aggregate": [
+              {
+                "$match": {
+                  "slp.valid": true,
+                  "blk.t": {
+                    "$gte": (+(new Date) / 1000) - (60*60*24*30),
+                    "$lte": (+(new Date) / 1000)
+                  }
+                }
+              },
+              {
+                "$group": {
+                   "_id" : "$blk.t",
+                  "count": {"$sum": 1}
+                }
+              }
+            ],
+            "limit": 10000
+          },
+          "r": {
+            "f": "[ .[] | {block_epoch: ._id, txs: .count} ]"
+          }
+        }),
+        app.slpdb.query({
+          "v": 3,
+          "q": {
+            "aggregate": [
+              {
+                "$match": {
+                  "blk.t": {
+                    "$gte": (+(new Date) / 1000) - (60*60*24*30),
+                    "$lte": (+(new Date) / 1000),
+                  }
+                }
+              },
+              {
+                "$group": {
+                  "_id": "$slp.detail.name",
+                  "count": {
+                    "$sum": 1
+                  }
+                }
+              },
+              {
+                "$sort": {
+                  "count": -1
+                }
+              },
+                {
+                "$limit": 20
+              }
+            ]
+          },
+          "r": {
+            "f": "[ .[] | {token_name: ._id, txs: .count} ]"
+          }
+        }),
+      ]).then(([tx_tokens, monthly_usage, token_usage]) => {
+  
         $('main[role=main]')
         .html(app.template.index_page({
           transactions: transactions,
@@ -445,161 +505,87 @@ app.init_index_page = () =>
         .find('#recent-transactions-table')
         .DataTable({searching:false,lengthChange:false,order: []}) // sort by transaction count
 
+        for (let o of monthly_usage.c) {
+          o.block_epoch = new Date(o.block_epoch * 1000);
+        }
+        monthly_usage.c.sort((a, b) => a.block_epoch - b.block_epoch);
+  
+        const monthly_usage_block = monthly_usage.c;
+  
+        let monthly_usage_day_t = [];
+        {
+          let ts = +(monthly_usage.c[0].block_epoch);
+          let dayset = [];
+  
+          for (let m of monthly_usage.c) {
+            if (+(m.block_epoch) > ts + (60*60*24*1000)) {
+              ts = +(m.block_epoch);
+              monthly_usage_day_t.push(dayset);
+              dayset = [];
+            }
+            dayset.push(m);
+          }
+  
+          monthly_usage_day_t.push(dayset);
+        }
+        const monthly_usage_day = monthly_usage_day_t
+        .map(m =>
+          m.reduce((a, v) =>
+            ({
+              block_epoch: a.block_epoch || v.block_epoch,
+              txs: a.txs + v.txs
+            }), {
+              block_epoch: null,
+              txs: 0
+            }
+          )
+        );
+  
+  
+        Plotly.newPlot('plot-monthly-usage', [
+          {
+            x: monthly_usage_block.map(v => v.block_epoch),
+            y: monthly_usage_block.map(v => v.txs),
+            fill: 'tozeroy',
+            type: 'scatter',
+            name: 'Per Block',
+          },
+          {
+            x: monthly_usage_day.map(v => v.block_epoch),
+            y: monthly_usage_day.map(v => v.txs),
+            fill: 'tonexty',
+            type: 'scatter',
+            name: 'Daily',
+          }
+        ], {
+          title: 'SLP Usage',
+          yaxis: {
+            title: 'Transactions'
+          }
+        })
+  
+      
+        let token_usage_monthly = token_usage.c;
+        const total_slp_tx_month = monthly_usage_day.reduce  ((a, v) => a + v.txs, 0);
+  
+        token_usage_monthly.push({
+          token_name: 'Other',
+          txs: total_slp_tx_month - token_usage_monthly.reduce((a, v) => a + v.txs, 0)
+        })
+        Plotly.newPlot('plot-token-usage', [{
+          labels: token_usage_monthly.map(v => v.token_name),
+          values: token_usage_monthly.map(v => v.txs),
+          type: 'pie',
+       }], {
+          title: 'Popular Tokens This Month',
+       })
+  
+  
         resolve();
       })
     })
   )
-
-app.init_charts_page = () =>
-  new Promise((resolve, reject) =>
-    Promise.all([
-      app.slpdb.query({
-        "v": 3,
-        "q": {
-          "db": ["c"],
-          "aggregate": [
-            {
-              "$match": {
-                "slp.valid": true,
-                "blk.t": {
-                  "$gte": (+(new Date) / 1000) - (60*60*24*30),
-                  "$lte": (+(new Date) / 1000)
-                }
-              }
-            },
-            {
-              "$group": {
-                 "_id" : "$blk.t",
-                "count": {"$sum": 1}
-              }
-            }
-          ],
-          "limit": 10000
-        },
-        "r": {
-          "f": "[ .[] | {block_epoch: ._id, txs: .count} ]"
-        }
-      }),
-      app.slpdb.query({
-        "v": 3,
-        "q": {
-          "aggregate": [
-            {
-              "$match": {
-                "blk.t": {
-                  "$gte": (+(new Date) / 1000) - (60*60*24*30),
-                  "$lte": (+(new Date) / 1000),
-                }
-              }
-            },
-            {
-              "$group": {
-                "_id": "$slp.detail.name",
-                "count": {
-                  "$sum": 1
-                }
-              }
-            },
-            {
-              "$sort": {
-                "count": -1
-              }
-            },
-              {
-              "$limit": 20
-            }
-          ]
-        },
-        "r": {
-          "f": "[ .[] | {token_name: ._id, txs: .count} ]"
-        }
-      }),
-    ]).then(([monthly_usage, token_usage]) => {
-
-      console.log(monthly_usage)
-      $('main[role=main]')
-      .html(app.template.chart_page())
-
-      for (let o of monthly_usage.c) {
-        o.block_epoch = new Date(o.block_epoch * 1000);
-      }
-      monthly_usage.c.sort((a, b) => a.block_epoch - b.block_epoch);
-
-      const monthly_usage_block = monthly_usage.c;
-
-      let monthly_usage_day_t = [];
-      {
-        let ts = +(monthly_usage.c[0].block_epoch);
-        let dayset = [];
-
-        for (let m of monthly_usage.c) {
-          if (+(m.block_epoch) > ts + (60*60*24*1000)) {
-            ts = +(m.block_epoch);
-            monthly_usage_day_t.push(dayset);
-            dayset = [];
-          }
-          dayset.push(m);
-        }
-
-        monthly_usage_day_t.push(dayset);
-      }
-      const monthly_usage_day = monthly_usage_day_t
-      .map(m =>
-        m.reduce((a, v) =>
-          ({
-            block_epoch: a.block_epoch || v.block_epoch,
-            txs: a.txs + v.txs
-          }), {
-            block_epoch: null,
-            txs: 0
-          }
-        )
-      );
-
-
-      Plotly.newPlot('plot-monthly-usage', [
-        {
-          x: monthly_usage_block.map(v => v.block_epoch),
-          y: monthly_usage_block.map(v => v.txs),
-          fill: 'tozeroy',
-          type: 'scatter',
-          name: 'Per Block',
-        },
-        {
-          x: monthly_usage_day.map(v => v.block_epoch),
-          y: monthly_usage_day.map(v => v.txs),
-          fill: 'tonexty',
-          type: 'scatter',
-          name: 'Daily',
-        }
-      ], {
-        title: 'SLP Usage',
-        yaxis: {
-          title: 'Transactions'
-        }
-      })
-
-    
-      let token_usage_monthly = token_usage.c;
-      const total_slp_tx_month = monthly_usage_day.reduce  ((a, v) => a + v.txs, 0);
-
-      token_usage_monthly.push({
-        token_name: 'Other',
-        txs: total_slp_tx_month - token_usage_monthly.reduce((a, v) => a + v.txs, 0)
-      })
-      Plotly.newPlot('plot-token-usage', [{
-        labels: token_usage_monthly.map(v => v.token_name),
-        values: token_usage_monthly.map(v => v.txs),
-        type: 'pie',
-     }], {
-        title: 'Popular Tokens This Month',
-     })
-
-
-      resolve();
-    })
-  )
-
+  
 app.init_all_tokens_page = () =>
   new Promise((resolve, reject) =>
     app.slpdb.query(app.slpdb.all_tokens(1000))
@@ -812,9 +798,6 @@ app.router = (whash, push_history = true) => {
       document.title = 'SLP Explorer';
       method = () => app.init_index_page();
       break;
-    case '#charts':
-      method = () => app.init_charts_page();
-      break;
     case '#alltokens':
       document.title = 'All Tokens - SLP Explorer';
       method = () => app.init_all_tokens_page();
@@ -871,7 +854,6 @@ $(document).ready(() => {
   const views = [
     'index_page',
     'all_tokens_page',
-    'chart_page',
     'tx_page',
     'token_page',
     'address_page',
