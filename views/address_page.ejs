@@ -31,8 +31,8 @@
               <% for (let o of tokens) { %>
                 <tr>
                   <td><span class="mono"><a href="/#token/<%= o.tokenDetails.tokenIdHex %>"><%= o.tokenDetails.tokenIdHex %></a></span></td>
-                  <td><%= o.tokenDetails.name %></td>
-                  <td><%= o.tokenDetails.symbol %></td>
+                  <td><%= tx_tokens[o.tokenDetails.tokenIdHex].tokenDetails.name %></td>
+                  <td><%= tx_tokens[o.tokenDetails.tokenIdHex].tokenDetails.symbol %></td>
                   <td><%= o.token_balance %></td>
                 </tr>
               <% } %>
@@ -84,7 +84,7 @@
                   <td>
                     <% if (tx_tokens.hasOwnProperty(o.slp.detail.tokenIdHex)) { %>
                       <% if (tx_tokens[o.slp.detail.tokenIdHex].tokenDetails.symbol.length > 0) { %>
-                        <a href="/#token/<%= o.slp.detail.tokenIdHex %>"><%= o.tokenDetails.name %> $<%= tx_tokens[o.slp.detail.tokenIdHex].tokenDetails.symbol %></a>
+                        <a href="/#token/<%= o.slp.detail.tokenIdHex %>"><%= tx_tokens[o.slp.detail.tokenIdHex].tokenDetails.name %> $<%= tx_tokens[o.slp.detail.tokenIdHex].tokenDetails.symbol %></a>
                       <% } else { %>
                         <span class="mono"><a href="/#token/<%= o.slp.detail.tokenIdHex %>">[none]</a></span>
                       <% } %>
