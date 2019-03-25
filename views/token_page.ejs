@@ -161,7 +161,7 @@
           <tbody>
             <% for (let o of transactions) { %>
               <tr>
-                <td><span class="mono"><a href="/#tx/<%= o.tx.h %>"><%= o.tx.h %></a></span></td>
+                <td><a class="txid" href="/#tx/<%= o.tx.h %>"><%= app.util.compress_txid(o.tx.h) %></a></td>
                 <td><%= o.slp.detail.transactionType %></td>
                 <td>
                   <% if (o.slp.detail.transactionType === 'SEND') { %>

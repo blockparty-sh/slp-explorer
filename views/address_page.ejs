@@ -64,7 +64,7 @@
               <% for (let o of transactions) { %>
                 <tr>
                   <td><% if (o.blk) { %><%= o.blk.i %><% } else { %>Pending<% } %></td>
-                  <td><a href="/#tx/<%= o.tx.h %>"><i class="material-icons"><%= o.tx.h %></a></td>
+                  <td><a class="txid" href="/#tx/<%= o.tx.h %>"><%= app.util.compress_txid(o.tx.h) %></a></td>
                   <td>
                     <% if (o.slp.detail.transactionType === 'SEND') { %>
                       <% if (o.in.filter((v) => v.e.a === cash_address).length) {%>SENT<% } else { %>RECV<% } %>

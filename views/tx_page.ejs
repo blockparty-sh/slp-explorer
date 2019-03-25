@@ -116,7 +116,7 @@
           <tbody>
             <% for (let m of tx.in) { %>
               <tr>
-                <td><a href="/#tx/<%= m.e.h %>"><i class="material-icons">exit_to_app</i></a></td>
+                <td><a class="txid" href="/#tx/<%= m.e.h %>"><%= app.util.compress_txid(m.e.h) %></a></td>
                 <td><a href="/#address/<%= slpjs.Utils.toSlpAddress(m.e.a) %>"><%= slpjs.Utils.toSlpAddress(m.e.a) %></a></td>
               </tr>
             <% } %>

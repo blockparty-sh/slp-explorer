@@ -32,7 +32,7 @@
               <tbody>
                 <% for (let o of transactions) { %>
                   <tr>
-                    <td><span class="mono"><a class="txid" href="/#tx/<%= o.tx.h %>"><%= o.tx.h.substring(0, 12) %>...<%= o.tx.h.substring(59) %></a></span></td>
+                    <td><a class="txid" href="/#tx/<%= o.tx.h %>"><%= app.util.compress_txid(o.tx.h) %></a></td>
                     <td>
                       <a href="#token/<%= o.slp.detail.tokenIdHex %>">
                       <% if (tx_tokens[o.slp.detail.tokenIdHex].tokenDetails.symbol) { %>

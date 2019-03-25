@@ -1,5 +1,9 @@
 const app = {};
 
+app.util = {
+  compress_txid: (txid) => `${txid.substring(0, 12)}...${txid.substring(59)}`
+};
+
 app.slpdb = {
   query: (query) => new Promise((resolve, reject) => {
     const b64 = btoa(JSON.stringify(query));
