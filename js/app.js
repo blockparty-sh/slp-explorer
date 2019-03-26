@@ -41,6 +41,9 @@ app.util = {
 
 app.slpdb = {
   query: (query) => new Promise((resolve, reject) => {
+    if (! query) {
+      return resolve(false);
+    }
     const b64 = btoa(JSON.stringify(query));
     const url = "https://slpdb.fountainhead.cash/q/" + b64;
 
@@ -153,7 +156,7 @@ app.slpdb = {
     try {
       cash_address = slpjs.Utils.toCashAddress(address).split(':')[1];
     } catch (e) {
-      return app.init_404_page();
+      return false;
     }
 
     return {
@@ -807,6 +810,11 @@ app.init_address_page = (address) =>
     ]).then(([tokens, transactions]) => {
       console.log(tokens);
       console.log(transactions);
+
+      if (! transactions) {
+        return resolve(app.init_404_page());
+      }
+
 
       transactions = transactions.u.concat(transactions.c);
 
