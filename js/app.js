@@ -67,9 +67,10 @@ app.slpdb = {
       "q": {
         "db": ["c", "u"],
         "find": {
-          "$query": {
-            "slp.detail.tokenIdHex": tokenIdHex
-          }
+          "$and": [
+            { "slp.valid": true },
+            { "slp.detail.tokenIdHex": tokenIdHex },
+          ]
         },
         "sort": { "blk.i": -1 },
         "limit": limit,
@@ -92,9 +93,7 @@ app.slpdb = {
     "q": {
       "db": ["c", "u"],
       "find": {
-        "$query": {
-          "tx.h": txid
-        },
+        "tx.h": txid,
       },
       "sort": { "blk.i": -1 }
     }
