@@ -119,6 +119,7 @@ header li a:hover {
 
 table {
     width: 100%;
+	background-color: #fff;
 }
   
 th, td {
@@ -173,9 +174,10 @@ a {
     display: inline-block;
     padding: 10px;
     color: #505050;
+	cursor: pointer;
 }
 
-.active {
+.paginate_button.current {
     border-bottom: 3px solid #3DB474;
 }
 
@@ -409,4 +411,25 @@ footer .col {
 
 .display-none {
     display: none;
+}
+
+#tokens-table-container #tokens-table_length {
+    display: none;
+}
+#tokens-table-container #tokens-table_filter {
+    float:right;
+}
+#tokens-table-container #tokens-table_filter label {
+    font-size: 1.2rem;
+	background-color:#fff;
+}
+#tokens-table-container #tokens-table_filter input {
+    margin-left: 1rem;
+    padding: 0.3rem;
+    font-size: 1.1rem;
+}
+
+
+.nowrap {
+    white-space: nowrap;
 }

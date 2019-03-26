@@ -11,31 +11,31 @@
           <th>Token Id</th>
           <th>Symbol</th>
           <th>Name</th>
-          <th>Document</th>
           <th>Transactions</th>
           <th>Utxos</th>
           <th>Addresses</th>
+          <th>Document</th>
         </tr>
       </thead>
       <tbody>
       <% for (let m of t) { %>
         <tr>
           <td><a class="tokenid" href="/#token/<%= m.tokenDetails.tokenIdHex %>"><%= app.util.compress_tokenid(m.tokenDetails.tokenIdHex) %></a></td>
-          <td><%= m.tokenDetails.symbol %></td>
-          <td><%= m.tokenDetails.name %></td>
-          <td>
-            <% if (m.tokenDetails.documentUri) { %>
-              <% const url = app.util.document_link(m.tokenDetails.documentUri); %>
-              <% if (url.length) { %>
-                <a href="<%= url %>"><%= m.tokenDetails.documentUri %></a>
-              <% } else { %>
-                <%= m.tokenDetails.documentUri %>
-              <% } %>
-            <% } %>
-          </td>
+          <td class="nowrap"><%= m.tokenDetails.symbol %></td>
+          <td class="nowrap"><%= app.util.compress_string(m.tokenDetails.name) %></td>
           <td><%= m.tokenStats.qty_valid_txns_since_genesis %></td>
           <td><%= m.tokenStats.qty_valid_token_utxos %></td>
           <td><%= m.tokenStats.qty_valid_token_addresses %></td>
+          <td class="nowrap">
+            <% if (m.tokenDetails.documentUri) { %>
+              <% const url = app.util.document_link(m.tokenDetails.documentUri); %>
+              <% if (url.length) { %>
+                <a href="<%= url %>"><%= app.util.compress_string(m.tokenDetails.documentUri) %></a>
+              <% } else { %>
+                <%= app.util.compress_string(m.tokenDetails.documentUri) %>
+              <% } %>
+            <% } %>
+          </td>
         </tr>
       <% } %>
       </tbody>
