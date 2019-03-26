@@ -656,7 +656,7 @@ app.init_tx_page = (txid) =>
     .then((tx) => {
       tx = tx.u.concat(tx.c);
       if (tx.length == 0) {
-        return app.init_404_page();
+        return resolve(app.init_404_page());
       }
 
       tx = tx[0];
