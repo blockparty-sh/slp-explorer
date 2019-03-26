@@ -950,7 +950,10 @@ app.router = (whash, push_history = true) => {
     case '':
     case '#':
       document.title = 'TokenDB';
-      method = () => app.init_index_page();
+      method = () => {
+          $('html').addClass('index-page');
+          return app.init_index_page();
+      };
       break;
     case '#alltokens':
       document.title = 'All Tokens - TokenDB';

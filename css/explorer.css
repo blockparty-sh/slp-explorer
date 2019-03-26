@@ -480,6 +480,10 @@ footer .col {
 .format-balance10::after { content:'          '; }
 */
 
+html.index-page #header-search {
+	display: none;
+}
+
 @media only screen and (max-width: 913px) {
     header li.search { 
         display: none;
