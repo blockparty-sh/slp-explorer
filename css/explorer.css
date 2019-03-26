@@ -305,6 +305,10 @@ h6 {
     background: #ffffff;
 }
 
+.autocomplete-selected {
+    background: #fff;
+}
+
 .autocomplete-group {
     color: #000;
     font-size: 1em;
