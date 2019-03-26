@@ -433,7 +433,7 @@ app.init_index_page = () =>
       const transactions =  data.u.concat(data.c);
 
       Promise.all([
-		app.get_tokens_from_transactions(transactions),
+        app.get_tokens_from_transactions(transactions),
         app.slpdb.query({
           "v": 3,
           "q": {
@@ -504,6 +504,8 @@ app.init_index_page = () =>
         }))
         .find('#recent-transactions-table')
         .DataTable({searching:false,lengthChange:false,order: []}) // sort by transaction count
+
+        app.attach_search_handler('#main-search');
 
         for (let o of monthly_usage.c) {
           o.block_epoch = new Date(o.block_epoch * 1000);
@@ -779,6 +781,110 @@ app.init_address_page = (address) =>
       })
     })
   )
+
+
+app.attach_search_handler = (selector) => {
+  $(selector).closest('form').submit(false);
+  
+  console.log($(selector))
+  $(selector).autocomplete({
+    groupBy: 'category',
+    preventBadQueries: false, // retry query in case slpdb hasnt yet indexed something
+    triggerSelectOnValidInput: false, // disables reload on clicking into box again
+    width: 'flex',
+    lookup: function (query, done) {
+      let search_value = $(selector).val().trim();
+  
+      try {
+        if (slpjs.Utils.isCashAddress(search_value)) {
+          search_value = slpjs.Utils.toSlpAddress(search_value);
+        }
+      } catch (e) { /* TODO this is to work around https://github.com/simpleledger/slpjs/issues/10 */ }
+
+      Promise.all([
+        app.slpdb.query({
+          "v": 3,
+          "q": {
+            "db": ["t"],
+            "find": {
+              "$or": [
+                {
+                  "tokenDetails.tokenIdHex": search_value
+                },
+                {
+                  "tokenDetails.name": {
+                    "$regex": "^"+search_value+".*",
+                    "$options": "i"
+                  }
+                },
+                {
+                  "tokenDetails.symbol": {
+                    "$regex": "^"+search_value+".*",
+                    "$options": "i"
+                  }
+                }
+              ]
+            },
+            "limit": 10
+          }
+        }),
+        app.slpdb.query({
+          "v": 3,
+          "q": {
+            "db": ["u", "c"],
+            "find": {"tx.h": search_value},
+            "limit": 1
+          }
+        }),
+        app.slpdb.query({
+          "v": 3,
+          "q": {
+            "db": ["a"],
+            "find": {"address": search_value},
+            "limit": 1
+          }
+        })
+      ]).then(([tokens, transactions, addresses]) => {
+        let sugs = [];
+
+        for (let m of tokens.t) {
+          sugs.push({
+            value: m.tokenDetails.symbol || m.tokenDetails.name || app.util.compress_txid(m.tokenDetails.tokenIdHex),
+            data: {
+              url: '/#token/'+m.tokenDetails.tokenIdHex,
+              category: 'Tokens'
+            }
+          });
+        }
+        transactions = transactions.u.concat(transactions.c);
+        for (let m of transactions) {
+          sugs.push({
+            value: m.tx.h,
+            data: {
+              url: '/#tx/'+m.tx.h,
+              category: 'Tx'
+            }
+          });
+        }
+        for (let m of addresses.a) {
+          sugs.push({
+            value: m.address,
+            data: {
+              url: '/#address/'+m.address,
+              category: 'Address'
+            }
+          });
+        }
+
+        done({ suggestions: sugs });
+      });
+    },
+    onSelect: function (sug) {
+      app.router(sug.data.url);
+    }
+  });
+};
+
 
 app.router = (whash, push_history = true) => {
   if (! whash) {
