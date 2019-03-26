@@ -944,6 +944,7 @@ app.router = (whash, push_history = true) => {
   method().then(() => {
     console.log('done')
     $('html').removeClass('loading');
+    $('footer').removeClass('display-none');
 
     if (push_history) {
       history.pushState({}, document.title, whash);

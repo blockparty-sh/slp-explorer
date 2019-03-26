@@ -371,7 +371,7 @@ footer {
 	padding-left:7rem;
 	padding-bottom:2rem;
 	color: #fff;
-	margin-top:15rem;
+	margin-top: 5rem;
 	box-shadow: 0 10px 5px 10px #404040;
 }
 
@@ -405,4 +405,8 @@ footer .col {
 }
 .main-svg {
   background: rgba(255, 255, 255, 0) !important;
+}
+
+.display-none {
+    display: none;
 }
