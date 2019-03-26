@@ -139,7 +139,10 @@ app.slpdb = {
     "q": {
       "db": ["c", "u"],
       "find": {
-        "slp.detail.transactionType": "SEND"
+        "$and": [
+          { "slp.valid": true },
+          { "slp.detail.transactionType": "SEND" },
+        ]
       },
       "sort": { "blk.i": -1 },
       "limit": limit,
@@ -159,9 +162,14 @@ app.slpdb = {
       "q": {
         "db": ["c", "u"],
         "find": {
-          "$or": [
-            { "in.e.a":  cash_address },
-            { "out.e.a": cash_address }
+          "$and": [
+            {
+              "$or": [
+                { "in.e.a":  cash_address },
+                { "out.e.a": cash_address }
+              ]
+            },
+            { "slp.valid": true }
           ]
         },
         "sort": { "blk.i": -1 },
