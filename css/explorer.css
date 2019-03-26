@@ -342,6 +342,13 @@ html.loading .loading-modal {
     margin-top: 20vh;
 }
 
+html.full-width .super-wrapper {
+    width:95vw;
+}
+html.full-width .row {
+    max-width: initial;
+}
+
 main.container-fluid {
     padding-top: 1px;
 }

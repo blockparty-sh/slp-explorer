@@ -946,15 +946,24 @@ app.router = (whash, push_history = true) => {
       break;
     case '#tokengraph':
       document.title = 'TokenGraph ' + key + ' - SLP Explorer';
-      method = () => app.init_tokengraph_page(key);
+      method = () => {
+          $('html').addClass('full-width');
+          return app.init_tokengraph_page(key);
+      };
       break;
     case '#addressgraph':
       document.title = 'AddressGraph ' + key + ' - SLP Explorer';
-      method = () => app.init_addressgraph_page(key);
+      method = () => {
+          $('html').addClass('full-width');
+          return app.init_addressgraph_page(key);
+      };
       break;
     case '#txgraph':
       document.title = 'TxGraph ' + key + ' - SLP Explorer';
-      method = () => app.init_txgraph_page(key);
+      method = () => {
+          $('html').addClass('full-width');
+          return app.init_txgraph_page(key);
+      };
       break;
     default:
       document.title = '404 | slp-explorer';
@@ -963,6 +972,7 @@ app.router = (whash, push_history = true) => {
       break;
   }
 
+  $('html').removeClass();
   $('html').addClass('loading');
   $('html').scrollTop(0);
   method().then(() => {
