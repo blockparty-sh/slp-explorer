@@ -38,7 +38,13 @@ header li:first-child {
     float: left;
 }
   
-header li a {
+header li.search {
+    float:left;
+    margin-left:3rem;
+}
+
+header li a,
+header li input {
     display: block;
     color: white;
     text-align: center;
@@ -48,6 +54,18 @@ header li a {
     font-size: 1em;
 }
   
+header li input {
+    background-color: rgba(70, 111, 147, 0.46);
+    border: 0px;
+    outline: 0px;
+    width:25rem;
+    font-weight:200;
+}
+
+header li input::placeholder {
+    color: #ddd;
+}
+
 header li a:hover {
     background-color: #111;
 }

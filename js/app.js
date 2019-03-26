@@ -992,6 +992,8 @@ $(document).ready(() => {
     app.router(window.location.pathname+window.location.hash, false);
   });
 
+  app.attach_search_handler('#header-search');
+
   const views = [
     'index_page',
     'all_tokens_page',
