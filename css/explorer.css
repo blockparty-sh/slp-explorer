@@ -479,3 +479,9 @@ footer .col {
 .format-balance9::after  { content: '         '; }
 .format-balance10::after { content:'          '; }
 */
+
+@media only screen and (max-width: 913px) {
+    header li.search { 
+        display: none;
+    }
+}
