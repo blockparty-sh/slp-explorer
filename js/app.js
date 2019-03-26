@@ -477,6 +477,13 @@ app.init_404_page = () => new Promise((resolve, reject) => {
   resolve();
 });
 
+app.init_error_nonslp_tx_page = (txid) => new Promise((resolve, reject) => {
+  $('main[role=main]').html(app.template.error_nonslp_tx_page({
+    txid: txid
+  }));
+  resolve();
+});
+
 app.init_index_page = () =>
   new Promise((resolve, reject) =>
     app.slpdb.query(app.slpdb.recent_transactions())
@@ -656,7 +663,7 @@ app.init_tx_page = (txid) =>
     .then((tx) => {
       tx = tx.u.concat(tx.c);
       if (tx.length == 0) {
-        return resolve(app.init_404_page());
+        return resolve(app.init_error_nonslp_tx_page(txid));
       }
 
       tx = tx[0];
@@ -1039,6 +1046,7 @@ $(document).ready(() => {
     'addressgraph_page',
     'txgraph_page',
     'error_404_page',
+    'error_nonslp_tx_page',
   ];
 
   app.template = {}
