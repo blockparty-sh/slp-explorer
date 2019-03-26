@@ -484,4 +484,7 @@ footer .col {
     header li.search { 
         display: none;
     }
+    footer .col {
+		width: 100%;
+    }
 }
