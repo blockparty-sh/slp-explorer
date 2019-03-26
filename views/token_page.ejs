@@ -37,7 +37,7 @@
             </tr>
             <tr>
               <th scope="row">Quantity</th>
-              <td><%= token.tokenDetails.genesisOrMintQuantity %></td>
+              <td><%= Number(token.tokenDetails.genesisOrMintQuantity).toLocaleString() %></td>
             </tr>
             <tr>
               <th scope="row">Decimals</th>
@@ -174,7 +174,8 @@
                 <td><%= o.slp.detail.transactionType %></td>
                 <td class="amount">
                   <% if (o.slp.detail.transactionType === 'SEND') { %>
-                    <%= app.extract_sent_amount_from_tx(o) %>
+                    <% const sent_amount = app.extract_sent_amount_from_tx(o); %>
+                    <span class="<%= app.util.format_balance_class(sent_amount) %>"><%=  sent_amount %></span>
                   <% } %>
                   <% if (o.slp.detail.transactionType === 'GENESIS'
                       || o.slp.detail.transactionType === 'MINT') { %>

@@ -4,6 +4,16 @@ app.util = {
   compress_txid: (txid) => `${txid.substring(0, 12)}...${txid.substring(59)}`,
   compress_tokenid: (tokenid) => `${tokenid.substring(0, 12)}...${tokenid.substring(59)}`,
   compress_string: (str, len=25) => str.substring(0, len) + ((str.length > len) ? '...' : ''),
+  format_balance_class: (balance) => {
+    balance = String(balance);
+    const splitted = balance.split('.');
+    let len = 0;
+    if (splitted.length === 1) {
+      return 'format-balance' + 10;
+    } else {
+      return 'format-balance' + (9-splitted[1].length);
+    }
+  },
   document_link: (doc) => {
     const email_regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -218,10 +228,17 @@ app.extract_sent_amount_from_tx = (tx) => {
       catch(e) { return null; }
   }))];
 
-  return tx.slp.detail.outputs
+  let ret = tx.slp.detail.outputs
     .filter((e) => outer.indexOf(e.address) < 0)
     .map(v => +v.amount)
     .reduce((a, v) => a + v, 0);
+
+  const splitted = String(ret).split('.');
+  if (splitted.length === 2 && splitted[1].length > 9) {
+    return ret.toFixed(9);
+  }
+
+  return ret;
 };
 
 app.create_cytoscape_context = (selector='.graph_container') => {
