@@ -373,7 +373,7 @@ footer {
 	padding-left:7rem;
 	padding-bottom:2rem;
 	color: #fff;
-	margin-top:15rem;
+	margin-top: 5rem;
 	box-shadow: 0 10px 5px 10px #404040;
 }
 
@@ -398,4 +398,8 @@ footer .col {
 	display:inline-block;
 	float:left;
 	width:25%;
+}
+
+.display-none {
+    display: none;
 }
