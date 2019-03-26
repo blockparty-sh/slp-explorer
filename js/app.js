@@ -2,7 +2,31 @@ const app = {};
 
 app.util = {
   compress_txid: (txid) => `${txid.substring(0, 12)}...${txid.substring(59)}`,
-  compress_tokenid: (tokenid) => `${tokenid.substring(0, 12)}...${tokenid.substring(59)}`
+  compress_tokenid: (tokenid) => `${tokenid.substring(0, 12)}...${tokenid.substring(59)}`,
+  document_link: (doc) => {
+    const email_regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+    // const url_regex = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
+    const url_regex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
+
+    if (email_regex.test(doc)) {
+      return `mailto:${doc}`;
+    }
+
+    if (url_regex.test(doc)) {
+      if (doc.startsWith('http') || doc.startsWith('https')) {
+        return doc;
+      }
+
+      return `http://${doc}`;
+    }
+
+    if (doc.split(':').length === 2) {
+      return doc;
+    }
+
+    return '';
+  }
 };
 
 app.slpdb = {
@@ -594,7 +618,7 @@ app.init_all_tokens_page = () =>
     .then((data) => {
       $('main[role=main]')
         .html(app.template.all_tokens_page(data))
-        .find('#tokens-table').DataTable({order: [7, 'desc']}) // sort by transaction count
+        .find('#tokens-table').DataTable({order: [4, 'desc']}) // sort by transaction count
       resolve();
     })
   )

@@ -45,7 +45,16 @@
             </tr>
             <tr>
               <th scope="row">Document URI</th>
-              <td><!--<a href="<%= token.tokenDetails.documentUri %>" target="_blank">--><%= token.tokenDetails.documentUri %><!--</a>--></td>
+              <td>
+                <% if (token.tokenDetails.documentUri) { %>
+                  <% const url = app.util.document_link(token.tokenDetails.documentUri); %>
+                  <% if (url.length) { %>
+                    <a href="<%= url %>"><%= token.tokenDetails.documentUri %></a>
+                  <% } else { %>
+                    <%= token.tokenDetails.documentUri %>
+                  <% } %>
+                <% } %>
+              </td>
             </tr>
             <tr>
               <th scope="row">Document Checksum</th>
