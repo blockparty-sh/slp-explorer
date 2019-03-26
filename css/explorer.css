@@ -484,6 +484,16 @@ html.index-page #header-search {
 	display: none;
 }
 
+#header-logo {
+    background-image: url(/img/simple-ledger-protocol-logo.png);
+    background-repeat: no-repeat;
+    background-size: 42px;
+    background-position: center center;
+    width: 70px;
+    color: rgba(0, 0, 0, 0);
+}
+
+
 @media only screen and (max-width: 913px) {
     header li.search { 
         display: none;
