@@ -345,7 +345,7 @@ app.cytoscape_extract_graph = (tx_tokens, transactions, prune=false) => {
   let addresses_out = new Set();
 
   for (let o of transactions) {
-    if (! o.slp) {
+    if (! o.slp.detail) {
       continue;
     }
 
