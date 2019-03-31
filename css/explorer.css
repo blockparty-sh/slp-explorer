@@ -39,12 +39,10 @@ header li:first-child {
 }
   
 header li.search {
-    float:left;
-    margin-left:3rem;
+    margin-right: 10px;
 }
 
-header li a,
-header li input {
+header li a {
     display: block;
     color: white;
     text-align: center;
@@ -55,15 +53,22 @@ header li input {
 }
   
 header li input {
-    background-color: rgba(70, 111, 147, 0.46);
+    background-color: rgb(247, 247, 247);
+    text-align: left;
+    color: #000;
     border: 0px;
     outline: 0px;
     width:25rem;
     font-weight:200;
+    height: 44px;
+    margin-top: 9px;
+    padding: 0px 10px;
+    border-radius: 2px;
+    font-size: 0.9em;
 }
 
 header li input::placeholder {
-    color: #ddd;
+    color: rgb(114, 114, 114);
 }
 
 header li a:hover {
@@ -122,7 +127,7 @@ header li a:hover {
 
 .header_infobox input[type=text]:active, .header_infobox input[type=text]:focus {
     background: #ffffff;
-    border-image: linear-gradient(to right, #44e05d , #44e05d);
+    border: 1px solid #44e05d;
     -webkit-transition: background 0.25s;
     -moz-transition: background 0.25s;
     -ms-transition: background 0.25s;
@@ -367,6 +372,7 @@ html.loading .loading-modal {
 html.full-width .super-wrapper {
     width:95vw;
 }
+
 html.full-width .row {
     max-width: initial;
 }
@@ -458,7 +464,6 @@ footer .col {
     font-size: 1.1rem;
 }
 
-
 .nowrap {
     white-space: nowrap;
 }
@@ -492,7 +497,6 @@ html.index-page #header-search {
     width: 70px;
     color: rgba(0, 0, 0, 0);
 }
-
 
 @media only screen and (max-width: 913px) {
     header li.search { 
