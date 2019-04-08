@@ -1,0 +1,12 @@
+<div class="transaction_box">
+  <h1>Invalid SLP Transaction</h1>
+  <h6><%= tx.tx.h %></h6>
+  <p><%= tx.slp.invalidReason %></p>
+  <hr>
+  <p>
+    <a class="button button_red" onclick="window.history.back()" role="button">Go Back</a>
+    <a target="_blank" href="https://explorer.bitcoin.com/bch/tx/<%= tx.tx.h %>">
+      <button type="button" class="button button_green right">View on BCH Explorer</button>
+    </a>
+  </p>
+</div>

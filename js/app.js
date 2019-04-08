@@ -668,6 +668,14 @@ app.init_tx_page = (txid) =>
 
       tx = tx[0];
 
+      if (! tx.slp.valid) {
+        $('main[role=main]').html(app.template.error_invalid_tx_page({
+          tx: tx,
+        }));
+
+        return resolve();
+      }
+
       app.slpdb.query(app.slpdb.token(tx.slp.detail.tokenIdHex))
       .then((token) => {
         console.log(tx);
@@ -1047,6 +1055,7 @@ $(document).ready(() => {
     'txgraph_page',
     'error_404_page',
     'error_nonslp_tx_page',
+    'error_invalid_tx_page',
   ];
 
   app.template = {}
