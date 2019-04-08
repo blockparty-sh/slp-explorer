@@ -919,6 +919,11 @@ app.attach_search_handler = (selector) => {
         let sugs = [];
 
         for (let m of tokens.t) {
+          if (m.tokenDetails.tokenIdHex === search_value) {
+            $(selector).val('');
+            return app.router('/#token/'+m.tokenDetails.tokenIdHex);
+          }
+
           sugs.push({
             value: m.tokenDetails.symbol || m.tokenDetails.name || app.util.compress_txid(m.tokenDetails.tokenIdHex),
             data: {
@@ -929,6 +934,11 @@ app.attach_search_handler = (selector) => {
         }
         transactions = transactions.u.concat(transactions.c);
         for (let m of transactions) {
+          if (m.tx.h === search_value) {
+            $(selector).val('');
+            return app.router('/#tx/'+m.tx.h);
+          }
+
           sugs.push({
             value: m.tx.h,
             data: {
@@ -938,6 +948,11 @@ app.attach_search_handler = (selector) => {
           });
         }
         for (let m of addresses.a) {
+          if (m.address === search_value) {
+            $(selector).val('');
+            return app.router('/#address/'+m.address);
+          }
+
           sugs.push({
             value: m.address,
             data: {
