@@ -136,6 +136,29 @@ app.slpdb = {
       "skip": skip
     }
   }),
+  token_mint_history: (tokenIdHex, limit=100, skip=0) => ({
+    "v": 3,
+    "q": {
+      "db": ["u", "c"],
+      "find": {
+        "slp.valid": true,
+        "slp.detail.tokenIdHex": tokenIdHex,
+        "$or": [
+          {
+            "slp.detail.transactionType": "GENESIS"
+          },
+          {
+            "slp.detail.transactionType": "MINT"
+          }
+        ]
+      },
+      "sort": {
+        "blk.i": 1
+      },
+      "limit": limit,
+      "skip": skip
+    }
+  }),
   recent_transactions: (limit=150, skip=0) => ({
     "v": 3,
     "q": {
@@ -792,11 +815,13 @@ app.init_token_page = (tokenIdHex) =>
     Promise.all([
       app.slpdb.query(app.slpdb.token(tokenIdHex)),
       app.slpdb.query(app.slpdb.token_addresses(tokenIdHex, 1000)),
+      app.slpdb.query(app.slpdb.token_mint_history(tokenIdHex, 1000)),
       app.slpdb.query(app.slpdb.token_transaction_history(tokenIdHex, null, 1000))
     ])
-    .then(([token, addresses, transactions]) => {
+    .then(([token, addresses, mint_history, transactions]) => {
       console.log(token);
       console.log(addresses);
+      console.log(mint_history);
       console.log(transactions);
 
       if (token.t.length == 0) {
@@ -806,6 +831,7 @@ app.init_token_page = (tokenIdHex) =>
       $('main[role=main]').html(app.template.token_page({
         token:        token.t[0],
         addresses:    addresses.a,
+        mint_history: mint_history.u.concat(mint_history.c),
         transactions: transactions.u.concat(transactions.c)
       }));
 

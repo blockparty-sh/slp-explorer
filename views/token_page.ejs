@@ -127,6 +127,35 @@
     </div>
   </div>
   <div class="rounded_row">
+    <div id="token-stats-table-container" class="bg-white rounded box-shadow table-container">
+      <h3 class="pb-1 mb-1">Mint History</h3>
+      <div class="table-responsive">
+        <table class="table" id="token-mint-history-table">
+          <thead>
+            <tr>
+              <th>Txid</th>
+              <th>Type</th>
+              <th class="amount">Amount</th>
+              <th>Block Height</th>
+              <th>Block Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (let o of mint_history) { %>
+            <tr>
+              <td><a class="txid" href="/#tx/<%= o.tx.h %>"><%= app.util.compress_txid(o.tx.h) %></a></td>
+              <td><%= o.slp.detail.transactionType %></td>
+              <td class="amount"><%= Number(o.slp.detail.outputs[0].amount).toLocaleString() %></td>
+              <td><% if (o.blk) { %><%= o.blk.i %><% } else { %>Pending<% } %></td>
+              <td><% if (o.blk) { %><%= new Date(o.blk.t*1000).toLocaleString() %><% } else { %>Pending<% } %></td>
+            </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="rounded_row">
     <div id="token-addresses-table-container" class="bg-white rounded box-shadow table-container">
       <h3 class="border-bottom border-gray pb-1">Addresses</h3>
       <% if (addresses.length === 0) { %>
