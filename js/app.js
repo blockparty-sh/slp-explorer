@@ -837,6 +837,7 @@ app.init_token_page = (tokenIdHex) =>
 
       $('#token-transactions-table').DataTable({searching:false,order: []});
       $('#token-addresses-table').DataTable({searching:false,order: [[1, 'desc']]}); // sort by token balance
+      $('#token-mint-history-table').DataTable({searching:false,order: [[3, 'asc']]}); // sort by block height
 
       resolve();
     })
