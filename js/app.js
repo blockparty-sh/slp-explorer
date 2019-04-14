@@ -274,6 +274,12 @@ app.extract_sent_amount_from_tx = (tx) => {
   return ret;
 };
 
+app.extract_recv_amount_from_tx = (tx, addr) =>
+  tx.slp.detail.outputs
+    .filter((e) => e.address === addr)
+    .map(v => +v.amount)
+    .reduce((a, v) => a + v, 0);
+
 app.create_cytoscape_context = (selector='.graph_container') => {
   let cy = cytoscape({
     container: $(selector),

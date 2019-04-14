@@ -74,7 +74,11 @@
                   </td>
                   <td class="amount">
                     <% if (o.slp.detail.transactionType === 'SEND') { %>
-                      <%= app.extract_sent_amount_from_tx(o) %>
+                      <% if (o.in.filter((v) => v.e.a === cash_address).length) {%>
+                        <%= app.extract_sent_amount_from_tx(o) %>
+                      <% } else { %>
+                        <%= app.extract_recv_amount_from_tx(o, address) %>
+                      <% } %>
                     <% } %>
                     <% if (o.slp.detail.transactionType === 'GENESIS'
                         || o.slp.detail.transactionType === 'MINT') { %>
