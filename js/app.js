@@ -1021,8 +1021,18 @@ app.attach_search_handler = (selector) => {
             return app.router('/#token/'+m.tokenDetails.tokenIdHex);
           }
 
+          const ctxid = app.util.compress_txid(m.tokenDetails.tokenIdHex);
+          let tval = null;
+          if (m.tokenDetails.symbol) {
+            tval = m.tokenDetails.symbol + ' | ' + ctxid;
+          } else if (m.tokenDetails.name) {
+            tval = m.tokenDetails.name + ' | ' + ctxid;
+          } else {
+            tval = ctxid;
+          }
+
           sugs.push({
-            value: m.tokenDetails.symbol || m.tokenDetails.name || app.util.compress_txid(m.tokenDetails.tokenIdHex),
+            value: tval,
             data: {
               url: '/#token/'+m.tokenDetails.tokenIdHex,
               category: 'Tokens'
