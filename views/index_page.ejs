@@ -16,7 +16,7 @@
         <h3 class="">Latest Transactions</h3>
 
         <% if (transactions.length === 0) { %>
-            <h6>No recent transactions... is the SLPDB endpoint working?</h6></h6>
+          <h6>No recent transactions... is the SLPDB endpoint working?</h6></h6>
         <% } else { %>
           <div class="table-responsive">
             <table id="recent-transactions-table">
@@ -30,24 +30,8 @@
                 </tr>
               </thead>
               <tbody>
-                <% for (let o of transactions) { %>
-                  <% const sent_amount = app.extract_sent_amount_from_tx(o); %>
-                  <% if (sent_amount === 0) continue; %>
-                  <tr>
-                    <td><a class="txid" href="/#tx/<%= o.tx.h %>"><%= app.util.compress_txid(o.tx.h) %></a></td>
-                    <td>
-                      <a href="#token/<%= o.slp.detail.tokenIdHex %>">
-                      <% if (tx_tokens[o.slp.detail.tokenIdHex].tokenDetails.symbol) { %>
-                        <%= tx_tokens[o.slp.detail.tokenIdHex].tokenDetails.symbol %>
-                      <% } else { %>
-                        <span class="mono">[none]</span>
-                      <% } %>
-                      </a>
-                    </td>
-                    <td class="amount"><%= sent_amount %></td>
-                    <td><% if (o.blk) { %><%= o.blk.i %><% } else { %>Pending<% } %></td>
-                    <td class="nowrap"><% if (o.blk) { %><%= new Date(o.blk.t*1000).toLocaleString() %><% } else { %>Pending<% } %></td>
-                  </tr>
+                <% for (let tx of transactions) { %>
+                  <%- app.template.latest_transactions_tx({ tx: tx, tx_tokens: tx_tokens }) %>
                 <% } %>
               </tbody>
             </table>
