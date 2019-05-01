@@ -923,7 +923,7 @@ app.init_address_page = (address) =>
       console.log(tokens);
       console.log(transactions);
 
-      if (! transactions) {
+      if (! total_transactions) {
         return resolve(app.init_404_page());
       }
 
