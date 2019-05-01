@@ -962,13 +962,20 @@ app.attach_search_handler = (selector) => {
     width: 'flex',
     lookup: function (query, done) {
       let search_value = $(selector).val().trim();
-  
+
+      // check if address entered
       try {
+        if (slpjs.Utils.isSlpAddress(search_value)) {
+          $(selector).val('');
+          return app.router('/#address/'+search_value);
+        }
+
         if (slpjs.Utils.isCashAddress(search_value)) {
-          search_value = slpjs.Utils.toSlpAddress(search_value);
+          $(selector).val('');
+          return app.router('/#address/'+slpjs.Utils.toSlpAddress(search_value));
         }
       } catch (e) { /* TODO this is to work around https://github.com/simpleledger/slpjs/issues/10 */ }
-
+  
       Promise.all([
         app.slpdb.query({
           "v": 3,
@@ -1003,16 +1010,8 @@ app.attach_search_handler = (selector) => {
             "find": {"tx.h": search_value},
             "limit": 1
           }
-        }),
-        app.slpdb.query({
-          "v": 3,
-          "q": {
-            "db": ["a"],
-            "find": {"address": search_value},
-            "limit": 1
-          }
         })
-      ]).then(([tokens, transactions, addresses]) => {
+      ]).then(([tokens, transactions]) => {
         let sugs = [];
 
         for (let m of tokens.t) {
@@ -1051,20 +1050,6 @@ app.attach_search_handler = (selector) => {
             data: {
               url: '/#tx/'+m.tx.h,
               category: 'Tx'
-            }
-          });
-        }
-        for (let m of addresses.a) {
-          if (m.address === search_value) {
-            $(selector).val('');
-            return app.router('/#address/'+m.address);
-          }
-
-          sugs.push({
-            value: m.address,
-            data: {
-              url: '/#address/'+m.address,
-              category: 'Address'
             }
           });
         }
