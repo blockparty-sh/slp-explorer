@@ -349,11 +349,28 @@ app.get_tokens_from_transactions = (transactions, chunk_size=50) => {
 };
 
 app.extract_sent_amount_from_tx = (tx) => {
+  // check if in and out are all same address
+  {
+    const chk = new Set();
+    for (let v of tx.in) {
+      chk.add(v.e.a);
+    }
+    for (let v of tx.out) {
+      chk.add(v.e.a);
+    }
+
+    if (chk.size === 1) {
+      return 0;
+    }
+  }
+
+
   const outer = [
     ...new Set(tx.in.map(v => {
       try      { return slpjs.Utils.toSlpAddress(v.e.a) }
       catch(e) { return null; }
   }))];
+
 
   let ret = tx.slp.detail.outputs
     .filter((e) => outer.indexOf(e.address) < 0)
@@ -609,7 +626,7 @@ app.init_error_nonslp_tx_page = (txid) => new Promise((resolve, reject) => {
 
 app.init_index_page = () =>
   new Promise((resolve, reject) =>
-    app.slpdb.query(app.slpdb.recent_transactions())
+    app.slpdb.query(app.slpdb.recent_transactions(25))
     .then((data) => {
       const transactions =  data.u.concat(data.c);
 
