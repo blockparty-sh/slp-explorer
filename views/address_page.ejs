@@ -45,62 +45,23 @@
   <div class="rounded_row">
     <div id="address-transactions-table-container" class="my-3 p-3 bg-white rounded box-shadow table-container">
       <h3 class="border-bottom border-gray pb-1 mb-3">Transactions</h3>
-      <% if (transactions.length === 0) { %>
-        <h6>This address hasn't made a SLP transaction</h6></h6>
-      <% } else { %>
-        <div class="table-responsive">
-          <table class="table" id="address-transactions-table">
-            <thead>
-              <tr>
-                <th>Block</th>
-                <th>Txid</th>
-                <th>Type</th>
-                <th class="amount">Amount</th>
-                <th>Token</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% const cash_address = slpjs.Utils.toCashAddress(address).split(':')[1]; %>
-              <% for (let o of transactions) { %>
-                <tr>
-                  <td><% if (o.blk) { %><%= o.blk.i %><% } else { %>Pending<% } %></td>
-                  <td><a class="txid" href="/#tx/<%= o.tx.h %>"><%= app.util.compress_txid(o.tx.h) %></a></td>
-                  <td>
-                    <% if (o.slp.detail.transactionType === 'SEND') { %>
-                      <% if (o.in.filter((v) => v.e.a === cash_address).length) {%>SENT<% } else { %>RECV<% } %>
-                    <% } else { %>
-                      <%= o.slp.detail.transactionType %>
-                    <% } %>
-                  </td>
-                  <td class="amount">
-                    <% if (o.slp.detail.transactionType === 'SEND') { %>
-                      <% if (o.in.filter((v) => v.e.a === cash_address).length) {%>
-                        <%= app.extract_sent_amount_from_tx(o) %>
-                      <% } else { %>
-                        <%= app.extract_recv_amount_from_tx(o, address) %>
-                      <% } %>
-                    <% } %>
-                    <% if (o.slp.detail.transactionType === 'GENESIS'
-                        || o.slp.detail.transactionType === 'MINT') { %>
-                      <%= o.slp.detail.outputs[0].amount %>
-                    <% } %>
-                  </td>
-                  <td>
-                    <% if (tx_tokens.hasOwnProperty(o.slp.detail.tokenIdHex)) { %>
-                      <% if (tx_tokens[o.slp.detail.tokenIdHex].tokenDetails.symbol.length > 0) { %>
-                        <a href="/#token/<%= o.slp.detail.tokenIdHex %>"><%= tx_tokens[o.slp.detail.tokenIdHex].tokenDetails.name %> $<%= tx_tokens[o.slp.detail.tokenIdHex].tokenDetails.symbol %></a>
-                      <% } else { %>
-                        <span class="mono"><a href="/#token/<%= o.slp.detail.tokenIdHex %>">[none]</a></span>
-                      <% } %>
-                    <% } else {%>
-                      <span class="mono"><a href="/#token/<%= o.slp.detail.tokenIdHex %>">[not found]</a></span>
-                    <% } %>
-                  </td>
-                </tr>
-              <% } %>
-            </tbody>
-          </table>
-        </div>
-      <% } %>
+      <div class="table-responsive">
+        <table class="table" id="address-transactions-table">
+          <thead>
+            <tr>
+              <th>Block</th>
+              <th>Txid</th>
+              <th>Type</th>
+              <th class="amount">Amount</th>
+              <th>Token</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>loading...</td></tr>
+          </tbody>
+        </table>
+        <ul class="pagination">
+        </ul>
+      </div>
     </div>
   </div>

@@ -1,0 +1,36 @@
+<% const cash_address = slpjs.Utils.toCashAddress(address).split(':')[1]; %>
+<tr>
+  <td><% if (tx.blk) { %><%= tx.blk.i %><% } else { %>Pending<% } %></td>
+  <td><a class="txid" href="/#tx/<%= tx.tx.h %>"><%= app.util.compress_txid(tx.tx.h) %></a></td>
+  <td>
+    <% if (tx.slp.detail.transactionType === 'SEND') { %>
+      <% if (tx.in.filter((v) => v.e.a === cash_address).length) {%>SENT<% } else { %>RECV<% } %>
+    <% } else { %>
+      <%= tx.slp.detail.transactionType %>
+    <% } %>
+  </td>
+  <td class="amount">
+    <% if (tx.slp.detail.transactionType === 'SEND') { %>
+      <% if (tx.in.filter((v) => v.e.a === cash_address).length) {%>
+        <%= app.extract_sent_amount_from_tx(tx) %>
+      <% } else { %>
+        <%= app.extract_recv_amount_from_tx(tx, address) %>
+      <% } %>
+    <% } %>
+    <% if (tx.slp.detail.transactionType === 'GENESIS'
+        || tx.slp.detail.transactionType === 'MINT') { %>
+      <%= tx.slp.detail.outputs[0].amount %>
+    <% } %>
+  </td>
+  <td>
+    <% if (tx_tokens.hasOwnProperty(tx.slp.detail.tokenIdHex)) { %>
+      <% if (tx_tokens[tx.slp.detail.tokenIdHex].tokenDetails.symbol.length > 0) { %>
+        <a href="/#token/<%= tx.slp.detail.tokenIdHex %>"><%= tx_tokens[tx.slp.detail.tokenIdHex].tokenDetails.name %> $<%= tx_tokens[tx.slp.detail.tokenIdHex].tokenDetails.symbol %></a>
+      <% } else { %>
+        <span class="mono"><a href="/#token/<%= tx.slp.detail.tokenIdHex %>">[none]</a></span>
+      <% } %>
+    <% } else {%>
+      <span class="mono"><a href="/#token/<%= tx.slp.detail.tokenIdHex %>">[not found]</a></span>
+    <% } %>
+  </td>
+</tr>

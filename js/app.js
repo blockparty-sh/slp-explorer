@@ -36,7 +36,39 @@ app.util = {
     }
 
     return '';
-  }
+  },
+
+  create_pagination: ($el, page=0, max_page=10, fn) => {
+    $el.html('');
+
+    fn(page);
+
+    const poffstart = page >= 5 ? page-5 : 0;
+    const poffend   = Math.min(poffstart+10, max_page);
+
+    const row_tobeginning = $(`<li><a>«</a></li>`);
+    row_tobeginning.click(() => app.util.create_pagination($el, 0, max_page, fn));
+    $el.append(row_tobeginning);
+
+    for (let poff=poffstart; poff<poffend; ++poff) {
+      const row = $(`<li data-page="${poff}"><a>${poff+1}</a></li>`);
+
+      row.click(function() {
+        const page = parseInt($(this).data('page'));
+        app.util.create_pagination($el, page, max_page, fn);
+      });
+
+      $el.append(row);
+    }
+
+    const row_toend = $(`<li><a>»</a></li>`);
+    row_toend.click(() => app.util.create_pagination($el, max_page-1, max_page, fn));
+    $el.append(row_toend);
+
+    $el
+      .find(`li[data-page="${page}"]`)
+      .addClass('active');
+  },
 };
 
 app.slpdb = {
@@ -203,6 +235,49 @@ app.slpdb = {
       }
     };
   },
+  count_total_transactions_by_slp_address: (address) => {
+    let cash_address = address;
+    try {
+      cash_address = slpjs.Utils.toCashAddress(address).split(':')[1];
+    } catch (e) {
+      return false;
+    }
+
+    return {
+      "v": 3,
+      "q": {
+        "db": [
+          "c",
+          "u"
+        ],
+        "aggregate": [
+          {
+            "$match": {
+              "$and": [
+                {
+                  "$or": [
+                    { "in.e.a":  cash_address },
+                    { "out.e.a": cash_address }
+                  ]
+                },
+                { "slp.valid": true }
+              ]
+            }
+          },
+          {
+            "$group": {
+              "_id": null,
+              "count": { "$sum": 1 }
+            }
+          }
+        ]
+      },
+      "r": {
+        "f": "[ .[] | {count: .count } ]"
+      }
+    };
+  },
+
   tokens_by_slp_address: (address, limit=100, skip=0) => ({
     "v": 3,
     "q": {
@@ -225,6 +300,8 @@ app.slpdb = {
       "limit": 10000
     }
   }),
+
+
 };
 
 app.slpsocket = {
@@ -241,14 +318,7 @@ app.slpsocket = {
   },
 };
 
-
-app.get_tokens_from_transactions = (transactions, chunk_size=50) => {
-  let token_ids = [];
-  for (let m of transactions) {
-    if (m.slp && m.slp.detail) token_ids.push(m.slp.detail.tokenIdHex);
-  }
-  token_ids = [...new Set(token_ids)]; // make unique
-
+app.get_tokens_from_tokenids = (token_ids, chunk_size=50) => {
   let reqs = [];
   for (let i=0; i<Math.ceil(token_ids.length / chunk_size); ++i) {
     reqs.push(app.slpdb.query(
@@ -266,6 +336,16 @@ app.get_tokens_from_transactions = (transactions, chunk_size=50) => {
 
     return tx_tokens;
   });
+};
+
+app.get_tokens_from_transactions = (transactions, chunk_size=50) => {
+  let token_ids = [];
+  for (let m of transactions) {
+    if (m.slp && m.slp.detail) token_ids.push(m.slp.detail.tokenIdHex);
+  }
+  token_ids = [...new Set(token_ids)]; // make unique
+
+  return app.get_tokens_from_tokenids(token_ids, chunk_size);
 };
 
 app.extract_sent_amount_from_tx = (tx) => {
@@ -917,36 +997,63 @@ app.init_token_page = (tokenIdHex) =>
 app.init_address_page = (address) =>
   new Promise((resolve, reject) =>
     Promise.all([
-      app.slpdb.query(app.slpdb.tokens_by_slp_address(address, 1000)),
-      app.slpdb.query(app.slpdb.transactions_by_slp_address(address, 1000))
-    ]).then(([tokens, transactions]) => {
+      app.slpdb.query(app.slpdb.tokens_by_slp_address(address, 10)),
+      app.slpdb.query(app.slpdb.count_total_transactions_by_slp_address(address)),
+    ]).then(([tokens, total_transactions]) => {
       console.log(tokens);
-      console.log(transactions);
+      console.log(total_transactions);
 
       if (! total_transactions) {
         return resolve(app.init_404_page());
       }
 
+      total_transactions = {
+        c: total_transactions.c.length ? total_transactions.c[0].count : 0,
+        u: total_transactions.u.length ? total_transactions.u[0].count : 0,
+      };
 
-      transactions = transactions.u.concat(transactions.c);
-
-      app.get_tokens_from_transactions(transactions)
+      app.get_tokens_from_tokenids(tokens.a.map(v => v.tokenDetails.tokenIdHex))
       .then((tx_tokens) => {
-        console.log(tokens)
-        console.log(transactions);
-
         $('main[role=main]').html(app.template.address_page({
-          address:      address,
-          tokens:       tokens.a,
-          transactions: transactions,
-          tx_tokens:    tx_tokens
+          address:   address,
+          tokens:    tokens.a,
+          tx_tokens: tx_tokens
         }));
 
-        $('#address-tokens-table').DataTable({searching:false,order: []});
-        $('#address-transactions-table').DataTable({searching:false,order: []});
+        const load_paginated_transactions = (limit, skip) => {
+          app.slpdb.query(app.slpdb.transactions_by_slp_address(address, limit, skip))
+          .then((transactions) => {
+            transactions = transactions.u.concat(transactions.c);
+
+            app.get_tokens_from_transactions(transactions)
+            .then((tx_tokens) => {
+             const tbody = $('#address-transactions-table tbody');
+             tbody.html('');
+
+              transactions.forEach((tx) => {
+                tbody.prepend(
+                  app.template.address_transactions_tx({
+                    tx: tx,
+                    address: address,
+                    tx_tokens: tx_tokens
+                  })
+                );
+              });
+            });
+          });
+        };
+
+        app.util.create_pagination(
+          $('#address-transactions-table-container .pagination'),
+          0,
+          Math.ceil(total_transactions.c) / 10,
+          (page) => {
+            load_paginated_transactions(10, 10*page);
+          }
+        );
 
         resolve();
-      })
+      });
     })
   )
 
@@ -1164,6 +1271,7 @@ $(document).ready(() => {
     'error_nonslp_tx_page',
     'error_invalid_tx_page',
     'latest_transactions_tx',
+    'address_transactions_tx',
   ];
 
   app.template = {}
