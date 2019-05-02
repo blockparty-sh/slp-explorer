@@ -30,11 +30,11 @@ header ul {
     margin: auto;
 }
   
-header li {
+header #top-menu li {
     float: right;
 }
 
-header li:first-child {
+header #top-menu li:first-child {
     float: left;
 }
   
@@ -42,7 +42,7 @@ header li.search {
     margin-right: 10px;
 }
 
-header li a {
+header #top-menu li a {
     display: block;
     color: white;
     text-align: center;
@@ -77,7 +77,6 @@ header li a:hover {
 
 .header_infobox {
     text-align: center;
-    padding-top: 120px;
     max-width: 745px;
     margin: auto;
 }
@@ -561,7 +560,7 @@ footer .col {
 .format-balance10::after { content:'          '; }
 */
 
-html.index-page #header-search {
+html.index-page header {
 	display: none;
 }
 
@@ -575,12 +574,43 @@ html.index-page #header-search {
     background-size: 42px;
     background-position: center center;
     width: 70px;
-    color: rgba(0, 0, 0, 0);
+    color: rgba(0, 0, 0, 0)!important;
 }
 
+.hide-desktop {
+    display:none;
+}
+.hide-mobile {
+    display:block;
+}
 @media only screen and (max-width: 913px) {
-    header li.search { 
-        display: none;
+    .hide-desktop {
+        display:block!important;
+    }
+    .hide-mobile {
+        display:none!important;
+    }
+    header li a {
+        padding: 12px 16px;
+    }
+    header #header-logo {
+        background-size:32px;
+        width:50px;
+    }
+    header li a.show-mobile {
+        display:block;
+    }
+    header li.search input {
+        width: max-content
+    }
+    .autocomplete-suggestions {
+        position:fixed;
+        max-height:1000000px!important;
+        left:0!important;
+    }
+    .autocomplete-suggestion {
+        padding:1rem;
+        border-bottom:1px solid rgba(255, 255, 255, 0.5);
     }
     footer .col {
 		width: 100%;
