@@ -230,6 +230,29 @@ app.slpdb = {
     }
   }),
 
+  count_txs_in_mempool: () => ({
+    "v": 3,
+    "q": {
+      "db": ["u"],
+      "aggregate": [
+        {
+          "$match": {
+            "slp.valid": true
+          }
+        },
+        {
+          "$group": {
+            "_id": null,
+            "count": { "$sum": 1 }
+          }
+        }
+      ]
+    },
+    "r": {
+      "f": "[ .[] | {count: .count } ]"
+    }
+  }),
+
   txs_by_block: (height, limit=150, skip=0) => ({
     "v": 3,
     "q": {
@@ -239,6 +262,18 @@ app.slpdb = {
           { "slp.valid": true },
           { "blk.i": height }
         ]
+      },
+      "limit": limit,
+      "skip": skip
+    }
+  }),
+
+  txs_in_mempool: (limit=150, skip=0) => ({
+    "v": 3,
+    "q": {
+      "db": ["u"],
+      "find": {
+        "slp.valid": true
       },
       "limit": limit,
       "skip": skip
@@ -1150,6 +1185,57 @@ app.init_block_page = (height) =>
     })
   )
 
+app.init_block_mempool_page = (height) =>
+  new Promise((resolve, reject) =>
+    app.slpdb.query(app.slpdb.count_txs_in_mempool())
+    .then((total_txs_in_mempool) => {
+      total_txs_in_mempool = app.util.extract_total(total_txs_in_mempool);
+
+      $('main[role=main]').html(app.template.block_page({
+        height: "Mempool"
+      }));
+
+      const load_paginated_transactions = (limit, skip, done) => {
+        app.slpdb.query(app.slpdb.txs_in_mempool(limit, skip))
+        .then((transactions) => {
+          transactions = transactions.u;
+
+          app.get_tokens_from_transactions(transactions)
+          .then((tx_tokens) => {
+            const tbody = $('#block-transactions-table tbody');
+            tbody.html('');
+
+            transactions.forEach((tx) => {
+              tbody.append(
+                app.template.block_tx({
+                  tx: tx,
+                  tx_tokens: tx_tokens,
+                })
+              );
+            });
+
+            done();
+          });
+        });
+      };
+
+      if (total_txs_in_mempool.u === 0) {
+        $('#block-transactions-table tbody').html('<tr><td>No transactions found.</td></tr>');
+      } else {
+        app.util.create_pagination(
+          $('#block-transactions-table-container'),
+          0,
+          Math.ceil(total_txs_in_mempool.u / 15),
+          (page, done) => {
+            load_paginated_transactions(15, 15*page, done);
+          }
+        );
+      }
+
+      resolve();
+    })
+  )
+
 app.init_tokengraph_page = (tokenIdHex) =>
   new Promise((resolve, reject) => 
     Promise.all([
@@ -1620,7 +1706,11 @@ app.router = (whash, push_history = true) => {
       break;
     case '#block':
       document.title = 'Block ' + key + ' - TokenDB';
-      method = () => app.init_block_page(parseInt(key));
+      if (key === 'mempool') {
+        method = () => app.init_block_mempool_page();
+      } else {
+        method = () => app.init_block_page(parseInt(key));
+      }
       break;
     case '#token':
       document.title = 'Token ' + key + ' - TokenDB';
