@@ -1041,11 +1041,9 @@ app.init_token_page = (tokenIdHex) =>
 app.init_address_page = (address) =>
   new Promise((resolve, reject) =>
     Promise.all([
-      app.slpdb.query(app.slpdb.tokens_by_slp_address(address, 100)),
       app.slpdb.query(app.slpdb.count_tokens_by_slp_address(address)),
       app.slpdb.query(app.slpdb.count_total_transactions_by_slp_address(address)),
-    ]).then(([tokens, total_tokens, total_transactions]) => {
-      console.log(tokens);
+    ]).then(([total_tokens, total_transactions]) => {
       console.log(total_tokens);
       console.log(total_transactions);
 
