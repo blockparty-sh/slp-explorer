@@ -140,7 +140,6 @@
     </div>
   </div>
   <div class="rounded_row">
-    <% if (tx.slp.detail.transactionType == 'SEND') { %>
       <div class="input_output">
         <div class="rounded box-shadow table-container">
           <h3>Outputs</h3>
@@ -153,18 +152,23 @@
                 </tr>
               </thead>
               <tbody>
-                <% for (let m of tx.slp.detail.outputs) { console.log(m); %>
-                  <tr>
-                    <td class="amount"><%= m.amount %></td>
-                    <td><a class="address" href="/#address/<%= m.address %>"><%= m.address %></a></td>
-                  </tr>
+                <% if (tx.slp.detail.transactionType == 'SEND') { %>
+                  <% for (let m of tx.slp.detail.outputs) { console.log(m); %>
+                    <tr>
+                      <td class="amount"><%= m.amount %></td>
+                      <td><a class="address" href="/#address/<%= m.address %>"><%= m.address %></a></td>
+                    </tr>
+                  <% } %>
+                <% } else { %>
+                    <tr>
+                      <td>No outputs.</td>
+                    </tr>
                 <% } %>
               </tbody>
             </table>
           </div>
         </div>
       </div>
-    <% } %>
   </div>
   <div class="clearfix"></div>
 </div>
