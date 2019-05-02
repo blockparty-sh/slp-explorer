@@ -41,6 +41,10 @@ app.util = {
   create_pagination: ($el, page=0, max_page=10, fn) => {
     $el.html('');
 
+    if (max_page === 0) {
+      return;
+    }
+
     fn(page);
 
     const poffstart = page >= 5 ? page-5 : 0;
@@ -1125,6 +1129,10 @@ app.init_address_page = (address) =>
         }
       );
 
+      if (total_tokens.a === 0) {
+        $('#address-tokens-table tbody').html('<tr><td>No tokens balances found.</td></tr>');
+      }
+
       app.util.create_pagination(
         $('#address-transactions-table-container .pagination'),
         0,
@@ -1133,6 +1141,10 @@ app.init_address_page = (address) =>
           load_paginated_transactions(10, 10*page);
         }
       );
+
+      if (total_transactions.c === 0) {
+        $('#address-transactions-table tbody').html('<tr><td>No transactions found.</td></tr>');
+      }
 
       resolve();
     })
