@@ -1177,7 +1177,8 @@ app.init_token_page = (tokenIdHex) =>
       const load_paginated_token_mint_history = (limit, skip, done) => {
         app.slpdb.query(app.slpdb.token_mint_history(tokenIdHex, limit, skip))
         .then((transactions) => {
-          transactions = transactions.u.concat(transactions.c);
+          // transactions = transactions.u.concat(transactions.c); // TODO fix this
+          transactions = transactions.c;
 
           const tbody = $('#token-mint-history-table tbody');
           tbody.html('');
@@ -1197,7 +1198,8 @@ app.init_token_page = (tokenIdHex) =>
       const load_paginated_token_txs = (limit, skip, done) => {
         app.slpdb.query(app.slpdb.token_transaction_history(tokenIdHex, null, limit, skip))
         .then((transactions) => {
-          transactions = transactions.u.concat(transactions.c);
+          // transactions = transactions.u.concat(transactions.c); // TODO fix this
+          transactions = transactions.c;
 
           const tbody = $('#token-transactions-table tbody');
           tbody.html('');
@@ -1301,7 +1303,8 @@ app.init_address_page = (address) =>
       const load_paginated_transactions = (limit, skip, done) => {
         app.slpdb.query(app.slpdb.transactions_by_slp_address(address, limit, skip))
         .then((transactions) => {
-          transactions = transactions.u.concat(transactions.c);
+          // transactions = transactions.u.concat(transactions.c); // TODO fix this
+          transactions = transactions.c;
 
           app.get_tokens_from_transactions(transactions)
           .then((tx_tokens) => {
