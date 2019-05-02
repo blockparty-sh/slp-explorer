@@ -1293,6 +1293,29 @@ app.init_address_page = (address) =>
         });
       };
 
+      const load_paginated_transactions = (limit, skip) => {
+        app.slpdb.query(app.slpdb.transactions_by_slp_address(address, limit, skip))
+        .then((transactions) => {
+          transactions = transactions.u.concat(transactions.c);
+
+          app.get_tokens_from_transactions(transactions)
+          .then((tx_tokens) => {
+           const tbody = $('#address-transactions-table tbody');
+           tbody.html('');
+
+            transactions.forEach((tx) => {
+              tbody.append(
+                app.template.address_transactions_tx({
+                  tx: tx,
+                  address: address,
+                  tx_tokens: tx_tokens
+                })
+              );
+            });
+          });
+        });
+      };
+
       app.util.create_pagination(
         $('#address-tokens-table-container .pagination'),
         0,
