@@ -1106,7 +1106,7 @@ app.init_address_page = (address) =>
            tbody.html('');
 
             transactions.forEach((tx) => {
-              tbody.prepend(
+              tbody.append(
                 app.template.address_transactions_tx({
                   tx: tx,
                   address: address,
