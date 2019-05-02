@@ -443,13 +443,18 @@ main.container-fluid {
 }
 
 .table-container {
+    background-color: #fff;
+}
+
+.table-container .table {
     transition: opacity 0.2s;
     -webkit-transition: opacity 0.2s;
     opacity:1.0;
 }
-.table-container.loading {
-    opacity: 0.6;
+.table-container.loading .table {
+    opacity: 0.4;
     cursor:progress;
+    pointer-events:none
 }
 
 #recent-transactions-table-container {

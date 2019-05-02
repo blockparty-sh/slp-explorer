@@ -1,7 +1,7 @@
 <div class="transaction_box">
-  <div class="lh-100">
-    <h2 class="mb-0 text-white lh-100">Transaction</h2>
-    <h6 class="mb-0"><%= tx.tx.h %></h6>
+  <div>
+    <h2 class="text-white">Transaction</h2>
+    <h6><%= tx.tx.h %></h6>
     <a href="#txgraph/<%= tx.tx.h %>">
       <button type="button" class="button button_red">View Graph</button>
     </a>
@@ -13,12 +13,12 @@
 
 <div class="rounded_row">
   <div class="col-md-6">
-    <div class="bg-white rounded box-shadow mb-3">
+    <div class="rounded box-shadow">
       <div class="table-responsive">
         <table class="table">
           <thead>
             <tr>
-              <th><h3 class="pl-3 pt-3 pb-1 mb-1">Details</h3></th>
+              <th><h3>Details</h3></th>
             </tr>
           </thead>
           <tbody>
@@ -50,13 +50,13 @@
 
 <div class="rounded_row">
   <div class="col-md-6">
-    <div id="token-details-table-container" class="bg-white rounded box-shadow mb-3 table-container">
+    <div id="token-details-table-container" class="rounded box-shadow table-container">
       <div class="table-responsive">
         <table class="table" id="token-details-table">
           <thead>
             <tr>
               <td>
-                  <h3 class="pb-1 mb-1">Token Details</h3>
+                  <h3>Token Details</h3>
               </td>
             </tr>
           </thead>
@@ -112,8 +112,8 @@
 
 <div class="rounded_row">
   <div class="input_output">
-    <div class="bg-white rounded box-shadow mb-3">
-      <h3 class="pl-3 pt-3 pb-1 mb-1">Inputs</h3>
+    <div class="rounded box-shadow">
+      <h3>Inputs</h3>
       <div class="table-responsive">
         <table class="table">
           <thead>
@@ -136,8 +136,8 @@
   </div>
   <% if (tx.slp.detail.transactionType == 'SEND') { %>
     <div class="input_output">
-      <div class="bg-white rounded box-shadow mb-3">
-        <h3 class="pl-3 pt-3 pb-1 mb-1">Outputs</h3>
+      <div class="rounded box-shadow">
+        <h3>Outputs</h3>
         <div class="table-responsive">
           <table class="table">
             <thead>
