@@ -1232,6 +1232,44 @@ app.init_block_mempool_page = (height) =>
         );
       }
 
+      app.slpsocket.init_listener({
+        "v": 3,
+        "q": {
+          "db": ["u"],
+          "find": {
+            "slp.valid": true
+          }
+        }
+      }, (data) => {
+        if (data.type !== 'mempool' || data.data.length !== 1) {
+          return;
+        }
+        const sna = data.data[0];
+
+        app.slpdb.query(app.slpdb.token(sna.slp.detail.tokenIdHex))
+        .then((token_data) => {
+          if (token_data.t.length === 0) {
+            console.error('slpsocket token not found');
+            return;
+          }
+          const token = token_data.t[0];
+          const data = {
+            'txid': sna.tx.h,
+            'symbol': token.tokenDetails.symbol,
+            'amount': app.extract_sent_amount_from_tx(sna),
+          };
+
+          $('#block-transactions-table tbody').prepend(
+            app.template.block_tx({
+              tx: sna,
+              tx_tokens: {
+                [token.tokenDetails.tokenIdHex]: token
+              }
+            })
+          );
+        });
+      });
+
       resolve();
     })
   )
