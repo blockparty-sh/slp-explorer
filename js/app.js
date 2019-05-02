@@ -204,6 +204,47 @@ app.slpdb = {
     }
   }),
 
+  count_txs_by_block: (height) => ({
+    "v": 3,
+    "q": {
+      "db": ["c"],
+      "aggregate": [
+        {
+          "$match": {
+            "$and": [
+              { "slp.valid": true },
+              { "blk.i": height }
+            ]
+          }
+        },
+        {
+          "$group": {
+            "_id": null,
+            "count": { "$sum": 1 }
+          }
+        }
+      ]
+    },
+    "r": {
+      "f": "[ .[] | {count: .count } ]"
+    }
+  }),
+
+  txs_by_block: (height, limit=150, skip=0) => ({
+    "v": 3,
+    "q": {
+      "db": ["c"],
+      "find": {
+        "$and": [
+          { "slp.valid": true },
+          { "blk.i": height }
+        ]
+      },
+      "limit": limit,
+      "skip": skip
+    }
+  }),
+
   token: (tokenIdHex) => ({
     "v": 3,
     "q": {
@@ -1040,6 +1081,75 @@ app.init_tx_page = (txid) =>
     })
   )
 
+app.init_block_page = (height) =>
+  new Promise((resolve, reject) =>
+    app.slpdb.query(app.slpdb.count_txs_by_block(height))
+    .then((total_txs_by_block) => {
+      total_txs_by_block = app.util.extract_total(total_txs_by_block);
+
+      $('main[role=main]').html(app.template.block_page({
+        height: height
+      }));
+
+
+      /*
+       * TODO
+      app.util.create_pagination(
+        $('#block-pagination-container'),
+        height,
+        590000,
+        (page, done) => {
+          if ($('#block-pagination-container').data('called') === true) {
+            return app.router('/#block/'+page);
+          } else {
+            $('#block-pagination-container').data('called', true);
+          }
+          done();
+        }
+      );*/
+
+      const load_paginated_transactions = (limit, skip, done) => {
+        app.slpdb.query(app.slpdb.txs_by_block(height, limit, skip))
+        .then((transactions) => {
+          transactions = transactions.c;
+
+          app.get_tokens_from_transactions(transactions)
+          .then((tx_tokens) => {
+            const tbody = $('#block-transactions-table tbody');
+            tbody.html('');
+
+            transactions.forEach((tx) => {
+              tbody.append(
+                app.template.block_tx({
+                  tx: tx,
+                  tx_tokens: tx_tokens,
+                })
+              );
+            });
+
+            done();
+          });
+        });
+      };
+
+
+      if (total_txs_by_block.c === 0) {
+        $('#block-transactions-table tbody').html('<tr><td>No transactions found.</td></tr>');
+      } else {
+        app.util.create_pagination(
+          $('#block-transactions-table-container'),
+          0,
+          Math.ceil(total_txs_by_block.c / 15),
+          (page, done) => {
+            load_paginated_transactions(15, 15*page, done);
+          }
+        );
+      }
+
+      resolve();
+    })
+  )
+
 app.init_tokengraph_page = (tokenIdHex) =>
   new Promise((resolve, reject) => 
     Promise.all([
@@ -1508,6 +1618,10 @@ app.router = (whash, push_history = true) => {
       document.title = 'Transaction ' + key + ' - TokenDB';
       method = () => app.init_tx_page(key);
       break;
+    case '#block':
+      document.title = 'Block ' + key + ' - TokenDB';
+      method = () => app.init_block_page(parseInt(key));
+      break;
     case '#token':
       document.title = 'Token ' + key + ' - TokenDB';
       method = () => app.init_token_page(key);
@@ -1572,6 +1686,8 @@ $(document).ready(() => {
     'all_tokens_page',
     'all_tokens_token',
     'tx_page',
+    'block_page',
+    'block_tx',
     'token_page',
     'token_mint_tx',
     'token_address',

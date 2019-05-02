@@ -1,0 +1,25 @@
+<tr>
+  <td><a class="txid" href="/#tx/<%= tx.tx.h %>"><%= app.util.compress_txid(tx.tx.h) %></a></td>
+  <td><%= tx.slp.detail.transactionType %></td>
+  <td class="amount">
+    <% if (tx.slp.detail.transactionType === 'SEND') { %>
+      <% const sent_amount = app.extract_sent_amount_from_tx(tx); %>
+      <span class="<%= app.util.format_balance_class(sent_amount) %>"><%=  sent_amount %></span>
+    <% } %>
+    <% if (tx.slp.detail.transactionType === 'GENESIS'
+        || tx.slp.detail.transactionType === 'MINT') { %>
+      <%= tx.slp.detail.outputs[0].amount %>
+    <% } %>
+  </td>
+  <td>
+    <% if (tx_tokens.hasOwnProperty(tx.slp.detail.tokenIdHex)) { %>
+      <% if (tx_tokens[tx.slp.detail.tokenIdHex].tokenDetails.symbol.length > 0) { %>
+        <a href="/#token/<%= tx.slp.detail.tokenIdHex %>"><%= tx_tokens[tx.slp.detail.tokenIdHex].tokenDetails.name %> $<%= tx_tokens[tx.slp.detail.tokenIdHex].tokenDetails.symbol %></a>
+      <% } else { %>
+        <span class="mono"><a href="/#token/<%= tx.slp.detail.tokenIdHex %>">[none]</a></span>
+      <% } %>
+    <% } else {%>
+      <span class="mono"><a href="/#token/<%= tx.slp.detail.tokenIdHex %>">[not found]</a></span>
+    <% } %>
+  </td>
+</tr>

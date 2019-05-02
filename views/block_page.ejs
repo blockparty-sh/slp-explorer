@@ -1,0 +1,37 @@
+<div class="transaction_box">
+  <div>
+    <h2 class="text-white">Block <%= height %></h2>
+
+    <div id="block-pagination-container">
+      <ul class="pagination">
+      </ul>
+    </div>
+
+    <a target="_blank" href="https://explorer.bitcoin.com/bch/block/<%= height %>">
+      <button type="button" class="button button_green right">View on BCH Explorer</button>
+    </a>
+  </div>
+</div>
+
+<div class="rounded_row">
+  <div id="block-transactions-table-container" class="rounded box-shadow table-container">
+    <h3 class="border-bottom border-gray">Transactions</h3>
+    <div class="table-responsive">
+      <table class="table" id="block-transactions-table">
+        <thead>
+          <tr>
+            <th>Txid</th>
+            <th>Type</th>
+            <th class="amount">Amount</th>
+            <th>Token</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Loading...</td></tr>
+        </tbody>
+      </table>
+      <ul class="pagination">
+      </ul>
+    </div>
+  </div>
+</div>

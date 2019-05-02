@@ -227,7 +227,7 @@ a {
   transition: background-color .3s;
   border: 1px solid #ddd; /* Gray */
   cursor:pointer;
-  width: 2rem;
+  min-width: 2rem;
   background-color:#fff;
 }
 
