@@ -990,17 +990,18 @@ app.init_all_tokens_page = () =>
         });
       };
 
-      app.util.create_pagination(
-        $('#all-tokens-table-container'),
-        0,
-        Math.ceil(all_tokens_count.t / 15),
-        (page, done) => {
-          load_paginated_tokens(15, 15*page, done);
-        }
-      );
 
       if (all_tokens_count.t === 0) {
         $('#all-tokens-table tbody').html('<tr><td>No tokens found.</td></tr>');
+      } else {
+        app.util.create_pagination(
+          $('#all-tokens-table-container'),
+          0,
+          Math.ceil(all_tokens_count.t / 15),
+          (page, done) => {
+            load_paginated_tokens(15, 15*page, done);
+          }
+        );
       }
 
       resolve();
@@ -1221,43 +1222,43 @@ app.init_token_page = (tokenIdHex) =>
         });
       };
 
-      app.util.create_pagination(
-        $('#token-addresses-table-container'),
-        0,
-        Math.ceil(token.tokenStats.qty_valid_token_addresses / 10),
-        (page, done) => {
-          load_paginated_token_addresses(10, 10*page, done);
-        }
-      );
-
       if (token.tokenStats.qty_valid_token_addresses === 0) {
         $('#token-addresses-history-table tbody').html('<tr><td>No addresses found.</td></tr>');
+      } else {
+        app.util.create_pagination(
+          $('#token-addresses-table-container'),
+          0,
+          Math.ceil(token.tokenStats.qty_valid_token_addresses / 10),
+          (page, done) => {
+            load_paginated_token_addresses(10, 10*page, done);
+          }
+        );
       }
-
-      app.util.create_pagination(
-        $('#token-mint-history-table-container'),
-        0,
-        Math.ceil(total_token_mint_transactions.c / 10),
-        (page, done) => {
-          load_paginated_token_mint_history(10, 10*page, done);
-        }
-      );
 
       if (total_token_mint_transactions.c === 0) {
         $('#token-mint-history-table tbody').html('<tr><td>No mints found.</td></tr>');
+      } else {
+        app.util.create_pagination(
+          $('#token-mint-history-table-container'),
+          0,
+          Math.ceil(total_token_mint_transactions.c / 10),
+          (page, done) => {
+            load_paginated_token_mint_history(10, 10*page, done);
+          }
+        );
       }
-
-      app.util.create_pagination(
-        $('#token-transactions-table-container'),
-        0,
-        Math.ceil(token.tokenStats.qty_valid_txns_since_genesis / 10),
-        (page, done) => {
-          load_paginated_token_txs(10, 10*page, done);
-        }
-      );
 
       if (token.tokenStats.qty_valid_txns_since_genesis === 0) {
         $('#token-transactions-table tbody').html('<tr><td>No transactions found.</td></tr>');
+      } else {
+        app.util.create_pagination(
+          $('#token-transactions-table-container'),
+          0,
+          Math.ceil(token.tokenStats.qty_valid_txns_since_genesis / 10),
+          (page, done) => {
+            load_paginated_token_txs(10, 10*page, done);
+          }
+        );
       }
 
       resolve();
@@ -1331,30 +1332,32 @@ app.init_address_page = (address) =>
         });
       };
 
-      app.util.create_pagination(
-        $('#address-tokens-table-container'),
-        0,
-        Math.ceil(total_tokens.a / 10),
-        (page, done) => {
-          load_paginated_tokens(10, 10*page, done);
-        }
-      );
 
       if (total_tokens.a === 0) {
         $('#address-tokens-table tbody').html('<tr><td>No tokens balances found.</td></tr>');
+      } else {
+        app.util.create_pagination(
+          $('#address-tokens-table-container'),
+          0,
+          Math.ceil(total_tokens.a / 10),
+          (page, done) => {
+            load_paginated_tokens(10, 10*page, done);
+          }
+        );
       }
 
-      app.util.create_pagination(
-        $('#address-transactions-table-container'),
-        0,
-        Math.ceil(total_transactions.c / 10),
-        (page, done) => {
-          load_paginated_transactions(10, 10*page, done);
-        }
-      );
 
       if (total_transactions.c === 0) {
         $('#address-transactions-table tbody').html('<tr><td>No transactions found.</td></tr>');
+      } else {
+        app.util.create_pagination(
+          $('#address-transactions-table-container'),
+          0,
+          Math.ceil(total_transactions.c / 10),
+          (page, done) => {
+            load_paginated_transactions(10, 10*page, done);
+          }
+        );
       }
 
       resolve();
