@@ -95,6 +95,43 @@ app.slpdb = {
     "q": {
       "db": ["t"],
       "find": {},
+      "sort": {
+        "tokenStats.qty_valid_txns_since_genesis": -1
+      },
+      "limit": limit,
+      "skip": skip
+    }
+  }),
+
+  count_all_tokens: () => ({
+    "v": 3,
+    "q": {
+      "db": ["t"],
+      "aggregate": [
+        {
+          "$match": {}
+        },
+        {
+          "$group": {
+            "_id": null,
+            "count": { "$sum": 1 }
+          }
+        }
+      ]
+    },
+    "r": {
+      "f": "[ .[] | {count: .count } ]"
+    }
+  }),
+
+  tokens_by_slp_address: (address, limit=100, skip=0) => ({
+    "v": 3,
+    "q": {
+      "db": ["a"],
+      "find": {
+        "address": address,
+      },
+      "sort": { "token_balance": -1 },
       "limit": limit,
       "skip": skip
     }
@@ -865,11 +902,52 @@ app.init_index_page = () =>
   
 app.init_all_tokens_page = () =>
   new Promise((resolve, reject) =>
-    app.slpdb.query(app.slpdb.all_tokens(1000))
-    .then((data) => {
-      $('main[role=main]')
-        .html(app.template.all_tokens_page(data))
-        .find('#tokens-table').DataTable({order: [3, 'desc']}) // sort by transaction count
+    app.slpdb.query(app.slpdb.count_all_tokens())
+    .then((all_tokens_count) => {
+      console.log(all_tokens_count);
+      if (! all_tokens_count) {
+        all_tokens_count = {
+          t: 0
+        };
+      } else {
+        all_tokens_count = {
+          t: all_tokens_count.t.length ? all_tokens_count.t[0].count : 0
+        };
+      }
+
+      $('main[role=main]').html(app.template.all_tokens_page());
+
+      const load_paginated_tokens = (limit, skip) => {
+        app.slpdb.query(app.slpdb.all_tokens(limit, skip))
+        .then((tokens) => {
+          tokens = tokens.t;
+
+          const tbody = $('#all-tokens-table tbody');
+          tbody.html('');
+
+          tokens.forEach((token) => {
+            tbody.append(
+              app.template.all_tokens_token({
+                token: token
+              })
+            );
+          });
+        });
+      };
+
+      app.util.create_pagination(
+        $('#all-tokens-table-container .pagination'),
+        0,
+        Math.ceil(all_tokens_count.t) / 10,
+        (page) => {
+          load_paginated_tokens(10, 10*page);
+        }
+      );
+
+      if (all_tokens_count.t === 0) {
+        $('#all-tokens-table tbody').html('<tr><td>No tokens found.</td></tr>');
+      }
+
       resolve();
     })
   )
@@ -1351,19 +1429,20 @@ $(document).ready(() => {
 
   const views = [
     'index_page',
+    'latest_transactions_tx',
     'all_tokens_page',
+    'all_tokens_token',
     'tx_page',
     'token_page',
     'address_page',
+    'address_transactions_tx',
+    'address_token',
     'tokengraph_page',
     'addressgraph_page',
     'txgraph_page',
     'error_404_page',
     'error_nonslp_tx_page',
     'error_invalid_tx_page',
-    'latest_transactions_tx',
-    'address_transactions_tx',
-    'address_token',
   ];
 
   app.template = {}

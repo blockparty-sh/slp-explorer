@@ -3,9 +3,9 @@
     <h2 class="mb-0 text-white lh-100">All Tokens</h2>
   </div>
 </div>
-<div id="tokens-table-container" class="my-3 p-3 bg-white rounded box-shadow table-container">
+<div id="all-tokens-table-container" class="my-3 p-3 bg-white rounded box-shadow table-container">
   <div class="table-responsive">
-    <table class="table" id="tokens-table">
+    <table class="table" id="all-tokens-table">
       <thead>
         <tr>
           <th>Token Id</th>
@@ -18,27 +18,10 @@
         </tr>
       </thead>
       <tbody>
-      <% for (let m of t) { %>
-        <tr>
-          <td><a class="tokenid" href="/#token/<%= m.tokenDetails.tokenIdHex %>"><%= app.util.compress_tokenid(m.tokenDetails.tokenIdHex) %></a></td>
-          <td class="nowrap"><%= m.tokenDetails.symbol %></td>
-          <td class="nowrap"><%= app.util.compress_string(m.tokenDetails.name) %></td>
-          <td><%= m.tokenStats.qty_valid_txns_since_genesis %></td>
-          <td><%= m.tokenStats.qty_valid_token_utxos %></td>
-          <td><%= m.tokenStats.qty_valid_token_addresses %></td>
-          <td class="nowrap">
-            <% if (m.tokenDetails.documentUri) { %>
-              <% const url = app.util.document_link(m.tokenDetails.documentUri); %>
-              <% if (url.length) { %>
-                <a href="<%= url %>"><%= app.util.compress_string(m.tokenDetails.documentUri) %></a>
-              <% } else { %>
-                <%= app.util.compress_string(m.tokenDetails.documentUri) %>
-              <% } %>
-            <% } %>
-          </td>
-        </tr>
-      <% } %>
+        <tr><td>Loading...</td><tr>
       </tbody>
     </table>
+    <ul class="pagination">
+    </ul>
   </div>
 </div>
