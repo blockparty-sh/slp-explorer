@@ -15,9 +15,6 @@
       <div id="recent-transactions-table-container" class="">
         <h3 class="">Latest Transactions</h3>
 
-        <% if (transactions.length === 0) { %>
-          <h6>No recent transactions... is the SLPDB endpoint working?</h6></h6>
-        <% } else { %>
           <div class="table-responsive">
             <table id="recent-transactions-table">
               <thead>
@@ -30,13 +27,10 @@
                 </tr>
               </thead>
               <tbody>
-                <% for (let tx of transactions) { %>
-                  <%- app.template.latest_transactions_tx({ tx: tx, tx_tokens: tx_tokens }) %>
-                <% } %>
+                <tr><td>Loading...</td></tr>
               </tbody>
             </table>
           </div>
-        <% } %>
       </div>
     </div>
   </div>
