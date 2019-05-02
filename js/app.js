@@ -948,6 +948,10 @@ app.init_index_page = () =>
           });
         });
 
+        for (let i=$('#recent-transactions-table tbody tr').length; i>10; --i) {
+          $('#recent-transactions-table tbody tr:last').remove();
+        }
+
         resolve();
       })
     })
