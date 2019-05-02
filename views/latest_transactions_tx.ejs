@@ -1,16 +1,22 @@
 <% const sent_amount = app.extract_sent_amount_from_tx(tx); %>
-  <tr>
-    <td><a class="txid" href="/#tx/<%= tx.tx.h %>"><%= app.util.compress_txid(tx.tx.h) %></a></td>
-    <td>
-      <a href="#token/<%= tx.slp.detail.tokenIdHex %>">
-      <% if (tx_tokens[tx.slp.detail.tokenIdHex].tokenDetails.symbol) { %>
-        <%= tx_tokens[tx.slp.detail.tokenIdHex].tokenDetails.symbol %>
-      <% } else { %>
-        <span class="mono">[none]</span>
-      <% } %>
-      </a>
-    </td>
-    <td class="amount"><%= sent_amount %></td>
-    <td><% if (tx.blk) { %><%= tx.blk.i %><% } else { %>Pending<% } %></td>
-    <td class="nowrap"><% if (tx.blk) { %><%= new Date(tx.blk.t*1000).toLocaleString() %><% } else { %>Pending<% } %></td>
-  </tr>
+<tr>
+  <td><a class="txid" href="/#tx/<%= tx.tx.h %>"><%= app.util.compress_txid(tx.tx.h) %></a></td>
+  <td>
+    <a href="#token/<%= tx.slp.detail.tokenIdHex %>">
+    <% if (tx_tokens[tx.slp.detail.tokenIdHex].tokenDetails.symbol) { %>
+      <%= tx_tokens[tx.slp.detail.tokenIdHex].tokenDetails.symbol %>
+    <% } else { %>
+      <span class="mono">[none]</span>
+    <% } %>
+    </a>
+  </td>
+  <td class="amount"><%= sent_amount %></td>
+  <td>
+    <% if (tx.blk) { %>
+      <a href="#block/<%= tx.blk.i %>"><%= tx.blk.i %></a>
+    <% } else { %>
+      <a href="#block/mempool">Pending</a>
+    <% } %>
+  </td>
+  <td class="nowrap"><% if (tx.blk) { %><%= new Date(tx.blk.t*1000).toLocaleString() %><% } else { %>Pending<% } %></td>
+</tr>

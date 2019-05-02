@@ -29,7 +29,13 @@
               </tr>
               <tr>
                 <th role="col">Block</th>
-                <td><% if(tx.blk) { %><%= tx.blk.i %><% } else { %>Pending<% } %></td>
+                <td>
+                  <% if (tx.blk) { %>
+                    <a href="#block/<%= tx.blk.i %>"><%= tx.blk.i %></a>
+                  <% } else { %>
+                    <a href="#block/mempool">Pending</a>
+                  <% } %>
+                </td>
               </tr>
               <tr>
                 <th role="col">Txid</th>

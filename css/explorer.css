@@ -341,6 +341,10 @@ a {
     float: left;
 }
 
+a button.button.left:first-child {
+    margin-right:1rem;
+}
+
 h6 {
     font-size: 0.85em;
     color: #464646;
@@ -620,4 +624,11 @@ html.index-page header {
       float:none;
       margin-right:0;
     }
+
+    .transaction_box a button.button {
+        float:none!important;
+        width:100%;
+        margin-bottom:1rem;
+    }
+
 }

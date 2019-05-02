@@ -11,6 +11,12 @@
       <%= tx.slp.detail.outputs[0].amount %>
     <% } %>
   </td>
-  <td><% if (tx.blk) { %><%= tx.blk.i %><% } else { %>Pending<% } %></td>
+  <td>
+    <% if (tx.blk) { %>
+      <a href="#block/<%= tx.blk.i %>"><%= tx.blk.i %></a>
+    <% } else { %>
+      <a href="#block/mempool">Pending</a>
+    <% } %>
+  </td>
   <td><% if (tx.blk) { %><%= new Date(tx.blk.t*1000).toLocaleString() %><% } else { %>Pending<% } %></td>
 </tr>

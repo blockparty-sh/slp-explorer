@@ -1193,7 +1193,7 @@ app.init_block_mempool_page = (height) =>
       total_txs_in_mempool = app.util.extract_total(total_txs_in_mempool);
 
       $('main[role=main]').html(app.template.block_page({
-        height: "Mempool"
+        height: "mempool"
       }));
 
       const load_paginated_transactions = (limit, skip, done) => {

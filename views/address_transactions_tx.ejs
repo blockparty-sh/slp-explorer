@@ -1,6 +1,12 @@
 <% const cash_address = slpjs.Utils.toCashAddress(address).split(':')[1]; %>
 <tr>
-  <td><% if (tx.blk) { %><%= tx.blk.i %><% } else { %>Pending<% } %></td>
+  <td>
+    <% if (tx.blk) { %>
+      <a href="#block/<%= tx.blk.i %>"><%= tx.blk.i %></a>
+    <% } else { %>
+      <a href="#block/mempool">Pending</a>
+    <% } %>
+  </td>
   <td><a class="txid" href="/#tx/<%= tx.tx.h %>"><%= app.util.compress_txid(tx.tx.h) %></a></td>
   <td>
     <% if (tx.slp.detail.transactionType === 'SEND') { %>
