@@ -11,146 +11,35 @@
   </div>
 </div>
 
-<div class="rounded_row">
-  <div class="col-md-6">
-    <div class="rounded box-shadow">
-      <div class="table-responsive">
-        <table class="table">
-          <thead>
-            <tr>
-              <th><h3>Details</h3></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th role="col">Type</th>
-              <td><%= tx.slp.detail.transactionType %></td>
-            </tr>
-            <tr>
-              <th role="col">Block</th>
-              <td><% if(tx.blk) { %><%= tx.blk.i %><% } else { %>Pending<% } %></td>
-            </tr>
-            <tr>
-              <th role="col">Txid</th>
-              <td><a class="txid" href="#tx/<%= tx.tx.h %>"><%= tx.tx.h %></a></td>
-            </tr>
-
-            <% if (tx.slp.detail.transactionType == 'GENESIS') { %>
-              <tr>
-                <th role="col">Creator</th>
-                <td><a class="address" href="#address/<%= tx.slp.detail.outputs[0].address %>"><%= tx.slp.detail.outputs[0].address %></a></td>
-              </tr>
-            <% } %>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="rounded_row">
-  <div class="col-md-6">
-    <div id="token-details-table-container" class="rounded box-shadow table-container">
-      <div class="table-responsive">
-        <table class="table" id="token-details-table">
-          <thead>
-            <tr>
-              <td>
-                  <h3>Token Details</h3>
-              </td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">Token Id</th>
-              <td><a class="tokenid" href="/#token/<%= tx.slp.detail.tokenIdHex %>"><%= tx.slp.detail.tokenIdHex %></a></td>
-            </tr>
-            <tr>
-              <th scope="row">Name</th>
-              <td><%= token.tokenDetails.name %></td>
-            </tr>
-            <tr>
-              <th scope="row">Symbol</th>
-              <td><%= token.tokenDetails.symbol %></td>
-            </tr>
-            <tr>
-              <th scope="row">Timestamp</th>
-              <td><%= token.tokenDetails.timestamp %></td>
-            </tr>
-            <tr>
-              <th scope="row">Quantity</th>
-              <td><%= Number(token.tokenDetails.genesisOrMintQuantity).toLocaleString() %></td>
-            </tr>
-            <tr>
-              <th scope="row">Decimals</th>
-              <td><%= token.tokenDetails.decimals %></td>
-            </tr>
-            <tr>
-              <th scope="row">Document URI</th>
-              <td>
-                <% if (token.tokenDetails.documentUri) { %>
-                  <% const url = app.util.document_link(token.tokenDetails.documentUri); %>
-                  <% if (url.length) { %>
-                    <a href="<%= url %>"><%= token.tokenDetails.documentUri %></a>
-                  <% } else { %>
-                    <%= token.tokenDetails.documentUri %>
-                  <% } %>
-                <% } %>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">Document Checksum</th>
-              <td><%= token.tokenDetails.documentSha256Hex %></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<div class="rounded_row">
-  <div class="input_output">
-    <div class="rounded box-shadow">
-      <h3>Inputs</h3>
-      <div class="table-responsive">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Transaction ID</th>
-              <th>Address</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% for (let m of tx.in) { %>
-              <tr>
-                <td><a class="txid" href="/#tx/<%= m.e.h %>"><%= app.util.compress_txid(m.e.h) %></a></td>
-                <td><a class="address" href="/#address/<%= slpjs.Utils.toSlpAddress(m.e.a) %>"><%= slpjs.Utils.toSlpAddress(m.e.a) %></a></td>
-              </tr>
-            <% } %>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-  <% if (tx.slp.detail.transactionType == 'SEND') { %>
-    <div class="input_output">
-      <div class="rounded box-shadow">
-        <h3>Outputs</h3>
+<div class="rounded_row_50percent_container">
+  <div class="rounded_row">
+    <div class="col-md-6">
+      <div class="rounded box-shadow table-container">
         <div class="table-responsive">
           <table class="table">
             <thead>
               <tr>
-                <th class="amount">Amount</th>
-                <th>Address</th>
+                <th><h3>Details</h3></th>
               </tr>
             </thead>
             <tbody>
-              <% for (let m of tx.slp.detail.outputs) { console.log(m); %>
+              <tr>
+                <th role="col">Type</th>
+                <td><%= tx.slp.detail.transactionType %></td>
+              </tr>
+              <tr>
+                <th role="col">Block</th>
+                <td><% if(tx.blk) { %><%= tx.blk.i %><% } else { %>Pending<% } %></td>
+              </tr>
+              <tr>
+                <th role="col">Txid</th>
+                <td><a class="txid" href="#tx/<%= tx.tx.h %>"><%= tx.tx.h %></a></td>
+              </tr>
+  
+              <% if (tx.slp.detail.transactionType == 'GENESIS') { %>
                 <tr>
-                  <td class="amount"><%= m.amount %></td>
-                  <td><a class="address" href="/#address/<%= m.address %>"><%= m.address %></a></td>
+                  <th role="col">Creator</th>
+                  <td><a class="address" href="#address/<%= tx.slp.detail.outputs[0].address %>"><%= tx.slp.detail.outputs[0].address %></a></td>
                 </tr>
               <% } %>
             </tbody>
@@ -158,5 +47,124 @@
         </div>
       </div>
     </div>
-  <% } %>
+  </div>
+  
+  <div class="rounded_row">
+    <div class="col-md-6">
+      <div id="token-details-table-container" class="rounded box-shadow table-container">
+        <div class="table-responsive">
+          <table class="table" id="token-details-table">
+            <thead>
+              <tr>
+                <td>
+                    <h3>Token Details</h3>
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Token Id</th>
+                <td><a class="tokenid" href="/#token/<%= tx.slp.detail.tokenIdHex %>"><%= tx.slp.detail.tokenIdHex %></a></td>
+              </tr>
+              <tr>
+                <th scope="row">Name</th>
+                <td><%= token.tokenDetails.name %></td>
+              </tr>
+              <tr>
+                <th scope="row">Symbol</th>
+                <td><%= token.tokenDetails.symbol %></td>
+              </tr>
+              <tr>
+                <th scope="row">Timestamp</th>
+                <td><%= token.tokenDetails.timestamp %></td>
+              </tr>
+              <tr>
+                <th scope="row">Quantity</th>
+                <td><%= Number(token.tokenDetails.genesisOrMintQuantity).toLocaleString() %></td>
+              </tr>
+              <tr>
+                <th scope="row">Decimals</th>
+                <td><%= token.tokenDetails.decimals %></td>
+              </tr>
+              <tr>
+                <th scope="row">Document URI</th>
+                <td>
+                  <% if (token.tokenDetails.documentUri) { %>
+                    <% const url = app.util.document_link(token.tokenDetails.documentUri); %>
+                    <% if (url.length) { %>
+                      <a href="<%= url %>"><%= token.tokenDetails.documentUri %></a>
+                    <% } else { %>
+                      <%= token.tokenDetails.documentUri %>
+                    <% } %>
+                  <% } %>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Document Checksum</th>
+                <td><%= token.tokenDetails.documentSha256Hex %></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="clearfix"></div>
+</div>
+
+
+<div class="rounded_row_50percent_container">
+  <div class="rounded_row">
+    <div class="input_output">
+      <div class="rounded box-shadow table-container">
+        <h3>Inputs</h3>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Transaction ID</th>
+                <th>Address</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% for (let m of tx.in) { %>
+                <tr>
+                  <td><a class="txid" href="/#tx/<%= m.e.h %>"><%= app.util.compress_txid(m.e.h) %></a></td>
+                  <td><a class="address" href="/#address/<%= slpjs.Utils.toSlpAddress(m.e.a) %>"><%= slpjs.Utils.toSlpAddress(m.e.a) %></a></td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="rounded_row">
+    <% if (tx.slp.detail.transactionType == 'SEND') { %>
+      <div class="input_output">
+        <div class="rounded box-shadow table-container">
+          <h3>Outputs</h3>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th class="amount">Amount</th>
+                  <th>Address</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% for (let m of tx.slp.detail.outputs) { console.log(m); %>
+                  <tr>
+                    <td class="amount"><%= m.amount %></td>
+                    <td><a class="address" href="/#address/<%= m.address %>"><%= m.address %></a></td>
+                  </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    <% } %>
+  </div>
+  <div class="clearfix"></div>
 </div>

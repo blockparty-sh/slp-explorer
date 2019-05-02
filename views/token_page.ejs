@@ -7,124 +7,128 @@
     </a>
   </div>
 </div>
-<div class="rounded_row">
-  <div id="token-details-table-container" class="rounded box-shadow table-container">
-    <div class="table-responsive">
-      <table class="table" id="token-details-table">
-        <thead>
-          <tr>
-            <td>
-                <h3>Details</h3>
-            </td>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row">Token Id</th>
-            <td><a class="tokenid" href="/#token/<%= token.tokenDetails.tokenIdHex %>"><%= token.tokenDetails.tokenIdHex %></a></span></td>
-          </tr>
-          <tr>
-            <th scope="row">Name</th>
-            <td><%= token.tokenDetails.name %></td>
-          </tr>
-          <tr>
-            <th scope="row">Symbol</th>
-            <td><%= token.tokenDetails.symbol %></td>
-          </tr>
-          <tr>
-            <th scope="row">Timestamp</th>
-            <td><%= token.tokenDetails.timestamp %></td>
-          </tr>
-          <tr>
-            <th scope="row">Quantity</th>
-            <td><%= Number(token.tokenStats.qty_token_minted).toLocaleString() %></td>
-          </tr>
-          <tr>
-            <th scope="row">Decimals</th>
-            <td><%= token.tokenDetails.decimals %></td>
-          </tr>
-          <tr>
-            <th scope="row">Document URI</th>
-            <td>
-              <% if (token.tokenDetails.documentUri) { %>
-                <% const url = app.util.document_link(token.tokenDetails.documentUri); %>
-                <% if (url.length) { %>
-                  <a href="<%= url %>"><%= token.tokenDetails.documentUri %></a>
-                <% } else { %>
-                  <%= token.tokenDetails.documentUri %>
+
+<div class="rounded_row_50percent_container">
+  <div class="rounded_row">
+    <div id="token-details-table-container" class="rounded box-shadow table-container">
+      <div class="table-responsive">
+        <table class="table" id="token-details-table">
+          <thead>
+            <tr>
+              <td>
+                  <h3>Details</h3>
+              </td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Token Id</th>
+              <td><a class="tokenid" href="/#token/<%= token.tokenDetails.tokenIdHex %>"><%= token.tokenDetails.tokenIdHex %></a></span></td>
+            </tr>
+            <tr>
+              <th scope="row">Name</th>
+              <td><%= token.tokenDetails.name %></td>
+            </tr>
+            <tr>
+              <th scope="row">Symbol</th>
+              <td><%= token.tokenDetails.symbol %></td>
+            </tr>
+            <tr>
+              <th scope="row">Timestamp</th>
+              <td><%= token.tokenDetails.timestamp %></td>
+            </tr>
+            <tr>
+              <th scope="row">Quantity</th>
+              <td><%= Number(token.tokenStats.qty_token_minted).toLocaleString() %></td>
+            </tr>
+            <tr>
+              <th scope="row">Decimals</th>
+              <td><%= token.tokenDetails.decimals %></td>
+            </tr>
+            <tr>
+              <th scope="row">Document URI</th>
+              <td>
+                <% if (token.tokenDetails.documentUri) { %>
+                  <% const url = app.util.document_link(token.tokenDetails.documentUri); %>
+                  <% if (url.length) { %>
+                    <a href="<%= url %>"><%= token.tokenDetails.documentUri %></a>
+                  <% } else { %>
+                    <%= token.tokenDetails.documentUri %>
+                  <% } %>
                 <% } %>
-              <% } %>
-            </td>
-          </tr>
-          <tr>
-            <th scope="row">Document Checksum</th>
-            <td><span class="mono word-break-all"><%= token.tokenDetails.documentSha256Hex %></span></td>
-          </tr>
-        </tbody>
-      </table>
+              </td>
+            </tr>
+            <tr>
+              <th scope="row">Document Checksum</th>
+              <td><span class="mono word-break-all"><%= token.tokenDetails.documentSha256Hex %></span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
-</div>
-<div class="rounded_row">
-  <div id="token-stats-table-container" class="rounded box-shadow table-container">
-    <div class="table-responsive">
-      <table class="table" id="token-stats-table">
-        <thead>
-          <tr>
-            <td>
-                <h3>Stats</h3>
-            </td>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th>Block Created</th>
-            <td><%= token.tokenStats.block_created %></td>
-          </tr>
-          <tr>
-            <th scope="row">Block Last Active Send</th>
-            <td><%= token.tokenStats.block_last_active_send %></td>
-          </tr>
-          <tr>
-            <th scope="row">Block Last Active Mint</th>
-            <td><%= token.tokenStats.block_last_active_mint %></td>
-          </tr>
-          <tr>
-            <th scope="row">Minting Baton Status</th>
-            <td><%= token.tokenStats.minting_baton_status %></td>
-          </tr>
-          <tr>
-            <th scope="row">Qty. Valid Txns Since Genesis</th>
-            <td><%= Number(token.tokenStats.qty_valid_txns_since_genesis).toLocaleString() %></td>
-          </tr>
-          <tr>
-            <th scope="row">Qty. Valid Token Utxos</th>
-            <td><%= Number(token.tokenStats.qty_valid_token_utxos).toLocaleString() %></td>
-          </tr>
-          <tr>
-            <th scope="row">Qty. Valid Token Addresses</th>
-            <td><%= Number(token.tokenStats.qty_valid_token_addresses).toLocaleString() %></td>
-          </tr>
-          <tr>
-            <th scope="row">Qty. Token Minted</th>
-            <td><%= Number(token.tokenStats.qty_token_minted).toLocaleString() %></td>
-          </tr>
-          <tr>
-            <th scope="row">Qty. Token Burned</th>
-            <td><%= Number(token.tokenStats.qty_token_burned).toLocaleString() %></td>
-          </tr>
-          <tr>
-            <th scope="row">Qty. Token Circulating Supply</th>
-            <td><%= Number(token.tokenStats.qty_token_circulating_supply).toLocaleString() %></td>
-          </tr>
-          <tr>
-            <th scope="row">Qty. Satoshis Locked Up</th>
-            <td><%= Number(token.tokenStats.qty_satoshis_locked_up).toLocaleString() %></td>
-          </tr>
-        </tbody>
-      </table>
+  <div class="rounded_row">
+    <div id="token-stats-table-container" class="rounded box-shadow table-container">
+      <div class="table-responsive">
+        <table class="table" id="token-stats-table">
+          <thead>
+            <tr>
+              <td>
+                  <h3>Stats</h3>
+              </td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>Block Created</th>
+              <td><%= token.tokenStats.block_created %></td>
+            </tr>
+            <tr>
+              <th scope="row">Block Last Active Send</th>
+              <td><%= token.tokenStats.block_last_active_send %></td>
+            </tr>
+            <tr>
+              <th scope="row">Block Last Active Mint</th>
+              <td><%= token.tokenStats.block_last_active_mint %></td>
+            </tr>
+            <tr>
+              <th scope="row">Minting Baton Status</th>
+              <td><%= token.tokenStats.minting_baton_status %></td>
+            </tr>
+            <tr>
+              <th scope="row">Qty. Valid Txns Since Genesis</th>
+              <td><%= Number(token.tokenStats.qty_valid_txns_since_genesis).toLocaleString() %></td>
+            </tr>
+            <tr>
+              <th scope="row">Qty. Valid Token Utxos</th>
+              <td><%= Number(token.tokenStats.qty_valid_token_utxos).toLocaleString() %></td>
+            </tr>
+            <tr>
+              <th scope="row">Qty. Valid Token Addresses</th>
+              <td><%= Number(token.tokenStats.qty_valid_token_addresses).toLocaleString() %></td>
+            </tr>
+            <tr>
+              <th scope="row">Qty. Token Minted</th>
+              <td><%= Number(token.tokenStats.qty_token_minted).toLocaleString() %></td>
+            </tr>
+            <tr>
+              <th scope="row">Qty. Token Burned</th>
+              <td><%= Number(token.tokenStats.qty_token_burned).toLocaleString() %></td>
+            </tr>
+            <tr>
+              <th scope="row">Qty. Token Circulating Supply</th>
+              <td><%= Number(token.tokenStats.qty_token_circulating_supply).toLocaleString() %></td>
+            </tr>
+            <tr>
+              <th scope="row">Qty. Satoshis Locked Up</th>
+              <td><%= Number(token.tokenStats.qty_satoshis_locked_up).toLocaleString() %></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
+  <div class="clearfix"></div>
 </div>
 <div class="rounded_row">
   <div id="token-mint-history-table-container" class="rounded box-shadow table-container">

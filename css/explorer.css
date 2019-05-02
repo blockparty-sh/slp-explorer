@@ -264,6 +264,18 @@ a {
     box-shadow: 0 1px 2px rgba(60,64,67,.15), 0 1px 3px 1px rgba(60,64,67,.1);
 }
 
+.rounded_row_50percent_container {
+    width:100%;
+}
+
+.rounded_row_50percent_container .rounded_row {
+    width:49%;
+    float:left;
+}
+.rounded_row_50percent_container .rounded_row:first-child {
+    margin-right:2%;
+}
+
 .input_output {
     margin: auto;
     margin-bottom: 10px;
@@ -446,10 +458,15 @@ main.container-fluid {
     background-color: #fff;
 }
 
+.table-container thead h3 {
+    white-space:nowrap;
+}
+
 .table-container .table {
     transition: opacity 0.2s;
     -webkit-transition: opacity 0.2s;
     opacity:1.0;
+    font-size:0.8rem;
 }
 .table-container.loading .table {
     opacity: 0.4;
@@ -548,6 +565,10 @@ html.index-page #header-search {
 	display: none;
 }
 
+.clearfix {
+    clear: both;
+}
+
 #header-logo {
     background-image: url(/img/simple-ledger-protocol-logo.png);
     background-repeat: no-repeat;
@@ -563,5 +584,10 @@ html.index-page #header-search {
     }
     footer .col {
 		width: 100%;
+    }
+    .rounded_row_50percent_container .rounded_row {
+      width:100%;
+      float:none;
+      margin-right:0;
     }
 }
