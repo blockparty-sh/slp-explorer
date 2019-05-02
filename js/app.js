@@ -42,14 +42,15 @@ app.util = {
 	$paginator = $el.find('.pagination');
     $paginator.html('');
 
-    if (max_page === 0) {
-      return;
-    }
-
     $el.addClass('loading');
     fn(page, () => {
       $el.removeClass('loading');
     });
+
+    // no need for paginator with 1 page
+    if (max_page <= 1) {
+      return;
+    }
 
     let poffstart = page >= 2 ? page-2 : 0;
     let poffend   = Math.min(poffstart+5, max_page);
