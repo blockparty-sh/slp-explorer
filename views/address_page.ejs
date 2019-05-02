@@ -11,57 +11,49 @@
   </div>
 </div>
 
-  <div class="rounded_row">
-    <div id="address-tokens-table-container" class="my-3 p-3 bg-white rounded box-shadow table-container">
-      <h3 class="border-bottom border-gray pb-1 mb-3">Token Balances</h3>
-      <% if (tokens.length === 0) { %>
-        <h6>This address must not have any token balances</h6></h6>
-      <% } else { %>
-        <div class="table-responsive">
-          <table class="table" id="address-tokens-table">
-            <thead>
-              <tr>
-                <th>Token Id</th>
-                <th>Name</th>
-                <th>Symbol</th>
-                <th class="amount">Balance</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% for (let o of tokens) { %>
-                <tr>
-                  <td><a class="tokenid" href="/#token/<%= o.tokenDetails.tokenIdHex %>"><%= app.util.compress_tokenid(o.tokenDetails.tokenIdHex) %></a></span></td>
-                  <td><%= tx_tokens[o.tokenDetails.tokenIdHex].tokenDetails.name %></td>
-                  <td><%= tx_tokens[o.tokenDetails.tokenIdHex].tokenDetails.symbol %></td>
-                  <td class="amount"><%= o.token_balance %></td>
-                </tr>
-              <% } %>
-            </tbody>
-          </table>
-        </div>
-      <% } %>
+<div class="rounded_row">
+  <div id="address-tokens-table-container" class="my-3 p-3 bg-white rounded box-shadow table-container">
+    <h3 class="border-bottom border-gray pb-1 mb-3">Token Balances</h3>
+    <div class="table-responsive">
+      <table class="table" id="address-tokens-table">
+        <thead>
+          <tr>
+            <th>Token Id</th>
+            <th>Name</th>
+            <th>Symbol</th>
+            <th class="amount">Balance</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>loading...</td><tr>
+        </tbody>
+      </table>
+    </div>
+    <ul class="pagination">
+    </ul>
+  </div>
+</div>
+
+<div class="rounded_row">
+  <div id="address-transactions-table-container" class="my-3 p-3 bg-white rounded box-shadow table-container">
+    <h3 class="border-bottom border-gray pb-1 mb-3">Transactions</h3>
+    <div class="table-responsive">
+      <table class="table" id="address-transactions-table">
+        <thead>
+          <tr>
+            <th>Block</th>
+            <th>Txid</th>
+            <th>Type</th>
+            <th class="amount">Amount</th>
+            <th>Token</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>loading...</td></tr>
+        </tbody>
+      </table>
+      <ul class="pagination">
+      </ul>
     </div>
   </div>
-  <div class="rounded_row">
-    <div id="address-transactions-table-container" class="my-3 p-3 bg-white rounded box-shadow table-container">
-      <h3 class="border-bottom border-gray pb-1 mb-3">Transactions</h3>
-      <div class="table-responsive">
-        <table class="table" id="address-transactions-table">
-          <thead>
-            <tr>
-              <th>Block</th>
-              <th>Txid</th>
-              <th>Type</th>
-              <th class="amount">Amount</th>
-              <th>Token</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td>loading...</td></tr>
-          </tbody>
-        </table>
-        <ul class="pagination">
-        </ul>
-      </div>
-    </div>
-  </div>
+</div>
