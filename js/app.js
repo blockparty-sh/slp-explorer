@@ -555,21 +555,24 @@ app.get_tokens_from_transactions = (transactions, chunk_size=50) => {
 };
 
 app.extract_sent_amount_from_tx = (tx) => {
-  // check if in and out are all same address
-  {
+  // check if in and out are all same addresses
+  while (true) {
     const chk = new Set();
+
     for (let v of tx.in) {
       chk.add(v.e.a);
     }
+
     for (let v of tx.out) {
-      chk.add(v.e.a);
+      if (! chk.has(v.e.a)) {
+        break;
+      }
     }
 
-    if (chk.size === 1) {
-      return 0;
-    }
+    return tx.slp.detail.outputs
+      .map(v => +v.amount)
+      .reduce((a, v) => a + v, 0);
   }
-
 
   const outer = [
     ...new Set(tx.in.map(v => {
