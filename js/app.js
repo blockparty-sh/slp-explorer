@@ -1469,6 +1469,7 @@ app.attach_search_handler = (selector) => {
       });
     },
     onSelect: function (sug) {
+      $(selector).val('');
       app.router(sug.data.url);
     }
   });
