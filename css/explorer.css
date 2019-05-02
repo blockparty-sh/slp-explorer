@@ -228,6 +228,7 @@ a {
   border: 1px solid #ddd; /* Gray */
   cursor:pointer;
   width: 2rem;
+  background-color:#fff;
 }
 
 .pagination li:first-child a {
