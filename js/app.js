@@ -755,7 +755,7 @@ app.init_error_nonslp_tx_page = (txid) => new Promise((resolve, reject) => {
 
 app.init_index_page = () =>
   new Promise((resolve, reject) =>
-    app.slpdb.query(app.slpdb.recent_transactions(25))
+    app.slpdb.query(app.slpdb.recent_transactions(10))
     .then((data) => {
       const transactions =  data.u.concat(data.c);
 
@@ -765,17 +765,6 @@ app.init_index_page = () =>
           transactions: transactions,
           tx_tokens: tx_tokens
         }));
-
-        const recent_transactions_data_table_init = () =>
-          $('#recent-transactions-table')
-          .DataTable({
-            searching: false,
-            lengthChange: false,
-            ordering: false,
-            order: []
-          });
-
-        let recent_transactions_table = recent_transactions_data_table_init();
 
         app.attach_search_handler('#main-search');
 
@@ -945,8 +934,6 @@ app.init_index_page = () =>
               'amount': app.extract_sent_amount_from_tx(sna),
             };
 
-            recent_transactions_table.destroy();
-
             $('#recent-transactions-table tbody').prepend(
               app.template.latest_transactions_tx({
                 tx: sna,
@@ -956,7 +943,7 @@ app.init_index_page = () =>
               })
             );
 
-            recent_transactions_table = recent_transactions_data_table_init();
+            $('#recent-transactions-table').find('tbody tr:last').remove();
           });
         });
 
