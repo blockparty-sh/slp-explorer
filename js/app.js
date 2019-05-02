@@ -843,6 +843,7 @@ app.init_index_page = () =>
 
       app.get_tokens_from_transactions(transactions)
       .then((tx_tokens) => {
+        $('#recent-transactions-table tbody').html('');
 
         for (let i=0; i<transactions.length && i<10; ++i) {
           $('#recent-transactions-table').append(
