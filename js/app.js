@@ -51,8 +51,12 @@ app.util = {
       $el.removeClass('loading');
     });
 
-    const poffstart = page >= 5 ? page-5 : 0;
-    const poffend   = Math.min(poffstart+10, max_page);
+    let poffstart = page >= 2 ? page-2 : 0;
+    let poffend   = Math.min(poffstart+5, max_page);
+
+    if (poffend === max_page) {
+      poffstart = Math.max(0, poffend - 5);
+    }
 
     const row_tobeginning = $(`<li><a>«</a></li>`);
     row_tobeginning.click(() => app.util.create_pagination($el, 0, max_page, fn));
