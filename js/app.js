@@ -1263,7 +1263,7 @@ app.init_address_page = (address) =>
       total_transactions = app.util.extract_total(total_transactions);
 
       $('main[role=main]').html(app.template.address_page({
-        address:   address
+        address: address
       }));
 
       const load_paginated_tokens = (limit, skip) => {
@@ -1277,7 +1277,7 @@ app.init_address_page = (address) =>
            tbody.html('');
 
             tokens.forEach((token) => {
-              tbody.prepend(
+              tbody.append(
                 app.template.address_token({
                   token: token,
                   tx_tokens: tx_tokens
