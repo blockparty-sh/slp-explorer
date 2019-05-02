@@ -197,14 +197,19 @@ app.slpdb = {
       "limit": tokenIdHexs.length
     }
   }),
-  // TODO filter token balances with 0
   token_addresses: (tokenIdHex, limit=100, skip=0) => ({
     "v": 3,
     "q": {
       "db": ["a"],
       "find": {
-        "tokenDetails.tokenIdHex": tokenIdHex
+        "tokenDetails.tokenIdHex": tokenIdHex,
+        /* https://github.com/simpleledger/SLPDB/issues/23
+        "token_balance": {
+          "$ne": 0
+        }
+        */
       },
+      "sort": { "token_balance": -1 },
       "limit": limit,
       "skip": skip
     }
@@ -232,6 +237,38 @@ app.slpdb = {
       "skip": skip
     }
   }),
+  count_token_mint_transactions: (tokenIdHex) => ({
+    "v": 3,
+    "q": {
+      "db": ["c"],
+      "aggregate": [
+        {
+          "$match": {
+            "slp.valid": true,
+            "slp.detail.tokenIdHex": tokenIdHex,
+            "$or": [
+              {
+                "slp.detail.transactionType": "GENESIS"
+              },
+              {
+                "slp.detail.transactionType": "MINT"
+              }
+            ]
+          }
+        },
+        {
+          "$group": {
+            "_id": null,
+            "count": { "$sum": 1 }
+          }
+        }
+      ]
+    },
+    "r": {
+      "f": "[ .[] | {count: .count } ]"
+    }
+  }),
+
   recent_transactions: (limit=150, skip=0) => ({
     "v": 3,
     "q": {
@@ -1086,30 +1123,113 @@ app.init_token_page = (tokenIdHex) =>
   new Promise((resolve, reject) =>
     Promise.all([
       app.slpdb.query(app.slpdb.token(tokenIdHex)),
-      app.slpdb.query(app.slpdb.token_addresses(tokenIdHex, 1000)),
-      app.slpdb.query(app.slpdb.token_mint_history(tokenIdHex, 1000)),
-      app.slpdb.query(app.slpdb.token_transaction_history(tokenIdHex, null, 1000))
+      app.slpdb.query(app.slpdb.count_token_mint_transactions(tokenIdHex)),
+      /* app.slpdb.query(app.slpdb.token_transaction_history(tokenIdHex, null, 10))*/
     ])
-    .then(([token, addresses, mint_history, transactions]) => {
+    .then(([token, total_token_mint_transactions]) => {
       console.log(token);
-      console.log(addresses);
-      console.log(mint_history);
-      console.log(transactions);
+      console.log(total_token_mint_transactions);
 
       if (token.t.length == 0) {
         return resolve(app.init_404_page());
       } 
 
+      token = token.t[0];
+
       $('main[role=main]').html(app.template.token_page({
-        token:        token.t[0],
-        addresses:    addresses.a,
-        mint_history: mint_history.u.concat(mint_history.c),
-        transactions: transactions.u.concat(transactions.c)
+        token: token
       }));
 
-      $('#token-transactions-table').DataTable({searching:false,order: []});
-      $('#token-addresses-table').DataTable({searching:false,order: [[1, 'desc']]}); // sort by token balance
-      $('#token-mint-history-table').DataTable({searching:false,order: [[3, 'asc']]}); // sort by block height
+      const load_paginated_token_addresses = (limit, skip) => {
+        app.slpdb.query(app.slpdb.token_addresses(tokenIdHex, limit, skip))
+        .then((addresses) => {
+         const tbody = $('#token-addresses-table tbody');
+         tbody.html('');
+
+          addresses.a.forEach((address) => {
+            tbody.append(
+              app.template.token_address({
+                address: address
+              })
+            );
+          });
+        });
+      };
+
+      const load_paginated_token_mint_history = (limit, skip) => {
+        app.slpdb.query(app.slpdb.token_mint_history(tokenIdHex, limit, skip))
+        .then((transactions) => {
+          transactions = transactions.u.concat(transactions.c);
+
+         const tbody = $('#token-mint-history-table tbody');
+         tbody.html('');
+
+          transactions.forEach((tx) => {
+            tbody.append(
+              app.template.token_mint_tx({
+                tx: tx
+              })
+            );
+          });
+        });
+      };
+
+      const load_paginated_token_txs = (limit, skip) => {
+        app.slpdb.query(app.slpdb.token_transaction_history(tokenIdHex, null, limit, skip))
+        .then((transactions) => {
+          transactions = transactions.u.concat(transactions.c);
+
+         const tbody = $('#token-transactions-table tbody');
+         tbody.html('');
+
+          transactions.forEach((tx) => {
+            tbody.append(
+              app.template.token_tx({
+                tx: tx
+              })
+            );
+          });
+        });
+      };
+
+      app.util.create_pagination(
+        $('#token-addresses-table-container .pagination'),
+        0,
+        Math.ceil(token.tokenStats.qty_valid_token_addresses / 10),
+        (page) => {
+          load_paginated_token_addresses(10, 10*page);
+        }
+      );
+
+      if (token.tokenStats.qty_valid_token_addresses === 0) {
+        $('#token-addresses-history-table tbody').html('<tr><td>No addresses found.</td></tr>');
+      }
+
+      app.util.create_pagination(
+        $('#token-mint-history-table-container .pagination'),
+        0,
+        Math.ceil(total_token_mint_transactions.c / 10),
+        (page) => {
+          load_paginated_token_mint_history(10, 10*page);
+        }
+      );
+
+      if (total_token_mint_transactions.c === 0) {
+        $('#token-mint-history-table tbody').html('<tr><td>No mints found.</td></tr>');
+      }
+
+      app.util.create_pagination(
+        $('#token-transactions-table-container .pagination'),
+        0,
+        Math.ceil(token.tokenStats.qty_valid_txns_since_genesis / 10),
+        (page) => {
+          load_paginated_token_txs(10, 10*page);
+        }
+      );
+
+      if (token.tokenStats.qty_valid_txns_since_genesis === 0) {
+        $('#token-transactions-table tbody').html('<tr><td>No transactions found.</td></tr>');
+      }
 
       resolve();
     })
@@ -1165,29 +1285,6 @@ app.init_address_page = (address) =>
               tbody.prepend(
                 app.template.address_token({
                   token: token,
-                  tx_tokens: tx_tokens
-                })
-              );
-            });
-          });
-        });
-      };
-
-      const load_paginated_transactions = (limit, skip) => {
-        app.slpdb.query(app.slpdb.transactions_by_slp_address(address, limit, skip))
-        .then((transactions) => {
-          transactions = transactions.u.concat(transactions.c);
-
-          app.get_tokens_from_transactions(transactions)
-          .then((tx_tokens) => {
-           const tbody = $('#address-transactions-table tbody');
-           tbody.html('');
-
-            transactions.forEach((tx) => {
-              tbody.append(
-                app.template.address_transactions_tx({
-                  tx: tx,
-                  address: address,
                   tx_tokens: tx_tokens
                 })
               );
@@ -1434,6 +1531,9 @@ $(document).ready(() => {
     'all_tokens_token',
     'tx_page',
     'token_page',
+    'token_mint_tx',
+    'token_address',
+    'token_tx',
     'address_page',
     'address_transactions_tx',
     'address_token',

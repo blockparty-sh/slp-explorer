@@ -1,0 +1,7 @@
+<tr>
+  <td><a class="txid" href="/#tx/<%= tx.tx.h %>"><%= app.util.compress_txid(tx.tx.h) %></a></td>
+  <td><%= tx.slp.detail.transactionType %></td>
+  <td class="amount"><%= Number(tx.slp.detail.outputs[0].amount).toLocaleString() %></td>
+  <td><% if (tx.blk) { %><%= tx.blk.i %><% } else { %>Pending<% } %></td>
+  <td><% if (tx.blk) { %><%= new Date(tx.blk.t*1000).toLocaleString() %><% } else { %>Pending<% } %></td>
+</tr>
