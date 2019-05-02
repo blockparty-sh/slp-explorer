@@ -73,6 +73,26 @@ app.util = {
       .find(`li[data-page="${page}"]`)
       .addClass('active');
   },
+
+  extract_total: (o) => {
+    if (! o) {
+      return {
+        u: 0,
+        c: 0,
+        g: 0,
+        a: 0,
+        t: 0,
+      };
+    }
+
+    return {
+      u: o.u ? (o.u.length ? o.u[0].count : 0) : 0,
+      c: o.c ? (o.c.length ? o.c[0].count : 0) : 0,
+      g: o.g ? (o.g.length ? o.g[0].count : 0) : 0,
+      a: o.a ? (o.a.length ? o.a[0].count : 0) : 0,
+      t: o.t ? (o.t.length ? o.t[0].count : 0) : 0,
+    };
+  }
 };
 
 app.slpdb = {
@@ -941,16 +961,7 @@ app.init_all_tokens_page = () =>
   new Promise((resolve, reject) =>
     app.slpdb.query(app.slpdb.count_all_tokens())
     .then((all_tokens_count) => {
-      console.log(all_tokens_count);
-      if (! all_tokens_count) {
-        all_tokens_count = {
-          t: 0
-        };
-      } else {
-        all_tokens_count = {
-          t: all_tokens_count.t.length ? all_tokens_count.t[0].count : 0
-        };
-      }
+      all_tokens_count = app.util.extract_total(all_tokens_count);
 
       $('main[role=main]').html(app.template.all_tokens_page());
 
@@ -1130,6 +1141,9 @@ app.init_token_page = (tokenIdHex) =>
       console.log(token);
       console.log(total_token_mint_transactions);
 
+
+      total_token_mint_transactions = app.util.extract_total(total_token_mint_transactions);
+
       if (token.t.length == 0) {
         return resolve(app.init_404_page());
       } 
@@ -1245,27 +1259,8 @@ app.init_address_page = (address) =>
       console.log(total_tokens);
       console.log(total_transactions);
 
-      if (! total_tokens) {
-        total_tokens = {
-          a: 0
-        };
-      } else {
-        total_tokens = {
-          a: total_tokens.a.length ? total_tokens.a[0].count : 0
-        };
-      }
-
-      if (! total_transactions) {
-        total_transactions = {
-          c: 0,
-          u: 0
-        };
-      } else {
-        total_transactions = {
-          c: total_transactions.c.length ? total_transactions.c[0].count : 0,
-          u: total_transactions.u.length ? total_transactions.u[0].count : 0,
-        };
-      }
+      total_tokens = app.util.extract_total(total_tokens);
+      total_transactions = app.util.extract_total(total_transactions);
 
       $('main[role=main]').html(app.template.address_page({
         address:   address
