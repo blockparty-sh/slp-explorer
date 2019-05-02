@@ -412,6 +412,7 @@ html.loading .loading-modal {
     margin-top: 20vh;
 }
 
+
 html.full-width .super-wrapper {
     width:95vw;
 }
@@ -439,6 +440,16 @@ main.container-fluid {
 
 .table-responsive {
     overflow: auto;
+}
+
+.table-container {
+    transition: opacity 0.2s;
+    -webkit-transition: opacity 0.2s;
+    opacity:1.0;
+}
+.table-container.loading {
+    opacity: 0.6;
+    cursor:progress;
 }
 
 #recent-transactions-table-container {

@@ -39,20 +39,24 @@ app.util = {
   },
 
   create_pagination: ($el, page=0, max_page=10, fn) => {
-    $el.html('');
+	$paginator = $el.find('.pagination');
+    $paginator.html('');
 
     if (max_page === 0) {
       return;
     }
 
-    fn(page);
+    $el.addClass('loading');
+    fn(page, () => {
+      $el.removeClass('loading');
+    });
 
     const poffstart = page >= 5 ? page-5 : 0;
     const poffend   = Math.min(poffstart+10, max_page);
 
     const row_tobeginning = $(`<li><a>«</a></li>`);
     row_tobeginning.click(() => app.util.create_pagination($el, 0, max_page, fn));
-    $el.append(row_tobeginning);
+    $paginator.append(row_tobeginning);
 
     for (let poff=poffstart; poff<poffend; ++poff) {
       const row = $(`<li data-page="${poff}"><a>${poff+1}</a></li>`);
@@ -62,19 +66,19 @@ app.util = {
         app.util.create_pagination($el, page, max_page, fn);
       });
 
-      $el.append(row);
+      $paginator.append(row);
     }
 
     const row_toend = $(`<li><a>»</a></li>`);
     row_toend.click(() => app.util.create_pagination($el, max_page-1, max_page, fn));
-    $el.append(row_toend);
+    $paginator.append(row_toend);
 
-    $el
+    $paginator
       .find(`li[data-page="${page}"]`)
       .addClass('active');
   },
 
-  extract_total: (o) => {
+  extract_total: (o, key="count") => {
     if (! o) {
       return {
         u: 0,
@@ -86,11 +90,11 @@ app.util = {
     }
 
     return {
-      u: o.u ? (o.u.length ? o.u[0].count : 0) : 0,
-      c: o.c ? (o.c.length ? o.c[0].count : 0) : 0,
-      g: o.g ? (o.g.length ? o.g[0].count : 0) : 0,
-      a: o.a ? (o.a.length ? o.a[0].count : 0) : 0,
-      t: o.t ? (o.t.length ? o.t[0].count : 0) : 0,
+      u: o.u ? (o.u.length ? o.u[0][key] : 0) : 0,
+      c: o.c ? (o.c.length ? o.c[0][key] : 0) : 0,
+      g: o.g ? (o.g.length ? o.g[0][key] : 0) : 0,
+      a: o.a ? (o.a.length ? o.a[0][key] : 0) : 0,
+      t: o.t ? (o.t.length ? o.t[0][key] : 0) : 0,
     };
   }
 };
@@ -965,7 +969,7 @@ app.init_all_tokens_page = () =>
 
       $('main[role=main]').html(app.template.all_tokens_page());
 
-      const load_paginated_tokens = (limit, skip) => {
+      const load_paginated_tokens = (limit, skip, done) => {
         app.slpdb.query(app.slpdb.all_tokens(limit, skip))
         .then((tokens) => {
           tokens = tokens.t;
@@ -980,15 +984,17 @@ app.init_all_tokens_page = () =>
               })
             );
           });
+
+          done();
         });
       };
 
       app.util.create_pagination(
-        $('#all-tokens-table-container .pagination'),
+        $('#all-tokens-table-container'),
         0,
-        Math.ceil(all_tokens_count.t) / 10,
-        (page) => {
-          load_paginated_tokens(10, 10*page);
+        Math.ceil(all_tokens_count.t / 15),
+        (page, done) => {
+          load_paginated_tokens(15, 15*page, done);
         }
       );
 
@@ -1154,7 +1160,7 @@ app.init_token_page = (tokenIdHex) =>
         token: token
       }));
 
-      const load_paginated_token_addresses = (limit, skip) => {
+      const load_paginated_token_addresses = (limit, skip, done) => {
         app.slpdb.query(app.slpdb.token_addresses(tokenIdHex, limit, skip))
         .then((addresses) => {
          const tbody = $('#token-addresses-table tbody');
@@ -1167,16 +1173,18 @@ app.init_token_page = (tokenIdHex) =>
               })
             );
           });
+
+          done();
         });
       };
 
-      const load_paginated_token_mint_history = (limit, skip) => {
+      const load_paginated_token_mint_history = (limit, skip, done) => {
         app.slpdb.query(app.slpdb.token_mint_history(tokenIdHex, limit, skip))
         .then((transactions) => {
           transactions = transactions.u.concat(transactions.c);
 
-         const tbody = $('#token-mint-history-table tbody');
-         tbody.html('');
+          const tbody = $('#token-mint-history-table tbody');
+          tbody.html('');
 
           transactions.forEach((tx) => {
             tbody.append(
@@ -1185,16 +1193,18 @@ app.init_token_page = (tokenIdHex) =>
               })
             );
           });
+
+          done();
         });
       };
 
-      const load_paginated_token_txs = (limit, skip) => {
+      const load_paginated_token_txs = (limit, skip, done) => {
         app.slpdb.query(app.slpdb.token_transaction_history(tokenIdHex, null, limit, skip))
         .then((transactions) => {
           transactions = transactions.u.concat(transactions.c);
 
-         const tbody = $('#token-transactions-table tbody');
-         tbody.html('');
+          const tbody = $('#token-transactions-table tbody');
+          tbody.html('');
 
           transactions.forEach((tx) => {
             tbody.append(
@@ -1203,15 +1213,17 @@ app.init_token_page = (tokenIdHex) =>
               })
             );
           });
+
+          done();
         });
       };
 
       app.util.create_pagination(
-        $('#token-addresses-table-container .pagination'),
+        $('#token-addresses-table-container'),
         0,
         Math.ceil(token.tokenStats.qty_valid_token_addresses / 10),
-        (page) => {
-          load_paginated_token_addresses(10, 10*page);
+        (page, done) => {
+          load_paginated_token_addresses(10, 10*page, done);
         }
       );
 
@@ -1220,11 +1232,11 @@ app.init_token_page = (tokenIdHex) =>
       }
 
       app.util.create_pagination(
-        $('#token-mint-history-table-container .pagination'),
+        $('#token-mint-history-table-container'),
         0,
         Math.ceil(total_token_mint_transactions.c / 10),
-        (page) => {
-          load_paginated_token_mint_history(10, 10*page);
+        (page, done) => {
+          load_paginated_token_mint_history(10, 10*page, done);
         }
       );
 
@@ -1233,11 +1245,11 @@ app.init_token_page = (tokenIdHex) =>
       }
 
       app.util.create_pagination(
-        $('#token-transactions-table-container .pagination'),
+        $('#token-transactions-table-container'),
         0,
         Math.ceil(token.tokenStats.qty_valid_txns_since_genesis / 10),
-        (page) => {
-          load_paginated_token_txs(10, 10*page);
+        (page, done) => {
+          load_paginated_token_txs(10, 10*page, done);
         }
       );
 
@@ -1266,15 +1278,15 @@ app.init_address_page = (address) =>
         address: address
       }));
 
-      const load_paginated_tokens = (limit, skip) => {
+      const load_paginated_tokens = (limit, skip, done) => {
         app.slpdb.query(app.slpdb.tokens_by_slp_address(address, limit, skip))
         .then((tokens) => {
           tokens = tokens.a;
 
           app.get_tokens_from_tokenids(tokens.map(v => v.tokenDetails.tokenIdHex))
           .then((tx_tokens) => {
-           const tbody = $('#address-tokens-table tbody');
-           tbody.html('');
+            const tbody = $('#address-tokens-table tbody');
+            tbody.html('');
 
             tokens.forEach((token) => {
               tbody.append(
@@ -1284,19 +1296,21 @@ app.init_address_page = (address) =>
                 })
               );
             });
+
+            done();
           });
         });
       };
 
-      const load_paginated_transactions = (limit, skip) => {
+      const load_paginated_transactions = (limit, skip, done) => {
         app.slpdb.query(app.slpdb.transactions_by_slp_address(address, limit, skip))
         .then((transactions) => {
           transactions = transactions.u.concat(transactions.c);
 
           app.get_tokens_from_transactions(transactions)
           .then((tx_tokens) => {
-           const tbody = $('#address-transactions-table tbody');
-           tbody.html('');
+            const tbody = $('#address-transactions-table tbody');
+            tbody.html('');
 
             transactions.forEach((tx) => {
               tbody.append(
@@ -1307,16 +1321,18 @@ app.init_address_page = (address) =>
                 })
               );
             });
+
+            done();
           });
         });
       };
 
       app.util.create_pagination(
-        $('#address-tokens-table-container .pagination'),
+        $('#address-tokens-table-container'),
         0,
-        Math.ceil(total_tokens.a) / 10,
-        (page) => {
-          load_paginated_tokens(10, 10*page);
+        Math.ceil(total_tokens.a / 10),
+        (page, done) => {
+          load_paginated_tokens(10, 10*page, done);
         }
       );
 
@@ -1325,11 +1341,11 @@ app.init_address_page = (address) =>
       }
 
       app.util.create_pagination(
-        $('#address-transactions-table-container .pagination'),
+        $('#address-transactions-table-container'),
         0,
-        Math.ceil(total_transactions.c) / 10,
-        (page) => {
-          load_paginated_transactions(10, 10*page);
+        Math.ceil(total_transactions.c / 10),
+        (page, done) => {
+          load_paginated_transactions(10, 10*page, done);
         }
       );
 
