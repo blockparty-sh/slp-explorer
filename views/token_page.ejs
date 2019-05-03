@@ -81,15 +81,29 @@
           <tbody>
             <tr>
               <th>Block Created</th>
-              <td><%= token.tokenStats.block_created %></td>
+              <td>
+                <% if (token.tokenStats.block_created !== null) { %>
+                  <a href="#block/<%= token.tokenStats.block_created %>"><%= token.tokenStats.block_created %></a>
+                <% } else { %>
+                  <a href="#block/mempool">Pending</a>
+                <% } %>
+              </td>
             </tr>
             <tr>
               <th scope="row">Block Last Active Send</th>
-              <td><%= token.tokenStats.block_last_active_send %></td>
+              <td>
+                <% if (token.tokenStats.block_last_active_send !== null) { %>
+                  <a href="#block/<%= token.tokenStats.block_last_active_send %>"><%= token.tokenStats.block_last_active_send %></a>
+                <% } %>
+              </td>
             </tr>
             <tr>
               <th scope="row">Block Last Active Mint</th>
-              <td><%= token.tokenStats.block_last_active_mint %></td>
+              <td>
+                <% if (token.tokenStats.block_last_active_mint !== null) { %>
+                  <a href="#block/<%= token.tokenStats.block_last_active_mint %>"><%= token.tokenStats.block_last_active_mint %></a>
+                <% }%>
+              </td>
             </tr>
             <tr>
               <th scope="row">Minting Baton Status</th>
