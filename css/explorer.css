@@ -388,6 +388,7 @@ h6 {
 .super-wrapper {
     margin-top: 63px;
     width: 95%;
+    min-height: 80vh;
 }
 
 .graph_container {
@@ -522,7 +523,6 @@ main.container-fluid {
 
 footer {
     background-color: #404040;
-    padding-top:3rem;
     padding-left:7rem;
     padding-bottom:2rem;
     color: #fff;
