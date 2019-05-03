@@ -1829,6 +1829,7 @@ const error_handler = (modal_text) => {
 window.onerror = function (message, file, line, col, error) {
   console.error(error, window.location.hash);
   return error_handler(`
+    hash: ${window.location.hash}<br>
     message: ${message}<br>
     file: ${file}<br>
     line: ${line}<br>
@@ -1838,12 +1839,12 @@ window.onerror = function (message, file, line, col, error) {
 
 window.addEventListener("error", function (e) {
   console.error(e, window.location.hash);
-  return error_handler(e.error.message);
+  return error_handler(window.location.hash + ' ' + e.error.message);
 });
 
 window.addEventListener('unhandledrejection', function (e) {
   console.error(e, window.location.hash);
-  return error_handler(e.reason.message);
+  return error_handler(window.location.hash + ' | ' + e.reason.message);
 });
 
 const reload_page = () => {
