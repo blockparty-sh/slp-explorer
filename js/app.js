@@ -1431,7 +1431,7 @@ app.init_token_page = (tokenIdHex) =>
       };
 
       if (token.tokenStats.qty_valid_token_addresses === 0) {
-        $('#token-addresses-history-table tbody').html('<tr><td>No addresses found.</td></tr>');
+        $('#token-addresses-table tbody').html('<tr><td>No addresses found.</td></tr>');
       } else {
         app.util.create_pagination(
           $('#token-addresses-table-container'),
