@@ -746,6 +746,9 @@ app.cytoscape_extract_graph = (tx_tokens, transactions, prune=false) => {
     }});
 
     for (let m of o.in) {
+      if (typeof m.e.a === 'undefined') {
+        continue;
+      }
       const slp_addr = slpjs.Utils.toSlpAddress(m.e.a);
       addresses.add(slp_addr);
 
