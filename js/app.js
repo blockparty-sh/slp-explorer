@@ -1834,11 +1834,11 @@ const error_handler = (modal_text) => {
 window.onerror = function (message, file, line, col, error) {
   console.error(error, window.location.hash);
   return error_handler(`
-    hash: ${window.location.hash}<br>
-    message: ${message}<br>
-    file: ${file}<br>
-    line: ${line}<br>
-    col: ${col}<br>
+    hash: ${window.location.hash}
+    message: ${message}
+    file: ${file}
+    line: ${line}
+    col: ${col}
   `);
 };
 
@@ -1849,7 +1849,11 @@ window.addEventListener("error", function (e) {
 
 window.addEventListener('unhandledrejection', function (e) {
   console.error(e, window.location.hash);
-  return error_handler(window.location.hash + ' | ' + e.reason.message);
+  return error_handler(`
+    hash: ${window.location.hash}
+    message: ${e.reason.message}
+    stack: ${e.reason.stack}
+  `);
 });
 
 const reload_page = () => {
