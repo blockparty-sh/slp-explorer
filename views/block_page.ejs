@@ -1,7 +1,7 @@
 <div class="transaction_box">
   <div>
     <% if (height !== 'mempool') { %>
-      <h2 class="text-white">Block <%= height %></h2>
+      <h2 class="text-white">Block <%= height %> | <%= total_txs %> transactions</h2>
       <h6>View all transactions confirmed in block</h6>
 
       <a href="/#block/<%= height-1 %>">
@@ -15,7 +15,7 @@
         <button type="button" class="button button_green right">View on BCH Explorer</button>
       </a>
     <% } else { %>
-      <h2 class="text-white">Mempool</h2>
+      <h2 class="text-white">Mempool | <%= total_txs %> transactions</h2>
     <% } %>
   </div>
 </div>

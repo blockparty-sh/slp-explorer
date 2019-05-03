@@ -1131,7 +1131,8 @@ app.init_block_page = (height) =>
       total_txs_by_block = app.util.extract_total(total_txs_by_block);
 
       $('main[role=main]').html(app.template.block_page({
-        height: height
+        height: height,
+        total_txs: total_txs_by_block.c,
       }));
 
       const load_paginated_transactions = (limit, skip, done) => {
@@ -1183,7 +1184,8 @@ app.init_block_mempool_page = (height) =>
       total_txs_in_mempool = app.util.extract_total(total_txs_in_mempool);
 
       $('main[role=main]').html(app.template.block_page({
-        height: "mempool"
+        height: "mempool",
+        total_txs: total_txs_in_mempool.u,
       }));
 
       const load_paginated_transactions = (limit, skip, done) => {
