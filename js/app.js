@@ -560,34 +560,31 @@ app.get_tokens_from_transactions = (transactions, chunk_size=50) => {
 };
 
 app.extract_sent_amount_from_tx = (tx) => {
-  // check if in and out are all same addresses
-  while (true) {
-    const chk = new Set();
+  const outer = new Set(tx.in.map(v => {
+    try      { return slpjs.Utils.toSlpAddress(v.e.a) }
+    catch(e) { return null; }
+  }));
 
-    for (let v of tx.in) {
-      chk.add(v.e.a);
+  let self_send = true;
+  for (let v of tx.slp.detail.outputs) {
+    if (! outer.has(v.address)) {
+      self_send = false;
+      break;
     }
+  }
 
-    for (let v of tx.out) {
-      if (! chk.has(v.e.a)) {
-        break;
-      }
-    }
-
+  // if self_send we count entirety of outputs as send amount
+  if (self_send) {
     return tx.slp.detail.outputs
       .map(v => +v.amount)
       .reduce((a, v) => a + v, 0);
   }
 
-  const outer = [
-    ...new Set(tx.in.map(v => {
-      try      { return slpjs.Utils.toSlpAddress(v.e.a) }
-      catch(e) { return null; }
-  }))];
-
+  // otherwise count amount not sent to self
+  const outer_arr = [...outer];
 
   let ret = tx.slp.detail.outputs
-    .filter((e) => outer.indexOf(e.address) < 0)
+    .filter((e) => outer_arr.indexOf(e.address) < 0)
     .map(v => +v.amount)
     .reduce((a, v) => a + v, 0);
 
