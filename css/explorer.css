@@ -634,7 +634,7 @@ html.index-page header {
       margin-right:0;
     }
 
-    .transaction_box a button.button {
+    .transaction_box button.button {
         float:none!important;
         width:100%;
         margin-bottom:1rem;
