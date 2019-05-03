@@ -1615,6 +1615,11 @@ app.attach_search_handler = (selector) => {
           $(selector).val('');
           return app.router('/#address/'+slpjs.Utils.toSlpAddress(search_value));
         }
+
+        if (slpjs.Utils.isLegacyAddress(search_value)) {
+          $(selector).val('');
+          return app.router('/#address/'+slpjs.Utils.toSlpAddress(search_value));
+        }
       } catch (e) { /* TODO this is to work around https://github.com/simpleledger/slpjs/issues/10 */ }
   
       Promise.all([
