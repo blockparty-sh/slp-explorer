@@ -1852,3 +1852,12 @@ const reload_page = () => {
   window.location.hash = window.location.hash;
   window.location.reload();
 };
+
+const start_simclick = () => {
+  window.setInterval(() => {
+    const evt = new MouseEvent('click');
+    const things = $('a[href^="/#"]');
+    const thing = $(things[Math.floor(Math.random()*things.length)])[0];
+    thing.dispatchEvent(evt);
+  }, 6000);
+};
