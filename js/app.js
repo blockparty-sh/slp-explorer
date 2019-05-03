@@ -39,7 +39,7 @@ app.util = {
   },
 
   create_pagination: ($el, page=0, max_page=10, fn) => {
-	$paginator = $el.find('.pagination');
+    $paginator = $el.find('.pagination');
     $paginator.html('');
 
     $el.addClass('loading');
@@ -113,10 +113,14 @@ app.slpdb = {
     const url = "https://slpdb.fountainhead.cash/q/" + b64;
 
     console.log(url)
-    resolve(
-        fetch(url)
-        .then((r) => r.json())
-    );
+    fetch(url)
+    .then((r) => r = r.json())
+    .then((r) => {
+      if (r.hasOwnProperty('error')) {
+        reject(new Error(r['error']));
+      }
+      resolve(r);
+    });
   }),
 
   all_tokens: (limit=100, skip=0) => ({
@@ -1130,23 +1134,6 @@ app.init_block_page = (height) =>
         height: height
       }));
 
-
-      /*
-       * TODO
-      app.util.create_pagination(
-        $('#block-pagination-container'),
-        height,
-        590000,
-        (page, done) => {
-          if ($('#block-pagination-container').data('called') === true) {
-            return app.router('/#block/'+page);
-          } else {
-            $('#block-pagination-container').data('called', true);
-          }
-          done();
-        }
-      );*/
-
       const load_paginated_transactions = (limit, skip, done) => {
         app.slpdb.query(app.slpdb.txs_by_block(height, limit, skip))
         .then((transactions) => {
@@ -1252,7 +1239,7 @@ app.init_block_mempool_page = (height) =>
 
         app.slpdb.query(app.slpdb.token(sna.slp.detail.tokenIdHex))
         .then((token_data) => {
-          if (token_data.t.length === 0) {
+          if (! token_data || ! token_data.t || token_data.t.length === 0) {
             console.error('slpsocket token not found');
             return;
           }
