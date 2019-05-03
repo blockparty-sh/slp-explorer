@@ -19,6 +19,8 @@ app.util = {
 
     const url_regex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
 
+    const protocol_regex = /^[a-zA-Z]+:\/\/(.*)$/;
+
     if (email_regex.test(doc)) {
       return `mailto:${doc}`;
     }
@@ -31,7 +33,7 @@ app.util = {
       return `http://${doc}`;
     }
 
-    if (doc.split(':').length === 2) {
+    if (protocol_regex.test(doc)) {
       return doc;
     }
 
