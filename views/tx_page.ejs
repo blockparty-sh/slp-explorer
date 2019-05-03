@@ -159,7 +159,7 @@
               </thead>
               <tbody>
                 <% if (tx.slp.detail.transactionType == 'SEND') { %>
-                  <% for (let m of tx.slp.detail.outputs) { console.log(m); %>
+                  <% for (let m of tx.slp.detail.outputs) { %>
                     <tr>
                       <td class="amount"><%= m.amount %></td>
                       <td><a class="address" href="/#address/<%= m.address %>"><%= m.address %></a></td>

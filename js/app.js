@@ -113,6 +113,7 @@ app.slpdb = {
     const url = "https://slpdb.fountainhead.cash/q/" + b64;
 
     console.log(url)
+
     fetch(url)
     .then((r) => r = r.json())
     .then((r) => {
@@ -673,13 +674,10 @@ app.create_cytoscape_context = (selector='.graph_container') => {
           // TODO load tokengraph if type is genesis
           app.slpdb.query(app.slpdb.tx(tdata.data.id))
           .then((tx) => {
-            let transactions = tx.u.concat(tx.c);
-            console.log(transactions);
+            const transactions = tx.u.concat(tx.c);
 
             app.get_tokens_from_transactions(transactions)
             .then((tx_tokens) => {
-              console.log(tx_tokens);
-
               cy.json({ elements: app.cytoscape_extract_graph(tx_tokens, transactions) })
                 .layout({ name: 'klay', animate: true })
                 .run()
@@ -696,8 +694,6 @@ app.create_cytoscape_context = (selector='.graph_container') => {
 
             app.get_tokens_from_transactions(transactions)
             .then((tx_tokens) => {
-              console.log(tx_tokens);
-
               cy.json({ elements: app.cytoscape_extract_graph(tx_tokens, transactions) })
                 .layout({ name: 'klay', animate: true })
                 .run()
@@ -766,7 +762,6 @@ app.cytoscape_extract_graph = (tx_tokens, transactions, prune=false) => {
     }
 
     if (o.slp.detail.transactionType === 'GENESIS' || o.slp.detail.transactionType === 'MINT') {
-      console.log('genesis', o);
       addresses.add(o.slp.detail.outputs[0].address);
       addresses_out.add(o.slp.detail.outputs[0].address);
 
@@ -1113,7 +1108,6 @@ app.init_tx_page = (txid) =>
 
       app.slpdb.query(app.slpdb.token(tx.slp.detail.tokenIdHex))
       .then((token) => {
-        console.log(tx);
         $('main[role=main]').html(app.template.tx_page({
           tx:    tx,
           token: token.t[0]
@@ -1309,8 +1303,6 @@ app.init_addressgraph_page = (address) =>
 
     return app.get_tokens_from_transactions(transactions)
     .then((tx_tokens) => {
-      console.log(tx_tokens);
-
       $('main[role=main]').html(app.template.addressgraph_page({
         address: address
       }));
@@ -1335,16 +1327,12 @@ app.init_txgraph_page = (txid) =>
   app.slpdb.query(app.slpdb.tx(txid))
   .then((tx) => {
     let transactions = tx.u.concat(tx.c);
-    console.log('TX TX', transactions);
-
     if (transactions.length === 0) {
       return app.init_404_page();
     }
 
     app.get_tokens_from_transactions(transactions)
     .then((tx_tokens) => {
-      console.log(tx_tokens);
-
       $('main[role=main]').html(app.template.txgraph_page({
         tx: transactions[0]
       }));
@@ -1373,10 +1361,6 @@ app.init_token_page = (tokenIdHex) =>
       /* app.slpdb.query(app.slpdb.token_transaction_history(tokenIdHex, null, 10))*/
     ])
     .then(([token, total_token_mint_transactions]) => {
-      console.log(token);
-      console.log(total_token_mint_transactions);
-
-
       total_token_mint_transactions = app.util.extract_total(total_token_mint_transactions);
 
       if (token.t.length == 0) {
@@ -1499,9 +1483,6 @@ app.init_address_page = (address) =>
       app.slpdb.query(app.slpdb.count_tokens_by_slp_address(address)),
       app.slpdb.query(app.slpdb.count_total_transactions_by_slp_address(address)),
     ]).then(([total_tokens, total_transactions]) => {
-      console.log(total_tokens);
-      console.log(total_transactions);
-
       total_tokens = app.util.extract_total(total_tokens);
       total_transactions = app.util.extract_total(total_transactions);
 
@@ -1595,7 +1576,6 @@ app.init_address_page = (address) =>
 app.attach_search_handler = (selector) => {
   $(selector).closest('form').submit(false);
   
-  console.log($(selector))
   $(selector).autocomplete({
     groupBy: 'category',
     preventBadQueries: false, // retry query in case slpdb hasnt yet indexed something
@@ -1716,8 +1696,6 @@ app.router = (whash, push_history = true) => {
     whash = window.location.hash.substring(1);
   }
 
-  console.log('app.router', whash, whash.split('/'));
-
   const [_, path, key] = whash.split('/');
 
 
@@ -1788,7 +1766,6 @@ app.router = (whash, push_history = true) => {
   $('html').addClass('loading');
   $('html').scrollTop(0);
   method().then(() => {
-    console.log('done')
     $('html').removeClass('loading');
     $('footer').removeClass('display-none');
 
@@ -1800,7 +1777,6 @@ app.router = (whash, push_history = true) => {
 
 $(document).ready(() => {
   $(window).on('popstate', (e) => {
-    console.log('pop', window.location.pathname);
     app.router(window.location.pathname+window.location.hash, false);
   });
 
