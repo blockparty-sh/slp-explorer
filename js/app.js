@@ -1756,7 +1756,7 @@ app.router = (whash, push_history = true) => {
       };
       break;
     default:
-      document.title = '404 | slp-explorer';
+      document.title = '404 | TokenDB';
       console.error('app.router path not found', whash);
       method = () => app.init_404_page();
       break;

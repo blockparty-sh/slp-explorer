@@ -109,6 +109,14 @@
               <th scope="row">Minting Baton Status</th>
               <td><%= token.tokenStats.minting_baton_status %></td>
             </tr>
+            <% if (token.mintBatonUtxo && token.mintBatonUtxo.split(':').length === 2) { %>
+            <tr>
+              <th scope="row">Minting Baton UTXO</th>
+              <td>
+                <a href="#tx/<%= token.mintBatonUtxo.split(':')[0] %>"><%= token.mintBatonUtxo %></a>
+              </td>
+            </tr>
+            <% } %>
             <tr>
               <th scope="row">Qty. Valid Txns Since Genesis</th>
               <td><%= Number(token.tokenStats.qty_valid_txns_since_genesis).toLocaleString() %></td>
