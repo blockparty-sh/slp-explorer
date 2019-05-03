@@ -1823,13 +1823,14 @@ $(document).ready(() => {
   });
 });
 
-const error_handler = (modal_html) => {
-  $('#error-modal-text').html(modal_html);
+const error_handler = (modal_text) => {
+  $('#error-modal-text').text(modal_text);
   $('#error-modal').removeClass('display-none');
   return false;
 };
 
 window.onerror = function (message, file, line, col, error) {
+  console.error(error, window.location.hash);
   return error_handler(`
     message: ${message}<br>
     file: ${file}<br>
@@ -1839,12 +1840,12 @@ window.onerror = function (message, file, line, col, error) {
 };
 
 window.addEventListener("error", function (e) {
-  console.error(e);
+  console.error(e, window.location.hash);
   return error_handler(e.error.message);
 });
 
 window.addEventListener('unhandledrejection', function (e) {
-  console.error(e);
+  console.error(e, window.location.hash);
   return error_handler(e.reason.message);
 });
 
@@ -1854,10 +1855,19 @@ const reload_page = () => {
 };
 
 const start_simclick = () => {
+  window.simclick_pages = [];
+
   window.setInterval(() => {
+    simclick_pages.push(window.location.hash);
+
     const evt = new MouseEvent('click');
     const things = $('a[href^="/#"]');
     const thing = $(things[Math.floor(Math.random()*things.length)])[0];
-    thing.dispatchEvent(evt);
+
+    if (things.length === 0) {
+      history.back(-2);
+    } else {
+      thing.dispatchEvent(evt);
+    }
   }, 6000);
 };
