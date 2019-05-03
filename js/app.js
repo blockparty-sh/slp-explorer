@@ -1474,6 +1474,97 @@ app.init_token_page = (tokenIdHex) =>
         );
       }
 
+      Promise.all([
+        app.slpdb.query({
+          "v": 3,
+          "q": {
+            "db": ["c"],
+            "aggregate": [
+              {
+                "$match": {
+                  "$and": [
+                    { "slp.valid": true },
+                    { "blk.t": {
+                      "$gte": (+(new Date) / 1000) - (60*60*24*30),
+                      "$lte": (+(new Date) / 1000)
+                    } },
+                    { "slp.detail.tokenIdHex": tokenIdHex }
+                  ]
+                }
+              },
+              {
+                "$group": {
+                   "_id" : "$blk.t",
+                  "count": {"$sum": 1}
+                }
+              }
+            ],
+            "limit": 10000
+          },
+          "r": {
+            "f": "[ .[] | {block_epoch: ._id, txs: .count} ]"
+          }
+        })
+      ]).then(([token_monthly_usage]) => {
+        for (let o of token_monthly_usage.c) {
+          o.block_epoch = new Date(o.block_epoch * 1000);
+        }
+        token_monthly_usage.c.sort((a, b) => a.block_epoch - b.block_epoch);
+
+        const token_monthly_usage_block = token_monthly_usage.c;
+        console.log(token_monthly_usage_block);
+
+        let token_monthly_usage_day_t = [];
+        {
+          let ts = +(token_monthly_usage.c[0].block_epoch);
+          let dayset = [];
+
+          for (let m of token_monthly_usage.c) {
+            if (+(m.block_epoch) > ts + (60*60*24*1000)) {
+              ts = +(m.block_epoch);
+              token_monthly_usage_day_t.push(dayset);
+              dayset = [];
+            }
+            dayset.push(m);
+          }
+
+          token_monthly_usage_day_t.push(dayset);
+        }
+        const token_monthly_usage_day = token_monthly_usage_day_t
+        .map(m =>
+          m.reduce((a, v) =>
+            ({
+              block_epoch: a.block_epoch || v.block_epoch,
+              txs: a.txs + v.txs
+            }), {
+              block_epoch: null,
+              txs: 0
+            }
+          )
+        );
+
+        Plotly.newPlot('plot-token-monthly-usage', [
+          {
+            x: token_monthly_usage_block.map(v => v.block_epoch),
+            y: token_monthly_usage_block.map(v => v.txs),
+            fill: 'tozeroy',
+            type: 'scatter',
+            name: 'Per Block',
+          },
+          {
+            x: token_monthly_usage_day.map(v => v.block_epoch),
+            y: token_monthly_usage_day.map(v => v.txs),
+            fill: 'tonexty',
+            type: 'scatter',
+            name: 'Daily',
+          }
+        ], {
+          yaxis: {
+            title: 'Transactions'
+          }
+        })
+      });
+
       resolve();
     })
   )
