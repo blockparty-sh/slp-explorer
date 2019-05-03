@@ -587,6 +587,18 @@ html.index-page header {
 .hide-mobile {
     display:block;
 }
+
+#error-modal {
+    position: absolute;
+    z-index:1000000;
+    width:100%;
+    height:100%;
+    top:0;
+    left:0;
+    background-color:#fff;
+    text-align:center;
+}
+
 @media only screen and (max-width: 913px) {
     .hide-desktop {
         display:block!important;

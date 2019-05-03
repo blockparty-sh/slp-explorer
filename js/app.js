@@ -1843,3 +1843,33 @@ $(document).ready(() => {
     app.router(window.location.pathname+window.location.hash, false);
   });
 });
+
+const error_handler = (modal_html) => {
+  $('#error-modal-text').html(modal_html);
+  $('#error-modal').removeClass('display-none');
+  return false;
+};
+
+window.onerror = function (message, file, line, col, error) {
+  return error_handler(`
+    message: ${message}<br>
+    file: ${file}<br>
+    line: ${line}<br>
+    col: ${col}<br>
+  `);
+};
+
+window.addEventListener("error", function (e) {
+  console.error(e);
+  return error_handler(e.error.message);
+});
+
+window.addEventListener('unhandledrejection', function (e) {
+  console.error(e);
+  return error_handler(e.reason.message);
+});
+
+const reload_page = () => {
+  window.location.hash = window.location.hash;
+  window.location.reload();
+};
