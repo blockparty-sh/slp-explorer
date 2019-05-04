@@ -1682,6 +1682,7 @@ app.attach_search_handler = (selector) => {
                 }
               ]
             },
+            "sort": {"tokenStats.qty_valid_txns_since_genesis": -1},
             "limit": 10
           }
         }),
