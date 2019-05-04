@@ -1,6 +1,13 @@
 <div class="transaction_box">
   <div>
-    <h2 class="text-white"><%= token.tokenDetails.symbol %> Token</h2>
+    <h2 class="text-white">
+      <% if (token.tokenDetails.symbol) { %>
+        <%= token.tokenDetails.symbol %>
+      <% } else if (token.tokenDetails.name !== '') { %>
+        <%= token.tokenDetails.name %>
+      <% } %>
+      Token
+    </h2>
     <h6><%= token.tokenDetails.tokenIdHex %></h6>
     <a href="#tokengraph/<%= token.tokenDetails.tokenIdHex %>">
       <button type="button" class="button button_red">View Token Graph</button>
