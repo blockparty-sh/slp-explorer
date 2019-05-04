@@ -1164,16 +1164,29 @@ app.init_tx_page = (txid) =>
         return resolve();
       }
 
-      app.slpdb.query(app.slpdb.get_amounts_from_txid_vout_pairs(
-        tx.in.map(v => ({
-          txid: v.e.h,
-          vout: v.e.i
-        }))
-      )).then((amounts) => {
-       const input_amounts = amounts.g.reduce((a, v) => {
-         a[v.txid+':'+v.vout] = v.slpAmount;
-         return a;
-       }, {});
+
+      const txid_vout_pairs = tx.in.map(v => ({
+        txid: v.e.h,
+        vout: v.e.i
+      }));
+
+      const chunk_size = 20;
+
+      let txid_vout_reqs = [];
+      for (let i=0; i<Math.ceil(txid_vout_pairs.length / chunk_size); ++i) {
+        txid_vout_reqs.push(app.slpdb.query(
+          app.slpdb.get_amounts_from_txid_vout_pairs(txid_vout_pairs.slice(chunk_size*i, (chunk_size*i)+chunk_size))
+        ));
+      }
+
+      Promise.all(txid_vout_reqs)
+      .then((results) => {
+        const pairs = results.reduce((a, v) => a.concat(v.g), []);
+
+        const input_amounts = pairs.reduce((a, v) => {
+          a[v.txid+':'+v.vout] = v.slpAmount;
+          return a;
+        }, {});
 
         app.slpdb.query(app.slpdb.token(tx.slp.detail.tokenIdHex))
         .then((token) => {
