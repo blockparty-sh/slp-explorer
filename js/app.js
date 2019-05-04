@@ -114,7 +114,7 @@ app.util = {
     monthly_usage.c.sort((a, b) => a.block_epoch - b.block_epoch);
 
     let monthly_usage_day_t = [];
-    {
+    if (monthly_usage.c.length > 0) {
       let ts = +(monthly_usage.c[0].block_epoch);
       let dayset = [];
 
