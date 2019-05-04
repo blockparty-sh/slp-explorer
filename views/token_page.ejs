@@ -182,11 +182,6 @@
 
 <div class="rounded_row_50percent_container">
   <div class="rounded_row">
-    <h3>Monthly Transaction Graph</h3>
-    <div id="plot-token-monthly-usage" style="width:100%"></div>
-  </div>
-
-  <div class="rounded_row">
     <div id="token-addresses-table-container" class="rounded box-shadow table-container">
       <h3 class="border-bottom border-gray">Addresses</h3>
       <div class="table-responsive">
@@ -207,29 +202,43 @@
     </div>
   </div>
 
+  <div class="rounded_row">
+    <h3>Rich List</h3>
+    <div id="plot-token-address-rich" style="width:100%"></div>
+  </div>
+
   <div class="clearfix"></div>
 </div>
 
-<div class="rounded_row">
-  <div id="token-transactions-table-container" class="rounded box-shadow table-container">
-    <h3 class="border-bottom border-gray">Transactions</h3>
-    <div class="table-responsive">
-      <table class="table" id="token-transactions-table">
-        <thead>
-          <tr>
-            <th>Txid</th>
-            <th>Type</th>
-            <th class="amount">Amount</th>
-            <th>Block Height</th>
-            <th>Block Time</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>Loading...</td></tr>
-        </tbody>
-      </table>
-      <ul class="pagination">
-      </ul>
+<div class="rounded_row_50percent_container">
+  <div class="rounded_row">
+    <div id="token-transactions-table-container" class="rounded box-shadow table-container">
+      <h3 class="border-bottom border-gray">Transactions</h3>
+      <div class="table-responsive">
+        <table class="table" id="token-transactions-table">
+          <thead>
+            <tr>
+              <th>Txid</th>
+              <th>Type</th>
+              <th class="amount">Amount</th>
+              <th>Block Height</th>
+              <th>Block Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Loading...</td></tr>
+          </tbody>
+        </table>
+        <ul class="pagination">
+        </ul>
+      </div>
     </div>
   </div>
+
+  <div class="rounded_row">
+    <h3>Monthly Transaction Graph</h3>
+    <div id="plot-token-monthly-usage" style="width:100%"></div>
+  </div>
+
+  <div class="clearfix"></div>
 </div>

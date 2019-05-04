@@ -1493,19 +1493,48 @@ app.init_token_page = (tokenIdHex) =>
         );
       }
 
-      Promise.all([
-        app.slpdb.query(app.slpdb.count_txs_per_block({
-          "$and": [
-            { "slp.valid": true },
-            { "blk.t": {
-              "$gte": (+(new Date) / 1000) - (60*60*24*30),
-              "$lte": (+(new Date) / 1000)
-            } },
-            { "slp.detail.tokenIdHex": tokenIdHex }
-          ]
-        }))
-      ]).then(([token_monthly_usage]) => {
+      app.slpdb.query(app.slpdb.count_txs_per_block({
+        "$and": [
+          { "slp.valid": true },
+          { "blk.t": {
+            "$gte": (+(new Date) / 1000) - (60*60*24*30),
+            "$lte": (+(new Date) / 1000)
+          } },
+          { "slp.detail.tokenIdHex": tokenIdHex }
+        ]
+      })).then((token_monthly_usage) => {
         app.util.create_monthly_plot(token_monthly_usage, 'plot-token-monthly-usage');
+      });
+
+      app.slpdb.query(app.slpdb.token_addresses(tokenIdHex, 10))
+      .then((token_addresses) => {
+        let data = [];
+
+        for (let a of token_addresses.a) {
+          data.push({
+            address: a.address.split(':')[1],
+            token_balance: a.token_balance,
+            color: "rgba(100, 167, 205, 1)"
+          });
+        }
+
+        data.push({
+          address: 'Other',
+          token_balance: token.tokenStats.qty_token_circulating_supply - data.reduce((a, v) => a + Number(v.token_balance), 0),
+          color: "rgba(232, 102, 102, 1)"
+        });
+
+        data.sort((a, b) => b.token_balance - a.token_balance);
+
+        Plotly.newPlot('plot-token-address-rich', [{
+          x: data.map(v => v.address),
+          y: data.map(v => v.token_balance),
+          marker: {
+            color: data.map(v => v.color)
+          },
+          type: 'bar',
+        }], {
+        })
       });
 
       resolve();
