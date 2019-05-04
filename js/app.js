@@ -2010,7 +2010,7 @@ const reload_page = () => {
   window.location.reload();
 };
 
-const start_simclick = () => {
+const start_simclick = (interval=6000) => {
   window.simclick_pages = [];
 
   window.setInterval(() => {
@@ -2025,5 +2025,5 @@ const start_simclick = () => {
     } else {
       thing.dispatchEvent(evt);
     }
-  }, 6000);
+  }, interval);
 };
