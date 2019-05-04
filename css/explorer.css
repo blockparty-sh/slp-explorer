@@ -607,6 +607,18 @@ html.index-page header {
     display: none;
 }
 
+#index-view-all-tokens h1 {
+    width: fit-content;
+    margin: 0 auto;
+    border-bottom: 4px solid #62a4dd;
+    border-bottom-style: inset;
+    padding: 1rem;
+    padding-bottom: 0.25rem;
+}
+#index-view-all-tokens h1:hover {
+    border-bottom: 4px solid #98c5eb;
+}
+
 .clearfix {
     clear: both;
 }

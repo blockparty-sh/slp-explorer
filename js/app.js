@@ -957,7 +957,15 @@ app.init_index_page = () =>
 
     // load graphs in background
     Promise.all([
-      app.slpdb.query(app.slpdb.count_txs_per_block()),
+      app.slpdb.query(app.slpdb.count_txs_per_block({
+        "$and": [
+          { "slp.valid": true },
+          { "blk.t": {
+            "$gte": (+(new Date) / 1000) - (60*60*24*30),
+            "$lte": (+(new Date) / 1000)
+          } }
+        ]
+      })),
       app.slpdb.query({
         "v": 3,
         "q": {
