@@ -128,16 +128,22 @@
           <table class="table">
             <thead>
               <tr>
-                <th>Transaction ID</th>
+                <th>Tx</th>
+                <th class="amount">Amount</th>
                 <th>Address</th>
               </tr>
             </thead>
             <tbody>
               <% for (let m of tx.in) { %>
-                <tr>
-                  <td><a class="txid" href="/#tx/<%= m.e.h %>"><%= app.util.compress_txid(m.e.h) %></a></td>
-                  <td><a class="address" href="/#address/<%= slpjs.Utils.toSlpAddress(m.e.a) %>"><%= slpjs.Utils.toSlpAddress(m.e.a) %></a></td>
-                </tr>
+                <% if (input_amounts[m.e.h+':'+m.e.i]) { %>
+                  <tr>
+                    <td><a class="txid" href="/#tx/<%= m.e.h %>" style="font-weight:bold">&larr;</a></td>
+                    <td class="amount">
+                      <%= input_amounts[m.e.h+':'+m.e.i] %>
+                    </td>
+                    <td><a class="address" href="/#address/<%= slpjs.Utils.toSlpAddress(m.e.a) %>"><%= slpjs.Utils.toSlpAddress(m.e.a) %></a></td>
+                  </tr>
+                <% } %>
               <% } %>
             </tbody>
           </table>

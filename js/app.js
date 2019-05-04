@@ -606,7 +606,44 @@ app.slpdb = {
     };
 
     return obj;
-  }
+  },
+
+  get_amounts_from_txid_vout_pairs: (pairs=[]) => ({
+    "v": 3,
+    "q": {
+      "db": ["g"],
+      "aggregate": [
+        {
+          "$match": {
+            "graphTxn.txid": {
+              "$in": [...new Set(pairs.map(v => v.txid))]
+            }
+          }
+        },
+        {
+          "$unwind": "$graphTxn.outputs"
+        },
+        {
+          "$match": {
+            "$or": pairs.map(v => ({
+              "$and": [
+                {
+                  "graphTxn.txid": v.txid
+                },
+                {
+                  "graphTxn.outputs.vout": v.vout
+                }
+              ]
+            }))
+          }
+        }
+      ],
+      "limit": 20,
+    },
+    "r": {
+      "f": "[ .[] | { txid: .graphTxn.txid, vout: .graphTxn.outputs.vout, slpAmount: .graphTxn.outputs.slpAmount} ]"
+    }
+  }),
 };
 
 app.slpsocket = {
@@ -1127,14 +1164,27 @@ app.init_tx_page = (txid) =>
         return resolve();
       }
 
-      app.slpdb.query(app.slpdb.token(tx.slp.detail.tokenIdHex))
-      .then((token) => {
-        $('main[role=main]').html(app.template.tx_page({
-          tx:    tx,
-          token: token.t[0]
-        }));
+      app.slpdb.query(app.slpdb.get_amounts_from_txid_vout_pairs(
+        tx.in.map(v => ({
+          txid: v.e.h,
+          vout: v.e.i
+        }))
+      )).then((amounts) => {
+       const input_amounts = amounts.g.reduce((a, v) => {
+         a[v.txid+':'+v.vout] = v.slpAmount;
+         return a;
+       }, {});
 
-        resolve();
+        app.slpdb.query(app.slpdb.token(tx.slp.detail.tokenIdHex))
+        .then((token) => {
+          $('main[role=main]').html(app.template.tx_page({
+            tx:    tx,
+            token: token.t[0],
+            input_amounts: input_amounts
+          }));
+
+          resolve();
+        });
       });
     })
   )
