@@ -265,11 +265,11 @@ a {
 }
 
 .rounded_row_50percent_container .rounded_row {
-    width:49%;
+    width:49.5%;
     float:left;
 }
 .rounded_row_50percent_container .rounded_row:first-child {
-    margin-right:2%;
+    margin-right:1%;
 }
 
 .input_output {
