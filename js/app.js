@@ -581,6 +581,32 @@ app.slpdb = {
       "limit": 10000
     }
   }),
+
+  count_txs_per_block: (match_obj={}) => {
+    let obj = {
+      "v": 3,
+      "q": {
+        "db": ["c"],
+        "aggregate": [
+          {
+            "$match": match_obj
+          },
+          {
+            "$group": {
+               "_id" : "$blk.t",
+              "count": {"$sum": 1}
+            }
+          }
+        ],
+        "limit": 10000
+      },
+      "r": {
+        "f": "[ .[] | {block_epoch: ._id, txs: .count} ]"
+      }
+    };
+
+    return obj;
+  }
 };
 
 app.slpsocket = {
@@ -931,33 +957,7 @@ app.init_index_page = () =>
 
     // load graphs in background
     Promise.all([
-      app.slpdb.query({
-        "v": 3,
-        "q": {
-          "db": ["c"],
-          "aggregate": [
-            {
-              "$match": {
-                "slp.valid": true,
-                "blk.t": {
-                  "$gte": (+(new Date) / 1000) - (60*60*24*30),
-                  "$lte": (+(new Date) / 1000)
-                }
-              }
-            },
-            {
-              "$group": {
-                 "_id" : "$blk.t",
-                "count": {"$sum": 1}
-              }
-            }
-          ],
-          "limit": 10000
-        },
-        "r": {
-          "f": "[ .[] | {block_epoch: ._id, txs: .count} ]"
-        }
-      }),
+      app.slpdb.query(app.slpdb.count_txs_per_block()),
       app.slpdb.query({
         "v": 3,
         "q": {
@@ -994,66 +994,11 @@ app.init_index_page = () =>
       }),
     ])
     .then(([monthly_usage, token_usage]) => {
-      for (let o of monthly_usage.c) {
-        o.block_epoch = new Date(o.block_epoch * 1000);
-      }
-      monthly_usage.c.sort((a, b) => a.block_epoch - b.block_epoch);
+      app.util.create_monthly_plot(monthly_usage, 'plot-monthly-usage');
 
-      const monthly_usage_block = monthly_usage.c;
-
-      let monthly_usage_day_t = [];
-      {
-        let ts = +(monthly_usage.c[0].block_epoch);
-        let dayset = [];
-
-        for (let m of monthly_usage.c) {
-          if (+(m.block_epoch) > ts + (60*60*24*1000)) {
-            ts = +(m.block_epoch);
-            monthly_usage_day_t.push(dayset);
-            dayset = [];
-          }
-          dayset.push(m);
-        }
-
-        monthly_usage_day_t.push(dayset);
-      }
-      const monthly_usage_day = monthly_usage_day_t
-      .map(m =>
-        m.reduce((a, v) =>
-          ({
-            block_epoch: a.block_epoch || v.block_epoch,
-            txs: a.txs + v.txs
-          }), {
-            block_epoch: null,
-            txs: 0
-          }
-        )
-      );
-
-      Plotly.newPlot('plot-monthly-usage', [
-        {
-          x: monthly_usage_block.map(v => v.block_epoch),
-          y: monthly_usage_block.map(v => v.txs),
-          fill: 'tozeroy',
-          type: 'scatter',
-          name: 'Per Block',
-        },
-        {
-          x: monthly_usage_day.map(v => v.block_epoch),
-          y: monthly_usage_day.map(v => v.txs),
-          fill: 'tonexty',
-          type: 'scatter',
-          name: 'Daily',
-        }
-      ], {
-        title: 'SLP Usage',
-        yaxis: {
-          title: 'Transactions'
-        }
-      })
 
       let token_usage_monthly = token_usage.c;
-      const total_slp_tx_month = monthly_usage_day.reduce  ((a, v) => a + v.txs, 0);
+      const total_slp_tx_month = monthly_usage.c.reduce((a, v) => a+v.txs, 0);
 
       token_usage_monthly.push({
         token_name: 'Other',
@@ -1541,36 +1486,16 @@ app.init_token_page = (tokenIdHex) =>
       }
 
       Promise.all([
-        app.slpdb.query({
-          "v": 3,
-          "q": {
-            "db": ["c"],
-            "aggregate": [
-              {
-                "$match": {
-                  "$and": [
-                    { "slp.valid": true },
-                    { "blk.t": {
-                      "$gte": (+(new Date) / 1000) - (60*60*24*30),
-                      "$lte": (+(new Date) / 1000)
-                    } },
-                    { "slp.detail.tokenIdHex": tokenIdHex }
-                  ]
-                }
-              },
-              {
-                "$group": {
-                   "_id" : "$blk.t",
-                  "count": {"$sum": 1}
-                }
-              }
-            ],
-            "limit": 10000
-          },
-          "r": {
-            "f": "[ .[] | {block_epoch: ._id, txs: .count} ]"
-          }
-        })
+        app.slpdb.query(app.slpdb.count_txs_per_block({
+          "$and": [
+            { "slp.valid": true },
+            { "blk.t": {
+              "$gte": (+(new Date) / 1000) - (60*60*24*30),
+              "$lte": (+(new Date) / 1000)
+            } },
+            { "slp.detail.tokenIdHex": tokenIdHex }
+          ]
+        }))
       ]).then(([token_monthly_usage]) => {
         app.util.create_monthly_plot(token_monthly_usage, 'plot-token-monthly-usage');
       });
@@ -1676,39 +1601,19 @@ app.init_address_page = (address) =>
         return false;
       }
       Promise.all([
-        app.slpdb.query({
-          "v": 3,
-          "q": {
-            "db": ["c"],
-            "aggregate": [
-              {
-                "$match": {
-                  "$and": [
-                    { "slp.valid": true },
-                    { "blk.t": {
-                      "$gte": (+(new Date) / 1000) - (60*60*24*30),
-                      "$lte": (+(new Date) / 1000)
-                    } },
-                  ],
-                  "$or": [
-                    { "in.e.a": cash_address },
-                    { "out.e.a": cash_address }
-                  ]
-                }
-              },
-              {
-                "$group": {
-                   "_id" : "$blk.t",
-                  "count": {"$sum": 1}
-                }
-              }
-            ],
-            "limit": 10000
-          },
-          "r": {
-            "f": "[ .[] | {block_epoch: ._id, txs: .count} ]"
-          }
-        })
+        app.slpdb.query(app.slpdb.count_txs_per_block({
+          "$and": [
+            { "slp.valid": true },
+            { "blk.t": {
+              "$gte": (+(new Date) / 1000) - (60*60*24*30),
+              "$lte": (+(new Date) / 1000)
+            } }
+          ],
+          "$or": [
+            { "in.e.a": cash_address },
+            { "out.e.a": cash_address }
+          ]
+        }))
       ]).then(([address_monthly_usage]) => {
         app.util.create_monthly_plot(address_monthly_usage, 'plot-address-monthly-usage');
       });
