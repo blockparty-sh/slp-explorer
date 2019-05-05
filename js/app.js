@@ -110,6 +110,7 @@ app.util = {
   create_time_period_plot: (
     usage,
     dom_id,
+    y_title='Transactions',
     time_period=60*60*24*30*1000,
     split_time_period=60*60*24*1000
   ) => {
@@ -178,7 +179,7 @@ app.util = {
       }
     ], {
       yaxis: {
-        title: 'Transactions'
+        title: y_title
       }
     })
   }
@@ -1066,6 +1067,34 @@ app.init_index_page = () =>
       }], {
         title: 'Popular Tokens This Month',
       })
+    });
+
+    
+    app.slpdb.query(app.slpdb.count_txs_per_block({
+      "$and": [
+        { "slp.valid": true },
+        { "slp.detail.transactionType": "GENESIS" },
+        { "blk.t": {
+          "$gte": (+(new Date) / 1000) - (60*60*24*30),
+          "$lte": (+(new Date) / 1000)
+        } }
+      ]
+    }))
+    .then((tokens_created) => {
+      app.util.create_time_period_plot(tokens_created, 'plot-token-creation', 'Genesis Transactions')
+    });
+
+    app.slpdb.query(app.slpdb.count_txs_per_block({
+      "$and": [
+        { "slp.valid": false },
+        { "blk.t": {
+          "$gte": (+(new Date) / 1000) - (60*60*24*30),
+          "$lte": (+(new Date) / 1000)
+        } }
+      ]
+    }))
+    .then((token_burns) => {
+      app.util.create_time_period_plot(token_burns, 'plot-token-burns', 'REKT Transactions')
     });
 
     app.slpsocket.init_listener({
