@@ -174,6 +174,7 @@ app.util = {
         fill: 'tonexty',
         type: 'scatter',
         name: 'Daily',
+        line: { shape: 'spline' },
       }
     ], {
       yaxis: {
