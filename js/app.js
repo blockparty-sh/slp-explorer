@@ -104,32 +104,38 @@ app.util = {
       t: o.t ? (o.t.length ? o.t[0][key] : 0) : 0,
     };
   },
-  days_between: (d1, d2) => {
-    return Math.max(0, Math.abs(Math.floor((d1.getTime() - d2.getTime()) / (1000*60*60*24)))-1);
+  time_periods_between: (d1, d2, period=1000*60*60*24) => {
+    return Math.max(0, Math.abs(Math.floor((d1.getTime() - d2.getTime()) / period))-1);
   },
-  create_monthly_plot: (monthly_usage, dom_id) => {
-    for (let o of monthly_usage.c) {
+  create_time_period_plot: (
+    usage,
+    dom_id,
+    time_period=60*60*24*30*1000,
+    split_time_period=60*60*24*1000
+  ) => {
+    for (let o of usage.c) {
       o.block_epoch = new Date(o.block_epoch * 1000);
     }
-    monthly_usage.c.sort((a, b) => a.block_epoch - b.block_epoch);
+    usage.c.sort((a, b) => a.block_epoch - b.block_epoch);
 
-    let monthly_usage_day_t = [];
-    if (monthly_usage.c.length > 0) {
-      let ts = +(monthly_usage.c[0].block_epoch);
-      let dayset = [];
+    let usage_split_t = [];
+    if (usage.c.length > 0) {
+      let ts = +(usage.c[0].block_epoch);
+      let splitset = [];
 
-      for (let m of monthly_usage.c) {
-        if (+(m.block_epoch) > ts + (60*60*24*1000)) {
+      for (let m of usage.c) {
+        if (+(m.block_epoch) > ts + split_time_period) {
           ts = +(m.block_epoch);
-          monthly_usage_day_t.push(dayset);
-          dayset = [];
+          usage_split_t.push(splitset);
+          splitset = [];
         }
-        dayset.push(m);
+        splitset.push(m);
       }
 
-      monthly_usage_day_t.push(dayset);
+      usage_split_t.push(splitset);
     }
-    const monthly_usage_day = monthly_usage_day_t
+
+    const usage_split = usage_split_t
     .map(m =>
       m.reduce((a, v) =>
         ({
@@ -142,26 +148,29 @@ app.util = {
       )
     );
 
+    let start_date = new Date((+(new Date)) - time_period);
 
-    let start_date = new Date((+(new Date)) - (60*60*24*30*1000));
-
-    let day_data = [];
-    for (let i=0; i<30; ++i) {
-      day_data.push({
-        block_epoch: new Date(start_date.getTime() + (60*60*24*1000*i)),
+    let split_data = [];
+    for (let i=0; i<Math.ceil(time_period / split_time_period); ++i) {
+      split_data.push({
+        block_epoch: new Date(start_date.getTime() + (split_time_period*i)),
         txs: 0
       });
     }
 
-    for (let m of monthly_usage_day_t) {
-      const d_off = app.util.days_between(start_date, m[0].block_epoch);
-      day_data[d_off].txs = m.reduce((a, v) => a+v.txs, 0);
+    for (let m of usage_split_t) {
+      const d_off = app.util.time_periods_between(
+        start_date,
+        m[0].block_epoch,
+        split_time_period
+      );
+      split_data[d_off].txs = m.reduce((a, v) => a+v.txs, 0);
     }
 
     Plotly.newPlot(dom_id, [
       {
-        x: day_data.map(v => v.block_epoch),
-        y: day_data.map(v => v.txs),
+        x: split_data.map(v => v.block_epoch),
+        y: split_data.map(v => v.txs),
         fill: 'tonexty',
         type: 'scatter',
         name: 'Daily',
@@ -1039,7 +1048,7 @@ app.init_index_page = () =>
       }),
     ])
     .then(([monthly_usage, token_usage]) => {
-      app.util.create_monthly_plot(monthly_usage, 'plot-monthly-usage');
+      app.util.create_time_period_plot(monthly_usage, 'plot-monthly-usage')
 
 
       let token_usage_monthly = token_usage.c;
@@ -1566,7 +1575,7 @@ app.init_token_page = (tokenIdHex) =>
           { "slp.detail.tokenIdHex": tokenIdHex }
         ]
       })).then((token_monthly_usage) => {
-        app.util.create_monthly_plot(token_monthly_usage, 'plot-token-monthly-usage');
+        app.util.create_time_period_plot(token_monthly_usage, 'plot-token-monthly-usage');
       });
 
       app.slpdb.query(app.slpdb.token_addresses(tokenIdHex, 10))
@@ -1715,7 +1724,7 @@ app.init_address_page = (address) =>
           ]
         }))
       ]).then(([address_monthly_usage]) => {
-        app.util.create_monthly_plot(address_monthly_usage, 'plot-address-monthly-usage');
+        app.util.create_time_period_plot(address_monthly_usage, 'plot-address-monthly-usage');
       });
 
       resolve();
