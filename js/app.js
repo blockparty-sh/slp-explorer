@@ -1915,6 +1915,8 @@ app.router = (whash, push_history = true) => {
   $('html').addClass('loading');
   $('html').scrollTop(0);
   method().then(() => {
+    tippy('[data-tippy-content]');
+
     $('html').removeClass('loading');
     $('footer').removeClass('display-none');
 
