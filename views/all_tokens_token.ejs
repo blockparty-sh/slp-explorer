@@ -1,6 +1,9 @@
 <tr>
   <td><a class="tokenid" href="/#token/<%= token.tokenDetails.tokenIdHex %>"><%= app.util.compress_tokenid(token.tokenDetails.tokenIdHex) %></a></td>
-  <td class="nowrap"><%= token.tokenDetails.symbol %></td>
+  <td class="nowrap">
+    <span class="token-icon-small" data-tokenid="<%= token.tokenDetails.tokenIdHex %>"></span>
+    <%= token.tokenDetails.symbol %>
+  </td>
   <td class="nowrap"><%= app.util.compress_string(token.tokenDetails.name) %></td>
   <td><%= token.tokenStats.qty_valid_txns_since_genesis %></td>
   <td><%= token.tokenStats.qty_valid_token_utxos %></td>

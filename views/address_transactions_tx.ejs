@@ -29,6 +29,7 @@
     <% } %>
   </td>
   <td>
+    <span class="token-icon-small" data-tokenid="<%= tx.slp.detail.tokenIdHex %>"></span>
     <% if (tx_tokens.hasOwnProperty(tx.slp.detail.tokenIdHex)) { %>
       <% if (tx_tokens[tx.slp.detail.tokenIdHex].tokenDetails.symbol.length > 0) { %>
         <a href="#token/<%= tx.slp.detail.tokenIdHex %>"><%= tx_tokens[tx.slp.detail.tokenIdHex].tokenDetails.name %> $<%= tx_tokens[tx.slp.detail.tokenIdHex].tokenDetails.symbol %></a>

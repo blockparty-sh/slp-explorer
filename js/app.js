@@ -182,6 +182,31 @@ app.util = {
         title: y_title
       }
     })
+  },
+
+  set_token_icon: ($el, size) => {
+    const tokenIdHex = $el.data('tokenid');
+
+    const append_jdenticon = () => {
+      $jdenticon = $(`<svg width="${size}" height="${size}" data-jdenticon-hash="${tokenIdHex}"></svg>`);
+      $jdenticon.jdenticon();
+      $el.append($jdenticon);
+    };
+
+    if (window.sessionStorage.getItem('tokenimgerr_'+tokenIdHex) === null) {
+      $img = $('<img>');
+      $img.attr('src', `https://tokens.bch.sx/${size}/${tokenIdHex}.png`);
+
+      $img.on('error', function() {
+        window.sessionStorage.setItem('tokenimgerr_'+tokenIdHex, true);
+        $(this).hide();
+        append_jdenticon();
+      });
+
+      $el.append($img);
+    } else {
+      append_jdenticon();
+    }
   }
 };
 
@@ -990,13 +1015,17 @@ app.init_index_page = () =>
         $('#recent-transactions-table tbody').html('');
 
         for (let i=0; i<transactions.length && i<10; ++i) {
-          $('#recent-transactions-table').append(
+          $('#recent-transactions-table tbody').append(
             app.template.latest_transactions_tx({
               tx: transactions[i],
               tx_tokens: tx_tokens
             })
           );
         }
+
+        $('#recent-transactions-table tbody .token-icon-small').each(function() {
+          app.util.set_token_icon($(this), 32);
+        });
 
         resolve();
       });
@@ -1133,6 +1162,8 @@ app.init_index_page = () =>
           })
         );
 
+        app.util.set_token_icon($('#recent-transactions-table tbody .token-icon-small:first'), 32);
+
         $('#recent-transactions-table').find('tbody tr:last').remove();
       });
     });
@@ -1160,6 +1191,10 @@ app.init_all_tokens_page = () =>
                 token: token
               })
             );
+          });
+
+          $('#all-tokens-table tbody .token-icon-small').each(function() {
+            app.util.set_token_icon($(this), 32);
           });
 
           done();
@@ -1234,6 +1269,8 @@ app.init_tx_page = (txid) =>
             token: token.t[0],
             input_amounts: input_amounts
           }));
+
+          app.util.set_token_icon($('main[role=main] #token-details-table-container .token-icon-large'), 128);
 
           resolve();
         });
@@ -1401,6 +1438,8 @@ app.init_tokengraph_page = (tokenIdHex) =>
         token: token
       }));
 
+      app.util.set_token_icon($('main[role=main] .transaction_box .token-icon-large'), 128);
+
       const reload = () => {
         cy.json({ elements: app.cytoscape_extract_graph({[token.tokenDetails.tokenIdHex]: token}, transactions) }, true)
           .layout({ name: 'klay', animate: true })
@@ -1460,6 +1499,8 @@ app.init_txgraph_page = (txid) =>
         tx: transactions[0]
       }));
 
+      app.util.set_token_icon($('main[role=main] .transaction_box .token-icon-large'), 128);
+
       const reload = () => {
         cy.json({ elements: app.cytoscape_extract_graph(tx_tokens, transactions) })
           .layout({ name: 'klay', animate: true })
@@ -1495,6 +1536,8 @@ app.init_token_page = (tokenIdHex) =>
       $('main[role=main]').html(app.template.token_page({
         token: token
       }));
+
+      app.util.set_token_icon($('main[role=main] .transaction_box .token-icon-large'), 128);
 
       const load_paginated_token_addresses = (limit, skip, done) => {
         app.slpdb.query(app.slpdb.token_addresses(tokenIdHex, limit, skip))
@@ -1676,6 +1719,10 @@ app.init_address_page = (address) =>
               );
             });
 
+            $('#address-tokens-table tbody .token-icon-small').each(function() {
+              app.util.set_token_icon($(this), 32);
+            });
+
             done();
           });
         });
@@ -1700,6 +1747,10 @@ app.init_address_page = (address) =>
                   tx_tokens: tx_tokens
                 })
               );
+            });
+
+            $('#address-transactions-table tbody .token-icon-small').each(function() {
+              app.util.set_token_icon($(this), 32);
             });
 
             done();
@@ -1955,6 +2006,7 @@ app.router = (whash, push_history = true) => {
   $('html').scrollTop(0);
   method().then(() => {
     tippy('[data-tippy-content]');
+    jdenticon();
 
     $('html').removeClass('loading');
     $('footer').removeClass('display-none');

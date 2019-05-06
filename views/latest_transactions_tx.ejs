@@ -2,6 +2,7 @@
 <tr>
   <td><a class="txid" href="/#tx/<%= tx.tx.h %>"><%= app.util.compress_txid(tx.tx.h) %></a></td>
   <td>
+    <span class="token-icon-small" data-tokenid="<%= tx.slp.detail.tokenIdHex %>"></span>
     <a href="#token/<%= tx.slp.detail.tokenIdHex %>">
     <% if (tx_tokens[tx.slp.detail.tokenIdHex].tokenDetails.symbol) { %>
       <%= tx_tokens[tx.slp.detail.tokenIdHex].tokenDetails.symbol %>
