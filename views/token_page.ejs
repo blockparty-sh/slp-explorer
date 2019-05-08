@@ -63,7 +63,7 @@
                 <% if (token.tokenDetails.documentUri) { %>
                   <% const url = app.util.document_link(token.tokenDetails.documentUri); %>
                   <% if (url.length) { %>
-                    <a href="<%= url %>"><%= token.tokenDetails.documentUri %></a>
+                    <a href="<%= url %>" target="blank"><%= token.tokenDetails.documentUri %></a>
                   <% } else { %>
                     <%= token.tokenDetails.documentUri %>
                   <% } %>

@@ -12,7 +12,7 @@
     <% if (token.tokenDetails.documentUri) { %>
       <% const url = app.util.document_link(token.tokenDetails.documentUri); %>
       <% if (url.length) { %>
-        <a href="<%= url %>"><%= app.util.compress_string(token.tokenDetails.documentUri) %></a>
+        <a href="<%= url %>" target="blank"><%= app.util.compress_string(token.tokenDetails.documentUri) %></a>
       <% } else { %>
         <%= app.util.compress_string(token.tokenDetails.documentUri) %>
       <% } %>
