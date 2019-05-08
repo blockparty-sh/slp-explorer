@@ -1,12 +1,16 @@
 <tr>
   <td>
-    <a class="tokenid" href="/#token/<%= token.tokenDetails.tokenIdHex %>">
-      <%= app.util.compress_tokenid(token.tokenDetails.tokenIdHex) %>
-    </a>
+    <div class="flex-vcenter">
+      <a class="tokenid" href="/#token/<%= token.tokenDetails.tokenIdHex %>">
+        <%= app.util.compress_tokenid(token.tokenDetails.tokenIdHex) %>
+      </a>
+    </div>
   </td>
   <td>
-    <span class="token-icon-small" data-tokenid="<%= token.tokenDetails.tokenIdHex %>"></span>
-    <%= tx_tokens[token.tokenDetails.tokenIdHex].tokenDetails.name %>
+    <div class="flex-vcenter">
+      <span class="token-icon-small" data-tokenid="<%= token.tokenDetails.tokenIdHex %>"></span>
+      <%= tx_tokens[token.tokenDetails.tokenIdHex].tokenDetails.name %>
+    </div>
   </td>
   <td><%= tx_tokens[token.tokenDetails.tokenIdHex].tokenDetails.symbol %></td>
   <td class="amount"><%= token.token_balance %></td>

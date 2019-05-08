@@ -622,6 +622,24 @@ html.index-page header {
     clear: both;
 }
 
+.flex-vcenter {
+    display: flex;
+    align-items: center;
+}
+
+.flex-hcenter {
+    display: flex;
+    justify-items: center;
+}
+
+.token-icon-small {
+    margin-right:0.3rem;
+}
+
+.token-icon-large {
+    margin:-30px 10px 0px -25px;
+}
+
 #header-logo {
     background-image: url(/img/simple-ledger-protocol-logo.png);
     background-repeat: no-repeat;

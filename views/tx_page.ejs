@@ -1,13 +1,23 @@
 <div class="transaction_box">
   <div>
-    <h2 class="text-white">Transaction</h2>
-    <h6><%= tx.tx.h %></h6>
-    <a href="#txgraph/<%= tx.tx.h %>">
-      <button type="button" class="button button_red">View Graph</button>
-    </a>
-    <a target="_blank" href="https://explorer.bitcoin.com/bch/tx/<%= tx.tx.h %>">
-      <button type="button" class="button button_green right">View on BCH Explorer</button>
-    </a>
+    <div class="token-icon-large left" data-tokenid="<%= tx.slp.detail.tokenIdHex %>"></div>
+    <div>
+      <h2 class="text-white">
+        <% if (token.tokenDetails.symbol) { %>
+          <%= token.tokenDetails.symbol %>
+        <% } else if (token.tokenDetails.name !== '') { %>
+          <%= token.tokenDetails.name %>
+        <% } %>
+        Transaction
+      </h2>
+      <h6><%= tx.tx.h %></h6>
+      <a href="#txgraph/<%= tx.tx.h %>">
+        <button type="button" class="button button_red">View Graph</button>
+      </a>
+      <a target="_blank" href="https://explorer.bitcoin.com/bch/tx/<%= tx.tx.h %>">
+        <button type="button" class="button button_green right">View on BCH Explorer</button>
+      </a>
+    </div>
   </div>
 </div>
 
@@ -64,7 +74,6 @@
               <tr>
                 <td>
                     <h3>Token Details</h3>
-                    <span class="token-icon-large" data-tokenid="<%= tx.slp.detail.tokenIdHex %>"></span>
                 </td>
               </tr>
             </thead>

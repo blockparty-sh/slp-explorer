@@ -1,19 +1,27 @@
 <% const cash_address = slpjs.Utils.toCashAddress(address).split(':')[1]; %>
 <tr>
   <td>
-    <% if (tx.blk) { %>
-      <a href="#block/<%= tx.blk.i %>"><%= tx.blk.i %></a>
-    <% } else { %>
-      <a href="#block/mempool">Pending</a>
-    <% } %>
+    <div class="flex-vcenter">
+      <% if (tx.blk) { %>
+        <a href="#block/<%= tx.blk.i %>"><%= tx.blk.i %></a>
+      <% } else { %>
+        <a href="#block/mempool">Pending</a>
+      <% } %>
+    </div>
   </td>
-  <td><a class="txid" href="/#tx/<%= tx.tx.h %>"><%= app.util.compress_txid(tx.tx.h) %></a></td>
   <td>
-    <% if (tx.slp.detail.transactionType === 'SEND') { %>
-      <% if (tx.in.filter((v) => v.e.a === cash_address).length) {%>SENT<% } else { %>RECV<% } %>
-    <% } else { %>
-      <%= tx.slp.detail.transactionType %>
-    <% } %>
+    <div class="flex-vcenter">
+      <a class="txid" href="/#tx/<%= tx.tx.h %>"><%= app.util.compress_txid(tx.tx.h) %></a>
+    </div>
+  </td>
+  <td>
+    <div class="flex-vcenter">
+      <% if (tx.slp.detail.transactionType === 'SEND') { %>
+        <% if (tx.in.filter((v) => v.e.a === cash_address).length) {%>SENT<% } else { %>RECV<% } %>
+      <% } else { %>
+        <%= tx.slp.detail.transactionType %>
+      <% } %>
+    </div>
   </td>
   <td class="amount">
     <% if (tx.slp.detail.transactionType === 'SEND') { %>
@@ -29,15 +37,17 @@
     <% } %>
   </td>
   <td>
-    <span class="token-icon-small" data-tokenid="<%= tx.slp.detail.tokenIdHex %>"></span>
-    <% if (tx_tokens.hasOwnProperty(tx.slp.detail.tokenIdHex)) { %>
-      <% if (tx_tokens[tx.slp.detail.tokenIdHex].tokenDetails.symbol.length > 0) { %>
-        <a href="#token/<%= tx.slp.detail.tokenIdHex %>"><%= tx_tokens[tx.slp.detail.tokenIdHex].tokenDetails.name %> $<%= tx_tokens[tx.slp.detail.tokenIdHex].tokenDetails.symbol %></a>
-      <% } else { %>
-        <span class="mono"><a href="#token/<%= tx.slp.detail.tokenIdHex %>">[none]</a></span>
+    <div class="flex-vcenter">
+      <span class="token-icon-small" data-tokenid="<%= tx.slp.detail.tokenIdHex %>"></span>
+      <% if (tx_tokens.hasOwnProperty(tx.slp.detail.tokenIdHex)) { %>
+        <% if (tx_tokens[tx.slp.detail.tokenIdHex].tokenDetails.symbol.length > 0) { %>
+          <a href="#token/<%= tx.slp.detail.tokenIdHex %>"><%= tx_tokens[tx.slp.detail.tokenIdHex].tokenDetails.name %> $<%= tx_tokens[tx.slp.detail.tokenIdHex].tokenDetails.symbol %></a>
+        <% } else { %>
+          <span class="mono"><a href="#token/<%= tx.slp.detail.tokenIdHex %>">[none]</a></span>
+        <% } %>
+      <% } else {%>
+        <span class="mono"><a href="#token/<%= tx.slp.detail.tokenIdHex %>">[not found]</a></span>
       <% } %>
-    <% } else {%>
-      <span class="mono"><a href="#token/<%= tx.slp.detail.tokenIdHex %>">[not found]</a></span>
-    <% } %>
+    </div>
   </td>
 </tr>

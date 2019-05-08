@@ -1270,7 +1270,7 @@ app.init_tx_page = (txid) =>
             input_amounts: input_amounts
           }));
 
-          app.util.set_token_icon($('main[role=main] #token-details-table-container .token-icon-large'), 128);
+          app.util.set_token_icon($('main[role=main] .transaction_box .token-icon-large'), 128);
 
           resolve();
         });
