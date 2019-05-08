@@ -83,7 +83,7 @@
               </tr>
               <tr>
                 <th scope="row">Timestamp</th>
-                <td><%= token.tokenDetails.timestamp %></td>
+                <td><%= new Date(token.tokenDetails.timestamp_unix*1000).toLocaleString() %></td>
               </tr>
               <tr>
                 <th scope="row">Quantity</th>
