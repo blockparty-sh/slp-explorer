@@ -1522,7 +1522,6 @@ app.init_token_page = (tokenIdHex) =>
     Promise.all([
       app.slpdb.query(app.slpdb.token(tokenIdHex)),
       app.slpdb.query(app.slpdb.count_token_mint_transactions(tokenIdHex)),
-      /* app.slpdb.query(app.slpdb.token_transaction_history(tokenIdHex, null, 10))*/
     ])
     .then(([token, total_token_mint_transactions]) => {
       total_token_mint_transactions = app.util.extract_total(total_token_mint_transactions);
@@ -1663,11 +1662,14 @@ app.init_token_page = (tokenIdHex) =>
           });
         }
 
-        data.push({
-          address: 'Other',
-          token_balance: token.tokenStats.qty_token_circulating_supply - data.reduce((a, v) => a + Number(v.token_balance), 0),
-          color: "rgba(232, 102, 102, 1)"
-        });
+        const other_balance = token.tokenStats.qty_token_circulating_supply - data.reduce((a, v) => a + Number(v.token_balance), 0);
+        if (other_balance > 0) {
+          data.push({
+            address: 'Other',
+            token_balance: other_balance,
+            color: "rgba(232, 102, 102, 1)"
+          });
+        }
 
         data.sort((a, b) => b.token_balance - a.token_balance);
 
