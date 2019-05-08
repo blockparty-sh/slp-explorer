@@ -207,7 +207,123 @@ app.util = {
     } else {
       append_jdenticon();
     }
-  }
+  },
+
+  attach_search_handler: (selector) => {
+    $(selector).closest('form').submit(false);
+    
+    $(selector).autocomplete({
+      groupBy: 'category',
+      preventBadQueries: false, // retry query in case slpdb hasnt yet indexed something
+      triggerSelectOnValidInput: false, // disables reload on clicking into box again
+      width: 'flex',
+      lookup: function (query, done) {
+        let search_value = $(selector).val().trim();
+  
+        // check if address entered
+        if (slpjs.Utils.isSlpAddress(search_value)) {
+          $(selector).val('');
+          return app.router('/#address/'+search_value);
+        }
+  
+        if (slpjs.Utils.isCashAddress(search_value)) {
+          $(selector).val('');
+          return app.router('/#address/'+slpjs.Utils.toSlpAddress(search_value));
+        }
+  
+        if (slpjs.Utils.isLegacyAddress(search_value)) {
+          $(selector).val('');
+          return app.router('/#address/'+slpjs.Utils.toSlpAddress(search_value));
+        }
+    
+        Promise.all([
+          app.slpdb.query({
+            "v": 3,
+            "q": {
+              "db": ["t"],
+              "find": {
+                "$or": [
+                  {
+                    "tokenDetails.tokenIdHex": search_value
+                  },
+                  {
+                    "tokenDetails.name": {
+                      "$regex": "^"+search_value+".*",
+                      "$options": "i"
+                    }
+                  },
+                  {
+                    "tokenDetails.symbol": {
+                      "$regex": "^"+search_value+".*",
+                      "$options": "i"
+                    }
+                  }
+                ]
+              },
+              "sort": {"tokenStats.qty_valid_txns_since_genesis": -1},
+              "limit": 10
+            }
+          }),
+          app.slpdb.query({
+            "v": 3,
+            "q": {
+              "db": ["u", "c"],
+              "find": {"tx.h": search_value},
+              "limit": 1
+            }
+          })
+        ]).then(([tokens, transactions]) => {
+          let sugs = [];
+  
+          for (let m of tokens.t) {
+            if (m.tokenDetails.tokenIdHex === search_value) {
+              $(selector).val('');
+              return app.router('/#token/'+m.tokenDetails.tokenIdHex);
+            }
+  
+            const ctxid = app.util.compress_txid(m.tokenDetails.tokenIdHex);
+            let tval = null;
+            if (m.tokenDetails.symbol) {
+              tval = m.tokenDetails.symbol + ' | ' + ctxid;
+            } else if (m.tokenDetails.name) {
+              tval = m.tokenDetails.name + ' | ' + ctxid;
+            } else {
+              tval = ctxid;
+            }
+  
+            sugs.push({
+              value: tval,
+              data: {
+                url: '/#token/'+m.tokenDetails.tokenIdHex,
+                category: 'Tokens'
+              }
+            });
+          }
+          transactions = transactions.u.concat(transactions.c);
+          for (let m of transactions) {
+            if (m.tx.h === search_value) {
+              $(selector).val('');
+              return app.router('/#tx/'+m.tx.h);
+            }
+  
+            sugs.push({
+              value: m.tx.h,
+              data: {
+                url: '/#tx/'+m.tx.h,
+                category: 'Tx'
+              }
+            });
+          }
+  
+          done({ suggestions: sugs });
+        });
+      },
+      onSelect: function (sug) {
+        $(selector).val('');
+        app.router(sug.data.url);
+      }
+    });
+  },
 };
 
 app.slpdb = {
@@ -1004,7 +1120,7 @@ app.init_index_page = () =>
     $('main[role=main]')
     .html(app.template.index_page());
 
-    app.attach_search_handler('#main-search');
+    app.util.attach_search_handler('#main-search');
 
     app.slpdb.query(app.slpdb.recent_transactions(10))
     .then((data) => {
@@ -1815,123 +1931,6 @@ app.init_address_page = (address) =>
   )
 
 
-app.attach_search_handler = (selector) => {
-  $(selector).closest('form').submit(false);
-  
-  $(selector).autocomplete({
-    groupBy: 'category',
-    preventBadQueries: false, // retry query in case slpdb hasnt yet indexed something
-    triggerSelectOnValidInput: false, // disables reload on clicking into box again
-    width: 'flex',
-    lookup: function (query, done) {
-      let search_value = $(selector).val().trim();
-
-      // check if address entered
-      if (slpjs.Utils.isSlpAddress(search_value)) {
-        $(selector).val('');
-        return app.router('/#address/'+search_value);
-      }
-
-      if (slpjs.Utils.isCashAddress(search_value)) {
-        $(selector).val('');
-        return app.router('/#address/'+slpjs.Utils.toSlpAddress(search_value));
-      }
-
-      if (slpjs.Utils.isLegacyAddress(search_value)) {
-        $(selector).val('');
-        return app.router('/#address/'+slpjs.Utils.toSlpAddress(search_value));
-      }
-  
-      Promise.all([
-        app.slpdb.query({
-          "v": 3,
-          "q": {
-            "db": ["t"],
-            "find": {
-              "$or": [
-                {
-                  "tokenDetails.tokenIdHex": search_value
-                },
-                {
-                  "tokenDetails.name": {
-                    "$regex": "^"+search_value+".*",
-                    "$options": "i"
-                  }
-                },
-                {
-                  "tokenDetails.symbol": {
-                    "$regex": "^"+search_value+".*",
-                    "$options": "i"
-                  }
-                }
-              ]
-            },
-            "sort": {"tokenStats.qty_valid_txns_since_genesis": -1},
-            "limit": 10
-          }
-        }),
-        app.slpdb.query({
-          "v": 3,
-          "q": {
-            "db": ["u", "c"],
-            "find": {"tx.h": search_value},
-            "limit": 1
-          }
-        })
-      ]).then(([tokens, transactions]) => {
-        let sugs = [];
-
-        for (let m of tokens.t) {
-          if (m.tokenDetails.tokenIdHex === search_value) {
-            $(selector).val('');
-            return app.router('/#token/'+m.tokenDetails.tokenIdHex);
-          }
-
-          const ctxid = app.util.compress_txid(m.tokenDetails.tokenIdHex);
-          let tval = null;
-          if (m.tokenDetails.symbol) {
-            tval = m.tokenDetails.symbol + ' | ' + ctxid;
-          } else if (m.tokenDetails.name) {
-            tval = m.tokenDetails.name + ' | ' + ctxid;
-          } else {
-            tval = ctxid;
-          }
-
-          sugs.push({
-            value: tval,
-            data: {
-              url: '/#token/'+m.tokenDetails.tokenIdHex,
-              category: 'Tokens'
-            }
-          });
-        }
-        transactions = transactions.u.concat(transactions.c);
-        for (let m of transactions) {
-          if (m.tx.h === search_value) {
-            $(selector).val('');
-            return app.router('/#tx/'+m.tx.h);
-          }
-
-          sugs.push({
-            value: m.tx.h,
-            data: {
-              url: '/#tx/'+m.tx.h,
-              category: 'Tx'
-            }
-          });
-        }
-
-        done({ suggestions: sugs });
-      });
-    },
-    onSelect: function (sug) {
-      $(selector).val('');
-      app.router(sug.data.url);
-    }
-  });
-};
-
-
 app.router = (whash, push_history = true) => {
   if (! whash) {
     whash = window.location.hash.substring(1);
@@ -2024,7 +2023,7 @@ $(document).ready(() => {
     app.router(window.location.pathname+window.location.hash, false);
   });
 
-  app.attach_search_handler('#header-search');
+  app.util.attach_search_handler('#header-search');
 
   const views = [
     'index_page',
