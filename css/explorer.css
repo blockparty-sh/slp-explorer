@@ -58,7 +58,7 @@ header li input {
     color: #000;
     border: 0px;
     outline: 0px;
-    width:25rem;
+    width:24rem;
     font-weight:200;
     height: 44px;
     margin-top: 9px;
@@ -249,7 +249,7 @@ a {
 .rounded_row {
     max-width: 1350px;
     margin: auto;
-    margin-top: 13px;
+    margin: 10px 5px 0px 5px;
     background: #ffffff;
     border: 1px solid rgba(0,0,0,.125);
     padding: 0px 15px 10px 15px;
@@ -260,15 +260,19 @@ a {
 }
 
 .rounded_row_50percent_container {
-    width:100%;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    align-content: stretch;
 }
 
 .rounded_row_50percent_container .rounded_row {
-    width:49.5%;
-    float:left;
+    flex: 1;
+    flex-basis: 320px;
 }
-.rounded_row_50percent_container .rounded_row:first-child {
-    margin-right:1%;
+
+.rounded_row_50percent_container .rounded_row .graph {
+    flex-basis: 550px;
 }
 
 .input_output {
@@ -277,12 +281,11 @@ a {
 }
 
 .transaction_box {
-    max-width: 1350px;
-    margin: auto;
-    margin-top: 10px;
+    max-width: 100%;
     background: #ffffff;
     border: 1px solid rgba(0,0,0,.125);
     padding: 0px 15px 10px 15px;
+    margin: 10px 5px 0px 5px;
     box-sizing: border-box;
     overflow: auto;
     -webkit-box-shadow: 0 1px 2px rgba(60,64,67,.15), 0 1px 3px 1px rgba(60,64,67,.1);
@@ -342,7 +345,7 @@ a button.button.left:first-child {
 }
 
 h6 {
-    font-size: 1.15em;
+    font-size: 1em;
     color: #5b5b5b;
     font-weight: unset;
     margin: 17px 0px;
@@ -613,6 +616,7 @@ html.index-page header {
     border-bottom-style: inset;
     padding: 1rem;
     padding-bottom: 0.25rem;
+    font-size: 1.5em;
 }
 #index-view-all-tokens h1:hover {
     border-bottom: 4px solid #98c5eb;
@@ -633,11 +637,27 @@ html.index-page header {
 }
 
 .token-icon-small {
+    width: 28px;
+    height: 28px;
     margin-right:0.3rem;
+}
+.token-icon-small img {
+    vertical-align: middle;
+    width: 28px;
+    height: 28px;
 }
 
 .token-icon-large {
-    margin:-30px 10px 0px -25px;
+    margin: auto;
+    margin-right: 15px;
+    vertical-align: middle;
+    border-radius: 50%;
+}
+
+.token-icon-large img {
+    border-radius: 5px;
+    max-width: 128px;
+    max-height: 128px;
 }
 
 #header-logo {
@@ -667,7 +687,10 @@ html.index-page header {
     text-align:center;
 }
 
-@media only screen and (max-width: 913px) {
+@media only screen and (max-width: 890px) {
+    .rounded_row {
+        overflow: auto;
+    }
     .hide-desktop {
         display:block!important;
     }
@@ -698,11 +721,6 @@ html.index-page header {
     }
     footer .col {
         width: 100%;
-    }
-    .rounded_row_50percent_container .rounded_row {
-      width:100%;
-      float:none;
-      margin-right:0;
     }
 
     .transaction_box button.button {
