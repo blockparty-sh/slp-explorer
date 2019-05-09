@@ -616,77 +616,59 @@ app.slpdb = {
       "skip": skip
     }
   }),
-  transactions_by_slp_address: (address, limit=100, skip=0) => {
-    let cash_address = address;
-    try {
-      cash_address = slpjs.Utils.toCashAddress(address).split(':')[1];
-    } catch (e) {
-      return false;
-    }
-
-    return {
-      "v": 3,
-      "q": {
-        "db": ["c", "u"],
-        "find": {
-          "$and": [
-            {
-              "$or": [
-                { "in.e.a":  cash_address },
-                { "out.e.a": cash_address }
-              ]
-            },
-            { "slp.valid": true }
-          ]
-        },
-        "sort": { "blk.i": -1 },
-        "limit": limit,
-        "skip": skip
-      }
-    };
-  },
-  count_total_transactions_by_slp_address: (address) => {
-    let cash_address = address;
-    try {
-      cash_address = slpjs.Utils.toCashAddress(address).split(':')[1];
-    } catch (e) {
-      return false;
-    }
-
-    return {
-      "v": 3,
-      "q": {
-        "db": [
-          "c",
-          "u"
-        ],
-        "aggregate": [
+  transactions_by_slp_address: (address, limit=100, skip=0) => ({
+    "v": 3,
+    "q": {
+      "db": ["c", "u"],
+      "find": {
+        "$and": [
           {
-            "$match": {
-              "$and": [
-                {
-                  "$or": [
-                    { "in.e.a":  cash_address },
-                    { "out.e.a": cash_address }
-                  ]
-                },
-                { "slp.valid": true }
-              ]
-            }
+            "$or": [
+              { "in.e.a":  address },
+              { "out.e.a": address }
+            ]
           },
-          {
-            "$group": {
-              "_id": null,
-              "count": { "$sum": 1 }
-            }
-          }
+          { "slp.valid": true }
         ]
       },
-      "r": {
-        "f": "[ .[] | {count: .count } ]"
-      }
-    };
-  },
+      "sort": { "blk.i": -1 },
+      "limit": limit,
+      "skip": skip
+    }
+  }),
+  count_total_transactions_by_slp_address: (address) => ({
+    "v": 3,
+    "q": {
+      "db": [
+        "c",
+        "u"
+      ],
+      "aggregate": [
+        {
+          "$match": {
+            "$and": [
+              {
+                "$or": [
+                  { "in.e.a":  address },
+                  { "out.e.a": address }
+                ]
+              },
+              { "slp.valid": true }
+            ]
+          }
+        },
+        {
+          "$group": {
+            "_id": null,
+            "count": { "$sum": 1 }
+          }
+        }
+      ]
+    },
+    "r": {
+      "f": "[ .[] | {count: .count } ]"
+    }
+  }),
   count_tokens_by_slp_address: (address) => ({
     "v": 3,
     "q": {
@@ -1902,12 +1884,6 @@ app.init_address_page = (address) =>
         );
       }
 
-      let cash_address = address;
-      try {
-        cash_address = slpjs.Utils.toCashAddress(address).split(':')[1];
-      } catch (e) {
-        return false;
-      }
       Promise.all([
         app.slpdb.query(app.slpdb.count_txs_per_block({
           "$and": [
@@ -1918,8 +1894,8 @@ app.init_address_page = (address) =>
             } }
           ],
           "$or": [
-            { "in.e.a": cash_address },
-            { "out.e.a": cash_address }
+            { "in.e.a":  address },
+            { "out.e.a": address }
           ]
         }))
       ]).then(([address_monthly_usage]) => {
