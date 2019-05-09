@@ -1406,6 +1406,10 @@ app.init_block_page = (height) =>
               );
             });
 
+            $('#block-transactions-table-container tbody .token-icon-small').each(function() {
+              app.util.set_token_icon($(this), 32);
+            });
+
             done();
           });
         });
@@ -1457,6 +1461,10 @@ app.init_block_mempool_page = (height) =>
                   tx_tokens: tx_tokens,
                 })
               );
+            });
+
+            $('#block-transactions-table-container tbody .token-icon-small').each(function() {
+              app.util.set_token_icon($(this), 32);
             });
 
             done();

@@ -12,14 +12,19 @@
     <% } %>
   </td>
   <td>
-    <% if (tx_tokens.hasOwnProperty(tx.slp.detail.tokenIdHex)) { %>
-      <% if (tx_tokens[tx.slp.detail.tokenIdHex].tokenDetails.symbol.length > 0) { %>
-        <a href="#token/<%= tx.slp.detail.tokenIdHex %>"><%= tx_tokens[tx.slp.detail.tokenIdHex].tokenDetails.name %> $<%= tx_tokens[tx.slp.detail.tokenIdHex].tokenDetails.symbol %></a>
-      <% } else { %>
-        <span class="mono"><a href="#token/<%= tx.slp.detail.tokenIdHex %>">[none]</a></span>
+    <div class="flex-vcenter">
+      <span class="token-icon-small" data-tokenid="<%= tx.slp.detail.tokenIdHex %>"></span>
+      <% if (tx_tokens.hasOwnProperty(tx.slp.detail.tokenIdHex)) { %>
+        <% if (tx_tokens[tx.slp.detail.tokenIdHex].tokenDetails.symbol.length > 0) { %>
+          <a href="#token/<%= tx.slp.detail.tokenIdHex %>">
+            <%= tx_tokens[tx.slp.detail.tokenIdHex].tokenDetails.name %> $<%= tx_tokens[tx.slp.detail.tokenIdHex].tokenDetails.symbol %>
+          </a>
+        <% } else { %>
+          <span class="mono"><a href="#token/<%= tx.slp.detail.tokenIdHex %>">[none]</a></span>
+        <% } %>
+      <% } else {%>
+        <span class="mono"><a href="#token/<%= tx.slp.detail.tokenIdHex %>">[not found]</a></span>
       <% } %>
-    <% } else {%>
-      <span class="mono"><a href="#token/<%= tx.slp.detail.tokenIdHex %>">[not found]</a></span>
-    <% } %>
+    </div>
   </td>
 </tr>
