@@ -779,6 +779,42 @@ app.slpdb = {
       "f": "[ .[] | { txid: .graphTxn.txid, vout: .graphTxn.outputs.vout, slpAmount: .graphTxn.outputs.slpAmount} ]"
     }
   }),
+  get_txs_from_txid_vout_pairs: (pairs=[]) => ({
+    "v": 3,
+    "q": {
+      "db": ["u", "c"],
+      "aggregate": [
+        {
+          "$match": {
+            "in.e.h": {
+              "$in": [...new Set(pairs.map(v => v.txid))]
+            }
+          }
+        },
+        {
+          "$unwind": "$in"
+        },
+        {
+          "$match": {
+            "$or": pairs.map(v => ({
+              "$and": [
+                {
+                  "in.e.h": v.txid
+                },
+                {
+                  "in.e.i": v.vout
+                }
+              ]
+            }))
+          }
+        }
+      ],
+      "limit": 20,
+    },
+    "r": {
+      "f": "[ .[] | { txid: .tx.h, in: { i: .in.e.i } } ]"
+    }
+  }),
 };
 
 app.slpsocket = {
@@ -1337,41 +1373,67 @@ app.init_tx_page = (txid) =>
         return resolve();
       }
 
+      const chunk_size = 20;
 
-      const txid_vout_pairs = tx.in.map(v => ({
+      const input_txid_vout_pairs = tx.in.map(v => ({
         txid: v.e.h,
         vout: v.e.i
       }));
+      const output_txid_vout_pairs = tx.slp.detail.outputs.map((_, i) => ({
+        txid: tx.tx.h,
+        vout: i+1
+      }));
 
-      const chunk_size = 20;
 
-      let txid_vout_reqs = [];
-      for (let i=0; i<Math.ceil(txid_vout_pairs.length / chunk_size); ++i) {
-        txid_vout_reqs.push(app.slpdb.query(
-          app.slpdb.get_amounts_from_txid_vout_pairs(txid_vout_pairs.slice(chunk_size*i, (chunk_size*i)+chunk_size))
+      let input_txid_vout_reqs = [];
+      for (let i=0; i<Math.ceil(input_txid_vout_pairs.length / chunk_size); ++i) {
+        const chunk = input_txid_vout_pairs.slice(chunk_size*i, (chunk_size*i)+chunk_size);
+
+        input_txid_vout_reqs.push(app.slpdb.query(
+          app.slpdb.get_amounts_from_txid_vout_pairs(chunk)
         ));
       }
 
-      Promise.all(txid_vout_reqs)
-      .then((results) => {
-        const pairs = results.reduce((a, v) => a.concat(v.g), []);
+      let output_txid_vout_reqs = [];
+      for (let i=0; i<Math.ceil(output_txid_vout_pairs.length / chunk_size); ++i) {
+        const chunk = output_txid_vout_pairs.slice(chunk_size*i, (chunk_size*i)+chunk_size);
 
-        const input_amounts = pairs.reduce((a, v) => {
+        output_txid_vout_reqs.push(app.slpdb.query(
+          app.slpdb.get_txs_from_txid_vout_pairs(chunk)
+        ));
+      }
+
+      Promise.all(input_txid_vout_reqs)
+      .then((results) => {
+        const input_pairs  = results.reduce((a, v) => a.concat(v.g), []);
+
+        const input_amounts = input_pairs.reduce((a, v) => {
           a[v.txid+':'+v.vout] = v.slpAmount;
           return a;
         }, {});
 
-        app.slpdb.query(app.slpdb.token(tx.slp.detail.tokenIdHex))
-        .then((token) => {
-          $('main[role=main]').html(app.template.tx_page({
-            tx:    tx,
-            token: token.t[0],
-            input_amounts: input_amounts
-          }));
+        Promise.all(output_txid_vout_reqs)
+        .then((results) => {
+          const output_pairs = results.reduce((a, v) => a.concat(v.c).concat(v.u));
 
-          app.util.set_token_icon($('main[role=main] .transaction_box .token-icon-large'), 128);
+          const spent_map = output_pairs.u.concat(output_pairs.c).reduce((a, v) => {
+            a[v.in.i] = v.txid;
+            return a;
+          }, {});
 
-          resolve();
+          app.slpdb.query(app.slpdb.token(tx.slp.detail.tokenIdHex))
+          .then((token) => {
+            $('main[role=main]').html(app.template.tx_page({
+              tx:    tx,
+              token: token.t[0],
+              input_amounts: input_amounts,
+              spent_map: spent_map
+            }));
+
+            app.util.set_token_icon($('main[role=main] .transaction_box .token-icon-large'), 128);
+
+            resolve();
+          });
         });
       });
     })

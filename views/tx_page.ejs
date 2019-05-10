@@ -152,7 +152,13 @@
                       <td class="amount">
                         <%= input_amounts[m.e.h+':'+m.e.i] %>
                       </td>
-                      <td><a class="address" href="/#address/<%= slpjs.Utils.toSlpAddress(m.e.a) %>"><%= slpjs.Utils.toSlpAddress(m.e.a) %></a></td>
+                      <td>
+                        <% if (typeof m.e.a !== 'undefined') { %>
+                          <a class="address" href="/#address/<%= slpjs.Utils.toSlpAddress(m.e.a) %>"><%= slpjs.Utils.toSlpAddress(m.e.a) %></a>
+                        <% } else { %>
+                          SLPDB Address Error
+                        <% } %>
+                      </td>
                     </tr>
                   <% } %>
                 <% } %>
@@ -175,22 +181,30 @@
             <table class="table">
               <thead>
                 <tr>
+                  <th>Tx</th>
                   <th class="amount">Amount</th>
                   <th>Address</th>
                 </tr>
               </thead>
               <tbody>
-                <% if (tx.slp.detail.transactionType == 'SEND') { %>
-                  <% for (let m of tx.slp.detail.outputs) { %>
+                <% if (tx.slp.detail.outputs.length > 0) { %>
+                  <% let vout = 1; for (let m of tx.slp.detail.outputs) { %>
                     <tr>
+                      <td>
+                        <% if (spent_map.hasOwnProperty(vout)) { %>
+                          <a class="txid" href="/#tx/<%= spent_map[vout] %>" style="font-weight:bold">
+                            &#10004;
+                          </a>
+                        <% } %>
+                      </td>
                       <td class="amount"><%= m.amount %></td>
                       <td><a class="address" href="/#address/<%= m.address %>"><%= m.address %></a></td>
                     </tr>
-                  <% } %>
+                  <% ++vout; } %>
                 <% } else { %>
-                    <tr>
-                      <td>No outputs.</td>
-                    </tr>
+                  <tr>
+                    <td>No outputs.</td>
+                  </tr>
                 <% } %>
               </tbody>
             </table>
