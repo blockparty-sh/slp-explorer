@@ -144,16 +144,22 @@
               </tr>
             </thead>
             <tbody>
-              <% for (let m of tx.in) { %>
-                <% if (input_amounts[m.e.h+':'+m.e.i]) { %>
-                  <tr>
-                    <td><a class="txid" href="/#tx/<%= m.e.h %>" style="font-weight:bold">&larr;</a></td>
-                    <td class="amount">
-                      <%= input_amounts[m.e.h+':'+m.e.i] %>
-                    </td>
-                    <td><a class="address" href="/#address/<%= slpjs.Utils.toSlpAddress(m.e.a) %>"><%= slpjs.Utils.toSlpAddress(m.e.a) %></a></td>
-                  </tr>
+              <% if (tx.slp.detail.transactionType == 'SEND') { %>
+                <% for (let m of tx.in) { %>
+                  <% if (input_amounts[m.e.h+':'+m.e.i]) { %>
+                    <tr>
+                      <td><a class="txid" href="/#tx/<%= m.e.h %>" style="font-weight:bold">&larr;</a></td>
+                      <td class="amount">
+                        <%= input_amounts[m.e.h+':'+m.e.i] %>
+                      </td>
+                      <td><a class="address" href="/#address/<%= slpjs.Utils.toSlpAddress(m.e.a) %>"><%= slpjs.Utils.toSlpAddress(m.e.a) %></a></td>
+                    </tr>
+                  <% } %>
                 <% } %>
+              <% } else { %>
+                <tr>
+                  <td>No inputs.</td>
+                </tr>
               <% } %>
             </tbody>
           </table>
