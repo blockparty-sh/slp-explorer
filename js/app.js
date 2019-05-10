@@ -216,6 +216,7 @@ app.util = {
       groupBy: 'category',
       preventBadQueries: false, // retry query in case slpdb hasnt yet indexed something
       triggerSelectOnValidInput: false, // disables reload on clicking into box again
+      autoSelectFirst: true, // first item will be selected when showing suggestions
       width: 'flex',
       lookup: function (query, done) {
         let search_value = $(selector).val().trim();
