@@ -8,6 +8,9 @@
         <% } else if (token.tokenDetails.name !== '') { %>
           <%= token.tokenDetails.name %>
         <% } %>
+
+        <%= tx.slp.detail.transactionType[0].toUpperCase() + tx.slp.detail.transactionType.substring(1).toLocaleLowerCase() %>
+
         Transaction
       </h2>
       <h6><%= tx.tx.h %></h6>
