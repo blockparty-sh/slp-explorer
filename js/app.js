@@ -168,20 +168,24 @@ app.util = {
       split_data[d_off].txs = m.reduce((a, v) => a+v.txs, 0);
     }
 
-    Plotly.newPlot(dom_id, [
-      {
-        x: split_data.map(v => v.block_epoch),
-        y: split_data.map(v => v.txs),
-        fill: 'tonexty',
-        type: 'scatter',
-        name: 'Daily',
-        line: { shape: 'spline' },
-      }
-    ], {
-      yaxis: {
-        title: y_title
-      }
-    })
+    try {
+      Plotly.newPlot(dom_id, [
+        {
+          x: split_data.map(v => v.block_epoch),
+          y: split_data.map(v => v.txs),
+          fill: 'tonexty',
+          type: 'scatter',
+          name: 'Daily',
+          line: { shape: 'spline' },
+        }
+      ], {
+        yaxis: {
+          title: y_title
+        }
+      })
+    } catch (e) {
+      console.error('Plotly.newPlot failed', e);
+    }
   },
 
   set_token_icon: ($el, size) => {
@@ -1224,13 +1228,17 @@ app.init_index_page = () =>
         token_name: 'Other',
         txs: total_slp_tx_month - token_usage_monthly.reduce((a, v) => a + v.txs, 0)
       })
-      Plotly.newPlot('plot-token-usage', [{
-        labels: token_usage_monthly.map(v => v.token_name),
-        values: token_usage_monthly.map(v => v.txs),
-        type: 'pie',
-      }], {
-        title: 'Popular Tokens This Month',
-      })
+      try {
+        Plotly.newPlot('plot-token-usage', [{
+          labels: token_usage_monthly.map(v => v.token_name),
+          values: token_usage_monthly.map(v => v.txs),
+          type: 'pie',
+        }], {
+          title: 'Popular Tokens This Month',
+        })
+      } catch (e) {
+        console.error('Plotly.newPlot failed', e);
+      }
     });
 
     
@@ -1842,15 +1850,19 @@ app.init_token_page = (tokenIdHex) =>
 
         data.sort((a, b) => b.token_balance - a.token_balance);
 
-        Plotly.newPlot('plot-token-address-rich', [{
-          x: data.map(v => v.address),
-          y: data.map(v => v.token_balance),
-          marker: {
-            color: data.map(v => v.color)
-          },
-          type: 'bar',
-        }], {
-        })
+        try {
+          Plotly.newPlot('plot-token-address-rich', [{
+            x: data.map(v => v.address),
+            y: data.map(v => v.token_balance),
+            marker: {
+              color: data.map(v => v.color)
+            },
+            type: 'bar',
+          }], {
+          })
+        } catch (e) {
+          console.error('Plotly.newPlot failed', e);
+        }
       });
 
       resolve();
