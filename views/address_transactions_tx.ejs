@@ -1,4 +1,3 @@
-<% const cash_address = slpjs.Utils.toCashAddress(address).split(':')[1]; %>
 <tr>
   <td>
     <div class="flex-vcenter">
@@ -17,7 +16,7 @@
   <td>
     <div class="flex-vcenter">
       <% if (tx.slp.detail.transactionType === 'SEND') { %>
-        <% if (tx.in.filter((v) => v.e.a === cash_address).length) {%>SENT<% } else { %>RECV<% } %>
+        <% if (tx.in.filter((v) => v.e.a === address).length) {%>SENT<% } else { %>RECV<% } %>
       <% } else { %>
         <%= tx.slp.detail.transactionType %>
       <% } %>
@@ -25,7 +24,7 @@
   </td>
   <td class="amount">
     <% if (tx.slp.detail.transactionType === 'SEND') { %>
-      <% if (tx.in.filter((v) => v.e.a === cash_address).length) {%>
+      <% if (tx.in.filter((v) => v.e.a === address).length) {%>
         <%= app.extract_sent_amount_from_tx(tx) %>
       <% } else { %>
         <%= app.extract_recv_amount_from_tx(tx, address) %>
