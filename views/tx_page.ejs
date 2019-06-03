@@ -190,6 +190,13 @@
                 </tr>
               </thead>
               <tbody>
+                <% if (total_burnt.isGreaterThan(0)) { %>
+                  <tr class="burnt-tx">
+                    <td><a class="txid" style="font-weight:bold">:(</a></td>
+                    <td class="amount"><%= app.util.format_bignum(total_burnt.toFixed(tx.slp.detail.decimals)) %></td>
+                    <td><a class="address">BURNT</a></td>
+                  </tr>
+                <% } %>
                 <% if (tx.slp.detail.outputs.length > 0) { %>
                   <% let vout = 1; for (let m of tx.slp.detail.outputs) { %>
                     <tr>

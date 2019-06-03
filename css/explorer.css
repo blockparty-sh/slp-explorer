@@ -182,6 +182,18 @@ td.amount {
     font-family: 'Source Code Pro', monospace;
 }
 
+tr.burnt-tx {
+    background:#ffd1d1;
+}
+
+tr.burnt-tx td a.address {
+    color: #638e9d;
+}
+
+tr.burnt-tx td a.txid {
+    color: #000;
+}
+
 a {
     color: #3caed4;
     text-decoration: none;
