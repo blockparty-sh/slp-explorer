@@ -153,7 +153,7 @@
                     <tr>
                       <td><a class="txid" href="/#tx/<%= m.e.h %>" style="font-weight:bold">&larr;</a></td>
                       <td class="amount">
-                        <%= input_amounts[m.e.h+':'+m.e.i] %>
+                        <%= app.util.format_bignum_str(input_amounts[m.e.h+':'+m.e.i], token.tokenDetails.decimals)  %>
                       </td>
                       <td>
                         <% if (typeof m.e.a !== 'undefined') { %>
@@ -207,7 +207,7 @@
                           </a>
                         <% } %>
                       </td>
-                      <td class="amount"><%= m.amount %></td>
+                      <td class="amount"><%= app.util.format_bignum_str(m.amount, tx.slp.detail.decimals) %></td>
                       <td><a class="address" href="/#address/<%= m.address %>"><%= m.address %></a></td>
                     </tr>
                   <% ++vout; } %>

@@ -1,4 +1,4 @@
 <tr>
   <td><a class="address" href="/#address/<%= address.address %>"><%= address.address %></a></td>
-  <td class="amount"><%= address.token_balance %></a></td>
+  <td class="amount"><%= app.util.format_bignum_str(address.token_balance, decimals) %></a></td>
 </tr>

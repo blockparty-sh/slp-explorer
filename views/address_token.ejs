@@ -13,5 +13,5 @@
     </div>
   </td>
   <td><%= tx_tokens[token.tokenDetails.tokenIdHex].tokenDetails.symbol %></td>
-  <td class="amount"><%= token.token_balance %></td>
+  <td class="amount"><%= app.util.format_bignum_str(token.token_balance, token.tokenDetails.decimals) %></td>
 </tr>

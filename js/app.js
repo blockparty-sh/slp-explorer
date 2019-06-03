@@ -1766,7 +1766,8 @@ app.init_token_page = (tokenIdHex) =>
           addresses.a.forEach((address) => {
             tbody.append(
               app.template.token_address({
-                address: address
+                address:  address,
+                decimals: token.tokenDetails.decimals,
               })
             );
           });
