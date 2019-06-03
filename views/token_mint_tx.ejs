@@ -1,7 +1,7 @@
 <tr>
   <td><a class="txid" href="/#tx/<%= tx.tx.h %>"><%= app.util.compress_txid(tx.tx.h) %></a></td>
   <td><%= tx.slp.detail.transactionType %></td>
-  <td class="amount"><%= Number(tx.slp.detail.outputs[0].amount).toLocaleString() %></td>
+  <td class="amount"><%= app.util.format_bignum_str(tx.slp.detail.outputs[0].amount, tx.slp.detail.decimals) %></td>
   <td>
     <% if (tx.blk) { %>
       <a href="#block/<%= tx.blk.i %>"><%= tx.blk.i %></a>

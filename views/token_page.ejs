@@ -52,7 +52,7 @@
             </tr>
             <tr>
               <th scope="row">Quantity</th>
-              <td><%= Number(token.tokenStats.qty_token_minted).toLocaleString() %></td>
+              <td><%= app.util.format_bignum_str(token.tokenStats.qty_token_minted, token.tokenDetails.decimals) %></td>
             </tr>
             <tr>
               <th scope="row">Decimals</th>
@@ -144,19 +144,19 @@
             </tr>
             <tr>
               <th scope="row">Qty. Token Minted</th>
-              <td><%= Number(token.tokenStats.qty_token_minted).toLocaleString() %></td>
+              <td><%= app.util.format_bignum_str(token.tokenStats.qty_token_minted, token.tokenDetails.decimals) %></td>
             </tr>
             <tr>
               <th scope="row">Qty. Token Burned</th>
-              <td><%= Number(token.tokenStats.qty_token_burned).toLocaleString() %></td>
+              <td><%= app.util.format_bignum_str(token.tokenStats.qty_token_burned, token.tokenDetails.decimals) %></td>
             </tr>
             <tr>
               <th scope="row">Qty. Token Circulating Supply</th>
-              <td><%= Number(token.tokenStats.qty_token_circulating_supply).toLocaleString() %></td>
+              <td><%= app.util.format_bignum_str(token.tokenStats.qty_token_circulating_supply, token.tokenDetails.decimals) %></td>
             </tr>
             <tr>
               <th scope="row">Qty. Satoshis Locked Up</th>
-              <td><%= Number(token.tokenStats.qty_satoshis_locked_up).toLocaleString() %></td>
+              <td><%= new BigNumber(token.tokenStats.qty_satoshis_locked_up).toFixed() %></td>
             </tr>
           </tbody>
         </table>

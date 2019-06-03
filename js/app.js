@@ -1,6 +1,35 @@
 const app = {};
 
 app.util = {
+  format_bignum: (bn) => {
+    let dpos  = -1;
+    let nzpos = -1;
+
+    for (let i=0; i<bn.length; ++i) {
+      if (bn[i] === '.') {
+        dpos = i;
+        break;
+      }
+    }
+
+    if (dpos === -1) {
+      return bn;
+    }
+
+    for (let i=bn.length-1; i>dpos; --i) {
+      if (bn[i] !== '0') {
+        nzpos = i;
+        break;
+      }
+    }
+
+    if (nzpos === -1) {
+      return bn.substr(0, dpos);
+    }
+
+    return bn.substr(0, nzpos+1);
+  },
+  format_bignum_str: (str, decimals) => app.util.format_bignum(new BigNumber(str).toFormat(decimals), decimals),
   compress_txid: (txid) => `${txid.substring(0, 12)}...${txid.substring(59)}`,
   compress_tokenid: (tokenid) => `${tokenid.substring(0, 12)}...${tokenid.substring(59)}`,
   compress_string: (str, len=25) => str.substring(0, len) + ((str.length > len) ? '...' : ''),
@@ -881,32 +910,34 @@ app.extract_sent_amount_from_tx = (tx) => {
 
   // if self_send we count entirety of outputs as send amount
   if (self_send) {
-    return tx.slp.detail.outputs
-      .map(v => +v.amount)
-      .reduce((a, v) => a + v, 0);
+    return app.util.format_bignum(
+      tx.slp.detail.outputs
+        .map(v => new BigNumber(v.amount))
+        .reduce((a, v) => a.plus(v), new BigNumber(0))
+        .toFormat(tx.slp.detail.decimals)
+    )
   }
 
   // otherwise count amount not sent to self
   const outer_arr = [...outer];
 
-  let ret = tx.slp.detail.outputs
-    .filter((e) => outer_arr.indexOf(e.address) < 0)
-    .map(v => +v.amount)
-    .reduce((a, v) => a + v, 0);
-
-  const splitted = String(ret).split('.');
-  if (splitted.length === 2 && splitted[1].length > 9) {
-    return ret.toFixed(9);
-  }
-
-  return ret;
+  return app.util.format_bignum(
+    tx.slp.detail.outputs
+      .filter((e) => outer_arr.indexOf(e.address) < 0)
+      .map(v => new BigNumber(v.amount))
+      .reduce((a, v) => a.plus(v), new BigNumber(0))
+      .toFormat(tx.slp.detail.decimals)
+  )
 };
 
 app.extract_recv_amount_from_tx = (tx, addr) =>
-  tx.slp.detail.outputs
-    .filter((e) => e.address === addr)
-    .map(v => +v.amount)
-    .reduce((a, v) => a + v, 0);
+  app.util.format_bignum(
+    tx.slp.detail.outputs
+      .filter((e) => e.address === addr)
+      .map(v => new BigNumber(v.amount))
+      .reduce((a, v) => a.plus(v), new BigNumber(0))
+      .toFormat(tx.slp.detail.decimals)
+  )
 
 app.create_cytoscape_context = (selector='.graph_container') => {
   let cy = cytoscape({

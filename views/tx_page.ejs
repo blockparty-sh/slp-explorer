@@ -99,7 +99,7 @@
               </tr>
               <tr>
                 <th scope="row">Quantity</th>
-                <td><%= Number(token.tokenDetails.genesisOrMintQuantity).toLocaleString() %></td>
+                <td><%= app.util.format_bignum_str(token.tokenDetails.genesisOrMintQuantity, token.tokenDetails.decimals) %></td>
               </tr>
               <tr>
                 <th scope="row">Decimals</th>
