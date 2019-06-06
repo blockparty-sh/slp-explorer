@@ -1987,7 +1987,12 @@ app.init_token_page = (tokenIdHex) =>
           });
         }
 
-        const other_balance = token.tokenStats.qty_token_circulating_supply - data.reduce((a, v) => a + Number(v.token_balance), 0);
+        const burnt_balance = Number(token.tokenStats.qty_token_burned);
+
+        const other_balance = token.tokenStats.qty_token_circulating_supply
+          - data.reduce((a, v) => a + Number(v.token_balance), 0)
+          - burnt_balance;
+
         if (other_balance > 0) {
           data.push({
             address: 'Other',
