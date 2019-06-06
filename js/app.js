@@ -458,10 +458,25 @@ app.slpdb = {
     "v": 3,
     "q": {
       "db": ["c", "u"],
-      "find": {
-        "tx.h": txid,
-      },
-      "sort": { "blk.i": -1 }
+      "aggregate": [
+        {
+          "$match": {
+            "tx.h": txid
+          }
+        },
+        {
+          "$limit": 1
+        },
+        {
+          "$lookup": {
+            "from": "graphs",
+            "localField": "tx.h",
+            "foreignField": "graphTxn.txid",
+            "as": "graph"
+          }
+        }
+      ],
+      "limit": 1
     }
   }),
 
@@ -1433,15 +1448,6 @@ app.init_tx_page = (txid) =>
         ));
       }
 
-      let output_txid_vout_reqs = [];
-      for (let i=0; i<Math.ceil(output_txid_vout_pairs.length / chunk_size); ++i) {
-        const chunk = output_txid_vout_pairs.slice(chunk_size*i, (chunk_size*i)+chunk_size);
-
-        output_txid_vout_reqs.push(app.slpdb.query(
-          app.slpdb.get_txs_from_txid_vout_pairs(chunk)
-        ));
-      }
-
       Promise.all(input_txid_vout_reqs)
       .then((results) => {
         const input_pairs  = results.reduce((a, v) => a.concat(v.g), []);
@@ -1451,39 +1457,28 @@ app.init_tx_page = (txid) =>
           return a;
         }, {});
 
-        Promise.all(output_txid_vout_reqs)
-        .then((results) => {
-          const output_pairs = results.reduce((a, v) => a.concat(v.c).concat(v.u));
+        const total_input_amount = Object.keys(input_amounts)
+          .map(k => new BigNumber(input_amounts[k]))
+          .reduce((a, v) => a.plus(v), new BigNumber(0));
 
-          const spent_map = output_pairs.u.concat(output_pairs.c).reduce((a, v) => {
-            a[v.in.i] = v.txid;
-            return a;
-          }, {});
+        const total_output_amount = tx.slp.detail.outputs
+          .map(v => new BigNumber(v.amount))
+          .reduce((a, v) => a.plus(v), new BigNumber(0));
 
-          const total_input_amount = Object.keys(input_amounts)
-            .map(k => new BigNumber(input_amounts[k]))
-            .reduce((a, v) => a.plus(v), new BigNumber(0));
+        const total_burnt = total_input_amount.minus(total_output_amount);
 
-          const total_output_amount = tx.slp.detail.outputs
-            .map(v => new BigNumber(v.amount))
-            .reduce((a, v) => a.plus(v), new BigNumber(0));
+        app.slpdb.query(app.slpdb.token(tx.slp.detail.tokenIdHex))
+        .then((token) => {
+          $('main[role=main]').html(app.template.tx_page({
+            tx:    tx,
+            token: token.t[0],
+            input_amounts: input_amounts,
+            total_burnt: total_burnt
+          }));
 
-          const total_burnt = total_input_amount.minus(total_output_amount);
+          app.util.set_token_icon($('main[role=main] .transaction_box .token-icon-large'), 128);
 
-          app.slpdb.query(app.slpdb.token(tx.slp.detail.tokenIdHex))
-          .then((token) => {
-            $('main[role=main]').html(app.template.tx_page({
-              tx:    tx,
-              token: token.t[0],
-              input_amounts: input_amounts,
-              spent_map: spent_map,
-              total_burnt: total_burnt
-            }));
-
-            app.util.set_token_icon($('main[role=main] .transaction_box .token-icon-large'), 128);
-
-            resolve();
-          });
+          resolve();
         });
       });
     })
