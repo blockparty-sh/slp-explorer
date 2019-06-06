@@ -1,0 +1,21 @@
+<tr>
+  <td><a class="txid" href="/#tx/<%= tx.graphTxn.txid %>"><%= app.util.compress_txid(tx.graphTxn.txid) %></a></td>
+  <td class="amount">
+    <%= app.util.format_bignum_str(total_burnt) %>
+  </td>
+  <td>
+    <% if (tx.tx.blk) { %>
+      <a href="#block/<%= tx.tx.blk.i %>"><%= tx.tx.blk.i %></a>
+    <% } else { %>
+      <a href="#block/mempool">Pending</a>
+    <% } %>
+  </td>
+  <td>
+    <% if (tx.tx.blk) { %>
+      <%= new Date(tx.tx.blk.t*1000).toLocaleString() %>
+    <% } else { %>
+      Pending
+    <% } %>
+  </td>
+</tr>
+

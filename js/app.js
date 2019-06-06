@@ -649,6 +649,66 @@ app.slpdb = {
       "f": "[ .[] | {count: .count } ]"
     }
   }),
+  token_burn_history: (tokenIdHex, limit=100, skip=0) => ({
+    "v": 3,
+    "q": {
+      "db": ["g"],
+      "aggregate": [
+        {
+          "$match": {
+            "tokenDetails.tokenIdHex": tokenIdHex,
+            "graphTxn.outputs.status": {
+              "$in": ["SPENT_NON_SLP", "BATON_SPENT_INVALID_SLP", "SPENT_INVALID_SLP", "BATON_SPENT_NON_SLP", "MISSING_BCH_VOUT", "BATON_MISSING_BCH_VOUT", "BATON_SPENT_NOT_IN_MINT"]
+            }
+          }
+        },
+        {
+          "$lookup": {
+            "from": "confirmed",
+            "localField": "graphTxn.txid",
+            "foreignField": "tx.h",
+            "as": "tx"
+          }
+        },
+        {
+          "$sort": {
+            "tx.blk.i": -1
+          }
+        },
+        {
+          "$skip": skip
+        },
+        {
+          "$limit": limit
+        }
+      ]
+    }
+  }),
+  count_token_burn_transactions: (tokenIdHex) => ({
+    "v": 3,
+    "q": {
+      "db": ["g"],
+      "aggregate": [
+        {
+          "$match": {
+            "tokenDetails.tokenIdHex": tokenIdHex,
+            "graphTxn.outputs.status": {
+              "$in": ["SPENT_NON_SLP", "BATON_SPENT_INVALID_SLP", "SPENT_INVALID_SLP", "BATON_SPENT_NON_SLP", "MISSING_BCH_VOUT", "BATON_MISSING_BCH_VOUT", "BATON_SPENT_NOT_IN_MINT"]
+            }
+          }
+        },
+        {
+          "$group": {
+            "_id": null,
+            "count": { "$sum": 1 }
+          }
+        }
+      ]
+    },
+    "r": {
+      "f": "[ .[] | {count: .count } ]"
+    }
+  }),
 
   recent_transactions: (limit=150, skip=0) => ({
     "v": 3,
@@ -1736,9 +1796,11 @@ app.init_token_page = (tokenIdHex) =>
     Promise.all([
       app.slpdb.query(app.slpdb.token(tokenIdHex)),
       app.slpdb.query(app.slpdb.count_token_mint_transactions(tokenIdHex)),
+      app.slpdb.query(app.slpdb.count_token_burn_transactions(tokenIdHex)),
     ])
-    .then(([token, total_token_mint_transactions]) => {
+    .then(([token, total_token_mint_transactions, total_token_burn_transactions]) => {
       total_token_mint_transactions = app.util.extract_total(total_token_mint_transactions);
+      total_token_burn_transactions = app.util.extract_total(total_token_burn_transactions);
 
       if (token.t.length == 0) {
         return resolve(app.init_404_page());
@@ -1792,6 +1854,41 @@ app.init_token_page = (tokenIdHex) =>
         });
       };
 
+      const load_paginated_token_burn_history = (limit, skip, done) => {
+        app.slpdb.query(app.slpdb.token_burn_history(tokenIdHex, limit, skip))
+        .then((transactions) => {
+          transactions = transactions.g;
+
+          const tbody = $('#token-burn-history-table tbody');
+          tbody.html('');
+
+          transactions.forEach((tx) => {
+            const total_burnt = tx.graphTxn.outputs.reduce((a, v) => {
+              switch (v.status) {
+                case 'UNSPENT':
+                case 'SPENT_SAME_TOKEN':
+                case 'BATON_SPENT':
+                case 'BATON_SPENT_IN_MINT':
+                  return a;
+                default:
+                  return a.plus(new BigNumber(v.slpAmount));
+              }
+            }, new BigNumber(0));
+
+            tx.tx = tx.tx[0] || null;
+
+            tbody.append(
+              app.template.token_burn_tx({
+                tx: tx,
+                total_burnt: total_burnt
+              })
+            );
+          });
+
+          done();
+        });
+      };
+
       const load_paginated_token_txs = (limit, skip, done) => {
         app.slpdb.query(app.slpdb.token_transaction_history(tokenIdHex, null, limit, skip))
         .then((transactions) => {
@@ -1835,6 +1932,19 @@ app.init_token_page = (tokenIdHex) =>
           Math.ceil(total_token_mint_transactions.c / 10),
           (page, done) => {
             load_paginated_token_mint_history(10, 10*page, done);
+          }
+        );
+      }
+
+      if (total_token_burn_transactions.g === 0) {
+        $('#token-burn-history-table tbody').html('<tr><td>No burns found.</td></tr>');
+      } else {
+        app.util.create_pagination(
+          $('#token-burn-history-table-container'),
+          0,
+          Math.ceil(total_token_burn_transactions.g / 10),
+          (page, done) => {
+            load_paginated_token_burn_history(10, 10*page, done);
           }
         );
       }
@@ -2132,6 +2242,7 @@ $(document).ready(() => {
     'block_tx',
     'token_page',
     'token_mint_tx',
+    'token_burn_tx',
     'token_address',
     'token_tx',
     'address_page',
