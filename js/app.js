@@ -317,13 +317,9 @@ app.util = {
   
             const ctxid = app.util.compress_txid(m.tokenDetails.tokenIdHex);
             let tval = null;
-            if (m.tokenDetails.symbol) {
-              tval = m.tokenDetails.symbol + ' | ' + ctxid;
-            } else if (m.tokenDetails.name) {
-              tval = m.tokenDetails.name + ' | ' + ctxid;
-            } else {
-              tval = ctxid;
-            }
+            tval = ctxid
+              + (m.tokenDetails.symbol ? (' | ' + m.tokenDetails.symbol) : '')
+              + (m.tokenDetails.name   ? (' | ' + m.tokenDetails.name)   : '');
   
             sugs.push({
               value: tval,
