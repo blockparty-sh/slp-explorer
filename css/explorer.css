@@ -700,6 +700,28 @@ html.index-page header {
     text-align:center;
 }
 
+#token-exchange-title {
+    font-size: 1.4rem;
+    font-weight: bolder;
+    background-color: #222;
+    display: inline-block;
+    color: #fff;
+    padding: 0.7rem;
+}
+.exchange-icon {
+    width:190px;
+    height:54px;
+	display:inline-block;
+	margin:1rem;
+}
+.exchange-altilly-icon {
+    background-image:url('/img/altilly.png');
+}
+
+.exchange-slpdex-icon {
+    background-image:url('/img/slpdex.png');
+}
+
 @media only screen and (max-width: 890px) {
     .rounded_row {
         overflow: auto;

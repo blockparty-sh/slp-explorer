@@ -1,6 +1,27 @@
 const app = {};
 
 app.util = {
+  get_exchange_links: (tokenIdHex) => {
+    const altilly_tokens = {
+      '527a337f34e04b1974cb8a1edc7ca30b2e444bea111afc122259552243c1dbe3': 'LLM',
+      '077c832a3ef15068ca2c72dd262883fb24a8a0f612e8a92f579f7dee3eaca372': 'YCLO'
+    };
+
+    let ret = [];
+    ret.push({
+      'link': `https://slpdex.cash/tokens/${tokenIdHex}`,
+      'class': 'exchange-slpdex-icon'
+    });
+
+    if (altilly_tokens.hasOwnProperty(tokenIdHex)) {
+      ret.push({
+        'link': `https://www.altilly.com/asset/${altilly_tokens[tokenIdHex]}`,
+        'class': 'exchange-altilly-icon'
+      });
+    }
+
+    return ret;
+  },
   format_bignum: (bn) => {
     let dpos  = -1;
     let nzpos = -1;
