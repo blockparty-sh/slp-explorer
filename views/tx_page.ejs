@@ -190,30 +190,30 @@
                 </tr>
               </thead>
               <tbody>
-                <% if (total_burnt.isGreaterThan(0)) { %>
-                  <tr class="burnt-tx">
-                    <td><a class="txid" style="font-weight:bold">:(</a></td>
-                    <td class="amount"><%= app.util.format_bignum(total_burnt.toFixed(tx.slp.detail.decimals)) %></td>
-                    <td><a class="address"></a></td>
-                  </tr>
-                <% } %>
-                <% console.log(tx.graph[0].graphTxn.outputs) %>
                 <% if (tx.graph[0].graphTxn.outputs.length > 0) { %>
                   <% for (let m of tx.graph[0].graphTxn.outputs) { %>
-                    <% switch (m.status) {
+                    <% let burnt = false; switch (m.status) {
                       case 'BATON_UNSPENT':
                       case 'BATON_SPENT_IN_MINT':
                       case 'UNSPENT':
                       case 'SPENT_SAME_TOKEN':
                     %>
                     <tr>
-                    <% break; default: %>
+                    <% break; default: burnt = true; %>
                       <tr class="burnt-tx">
                     <% break; } %>
                       <td>
                         <% if (m['spendTxid']) { %>
                           <a class="txid" href="/#tx/<%= m['spendTxid'] %>" style="font-weight:bold">
-                            &#10004;
+                            <% if (burnt) { %>
+                              &#62;:D
+                            <% } else { %>
+                              &#10004;
+                            <% } %>
+                          </a>
+                        <% } else if (burnt) { %>
+                          <a class="txid" style="font-weight:bold">
+                            &#62;:D
                           </a>
                         <% } %>
                       </td>
@@ -224,7 +224,13 @@
                           <%= app.util.format_bignum_str(m.slpAmount, tx.slp.detail.decimals) %>
                         <% }%>
                       </td>
-                      <td><a class="address" href="/#address/<%= m.address %>"><%= m.address %></a></td>
+                      <td>
+                        <% if (burnt) { %>
+                          burn: <%= m.status.split('_').map(v => v.toLowerCase()).join(' ') %>
+                        <% } else { %>
+                          <a class="address" href="/#address/<%= m.address %>"><%= m.address %></a>
+                        <% } %>
+                      </td>
                     </tr>
                   <% } %>
                 <% } else { %>

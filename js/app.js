@@ -1538,19 +1538,12 @@ app.init_tx_page = (txid) =>
           .map(k => new BigNumber(input_amounts[k]))
           .reduce((a, v) => a.plus(v), new BigNumber(0));
 
-        const total_output_amount = tx.slp.detail.outputs
-          .map(v => new BigNumber(v.amount))
-          .reduce((a, v) => a.plus(v), new BigNumber(0));
-
-        const total_burnt = total_input_amount.minus(total_output_amount);
-
         app.slpdb.query(app.slpdb.token(tx.slp.detail.tokenIdHex))
         .then((token) => {
           $('main[role=main]').html(app.template.tx_page({
             tx:    tx,
             token: token.t[0],
-            input_amounts: input_amounts,
-            total_burnt: total_burnt
+            input_amounts: input_amounts
           }));
 
           app.util.set_token_icon($('main[role=main] .transaction_box .token-icon-large'), 128);
