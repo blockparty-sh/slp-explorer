@@ -2166,22 +2166,22 @@ app.router = (whash, push_history = true) => {
   switch (path) {
     case '':
     case '#':
-      document.title = 'TokenDB';
+      document.title = 'SLP Explorer';
       method = () => {
           $('html').addClass('index-page');
           return app.init_index_page();
       };
       break;
     case '#alltokens':
-      document.title = 'All Tokens - TokenDB';
+      document.title = 'All Tokens - SLP Explorer';
       method = () => app.init_all_tokens_page();
       break;
     case '#tx':
-      document.title = 'Transaction ' + key + ' - TokenDB';
+      document.title = 'Transaction ' + key + ' - SLP Explorer';
       method = () => app.init_tx_page(key);
       break;
     case '#block':
-      document.title = 'Block ' + key + ' - TokenDB';
+      document.title = 'Block ' + key + ' - SLP Explorer';
       if (key === 'mempool') {
         method = () => app.init_block_mempool_page();
       } else {
@@ -2189,36 +2189,36 @@ app.router = (whash, push_history = true) => {
       }
       break;
     case '#token':
-      document.title = 'Token ' + key + ' - TokenDB';
+      document.title = 'Token ' + key + ' - SLP Explorer';
       method = () => app.init_token_page(key);
       break;
     case '#address':
-      document.title = 'Address ' + key + ' - TokenDB';
+      document.title = 'Address ' + key + ' - SLP Explorer';
       method = () => app.init_address_page(key);
       break;
     case '#tokengraph':
-      document.title = 'TokenGraph ' + key + ' - TokenDB';
+      document.title = 'TokenGraph ' + key + ' - SLP Explorer';
       method = () => {
           $('html').addClass('full-width');
           return app.init_tokengraph_page(key);
       };
       break;
     case '#addressgraph':
-      document.title = 'AddressGraph ' + key + ' - TokenDB';
+      document.title = 'AddressGraph ' + key + ' - SLP Explorer';
       method = () => {
           $('html').addClass('full-width');
           return app.init_addressgraph_page(key);
       };
       break;
     case '#txgraph':
-      document.title = 'TxGraph ' + key + ' - TokenDB';
+      document.title = 'TxGraph ' + key + ' - SLP Explorer';
       method = () => {
           $('html').addClass('full-width');
           return app.init_txgraph_page(key);
       };
       break;
     default:
-      document.title = '404 | TokenDB';
+      document.title = '404 | SLP Explorer';
       console.error('app.router path not found', whash);
       method = () => app.init_404_page();
       break;
