@@ -20,6 +20,10 @@ header {
     z-index: 100;
 }
 
+header.loading {
+    display: none;
+}
+
 header ul {
     list-style-type: none;
     margin: 0;

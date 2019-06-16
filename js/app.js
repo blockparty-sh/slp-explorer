@@ -240,6 +240,7 @@ app.util = {
       split_data[d_off].txs = m.reduce((a, v) => a+v.txs, 0);
     }
 
+    $('#'+dom_id).html('');
     try {
       Plotly.newPlot(dom_id, [
         {
@@ -1290,6 +1291,8 @@ app.init_index_page = () =>
 
     app.util.attach_search_handler('#main-search');
 
+    resolve();
+
     app.slpdb.query(app.slpdb.recent_transactions(10))
     .then((data) => {
       const transactions =  data.u.concat(data.c);
@@ -1311,7 +1314,7 @@ app.init_index_page = () =>
           app.util.set_token_icon($(this), 32);
         });
 
-        resolve();
+        $('#recent-transactions-table-container').removeClass('loading');
       });
     });
 
@@ -1373,6 +1376,8 @@ app.init_index_page = () =>
         token_name: 'Other',
         txs: total_slp_tx_month - token_usage_monthly.reduce((a, v) => a + v.txs, 0)
       })
+
+      $('#plot-token-usage').html('');
       try {
         Plotly.newPlot('plot-token-usage', [{
           labels: token_usage_monthly.map(v => v.token_name),
@@ -2310,6 +2315,7 @@ $(document).ready(() => {
   .then(() => {
     console.timeEnd('loading views');
     app.router(window.location.pathname+window.location.hash, false);
+    $('header').removeClass('loading');
   });
 });
 
