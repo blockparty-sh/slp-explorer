@@ -755,10 +755,8 @@ app.slpdb = {
     "q": {
       "db": ["c", "u"],
       "find": {
-        "$and": [
-          { "slp.valid": true },
-          { "slp.detail.transactionType": "SEND" },
-        ]
+        "slp.valid": true,
+        "slp.detail.transactionType": "SEND",
       },
       "sort": { "blk.i": -1 },
       "limit": limit,
