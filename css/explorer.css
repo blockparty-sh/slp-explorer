@@ -713,11 +713,18 @@ html.index-page header {
     height:54px;
 	display:inline-block;
 	margin:1rem;
+    background-repeat:no-repeat;
+    background-position:center center;
 }
 .exchange-altilly-icon {
     background-image:url('/img/altilly.png');
 }
-
+.exchange-coinex-icon {
+    background-image:url('/img/coinex.png');
+}
+.exchange-sideshift-icon {
+    background-image:url('/img/sideshift.png');
+}
 .exchange-slpdex-icon {
     background-image:url('/img/slpdex.png');
 }

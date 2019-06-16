@@ -7,6 +7,14 @@ app.util = {
       '077c832a3ef15068ca2c72dd262883fb24a8a0f612e8a92f579f7dee3eaca372': 'YCLO'
     };
 
+    const coinex_tokens = {
+      'c4b0d62156b3fa5c8f3436079b5394f7edc1bef5dc1cd2f9d0c4d46f82cca479': 'https://www.coinex.com/exchange?currency=usdt&dest=usdh'
+    };
+
+    const sideshift_tokens = {
+      'c4b0d62156b3fa5c8f3436079b5394f7edc1bef5dc1cd2f9d0c4d46f82cca479': 'https://sideshift.ai/bch/usdh'
+    };
+
     let ret = [];
     ret.push({
       'link': `https://slpdex.cash/tokens/${tokenIdHex}`,
@@ -17,6 +25,20 @@ app.util = {
       ret.push({
         'link': `https://www.altilly.com/asset/${altilly_tokens[tokenIdHex]}`,
         'class': 'exchange-altilly-icon'
+      });
+    }
+
+    if (coinex_tokens.hasOwnProperty(tokenIdHex)) {
+      ret.push({
+        'link': coinex_tokens[tokenIdHex],
+        'class': 'exchange-coinex-icon'
+      });
+    }
+
+    if (sideshift_tokens.hasOwnProperty(tokenIdHex)) {
+      ret.push({
+        'link': sideshift_tokens[tokenIdHex],
+        'class': 'exchange-sideshift-icon'
       });
     }
 
