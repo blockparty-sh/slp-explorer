@@ -748,7 +748,6 @@ html.index-page header {
         padding: 12px 16px;
     }
     header #header-logo {
-        background-size:32px;
         width:50px;
     }
     header li a.show-mobile {
