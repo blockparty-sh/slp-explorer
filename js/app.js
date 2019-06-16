@@ -977,6 +977,52 @@ app.slpsocket = {
   },
 };
 
+
+app.bitdb = {
+  query: (query) => new Promise((resolve, reject) => {
+    if (! query) {
+      return resolve(false);
+    }
+    const b64 = btoa(JSON.stringify(query));
+    const url = "https://bitdb.fountainhead.cash/q/" + b64;
+
+    console.log(url)
+
+    fetch(url)
+    .then((r) => r = r.json())
+    .then((r) => {
+      if (r.hasOwnProperty('error')) {
+        reject(new Error(r['error']));
+      }
+      resolve(r);
+    });
+  }),
+
+  count_txs_by_block: (height) => ({
+    "v": 3,
+    "q": {
+      "db": ["c"],
+      "aggregate": [
+        {
+          "$match": {
+            "blk.i": height
+          }
+        },
+        {
+          "$group": {
+            "_id": null,
+            "count": { "$sum": 1 }
+          }
+        }
+      ]
+    },
+    "r": {
+      "f": "[ .[] | {count: .count } ]"
+    }
+  }),
+};
+
+
 app.get_tokens_from_tokenids = (token_ids, chunk_size=50) => {
   let reqs = [];
   for (let i=0; i<Math.ceil(token_ids.length / chunk_size); ++i) {
@@ -1581,13 +1627,18 @@ app.init_tx_page = (txid) =>
 
 app.init_block_page = (height) =>
   new Promise((resolve, reject) =>
-    app.slpdb.query(app.slpdb.count_txs_by_block(height))
-    .then((total_txs_by_block) => {
+    Promise.all([
+      app.slpdb.query(app.slpdb.count_txs_by_block(height)),
+      app.bitdb.query(app.bitdb.count_txs_by_block(height+1))
+    ])
+    .then(([total_txs_by_block, total_bch_txs_by_next_block]) => {
       total_txs_by_block = app.util.extract_total(total_txs_by_block);
+      total_bch_txs_by_next_block = app.util.extract_total(total_bch_txs_by_next_block);
 
       $('main[role=main]').html(app.template.block_page({
         height: height,
         total_txs: total_txs_by_block.c,
+        next_block_exists: total_bch_txs_by_next_block.c > 0
       }));
 
       const load_paginated_transactions = (limit, skip, done) => {
