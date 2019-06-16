@@ -13,11 +13,12 @@ body {
 }
 
 header {
-    background: #373636;
+    background: #f4f4f4;
     position: fixed;
     top: 0;
     width: 100%;
     z-index: 100;
+    border-bottom: 1px solid #ededed;
 }
 
 header.loading {
@@ -48,7 +49,7 @@ header li.search {
 
 header #top-menu li a {
     display: block;
-    color: white;
+    color: #505050;
     text-align: center;
     padding: 22px 16px;
     text-decoration: none;
@@ -57,7 +58,7 @@ header #top-menu li a {
 }
   
 header li input {
-    background-color: rgb(247, 247, 247);
+    background-color: rgb(253, 253, 253);
     text-align: left;
     color: #000;
     border: 0px;
@@ -76,7 +77,7 @@ header li input::placeholder {
 }
 
 header li a:hover {
-    background-color: #111;
+    background-color: #efefef;
 }
 
 .header_infobox {
