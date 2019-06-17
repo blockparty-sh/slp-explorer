@@ -573,14 +573,31 @@ app.slpdb = {
     "v": 3,
     "q": {
       "db": ["c"],
-      "find": {
-        "$and": [
-          { "slp.valid": true },
-          { "blk.i": height }
-        ]
-      },
-      "limit": limit,
-      "skip": skip
+      "aggregate": [
+        {
+          "$match": {
+            "$and": [
+              { "slp.valid": true },
+              { "blk.i": height }
+            ]
+          }
+        },
+        {
+          "$skip": skip
+        },
+        {
+          "$limit": limit
+        },
+        {
+          "$lookup": {
+            "from": "tokens",
+            "localField": "slp.detail.tokenIdHex",
+            "foreignField": "tokenDetails.tokenIdHex",
+            "as": "token"
+          }
+        }
+      ],
+      "limit": limit
     }
   }),
 
@@ -588,11 +605,28 @@ app.slpdb = {
     "v": 3,
     "q": {
       "db": ["u"],
-      "find": {
-        "slp.valid": true
-      },
-      "limit": limit,
-      "skip": skip
+      "aggregate": [
+        {
+          "$match": {
+            "slp.valid": true
+          }
+        },
+        {
+          "$skip": skip
+        },
+        {
+          "$limit": limit
+        },
+        {
+          "$lookup": {
+            "from": "tokens",
+            "localField": "slp.detail.tokenIdHex",
+            "foreignField": "tokenDetails.tokenIdHex",
+            "as": "token"
+          }
+        }
+      ],
+      "limit": limit
     }
   }),
 
@@ -1704,26 +1738,22 @@ app.init_block_page = (height) =>
         .then((transactions) => {
           transactions = transactions.c;
 
-          app.get_tokens_from_transactions(transactions)
-          .then((tx_tokens) => {
-            const tbody = $('#block-transactions-table tbody');
-            tbody.html('');
+          const tbody = $('#block-transactions-table tbody');
+          tbody.html('');
 
-            transactions.forEach((tx) => {
-              tbody.append(
-                app.template.block_tx({
-                  tx: tx,
-                  tx_tokens: tx_tokens,
-                })
-              );
-            });
-
-            $('#block-transactions-table-container tbody .token-icon-small').each(function() {
-              app.util.set_token_icon($(this), 32);
-            });
-
-            done();
+          transactions.forEach((tx) => {
+            tbody.append(
+              app.template.block_tx({
+                tx: tx
+              })
+            );
           });
+
+          $('#block-transactions-table-container tbody .token-icon-small').each(function() {
+            app.util.set_token_icon($(this), 32);
+          });
+
+          done();
         });
       };
 
