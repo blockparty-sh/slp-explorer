@@ -9,9 +9,9 @@
   <td>
     <div class="flex-vcenter">
       <span class="token-icon-small" data-tokenid="<%= token.tokenDetails.tokenIdHex %>"></span>
-      <%= tx_tokens[token.tokenDetails.tokenIdHex].tokenDetails.name %>
+      <%= token.token[0].tokenDetails.name %>
     </div>
   </td>
-  <td><%= tx_tokens[token.tokenDetails.tokenIdHex].tokenDetails.symbol %></td>
+  <td><%= token.token[0].tokenDetails.symbol %></td>
   <td class="amount"><%= app.util.format_bignum_str(token.token_balance, token.tokenDetails.decimals) %></td>
 </tr>

@@ -843,12 +843,33 @@ app.slpdb = {
     "v": 3,
     "q": {
       "db": ["a"],
-      "find": {
-        "address": address,
-      },
-      "sort": { "token_balance": -1 },
-      "limit": limit,
-      "skip": skip
+      "aggregate": [
+        {
+          "$match": {
+            "address": address,
+          }
+        },
+        {
+          "$sort": {
+            "token_balance": -1
+          }
+        },
+        {
+          "$skip": skip
+        },
+        {
+          "$limit": limit 
+        },
+        {
+          "$lookup": {
+            "from": "tokens",
+            "localField": "tokenDetails.tokenIdHex",
+            "foreignField": "tokenDetails.tokenIdHex",
+            "as": "token"
+          }
+        }
+      ],
+      "limit": limit
     }
   }),
 
@@ -2127,26 +2148,22 @@ app.init_address_page = (address) =>
         .then((tokens) => {
           tokens = tokens.a;
 
-          app.get_tokens_from_tokenids(tokens.map(v => v.tokenDetails.tokenIdHex))
-          .then((tx_tokens) => {
-            const tbody = $('#address-tokens-table tbody');
-            tbody.html('');
+          const tbody = $('#address-tokens-table tbody');
+          tbody.html('');
 
-            tokens.forEach((token) => {
-              tbody.append(
-                app.template.address_token({
-                  token: token,
-                  tx_tokens: tx_tokens
-                })
-              );
-            });
-
-            $('#address-tokens-table tbody .token-icon-small').each(function() {
-              app.util.set_token_icon($(this), 32);
-            });
-
-            done();
+          tokens.forEach((token) => {
+            tbody.append(
+              app.template.address_token({
+                token: token
+              })
+            );
           });
+
+          $('#address-tokens-table tbody .token-icon-small').each(function() {
+            app.util.set_token_icon($(this), 32);
+          });
+
+          done();
         });
       };
 
