@@ -1820,26 +1820,22 @@ app.init_block_mempool_page = (height) =>
         .then((transactions) => {
           transactions = transactions.u;
 
-          app.get_tokens_from_transactions(transactions)
-          .then((tx_tokens) => {
-            const tbody = $('#block-transactions-table tbody');
-            tbody.html('');
+          const tbody = $('#block-transactions-table tbody');
+          tbody.html('');
 
-            transactions.forEach((tx) => {
-              tbody.append(
-                app.template.block_tx({
-                  tx: tx,
-                  tx_tokens: tx_tokens,
-                })
-              );
-            });
-
-            $('#block-transactions-table-container tbody .token-icon-small').each(function() {
-              app.util.set_token_icon($(this), 32);
-            });
-
-            done();
+          transactions.forEach((tx) => {
+            tbody.append(
+              app.template.block_tx({
+                tx: tx
+              })
+            );
           });
+
+          $('#block-transactions-table-container tbody .token-icon-small').each(function() {
+            app.util.set_token_icon($(this), 32);
+          });
+
+          done();
         });
       };
 
