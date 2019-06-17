@@ -1115,6 +1115,30 @@ app.bitdb = {
       "f": "[ .[] | {count: .count } ]"
     }
   }),
+
+  recent_transactions: (limit=150, skip=0) => ({
+    "v": 3,
+    "q": {
+      "db": ["c"],
+      "aggregate": [
+        {
+          "$match": {}
+        },
+        {
+          "$sort": {
+            "blk.i": -1
+          }
+        },
+        {
+          "$skip": skip
+        },
+        {
+          "$limit": limit
+        }
+      ],
+      "limit": limit
+    }
+  }),
 };
 
 
@@ -1777,13 +1801,18 @@ app.init_block_page = (height) =>
 
 app.init_block_mempool_page = (height) =>
   new Promise((resolve, reject) =>
-    app.slpdb.query(app.slpdb.count_txs_in_mempool())
-    .then((total_txs_in_mempool) => {
+    Promise.all([
+      app.slpdb.query(app.slpdb.count_txs_in_mempool()),
+      app.bitdb.query(app.bitdb.recent_transactions(1))
+    ])
+    .then(([total_txs_in_mempool, most_recent_tx]) => {
       total_txs_in_mempool = app.util.extract_total(total_txs_in_mempool);
+      const most_recent_block_height = most_recent_tx.c[0].blk.i;
 
       $('main[role=main]').html(app.template.block_page({
         height: "mempool",
         total_txs: total_txs_in_mempool.u,
+        most_recent_block_height: most_recent_block_height
       }));
 
       const load_paginated_transactions = (limit, skip, done) => {
