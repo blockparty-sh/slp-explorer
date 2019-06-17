@@ -9,8 +9,8 @@
     <div class="flex-vcenter">
       <span class="token-icon-small" data-tokenid="<%= tx.slp.detail.tokenIdHex %>"></span>
       <a href="#token/<%= tx.slp.detail.tokenIdHex %>">
-      <% if (tx_tokens[tx.slp.detail.tokenIdHex].tokenDetails.symbol) { %>
-        <%= tx_tokens[tx.slp.detail.tokenIdHex].tokenDetails.symbol %>
+      <% if (tx.token[0].tokenDetails.symbol) { %>
+        <%= tx.token[0].tokenDetails.symbol %>
       <% } else { %>
         <span class="mono">[none]</span>
       <% } %>

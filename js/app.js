@@ -754,13 +754,34 @@ app.slpdb = {
     "v": 3,
     "q": {
       "db": ["c", "u"],
-      "find": {
-        "slp.valid": true,
-        "slp.detail.transactionType": "SEND",
-      },
-      "sort": { "blk.i": -1 },
-      "limit": limit,
-      "skip": skip
+      "aggregate": [
+        {
+          "$match": {
+            "slp.valid": true,
+            "slp.detail.transactionType": "SEND",
+          }
+        },
+        {
+          "$sort": {
+            "blk.i": -1
+          }
+        },
+        {
+          "$skip": skip
+        },
+        {
+          "$limit": limit
+        },
+        {
+          "$lookup": {
+            "from": "tokens",
+            "localField": "slp.detail.tokenIdHex",
+            "foreignField": "tokenDetails.tokenIdHex",
+            "as": "token"
+          }
+        }
+      ],
+      "limit": limit
     }
   }),
   transactions_by_slp_address: (address, limit=100, skip=0) => ({
@@ -858,7 +879,7 @@ app.slpdb = {
           "$skip": skip
         },
         {
-          "$limit": limit 
+          "$limit": limit
         },
         {
           "$lookup": {
@@ -1361,26 +1382,23 @@ app.init_index_page = () =>
     app.slpdb.query(app.slpdb.recent_transactions(10))
     .then((data) => {
       const transactions =  data.u.concat(data.c);
+      console.log(transactions);
 
-      app.get_tokens_from_transactions(transactions)
-      .then((tx_tokens) => {
-        $('#recent-transactions-table tbody').html('');
+      $('#recent-transactions-table tbody').html('');
 
-        for (let i=0; i<transactions.length && i<10; ++i) {
-          $('#recent-transactions-table tbody').append(
-            app.template.latest_transactions_tx({
-              tx: transactions[i],
-              tx_tokens: tx_tokens
-            })
-          );
-        }
+      for (let i=0; i<transactions.length && i<10; ++i) {
+        $('#recent-transactions-table tbody').append(
+          app.template.latest_transactions_tx({
+            tx: transactions[i]
+          })
+        );
+      }
 
-        $('#recent-transactions-table tbody .token-icon-small').each(function() {
-          app.util.set_token_icon($(this), 32);
-        });
-
-        $('#recent-transactions-table-container').removeClass('loading');
+      $('#recent-transactions-table tbody .token-icon-small').each(function() {
+        app.util.set_token_icon($(this), 32);
       });
+
+      $('#recent-transactions-table-container').removeClass('loading');
     });
 
 
