@@ -1600,18 +1600,12 @@ app.init_index_page = () =>
           return;
         }
         const token = token_data.t[0];
-        const data = {
-          'txid': sna.tx.h,
-          'symbol': token.tokenDetails.symbol,
-          'amount': app.extract_sent_amount_from_tx(sna),
-        };
+
+        sna.token = [token];
 
         $('#recent-transactions-table tbody').prepend(
           app.template.latest_transactions_tx({
-            tx: sna,
-            tx_tokens: {
-              [token.tokenDetails.tokenIdHex]: token
-            }
+            tx: sna
           })
         );
 
@@ -1773,7 +1767,7 @@ app.init_block_page = (height) =>
             );
           });
 
-          $('#block-transactions-table-container tbody .token-icon-small').each(function() {
+          $('#block-transactions-table tbody .token-icon-small').each(function() {
             app.util.set_token_icon($(this), 32);
           });
 
@@ -1873,20 +1867,16 @@ app.init_block_mempool_page = (height) =>
             return;
           }
           const token = token_data.t[0];
-          const data = {
-            'txid': sna.tx.h,
-            'symbol': token.tokenDetails.symbol,
-            'amount': app.extract_sent_amount_from_tx(sna),
-          };
+
+          sna.token = [token];
 
           $('#block-transactions-table tbody').prepend(
             app.template.block_tx({
-              tx: sna,
-              tx_tokens: {
-                [token.tokenDetails.tokenIdHex]: token
-              }
+              tx: sna
             })
           );
+
+          app.util.set_token_icon($('#block-transactions-table tbody .token-icon-small:first'), 32);
         });
       });
 
