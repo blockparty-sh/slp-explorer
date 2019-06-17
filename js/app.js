@@ -788,20 +788,39 @@ app.slpdb = {
     "v": 3,
     "q": {
       "db": ["c", "u"],
-      "find": {
-        "$and": [
-          {
-            "$or": [
-              { "in.e.a":  address },
-              { "out.e.a": address }
+      "aggregate": [
+        {
+          "$match": {
+            "$and": [
+              { "slp.valid": true },
+              {
+                "$or": [
+                  { "in.e.a":  address },
+                  { "out.e.a": address }
+                ]
+              }
             ]
-          },
-          { "slp.valid": true }
-        ]
-      },
-      "sort": { "blk.i": -1 },
-      "limit": limit,
-      "skip": skip
+          }
+        },
+        {
+          "$sort": { "blk.i": -1 }
+        },
+        {
+          "$skip": skip
+        },
+        {
+          "$limit": limit
+        },
+        {
+          "$lookup": {
+            "from": "tokens",
+            "localField": "slp.detail.tokenIdHex",
+            "foreignField": "tokenDetails.tokenIdHex",
+            "as": "token"
+          }
+        }
+      ],
+      "limit": limit
     }
   }),
   count_total_transactions_by_slp_address: (address) => ({
@@ -2191,27 +2210,23 @@ app.init_address_page = (address) =>
           // transactions = transactions.u.concat(transactions.c); // TODO fix this
           transactions = transactions.c;
 
-          app.get_tokens_from_transactions(transactions)
-          .then((tx_tokens) => {
-            const tbody = $('#address-transactions-table tbody');
-            tbody.html('');
+          const tbody = $('#address-transactions-table tbody');
+          tbody.html('');
 
-            transactions.forEach((tx) => {
-              tbody.append(
-                app.template.address_transactions_tx({
-                  tx: tx,
-                  address: address,
-                  tx_tokens: tx_tokens
-                })
-              );
-            });
-
-            $('#address-transactions-table tbody .token-icon-small').each(function() {
-              app.util.set_token_icon($(this), 32);
-            });
-
-            done();
+          transactions.forEach((tx) => {
+            tbody.append(
+              app.template.address_transactions_tx({
+                tx: tx,
+                address: address
+              })
+            );
           });
+
+          $('#address-transactions-table tbody .token-icon-small').each(function() {
+            app.util.set_token_icon($(this), 32);
+          });
+
+          done();
         });
       };
 
