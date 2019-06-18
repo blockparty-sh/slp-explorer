@@ -1457,8 +1457,6 @@ app.init_index_page = () =>
     app.slpdb.query(app.slpdb.recent_transactions(10))
     .then((data) => {
       const transactions =  data.u.concat(data.c);
-      console.log(transactions);
-
       $('#recent-transactions-table tbody').html('');
 
       for (let i=0; i<transactions.length && i<10; ++i) {
