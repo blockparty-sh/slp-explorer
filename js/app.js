@@ -1454,8 +1454,6 @@ app.init_index_page = () =>
 
     app.util.attach_search_handler('#main-search');
 
-    resolve();
-
     app.slpdb.query(app.slpdb.recent_transactions(10))
     .then((data) => {
       const transactions =  data.u.concat(data.c);
@@ -1614,6 +1612,8 @@ app.init_index_page = () =>
         $('#recent-transactions-table').find('tbody tr:last').remove();
       });
     });
+
+    resolve();
   })
   
 app.init_all_tokens_page = () =>
@@ -2398,6 +2398,8 @@ app.router = (whash, push_history = true) => {
   $('html').removeClass();
   $('html').addClass('loading');
   $('html').scrollTop(0);
+  $('#main-search').autocomplete('dispose');
+
   method().then(() => {
     tippy('[data-tippy-content]');
     jdenticon();
