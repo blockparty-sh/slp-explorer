@@ -400,12 +400,14 @@ app.util = {
   },
 };
 
+const btoa_ext = buf => Buffer.Buffer.from(buf).toString('base64');
+
 app.slpdb = {
   query: (query) => new Promise((resolve, reject) => {
     if (! query) {
       return resolve(false);
     }
-    const b64 = btoa(JSON.stringify(query));
+    const b64 = btoa_ext(JSON.stringify(query));
     const url = "https://slpdb.fountainhead.cash/q/" + b64;
 
     console.log(url)
@@ -1063,7 +1065,7 @@ app.slpsocket = {
     if (! query) {
       return resolve(false);
     }
-    const b64 = btoa(JSON.stringify(query));
+    const b64 = btoa_ext(JSON.stringify(query));
     const url = "https://slpsocket.fountainhead.cash/s/" + b64;
 
     const sse = new EventSource(url);
@@ -1078,7 +1080,7 @@ app.bitdb = {
     if (! query) {
       return resolve(false);
     }
-    const b64 = btoa(JSON.stringify(query));
+    const b64 = btoa_ext(JSON.stringify(query));
     const url = "https://bitdb.fountainhead.cash/q/" + b64;
 
     console.log(url)
