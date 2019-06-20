@@ -129,12 +129,16 @@
               <td>
                 <% if (token.tokenStats.block_last_active_mint !== null) { %>
                   <a href="#block/<%= token.tokenStats.block_last_active_mint %>"><%= token.tokenStats.block_last_active_mint %></a>
-                <% }%>
+                <% } else { %>
+                  Never
+                <% } %>
               </td>
             </tr>
             <tr>
               <th scope="row">Minting Baton Status</th>
-              <td><%= token.tokenStats.minting_baton_status %></td>
+              <td>
+                <%= token.tokenStats.minting_baton_status.toLowerCase().split('_').map(v => v[0].toUpperCase() + v.substring(1).toLowerCase()).join(' ') %>
+              </td>
             </tr>
             <% if (token.mintBatonUtxo && token.mintBatonUtxo.split(':').length === 2) { %>
             <tr>
