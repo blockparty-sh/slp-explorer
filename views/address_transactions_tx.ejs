@@ -16,7 +16,7 @@
   <td>
     <div class="flex-vcenter">
       <% if (tx.slp.detail.transactionType === 'SEND') { %>
-        <% if (tx.in.filter((v) => v.e.a === address).length) {%>SENT<% } else { %>RECV<% } %>
+        <% if (tx.in.filter((v) => v.e.a === address).length) {%>Sent<% } else { %>Received<% } %>
       <% } else { %>
         <%= tx.slp.detail.transactionType %>
       <% } %>
