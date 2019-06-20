@@ -145,31 +145,31 @@
             </tr>
             <% } %>
             <tr>
-              <th scope="row">Qty. Valid Txns Since Genesis</th>
+              <th scope="row">Valid Txns Since Genesis</th>
               <td><%= Number(token.tokenStats.qty_valid_txns_since_genesis).toLocaleString() %></td>
             </tr>
             <tr>
-              <th scope="row">Qty. Valid Token Utxos</th>
+              <th scope="row">Valid Token Utxos</th>
               <td><%= Number(token.tokenStats.qty_valid_token_utxos).toLocaleString() %></td>
             </tr>
             <tr>
-              <th scope="row">Qty. Valid Token Addresses</th>
+              <th scope="row">Valid Token Addresses</th>
               <td><%= Number(token.tokenStats.qty_valid_token_addresses).toLocaleString() %></td>
             </tr>
             <tr>
-              <th scope="row">Qty. Token Minted</th>
+              <th scope="row">Tokens Minted</th>
               <td><%= app.util.format_bignum_str(token.tokenStats.qty_token_minted, token.tokenDetails.decimals) %></td>
             </tr>
             <tr>
-              <th scope="row">Qty. Token Burned</th>
+              <th scope="row">Tokens Burned</th>
               <td><%= app.util.format_bignum_str(token.tokenStats.qty_token_burned, token.tokenDetails.decimals) %></td>
             </tr>
             <tr>
-              <th scope="row">Qty. Token Circulating Supply</th>
+              <th scope="row">Circulating Supply</th>
               <td><%= app.util.format_bignum_str(token.tokenStats.qty_token_circulating_supply, token.tokenDetails.decimals) %></td>
             </tr>
             <tr>
-              <th scope="row">Qty. Satoshis Locked Up</th>
+              <th scope="row">Satoshis Locked Up</th>
               <td><%= new BigNumber(token.tokenStats.qty_satoshis_locked_up).toFixed() %></td>
             </tr>
           </tbody>
