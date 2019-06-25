@@ -1449,6 +1449,13 @@ app.init_error_nonslp_tx_page = (txid) => new Promise((resolve, reject) => {
   resolve();
 });
 
+app.init_error_badaddress_page = (address) => new Promise((resolve, reject) => {
+  $('main[role=main]').html(app.template.error_badaddress_page({
+    address: address
+  }));
+  resolve();
+});
+
 app.init_index_page = () =>
   new Promise((resolve, reject) => {
     $('main[role=main]')
@@ -2213,8 +2220,14 @@ app.init_token_page = (tokenIdHex) =>
 
 
 app.init_address_page = (address) =>
-  new Promise((resolve, reject) =>
-    Promise.all([
+  new Promise((resolve, reject) => {
+    try {
+      address = slpjs.Utils.toSlpAddress(address);
+    } catch (e) {
+      return resolve(app.init_error_badaddress_page(address));
+    }
+
+    return Promise.all([
       app.slpdb.query(app.slpdb.count_tokens_by_slp_address(address)),
       app.slpdb.query(app.slpdb.count_total_transactions_by_slp_address(address)),
     ]).then(([total_tokens, total_transactions]) => {
@@ -2321,7 +2334,7 @@ app.init_address_page = (address) =>
 
       resolve();
     })
-  )
+  })
 
 
 app.router = (whash, push_history = true) => {
@@ -2442,6 +2455,7 @@ $(document).ready(() => {
     'error_404_page',
     'error_nonslp_tx_page',
     'error_invalid_tx_page',
+    'error_badaddress_page',
   ];
 
   app.template = {}
