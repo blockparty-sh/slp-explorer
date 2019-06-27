@@ -301,7 +301,7 @@ app.util = {
         // check if address entered
         if (slpjs.Utils.isSlpAddress(search_value)) {
           $(selector).val('');
-          return app.router('/#address/'+search_value);
+          return app.router('/#address/'+slpjs.Utils.toSlpAddress(search_value));
         }
   
         if (slpjs.Utils.isCashAddress(search_value)) {
