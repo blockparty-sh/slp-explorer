@@ -249,7 +249,7 @@ app.util = {
           fill: 'tonexty',
           type: 'scatter',
           name: 'Daily',
-          line: { shape: 'spline' },
+          /* line: { shape: 'spline' }, // maybe we're not ready for curves yet */
         }
       ], {
         yaxis: {
