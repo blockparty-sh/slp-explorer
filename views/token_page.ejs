@@ -51,10 +51,6 @@
               <td><%= new Date(token.tokenDetails.timestamp_unix*1000).toLocaleString() %></td>
             </tr>
             <tr>
-              <th scope="row">Quantity</th>
-              <td><%= app.util.format_bignum_str(token.tokenStats.qty_token_minted, token.tokenDetails.decimals) %></td>
-            </tr>
-            <tr>
               <th scope="row">Decimals</th>
               <td><%= token.tokenDetails.decimals %></td>
             </tr>
