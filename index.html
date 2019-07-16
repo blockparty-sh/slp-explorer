@@ -93,7 +93,7 @@
         <h1>Oops... an error occured!</h1>
         <pre id="error-modal-text"></pre>
         <p>
-        If you'd like, you can report this error <a href="https://github.com/blockparty-sh/slp-explorer">here</a>.<br>Reloading the page might help.
+        Sorry for the inconvenience, we will look into this as soon as possible. If you'd like, you can report this error <a href="https://github.com/blockparty-sh/slp-explorer">here</a>.<br>Reloading the page might help.
         </p>
 
         <a onclick="reload_page()">
@@ -108,6 +108,10 @@
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+	<script src="https://browser.sentry-cdn.com/5.5.0/bundle.min.js" crossorigin="anonymous"></script>
+	<script>
+	  Sentry.init({ dsn: 'https://0b52acb4def742ae86450916b6b4e073@sentry.io/1506464' });
+	</script>
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/tippy.js@4.3.0/umd/index.all.min.js" integrity="sha384-ud9bVpnf/gv7+4DROgCvJbLyCjTT53DjfBAwCv049WGD8gd6Ms7AaBg5cp0Yrwqb" crossorigin="anonymous"></script>
