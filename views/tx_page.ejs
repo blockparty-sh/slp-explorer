@@ -86,6 +86,16 @@
                 <td><a class="tokenid" href="/#token/<%= tx.slp.detail.tokenIdHex %>"><%= tx.slp.detail.tokenIdHex %></a></td>
               </tr>
               <tr>
+                <th scope="row">Type</th>
+                <td>
+                <% if(token.tokenDetails.versionType === 1) { %>Type1<% } %>
+                <% if(token.tokenDetails.versionType === 129) { %>NFT1-Group<% } %>
+                <% if(token.tokenDetails.versionType === 65) { %>
+                  <a href="/#token/<%= token.nftParentId %>">NFT1-Child [view parent]</a>
+                <% } %>
+                </td>
+              </tr>
+              <tr>
                 <th scope="row">Name</th>
                 <td><%= token.tokenDetails.name %></td>
               </tr>
