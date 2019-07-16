@@ -207,6 +207,14 @@
                               &#10004;
                             <% } %>
                           </a>
+                        <% } else if (m['missingTxid']) { %>
+                          <a class="txid" href="/#tx/<%= m['missingTxid'] %>" style="font-weight:bold">
+                            <% if (burnt) { %>
+                              &#62;:D
+                            <% } else { %>
+                              &#10004;
+                            <% } %>
+                          </a>
                         <% } else if (burnt) { %>
                           <a class="txid" style="font-weight:bold">
                             &#62;:D

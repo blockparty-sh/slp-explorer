@@ -1141,6 +1141,21 @@ app.bitdb = {
       "limit": limit
     }
   }),
+
+  lookup_tx_by_input: (txid, vout) => ({
+    "v": 3,
+    "q": {
+      "find": {
+        "in": {
+          "$elemMatch": {
+            "e.h": txid,
+            "e.i": vout
+          }
+        }
+      },
+      "limit": 1
+    }
+  })
 };
 
 
@@ -1728,15 +1743,38 @@ app.init_tx_page = (txid) =>
 
         app.slpdb.query(app.slpdb.token(tx.slp.detail.tokenIdHex))
         .then((token) => {
-          $('main[role=main]').html(app.template.tx_page({
-            tx:    tx,
-            token: token.t[0],
-            input_amounts: input_amounts
-          }));
+          const txid = tx.graph[0].graphTxn.txid;
 
-          app.util.set_token_icon($('main[role=main] .transaction_box .token-icon-large'), 128);
+          const lookup_missing_spendtxid = (m, txid, vout) =>
+            app.bitdb.query(app.bitdb.lookup_tx_by_input(txid, vout))
+            .then((tx) => {
+              m['missingTxid'] = tx.u.length > 0
+                ? tx.u[0].tx.h
+                : tx.c.length > 0
+                  ? tx.c[0].tx.h
+                  : null;
+            });
 
-          resolve();
+          let missing_lookups = [];
+          for (let m of tx.graph[0].graphTxn.outputs) {
+            if (m.spendTxid === null) {
+              missing_lookups.push(
+                lookup_missing_spendtxid(m, tx.graph[0].graphTxn.txid, m.vout)
+              );
+            }
+          }
+
+          Promise.all(missing_lookups)
+          .then(() => {
+            $('main[role=main]').html(app.template.tx_page({
+              tx:    tx,
+              token: token.t[0],
+              input_amounts: input_amounts
+            }));
+
+            app.util.set_token_icon($('main[role=main] .transaction_box .token-icon-large'), 128);
+            resolve();
+          });
         });
       });
     })
