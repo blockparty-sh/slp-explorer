@@ -26,8 +26,8 @@
     <div>
       <% if(tx.token[0].tokenDetails.versionType === 1) { %>Type1<% } %>
       <% if(tx.token[0].tokenDetails.versionType === 129) { %>NFT1-Group<% } %>
-      <% if(tx.token[0].tokenDetails.versionType === 65) { %>
-        <a href="/#token/<%= tx.token[0].tokenDetails.nftParentId %>">NFT1-Child [view parent]</a>
+      <% if(tx.token[0].tokenDetails.versionType === 65) { console.log(tx); %>
+        <a href="/#token/<%= tx.token[0].nftParentId %>">NFT1-Child [view parent]</a>
       <% } %>
     </div>
   </td>
