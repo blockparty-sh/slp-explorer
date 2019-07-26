@@ -105,11 +105,13 @@
               </tr>
               <tr>
                 <th scope="row">Timestamp</th>
-                <% if (token.tokenDetails.timestamp_unix === null) { %>
-                  Pending
-                <% } else { %>
-                  <%= new Date(token.tokenDetails.timestamp_unix*1000).toLocaleString() %>
-                <% } %>
+                <td>
+                  <% if (token.tokenDetails.timestamp_unix === null) { %>
+                    Pending
+                  <% } else { %>
+                    <%= new Date(token.tokenDetails.timestamp_unix*1000).toLocaleString() %>
+                  <% } %>
+                </td>
               </tr>
               <tr>
                 <th scope="row">Decimals</th>
