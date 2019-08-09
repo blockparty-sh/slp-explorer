@@ -733,8 +733,24 @@ app.slpdb = {
         {
           "$match": {
             "tokenDetails.tokenIdHex": tokenIdHex,
-            "graphTxn.outputs.status": {
-              "$in": ["SPENT_NON_SLP", "BATON_SPENT_INVALID_SLP", "SPENT_INVALID_SLP", "BATON_SPENT_NON_SLP", "MISSING_BCH_VOUT", "BATON_MISSING_BCH_VOUT", "BATON_SPENT_NOT_IN_MINT", "EXCESS_INPUT_BURNED"]
+            "graphTxn.outputs": {
+              "$elemMatch": {
+                "status": {
+                  "$in": [
+                    "SPENT_NON_SLP",
+                    "BATON_SPENT_INVALID_SLP",
+                    "SPENT_INVALID_SLP",
+                    "BATON_SPENT_NON_SLP",
+                    "MISSING_BCH_VOUT",
+                    "BATON_MISSING_BCH_VOUT",
+                    "BATON_SPENT_NOT_IN_MINT",
+                    "EXCESS_INPUT_BURNED"
+                  ]
+                },
+                "slpAmount": {
+                  "$gt": 0
+                }
+              }
             }
           }
         },
@@ -768,8 +784,24 @@ app.slpdb = {
         {
           "$match": {
             "tokenDetails.tokenIdHex": tokenIdHex,
-            "graphTxn.outputs.status": {
-              "$in": ["SPENT_NON_SLP", "BATON_SPENT_INVALID_SLP", "SPENT_INVALID_SLP", "BATON_SPENT_NON_SLP", "MISSING_BCH_VOUT", "BATON_MISSING_BCH_VOUT", "BATON_SPENT_NOT_IN_MINT", "EXCESS_INPUT_BURNED"]
+            "graphTxn.outputs": {
+              "$elemMatch": {
+                "status": {
+                  "$in": [
+                    "SPENT_NON_SLP",
+                    "BATON_SPENT_INVALID_SLP",
+                    "SPENT_INVALID_SLP",
+                    "BATON_SPENT_NON_SLP",
+                    "MISSING_BCH_VOUT",
+                    "BATON_MISSING_BCH_VOUT",
+                    "BATON_SPENT_NOT_IN_MINT",
+                    "EXCESS_INPUT_BURNED"
+                  ]
+                },
+                "slpAmount": {
+                  "$gt": 0
+                }
+              }
             }
           }
         },
