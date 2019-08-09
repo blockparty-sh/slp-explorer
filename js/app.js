@@ -1699,7 +1699,7 @@ app.init_tx_page = (txid) =>
 
       tx = tx[0];
 
-      if (! tx.slp.valid) {
+      if (! tx.slp.valid || tx.graph.length === 0) {
         $('main[role=main]').html(app.template.error_invalid_tx_page({
           tx: tx,
         }));
