@@ -4,27 +4,42 @@ app.util = {
   get_exchange_links: (tokenIdHex) => {
     const altilly_tokens = {
       '527a337f34e04b1974cb8a1edc7ca30b2e444bea111afc122259552243c1dbe3': 'LLM',
-      '077c832a3ef15068ca2c72dd262883fb24a8a0f612e8a92f579f7dee3eaca372': 'YCLO'
+      '077c832a3ef15068ca2c72dd262883fb24a8a0f612e8a92f579f7dee3eaca372': 'YCLO',
+      '4de69e374a8ed21cbddd47f2338cc0f479dc58daa2bbe11cd604ca488eca0ddf': 'SPICE',
     };
 
     const coinex_tokens = {
-      'c4b0d62156b3fa5c8f3436079b5394f7edc1bef5dc1cd2f9d0c4d46f82cca479': 'https://www.coinex.com/exchange?currency=usdt&dest=usdh'
+      'c4b0d62156b3fa5c8f3436079b5394f7edc1bef5dc1cd2f9d0c4d46f82cca479': 'https://www.coinex.com/exchange?currency=usdt&dest=usdh',
+      '4de69e374a8ed21cbddd47f2338cc0f479dc58daa2bbe11cd604ca488eca0ddf': 'https://www.coinex.com/exchange?currency=bch&dest=spice',
     };
 
     const sideshift_tokens = {
-      'c4b0d62156b3fa5c8f3436079b5394f7edc1bef5dc1cd2f9d0c4d46f82cca479': 'https://sideshift.ai/bch/usdh'
+      'c4b0d62156b3fa5c8f3436079b5394f7edc1bef5dc1cd2f9d0c4d46f82cca479': 'https://sideshift.ai/bch/usdh',
+      '4de69e374a8ed21cbddd47f2338cc0f479dc58daa2bbe11cd604ca488eca0ddf': 'https://sideshift.ai/bch/spice',
+    };
+
+    const cryptophyl_tokens = {
+      '4de69e374a8ed21cbddd47f2338cc0f479dc58daa2bbe11cd604ca488eca0ddf': 'https://cryptophyl.com/trade/SPICE-BCH',
     };
 
     let ret = [];
+    /* waiting for launch
     ret.push({
       'link': `https://slpdex.cash/tokens/${tokenIdHex}`,
       'class': 'exchange-slpdex-icon'
     });
-
-    if (altilly_tokens.hasOwnProperty(tokenIdHex)) {
+    */
+    if (cryptophyl_tokens.hasOwnProperty(tokenIdHex)) {
       ret.push({
-        'link': `https://www.altilly.com/asset/${altilly_tokens[tokenIdHex]}`,
-        'class': 'exchange-altilly-icon'
+        'link': cryptophyl_tokens[tokenIdHex],
+        'class': 'exchange-cryptophyl-icon'
+      });
+    }
+
+    if (sideshift_tokens.hasOwnProperty(tokenIdHex)) {
+      ret.push({
+        'link': sideshift_tokens[tokenIdHex],
+        'class': 'exchange-sideshift-icon'
       });
     }
 
@@ -35,10 +50,10 @@ app.util = {
       });
     }
 
-    if (sideshift_tokens.hasOwnProperty(tokenIdHex)) {
+    if (altilly_tokens.hasOwnProperty(tokenIdHex)) {
       ret.push({
-        'link': sideshift_tokens[tokenIdHex],
-        'class': 'exchange-sideshift-icon'
+        'link': `https://www.altilly.com/asset/${altilly_tokens[tokenIdHex]}`,
+        'class': 'exchange-altilly-icon'
       });
     }
 

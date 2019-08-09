@@ -733,6 +733,10 @@ html.index-page header {
 .exchange-slpdex-icon {
     background-image:url('/img/slpdex.png');
 }
+.exchange-cryptophyl-icon {
+    background-image:url('/img/cryptophyl.png');
+}
+
 
 @media only screen and (max-width: 890px) {
     .rounded_row {
