@@ -359,9 +359,10 @@ app.util = {
               return app.router('/#token/'+m.tokenDetails.tokenIdHex);
             }
   
-            const ctxid = app.util.compress_txid(m.tokenDetails.tokenIdHex);
             let tval = null;
-            tval = ctxid
+            const verified = app.util.is_verified(m.tokenDetails.tokenIdHex);
+            tval = (verified ? '✔ ' : '… ')
+              + app.util.compress_txid(m.tokenDetails.tokenIdHex)
               + (m.tokenDetails.symbol ? (' | ' + m.tokenDetails.symbol) : '')
               + (m.tokenDetails.name   ? (' | ' + m.tokenDetails.name)   : '');
   
@@ -369,10 +370,19 @@ app.util = {
               value: tval,
               data: {
                 url: '/#token/'+m.tokenDetails.tokenIdHex,
-                category: 'Tokens'
+                category: 'Tokens',
+                verified: verified,
+                qty_valid_txns_since_genesis: m.tokenStats.qty_valid_txns_since_genesis,
               }
             });
           }
+
+          sugs.sort((a, b) => {
+            const av = (a.data.verified*100000000)+a.data.qty_valid_txns_since_genesis;
+            const bv = (b.data.verified*100000000)+b.data.qty_valid_txns_since_genesis;
+            return bv-av;
+          });
+
           transactions = transactions.u.concat(transactions.c);
           for (let m of transactions) {
             if (m.tx.h === search_value) {
@@ -397,6 +407,10 @@ app.util = {
         app.router(sug.data.url);
       }
     });
+  },
+
+  is_verified: (txid) => {
+    return verified_tokens.has(txid);
   },
 };
 

@@ -134,6 +134,16 @@
                 <th scope="row">Document Checksum</th>
                 <td><%= token.tokenDetails.documentSha256Hex %></td>
               </tr>
+              <tr>
+                <th scope="row">Verified</th>
+                <td>
+                  <% if (app.util.is_verified(token.tokenDetails.tokenIdHex)) { %>
+                    ✔
+                  <% } else { %>
+                    …
+                  <% } %>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
