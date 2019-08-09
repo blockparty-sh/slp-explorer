@@ -1,0 +1,41 @@
+<tr>
+  <td>
+    <div class="flex-vcenter">
+      <a class="tokenid" href="/#token/<%= token.tokenDetails.tokenIdHex %>">
+        <%= app.util.compress_tokenid(token.tokenDetails.tokenIdHex) %>
+      </a>
+    </div>
+  </td>
+  <td>
+    <div class="flex-vcenter">
+      <span class="token-icon-small" data-tokenid="<%= token.tokenDetails.tokenIdHex %>"></span>
+      <a href="#token/<%= token.tokenDetails.tokenIdHex %>">
+      <% if (token.tokenDetails.symbol) { %>
+        <%= token.tokenDetails.symbol %>
+      <% } else { %>
+        <span class="mono">[none]</span>
+      <% } %>
+      </a>
+    </div>
+  </td>
+  <td>
+    <div class="flex-vcenter">
+      <a href="#token/<%= token.tokenDetails.tokenIdHex %>">
+      <% if (token.tokenDetails.name) { %>
+        <%= token.tokenDetails.name %>
+      <% } else { %>
+        <span class="mono">[none]</span>
+      <% } %>
+      </a>
+    </div>
+  </td>
+  <td>
+    <div class="flex-vcenter">
+      <% if (token.tokenStats.block_created) { %>
+        <a href="#block/<%= token.tokenStats.block_created %>"><%= token.tokenStats.block_created %></a>
+      <% } else { %>
+        <a href="#block/mempool">Pending</a>
+      <% } %>
+    </div>
+  </td>
+</tr>

@@ -847,6 +847,53 @@ app.slpdb = {
     }
   }),
 
+  token_child_nfts: (tokenIdHex, limit=100, skip=0) => ({
+    "v": 3,
+    "q": {
+      "db": ["t"],
+      "aggregate": [
+        {
+          "$match": {
+            "nftParentId": tokenIdHex,
+          }
+        },
+        {
+          "$sort": {
+            "tokenStats.block_created": -1
+          }
+        },
+        {
+          "$skip": skip
+        },
+        {
+          "$limit": limit
+        }
+      ]
+    }
+  }),
+  count_token_child_nfts: (tokenIdHex) => ({
+    "v": 3,
+    "q": {
+      "db": ["t"],
+      "aggregate": [
+        {
+          "$match": {
+            "nftParentId": tokenIdHex,
+          }
+        },
+        {
+          "$group": {
+            "_id": null,
+            "count": { "$sum": 1 }
+          }
+        }
+      ]
+    },
+    "r": {
+      "f": "[ .[] | {count: .count } ]"
+    }
+  }),
+
   recent_transactions: (limit=150, skip=0) => ({
     "v": 3,
     "q": {
@@ -2109,6 +2156,45 @@ app.init_token_page = (tokenIdHex) =>
 
       app.util.set_token_icon($('main[role=main] .transaction_box .token-icon-large'), 128);
 
+
+      if (token.tokenDetails.versionType === 129) {
+        app.slpdb.query(app.slpdb.count_token_child_nfts(tokenIdHex))
+        .then((total_token_child_nfts) => {
+          total_token_child_nfts = app.util.extract_total(total_token_child_nfts);
+
+          const load_paginated_token_child_nfts = (limit, skip, done) => {
+            app.slpdb.query(app.slpdb.token_child_nfts(tokenIdHex, limit, skip))
+            .then((tokens) => {
+             const tbody = $('#token-child-nfts-table tbody');
+             tbody.html('');
+
+              tokens.t.forEach((token) => {
+                tbody.append(
+                  app.template.token_child_nft({
+                    token: token
+                  })
+                );
+              });
+
+              done();
+            });
+          };
+
+          if (total_token_child_nfts.t === 0) {
+            $('#token-child-nfts-table tbody').html('<tr><td>No children found.</td></tr>');
+          } else {
+            app.util.create_pagination(
+              $('#token-child-nfts-table-container'),
+              0,
+              Math.ceil(total_token_child_nfts.t / 10),
+              (page, done) => {
+                load_paginated_token_child_nfts(10, 10*page, done);
+              }
+            );
+          }
+        });
+      }
+
       const load_paginated_token_addresses = (limit, skip, done) => {
         app.slpdb.query(app.slpdb.token_addresses(tokenIdHex, limit, skip))
         .then((addresses) => {
@@ -2544,6 +2630,7 @@ $(document).ready(() => {
     'token_mint_tx',
     'token_burn_tx',
     'token_address',
+    'token_child_nft',
     'token_tx',
     'address_page',
     'address_transactions_tx',

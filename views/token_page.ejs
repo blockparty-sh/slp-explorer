@@ -241,6 +241,31 @@
   <div class="clearfix"></div>
 </div>
 
+<% if (token.tokenDetails.versionType === 129) { %>
+  <div class="rounded_row">
+    <div id="token-child-nfts-table-container" class="rounded box-shadow table-container">
+      <h3>Child NFTs</h3>
+      <div class="table-responsive">
+        <table class="table" id="token-child-nfts-table">
+          <thead>
+            <tr>
+              <th>Token Id</th>
+              <th>Symbol</th>
+              <th>Name</th>
+              <th>Block Height</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Loading...</td></tr>
+          </tbody>
+        </table>
+        <ul class="pagination">
+        </ul>
+      </div>
+    </div>
+  </div>
+<% } %>
+
 <div class="rounded_row">
   <div id="token-mint-history-table-container" class="rounded box-shadow table-container">
     <h3>Mint History</h3>
