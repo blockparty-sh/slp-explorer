@@ -19,7 +19,7 @@ app.util = {
     };
 
     const cryptophyl_tokens = {
-      '4de69e374a8ed21cbddd47f2338cc0f479dc58daa2bbe11cd604ca488eca0ddf': 'https://cryptophyl.com/trade/SPICE-BCH',
+      '4de69e374a8ed21cbddd47f2338cc0f479dc58daa2bbe11cd604ca488eca0ddf': 'SPICE',
     };
 
     let ret = [];
@@ -31,7 +31,7 @@ app.util = {
     */
     if (cryptophyl_tokens.hasOwnProperty(tokenIdHex)) {
       ret.push({
-        'link': cryptophyl_tokens[tokenIdHex],
+        'link': `https://cryptophyl.com/trade/${cryptophyl_tokens[tokenIdHex]}-BCH?r=blockparty`,
         'class': 'exchange-cryptophyl-icon'
       });
     }

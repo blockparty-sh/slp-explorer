@@ -737,6 +737,10 @@ html.index-page header {
     background-image:url('/img/cryptophyl.png');
 }
 
+#exchange-exchanges {
+    text-align:center;
+}
+
 
 @media only screen and (max-width: 890px) {
     .rounded_row {
