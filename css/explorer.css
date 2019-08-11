@@ -745,6 +745,13 @@ html.index-page header {
     text-align:center;
 }
 
+.maintenance {
+    display:none;
+    background-color: #f75c5c;
+    text-align: center;
+    padding: 0.5rem;
+    border-bottom: 1px solid #e95555;
+}
 
 @media only screen and (max-width: 890px) {
     .rounded_row {
