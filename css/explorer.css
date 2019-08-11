@@ -741,6 +741,10 @@ html.index-page header {
     text-align:center;
 }
 
+#token-exchange-exchanges {
+    text-align:center;
+}
+
 
 @media only screen and (max-width: 890px) {
     .rounded_row {
