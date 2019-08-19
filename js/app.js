@@ -2653,25 +2653,26 @@ $(document).ready(() => {
   .then(tokens => tokens.json())
   .then(tokens => {
     app.verified_tokens = new Set(tokens);
-  });
-  console.timeEnd('loading verified tokens');
-
-  console.time('loading views');
-  Promise.all(views.map(v => {
-    const url = 'views/' + v + '.ejs';
-    console.info('downloading view: ' + url);
-    return fetch(url).then(v => v.text())
-  }))
-  .then(texts => {
-    texts.forEach((v, i) => {
-      console.info('compiling: ' + views[i]);
-      app.template[views[i]] = ejs.compile(v);
-    });
+    console.timeEnd('loading verified tokens');
   })
   .then(() => {
-    console.timeEnd('loading views');
-    app.router(window.location.pathname+window.location.hash, false);
-    $('header').removeClass('loading');
+    console.time('loading views');
+    Promise.all(views.map(v => {
+      const url = 'views/' + v + '.ejs';
+      console.info('downloading view: ' + url);
+      return fetch(url).then(v => v.text())
+    }))
+    .then(texts => {
+      texts.forEach((v, i) => {
+        console.info('compiling: ' + views[i]);
+        app.template[views[i]] = ejs.compile(v);
+      });
+    })
+    .then(() => {
+      console.timeEnd('loading views');
+      app.router(window.location.pathname+window.location.hash, false);
+      $('header').removeClass('loading');
+    });
   });
 });
 
