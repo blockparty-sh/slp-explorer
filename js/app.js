@@ -1,5 +1,7 @@
 const app = {};
 
+app.verified_tokens = [];
+
 app.util = {
   get_exchange_links: (tokenIdHex) => {
     const altilly_tokens = {
@@ -425,7 +427,7 @@ app.util = {
   },
 
   is_verified: (txid) => {
-    return verified_tokens.has(txid);
+    return app.verified_tokens.has(txid);
   },
 };
 
@@ -2645,6 +2647,14 @@ $(document).ready(() => {
   ];
 
   app.template = {}
+
+  console.time('loading verified tokens');
+  fetch('/verified_tokens.json')
+  .then(tokens => tokens.json())
+  .then(tokens => {
+    app.verified_tokens = new Set(tokens);
+  });
+  console.timeEnd('loading verified tokens');
 
   console.time('loading views');
   Promise.all(views.map(v => {
