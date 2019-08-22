@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Playfair+Display" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="css/explorer.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.min.css">
+    <title>SLP Explorer</title>
+
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="60x60" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#2b5797">
+    <meta name="theme-color" content="#ffffff">
+
+    <!-- Social Cards -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="@fountainheadcash" />
+    <meta name="twitter:title" content="SLP Explorer" />
+    <meta name="twitter:description" content="Browse and explore tokens built on top of Bitcoin Cash" />
+    <meta name="twitter:image" content="https://simpleledger.info/img/social.png" />
+    <meta name="twitter:image:alt" content="SLP Explorer" />
+    <meta property="og:url" content="https://simpleledger.info" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="SLP Explorer" />
+    <meta property="og:description" content="Browse and explore tokens built on top of Bitcoin Cash" />
+    <meta property="og:image" content="https://simpleledger.info/img/social.png" />
+    <style>
+    body {
+        background-image:none;
+        background-color:#262626;
+    }
+	.header_infobox h2 {
+		background-color: #000;
+    	padding: 1rem;
+    	width: fit-content;
+    	margin: auto;
+    	color: #fff;
+	}
+	.header_infobox #headerdate {
+    	font-size: 1.3em;
+    	font-weight: bold;
+    	margin: 5px 0px;
+    	background-color: #76f800;
+    	margin: 1rem auto;
+    	width: fit-content;
+    	padding: 0.5rem;
+	}
+    #countdown-container {
+        width:fit-content;
+        margin:2rem auto;
+    }
+    .rounded_row {
+        background-color:#626262;
+    }
+    .place {
+        border: 1px solid #000;
+        padding: 1rem;
+        box-shadow: #353535 10px 10px;
+        margin: 2rem;
+        background:#fff;
+    }
+    </style>
+  </head>
+  <body>
+    <div class="row super-wrapper">
+      <main role="main" class="container-fluid">
+        <div class="header_infobox">
+          <img src="/img/slpdb.svg">
+          <h2>Simple Ledger Protocol Hackathon</h2>
+          <p id="headerdate">September 20-22 | 12pm-12pm UTC | Worldwide</p>
+        </div>
+        
+        <div class="rounded_row">
+            <div id="countdown-container">
+			  <div id="countdown"></div>
+            </div>
+			
+            <div class="place">
+                <h1>1st Place</h1>
+                <h2>250,000 Spice</h2>
+                <h2>Special Collectable Token</h2>
+            </div>
+			<div class="place">
+                <h1>2nd Place</h1>
+                <h2>100,000 Spice</h2>
+                <h2>Special Collectable Token</h2>
+            </div>
+			<div class="place">
+                <h1>3rd Place</h1>
+                <h2>50,000 Spice</h2>
+                <h2>Special Collectable Token</h2>
+            </div>
+        </div>
+    
+
+
+
+      </main>
+    </div>
+
+
+
+
+    <footer class="display-none">
+      <div class="row">
+        <div class="col">
+          <h4>Source Code</h4>
+          <ul class="list-unstyled text-small">
+            <li><a class="text-muted" href="http://github.com/blockparty-sh/slp-explorer">SLP Explorer</a></li>
+            <li><a class="text-muted" href="https://github.com/simpleledger/SLPDB">SLPDB</a></li>
+            <li><a class="text-muted" href="https://github.com/fountainhead-cash/slpserve">slpserve</a></li>
+            <li><a class="text-muted" href="https://github.com/fountainhead-cash/slpsockserve">slpsockserve</a></li>
+            <li><a class="text-muted" href="https://github.com/fountainhead-cash/slpqueryd">slpqueryd</a></li>
+            <li><a class="text-muted" href="https://github.com/simpleledger/slpjs">slpjs</a></li>
+          </ul>
+        </div>
+        <div class="col">
+          <h4>Resources</h4>
+          <ul class="list-unstyled text-small">
+            <li><a class="text-muted" href="https://simpleledger.cash">simpleledger.cash</a></li>
+            <li><a class="text-muted" href="https://github.com/simpleledger/slp-specifications">specification</a></li>
+            <li><a class="text-muted" href="https://developer.bitcoin.com/slp/">slp-sdk</a></li>
+          </ul>
+        </div>
+        <div class="col">
+          <h4>Connect</h4>
+          <ul class="list-unstyled text-small">
+            <li><a class="text-muted" href="https://web.telegram.org/#/im?p=@simpleledger">SimpleLedger Chat</a></li>
+            <li><a class="text-muted" href="https://www.youtube.com/channel/UC_WJO3lyHAhdU6oEk0lhMLw">SimpleLedger Youtube</a></li>
+            <li><a class="text-muted" href="https://twitter.com/SimpleLedger">SimpleLedger Twitter</a></li>
+            <li><a class="text-muted" href="http://t.me/fountainheadcash">Fountainhead Chat</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+	<script src="https://browser.sentry-cdn.com/5.5.0/bundle.min.js" crossorigin="anonymous"></script>
+	<script>
+	  Sentry.init({ dsn: 'https://0b52acb4def742ae86450916b6b4e073@sentry.io/1506464' });
+	</script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.min.js"></script>
+    <script type="text/javascript">
+	  const event_date = new Date(1568980800000);
+      const now_date = new Date();
+      const diff = (event_date.getTime()/1000) - (now_date.getTime()/1000);
+      console.log(diff);
+
+	
+      $("#countdown")
+      .FlipClock(diff, {
+        countdown: true,
+        showSeconds: true,
+        clockFace: 'DailyCounter',
+      });
+    </script>
+  </body>
+</html>
