@@ -30,7 +30,7 @@
 </div>
 
 <div class="rounded_row">
-  <div id="block-transactions-table-container" class="rounded box-shadow table-container">
+  <div id="block-transactions-table-container" class="rounded box-shadow table-container <%= (height == 'mempool' ? 'mempool' : '') %>">
     <h3 class="border-bottom border-gray">Transactions</h3>
     <div class="table-responsive">
       <table class="table" id="block-transactions-table">
