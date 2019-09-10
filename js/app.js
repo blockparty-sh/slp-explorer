@@ -34,7 +34,7 @@ app.util = {
     */
     if (cryptophyl_tokens.hasOwnProperty(tokenIdHex)) {
       ret.push({
-        'link': cryptophyl_tokens[tokenIdHex],
+        'link': `${cryptophyl_tokens[tokenIdHex]}?r=blockparty`,
         'class': 'exchange-cryptophyl-icon'
       });
     }
