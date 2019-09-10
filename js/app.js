@@ -22,6 +22,7 @@ app.util = {
 
     const cryptophyl_tokens = {
       '4de69e374a8ed21cbddd47f2338cc0f479dc58daa2bbe11cd604ca488eca0ddf': 'SPICE',
+      'c4b0d62156b3fa5c8f3436079b5394f7edc1bef5dc1cd2f9d0c4d46f82cca479': 'USDH',
     };
 
     let ret = [];
