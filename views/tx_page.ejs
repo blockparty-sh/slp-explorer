@@ -169,13 +169,17 @@
               </tr>
             </thead>
             <tbody>
-              <% if (tx.slp.detail.transactionType == 'SEND') { %>
+              <% if (tx.slp.detail.transactionType == 'SEND' || tx.slp.detail.transactionType == 'MINT') { %>
                 <% for (let m of tx.in) { %>
                   <% if (input_amounts[m.e.h+':'+m.e.i]) { %>
                     <tr>
                       <td><a class="txid" href="/#tx/<%= m.e.h %>" style="font-weight:bold">&larr;</a></td>
                       <td class="amount">
-                        <%= app.util.format_bignum_str(input_amounts[m.e.h+':'+m.e.i], token.tokenDetails.decimals)  %>
+                        <% if (tx.slp.detail.transactionType == 'SEND') { %>
+                            <%= app.util.format_bignum_str(input_amounts[m.e.h+':'+m.e.i], token.tokenDetails.decimals)  %>
+                        <% } else if(tx.slp.detail.transactionType == 'MINT') { %>
+                            Mint Baton
+                        <% } %>
                       </td>
                       <td>
                         <% if (typeof m.e.a !== 'undefined') { %>
