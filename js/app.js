@@ -2151,13 +2151,14 @@ app.init_token_page = (tokenIdHex) =>
         .then((total_unconfirmed_token_transactions) => {
           total_unconfirmed_token_transactions = app.util.extract_total(total_unconfirmed_token_transactions).u;
 
+
+          const total_confirmed = token.tokenStats.qty_valid_txns_since_genesis
+                                - total_unconfirmed_token_transactions;
+
           app.util.create_pagination(
             $('#token-transactions-table-container'),
             0,
-            Math.ceil((
-              token.tokenStats.qty_valid_txns_since_genesis -
-              total_unconfirmed_token_transactions
-            ) / 10),
+            Math.ceil((total_confirmed % 10 == 0 ? total_confirmed : (total_confirmed + 1)) / 10),
             (page, done) => {
               load_paginated_token_txs(10, 10*page, done);
             }
