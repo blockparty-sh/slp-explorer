@@ -516,11 +516,56 @@ app.slpdb = {
     }
   }),
 
-  token_transaction_history: (tokenIdHex, address=null, limit=100, skip=0) => {
+  count_unconfirmed_token_transaction_history: (tokenIdHex, address=null) => {
+    let match;
+
+    if (address == null) {
+      match = {
+        "$and": [
+          { "slp.valid": true },
+          { "slp.detail.tokenIdHex": tokenIdHex },
+        ]
+      };
+    } else {
+      match = {
+        "$and": [
+          { "slp.valid": true },
+          { "slp.detail.tokenIdHex": tokenIdHex },
+        ],
+        "$or": [
+          { "in.e.a":  address },
+          { "out.e.a": address }
+        ]
+      };
+    }
+
+    return {
+      "v": 3,
+      "q": {
+        "db": ["u"],
+        "aggregate": [
+          {
+            "$match": match
+          },
+          {
+            "$group": {
+              "_id": null,
+              "count": { "$sum": 1 }
+            }
+          }
+        ]
+      },
+      "r": {
+        "f": "[ .[] | {count: .count } ]"
+      }
+    };
+  },
+
+  token_transaction_history: (db, tokenIdHex, address=null, limit=100, skip=0) => {
     let q = {
       "v": 3,
       "q": {
-        "db": ["c", "u"],
+        "db": [db],
         "find": {
           "$and": [
             { "slp.valid": true },
@@ -541,6 +586,13 @@ app.slpdb = {
     }
 
     return q;
+  },
+
+  unconfirmed_token_transaction_history: (tokenIdHex, address=null, limit=100, skip=0) => {
+    return app.slpdb.token_transaction_history('u', tokenIdHex, address, limit, skip);
+  },
+  confirmed_token_transaction_history: (tokenIdHex, address=null, limit=100, skip=0) => {
+    return app.slpdb.token_transaction_history('c', tokenIdHex, address, limit, skip);
   },
 
   tx: (txid) => ({
@@ -2072,7 +2124,7 @@ app.init_tokengraph_page = (tokenIdHex) =>
     Promise.all([
       app.slpdb.query(app.slpdb.token(tokenIdHex)),
       app.slpdb.query(app.slpdb.tokengraph(tokenIdHex)),
-      app.slpdb.query(app.slpdb.token_transaction_history(tokenIdHex, null, 1000)),
+      app.slpdb.query(app.slpdb.confirmed_token_transaction_history(tokenIdHex, null, 1000)),
     ]).then(([token, graph, transactions]) => {
       if (token.t.length === 0) {
         return resolve(app.init_404_page());
@@ -2301,23 +2353,63 @@ app.init_token_page = (tokenIdHex) =>
       };
 
       const load_paginated_token_txs = (limit, skip, done) => {
-        app.slpdb.query(app.slpdb.token_transaction_history(tokenIdHex, null, limit, skip))
-        .then((transactions) => {
-          // transactions = transactions.u.concat(transactions.c); // TODO fix this
-          transactions = transactions.c;
+        app.slpdb.query(app.slpdb.count_unconfirmed_token_transaction_history(tokenIdHex))
+        .then((total_unconfirmed_token_transactions) => {
+          total_unconfirmed_token_transactions = app.util.extract_total(total_unconfirmed_token_transactions).u;
 
-          const tbody = $('#token-transactions-table tbody');
-          tbody.html('');
+          let tasks = [];
+          if (skip < total_unconfirmed_token_transactions) {
+            tasks.push(app.slpdb.query(app.slpdb.unconfirmed_token_transaction_history(tokenIdHex, null, limit, skip)));
 
-          transactions.forEach((tx) => {
-            tbody.append(
-              app.template.token_tx({
-                tx: tx
-              })
-            );
+            if (skip+limit > total_unconfirmed_token_transactions) {
+              if (limit - (total_unconfirmed_token_transactions % limit) > 0) {
+                tasks.push(app.slpdb.query(
+                  app.slpdb.confirmed_token_transaction_history(
+                    tokenIdHex,
+                    null,
+                    limit - (total_unconfirmed_token_transactions % limit),
+                    0
+                  )
+                ));
+              }
+            }
+          } else {
+            tasks.push(app.slpdb.query(
+              app.slpdb.confirmed_token_transaction_history(
+                tokenIdHex,
+                null,
+                limit,
+                skip - (total_unconfirmed_token_transactions % limit)
+              )
+            ));
+          }
+
+          Promise.all(tasks)
+          .then((transactionlists) => {
+            let transactions = [];
+            for (const transactionlist of transactionlists) {
+              if (transactionlist.u) {
+                transactions = transactions.concat(transactionlist.u);
+              }
+
+              if (transactionlist.c) {
+                transactions = transactions.concat(transactionlist.c);
+              }
+            }
+
+            const tbody = $('#token-transactions-table tbody');
+            tbody.html('');
+
+            transactions.forEach((tx) => {
+              tbody.append(
+                app.template.token_tx({
+                  tx: tx
+                })
+              );
+            });
+
+            done();
           });
-
-          done();
         });
       };
 
@@ -2363,14 +2455,22 @@ app.init_token_page = (tokenIdHex) =>
       if (token.tokenStats.qty_valid_txns_since_genesis === 0) {
         $('#token-transactions-table tbody').html('<tr><td>No transactions found.</td></tr>');
       } else {
-        app.util.create_pagination(
-          $('#token-transactions-table-container'),
-          0,
-          Math.ceil(token.tokenStats.qty_valid_txns_since_genesis / 10),
-          (page, done) => {
-            load_paginated_token_txs(10, 10*page, done);
-          }
-        );
+        app.slpdb.query(app.slpdb.count_unconfirmed_token_transaction_history(tokenIdHex))
+        .then((total_unconfirmed_token_transactions) => {
+          total_unconfirmed_token_transactions = app.util.extract_total(total_unconfirmed_token_transactions).u;
+
+          app.util.create_pagination(
+            $('#token-transactions-table-container'),
+            0,
+            Math.ceil((
+              token.tokenStats.qty_valid_txns_since_genesis -
+              total_unconfirmed_token_transactions
+            ) / 10),
+            (page, done) => {
+              load_paginated_token_txs(10, 10*page, done);
+            }
+          );
+        });
       }
 
       app.slpdb.query(app.slpdb.count_txs_per_block({
