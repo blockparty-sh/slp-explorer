@@ -18,11 +18,19 @@ app.util = {
     const sideshift_tokens = {
       'c4b0d62156b3fa5c8f3436079b5394f7edc1bef5dc1cd2f9d0c4d46f82cca479': 'https://sideshift.ai/bch/usdh',
       '4de69e374a8ed21cbddd47f2338cc0f479dc58daa2bbe11cd604ca488eca0ddf': 'https://sideshift.ai/bch/spice',
+      '7853218e23fdabb103b4bccbe6e987da8974c7bc775b7e7e64722292ac53627f': 'https://sideshift.ai/bch/saislp',
+    };
+
+    const sideshift_tokens_settle = {
+      'c4b0d62156b3fa5c8f3436079b5394f7edc1bef5dc1cd2f9d0c4d46f82cca479': 'usdh',
+      '4de69e374a8ed21cbddd47f2338cc0f479dc58daa2bbe11cd604ca488eca0ddf': 'spice',
+      '7853218e23fdabb103b4bccbe6e987da8974c7bc775b7e7e64722292ac53627f': 'saislp',
     };
 
     const cryptophyl_tokens = {
       '4de69e374a8ed21cbddd47f2338cc0f479dc58daa2bbe11cd604ca488eca0ddf': 'https://cryptophyl.com/trade/SPICE-BCH',
       'c4b0d62156b3fa5c8f3436079b5394f7edc1bef5dc1cd2f9d0c4d46f82cca479': 'https://cryptophyl.com/trade/BCH-USDH',
+      '0f3f223902c44dc2bee6d3f77d565904d8501affba5ee0c56f7b32e8080ce14b': 'https://cryptophyl.com/trade/DROP-BCH',
     };
 
     let ret = [];
@@ -34,6 +42,7 @@ app.util = {
     */
     if (cryptophyl_tokens.hasOwnProperty(tokenIdHex)) {
       ret.push({
+        'type': 'cryptophyl',
         'link': `${cryptophyl_tokens[tokenIdHex]}?r=blockparty`,
         'class': 'exchange-cryptophyl-icon'
       });
@@ -41,13 +50,18 @@ app.util = {
 
     if (sideshift_tokens.hasOwnProperty(tokenIdHex)) {
       ret.push({
+        'type': 'shapeshift',
         'link': sideshift_tokens[tokenIdHex],
-        'class': 'exchange-sideshift-icon'
+        'class': 'exchange-sideshift-icon',
+        'meta': {
+          'settleMethodId': sideshift_tokens_settle[tokenIdHex]
+        }
       });
     }
 
     if (coinex_tokens.hasOwnProperty(tokenIdHex)) {
       ret.push({
+        'type': 'coinex',
         'link': coinex_tokens[tokenIdHex],
         'class': 'exchange-coinex-icon'
       });
@@ -55,6 +69,7 @@ app.util = {
 
     if (altilly_tokens.hasOwnProperty(tokenIdHex)) {
       ret.push({
+        'type': 'altilly',
         'link': `https://www.altilly.com/asset/${altilly_tokens[tokenIdHex]}`,
         'class': 'exchange-altilly-icon'
       });
