@@ -1382,7 +1382,11 @@ app.get_tokens_from_transactions = (transactions, chunk_size=50) => {
 };
 
 app.extract_sent_amount_from_tx = (tx, addr) => {
-  const outer = new Set(tx.in.map(v => v.e.a));
+  let outer = new Set(tx.in.map(v => v.e.a));
+
+  if (tx.graph && tx.graph[0] && addr) {
+    outer = new Set(tx.graph[0].graphTxn.inputs.map(v => v.address));
+  }
 
   let self_send = true;
   for (let v of tx.slp.detail.outputs) {
