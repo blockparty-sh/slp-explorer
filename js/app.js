@@ -998,10 +998,10 @@ app.slpdb = {
       "limit": limit
     }
   }),
-  transactions_by_slp_address: (address, limit=100, skip=0) => ({
+  transactions_by_slp_address: (db, address, limit=100, skip=0) => ({
     "v": 3,
     "q": {
-      "db": ["c", "u"],
+      "db": [db],
       "aggregate": [
         {
           "$match": {
@@ -1045,6 +1045,12 @@ app.slpdb = {
       "limit": limit
     }
   }),
+  unconfirmed_transactions_by_slp_address: (address, limit=100, skip=0) => {
+    return app.slpdb.transactions_by_slp_address('u', address, limit, skip);
+  },
+  confirmed_transactions_by_slp_address: (address, limit=100, skip=0) => {
+    return app.slpdb.transactions_by_slp_address('c', address, limit, skip);
+  },
   count_total_transactions_by_slp_address: (address) => ({
     "v": 3,
     "q": {
@@ -2578,28 +2584,66 @@ app.init_address_page = (address) =>
       };
 
       const load_paginated_transactions = (limit, skip, done) => {
-        app.slpdb.query(app.slpdb.transactions_by_slp_address(address, limit, skip))
-        .then((transactions) => {
-          // transactions = transactions.u.concat(transactions.c); // TODO fix this
-          transactions = transactions.c;
+        app.slpdb.query(app.slpdb.count_total_transactions_by_slp_address(address))
+        .then((total_transactions_by_slp_address) => {
+          total_unconfirmed_transactions_by_slp_address = app.util.extract_total(total_transactions_by_slp_address).u;
 
-          const tbody = $('#address-transactions-table tbody');
-          tbody.html('');
+          let tasks = [];
+          if (skip < total_unconfirmed_transactions_by_slp_address) {
+            tasks.push(app.slpdb.query(app.slpdb.unconfirmed_transactions_by_slp_address(address, limit, skip)));
 
-          transactions.forEach((tx) => {
-            tbody.append(
-              app.template.address_transactions_tx({
-                tx: tx,
-                address: address
-              })
-            );
+            if (skip+limit > total_unconfirmed_transactions_by_slp_address) {
+              if (limit - (total_unconfirmed_transactions_by_slp_address % limit) > 0) {
+                tasks.push(app.slpdb.query(
+                  app.slpdb.confirmed_transactions_by_slp_address(
+                    address,
+                    limit - (total_unconfirmed_transactions_by_slp_address % limit),
+                    0
+                  )
+                ));
+              }
+            }
+          } else {
+            tasks.push(app.slpdb.query(
+              app.slpdb.confirmed_transactions_by_slp_address(
+                address,
+                limit,
+                skip - (total_unconfirmed_transactions_by_slp_address % limit)
+              )
+            ));
+          }
+
+          Promise.all(tasks)
+          .then((transactionlists) => {
+            let transactions = [];
+            for (const transactionlist of transactionlists) {
+              if (transactionlist.u) {
+                transactions = transactions.concat(transactionlist.u);
+              }
+
+              if (transactionlist.c) {
+                transactions = transactions.concat(transactionlist.c);
+              }
+            }
+
+            const tbody = $('#address-transactions-table tbody');
+            tbody.html('');
+
+            transactions.forEach((tx) => {
+              tbody.append(
+                app.template.address_transactions_tx({
+                  tx: tx,
+                  address: address
+                })
+              );
+            });
+
+            $('#address-transactions-table tbody .token-icon-small').each(function() {
+              app.util.set_token_icon($(this), 32);
+            });
+
+            done();
           });
-
-          $('#address-transactions-table tbody .token-icon-small').each(function() {
-            app.util.set_token_icon($(this), 32);
-          });
-
-          done();
         });
       };
 
