@@ -965,6 +965,14 @@ app.slpdb = {
             "foreignField": "tokenDetails.tokenIdHex",
             "as": "token"
           }
+        },
+        {
+          "$lookup": {
+            "from": "graphs",
+            "localField": "tx.h",
+            "foreignField": "graphTxn.txid",
+            "as": "graph"
+          }
         }
       ],
       "limit": limit
@@ -1300,11 +1308,8 @@ app.get_tokens_from_transactions = (transactions, chunk_size=50) => {
   return app.get_tokens_from_tokenids(token_ids, chunk_size);
 };
 
-app.extract_sent_amount_from_tx = (tx) => {
-  const outer = new Set(tx.in.map(v => {
-    try      { return slpjs.Utils.toSlpAddress(v.e.a) }
-    catch(e) { return null; }
-  }));
+app.extract_sent_amount_from_tx = (tx, addr) => {
+  const outer = new Set(tx.in.map(v => v.e.a));
 
   let self_send = true;
   for (let v of tx.slp.detail.outputs) {
@@ -1316,24 +1321,31 @@ app.extract_sent_amount_from_tx = (tx) => {
 
   // if self_send we count entirety of outputs as send amount
   if (self_send) {
-    return app.util.format_bignum(
-      tx.slp.detail.outputs
+    let amount = tx.slp.detail.outputs
         .map(v => new BigNumber(v.amount))
-        .reduce((a, v) => a.plus(v), new BigNumber(0))
-        .toFormat(tx.slp.detail.decimals)
-    )
+        .reduce((a, v) => a.plus(v), new BigNumber(0));
+
+    if (addr && tx.graph[0]) {
+        const in_amount = tx.graph[0].graphTxn.inputs
+            .filter((e) => e.address == addr)
+            .map(v => new BigNumber(v.slpAmount))
+            .reduce((a, v) => a.plus(v), new BigNumber(0));
+
+        amount = amount.minus(amount.minus(in_amount));
+    }
+
+    return app.util.format_bignum(amount.toFormat(tx.slp.detail.decimals));
   }
 
   // otherwise count amount not sent to self
   const outer_arr = [...outer];
 
-  return app.util.format_bignum(
-    tx.slp.detail.outputs
-      .filter((e) => outer_arr.indexOf(e.address) < 0)
-      .map(v => new BigNumber(v.amount))
-      .reduce((a, v) => a.plus(v), new BigNumber(0))
-      .toFormat(tx.slp.detail.decimals)
-  )
+  const amount = tx.slp.detail.outputs
+    .filter((e) => outer_arr.indexOf(e.address) < 0)
+    .map(v => new BigNumber(v.amount))
+    .reduce((a, v) => a.plus(v), new BigNumber(0));
+
+  return app.util.format_bignum(amount.toFormat(tx.slp.detail.decimals));
 };
 
 app.extract_recv_amount_from_tx = (tx, addr) =>
