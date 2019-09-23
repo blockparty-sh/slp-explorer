@@ -16,7 +16,11 @@
   <td>
     <div class="flex-vcenter">
       <% if (tx.slp.detail.transactionType === 'SEND') { %>
-        <% if (tx.graph[0].graphTxn.inputs.filter((v) => v.address === address).length) {%>Sent<% } else { %>Received<% } %>
+        <% if (tx.graph && tx.graph[0]) { %>
+          <% if (tx.graph[0].graphTxn.inputs.filter((v) => v.address === address).length) {%>Sent<% } else { %>Received<% } %>
+        <% } else { %>
+          <% if (tx.in.filter((v) => v.e.a === address).length) {%>Sent<% } else { %>Received<% } %>
+        <% } %>
       <% } else { %>
         <%= tx.slp.detail.transactionType %>
       <% } %>
@@ -24,10 +28,18 @@
   </td>
   <td class="amount">
     <% if (tx.slp.detail.transactionType === 'SEND') { %>
-      <% if (tx.graph[0].graphTxn.inputs.filter((v) => v.address === address).length) {%>
-        <%= app.extract_sent_amount_from_tx(tx, address) %>
+      <% if (tx.graph && tx.graph[0]) { %>
+        <% if (tx.graph[0].graphTxn.inputs.filter((v) => v.address === address).length) {%>
+          <%= app.extract_sent_amount_from_tx(tx, address) %>
+        <% } else { %>
+          <%= app.extract_recv_amount_from_tx(tx, address) %>
+        <% } %>
       <% } else { %>
-        <%= app.extract_recv_amount_from_tx(tx, address) %>
+        <% if (tx.in.filter((v) => v.e.a === address).length) {%>
+          <%= app.extract_sent_amount_from_tx(tx, address) %>
+        <% } else { %>
+          <%= app.extract_recv_amount_from_tx(tx, address) %>
+        <% } %>
       <% } %>
     <% } %>
     <% if (tx.slp.detail.transactionType === 'GENESIS'
