@@ -1954,6 +1954,10 @@ app.init_token_page = (tokenIdHex) =>
                 );
               });
 
+              $('#token-child-nfts-table tbody .token-icon-small').each(function() {
+                app.util.set_token_icon($(this), 32);
+              });
+
               done();
             });
           };
