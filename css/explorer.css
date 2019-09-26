@@ -672,8 +672,20 @@ html.index-page header {
     border-radius: 50%;
 }
 
+.address-qr-code {
+    margin: auto;
+    margin-right: 15px;
+    vertical-align: middle;
+}
+
 .token-icon-large img {
     border-radius: 5px;
+    max-width: 128px;
+    max-height: 128px;
+}
+
+.address-qr-code img {
+	image-rendering: pixelated;
     max-width: 128px;
     max-height: 128px;
 }

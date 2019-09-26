@@ -2250,6 +2250,15 @@ app.init_address_page = (address) =>
         address: address
       }));
 
+      const qrcode = new QRCode(document.getElementById("qrcode-address-"+address), {
+        text: address,
+        width:  512,
+        height: 512,
+        colorDark: "#222",
+        colorLight: "#fff",
+        correctLevel: QRCode.CorrectLevel.M,
+      });
+
       const load_paginated_tokens = (limit, skip, done) => {
         app.slpdb.query(app.slpdb.tokens_by_slp_address(address, limit, skip))
         .then((tokens) => {
