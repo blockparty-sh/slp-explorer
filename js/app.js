@@ -190,6 +190,10 @@ app.util = {
       .addClass('active');
   },
 
+  get_pagination_page: ($el) => {
+      return $el.find('.pagination li.active').data('page');
+  },
+
   extract_total: (o, key="count") => {
     if (! o) {
       return {
@@ -614,6 +618,14 @@ app.slpdb = {
             "localField": "tx.h",
             "foreignField": "graphTxn.txid",
             "as": "graph"
+          }
+        },
+        {
+          "$lookup": {
+            "from": "tokens",
+            "localField": "slp.detail.tokenIdHex",
+            "foreignField": "tokenDetails.tokenIdHex",
+            "as": "token"
           }
         }
       ],
@@ -1253,6 +1265,16 @@ app.slpdb = {
 };
 
 app.slpsocket = {
+  reset: () => {
+    app.slpsocket.on_block = (height, data) => {
+      console.log('slpsocket.on_block', height, data);
+    };
+
+    app.slpsocket.on_mempool = (sna) => {
+      console.log('slpsocket.on_mempool', sna);
+    };
+  },
+
   init_listener: (query, fn) => {
     if (! query) {
       return resolve(false);
@@ -1263,6 +1285,33 @@ app.slpsocket = {
     const sse = new EventSource(url);
     sse.onmessage = (e) => fn(JSON.parse(e.data));
     return sse;
+  },
+
+  init: () => {
+    console.log('initializing slpsocket');
+    app.slpsocket.reset();
+
+    app.slpsocket.init_listener({
+      "v": 3,
+      "q": {
+        "db": ["u", "c"],
+        "find": {}
+      }
+    }, (data) => {
+      console.log('slpsocket data: ', data);
+      if ((data.type !== 'mempool' && data.type !== 'block')
+      ||   data.data.length < 1) {
+        return;
+      }
+
+      if (data.type === 'block') {
+        app.slpsocket.on_block(data.index, data.data);
+      }
+
+      if (data.type === 'mempool') {
+        app.slpsocket.on_mempool(data.data[0]);
+      }
+    });
   },
 };
 
@@ -1581,19 +1630,10 @@ app.init_index_page = () =>
       app.util.create_time_period_plot(token_burns, 'plot-token-burns', 'REKT Transactions')
     });
 
-    app.slpsocket.init_listener({
-      "v": 3,
-      "q": {
-        "db": ["u"],
-        "find": {
-          "slp.valid": true
-        }
-      }
-    }, (data) => {
-      if (data.type !== 'mempool' || data.data.length !== 1) {
+    app.slpsocket.on_mempool = (sna) => {
+      if (! sna.slp.valid) {
         return;
       }
-      const sna = data.data[0];
 
       app.slpdb.query(app.slpdb.token(sna.slp.detail.tokenIdHex))
       .then((token_data) => {
@@ -1615,8 +1655,14 @@ app.init_index_page = () =>
 
         $('#recent-transactions-table').find('tbody tr:last').remove();
       });
-    });
+    }
 
+    app.slpsocket.on_block = (index, data) => {
+      // TODO delete all pending items from list, add add in block
+      // then do query for mempool items and add those on top
+      // ensure ordering is the same
+      console.log('on_block', index, data);
+    };
     resolve();
   })
   
@@ -1873,19 +1919,10 @@ app.init_block_mempool_page = (height) =>
         );
       }
 
-      app.slpsocket.init_listener({
-        "v": 3,
-        "q": {
-          "db": ["u"],
-          "find": {
-            "slp.valid": true
-          }
-        }
-      }, (data) => {
-        if (data.type !== 'mempool' || data.data.length !== 1) {
+      app.slpsocket.on_mempool((sna) => {
+        if (! sna.slp.valid) {
           return;
         }
-        const sna = data.data[0];
 
         app.slpdb.query(app.slpdb.token(sna.slp.detail.tokenIdHex))
         .then((token_data) => {
@@ -2230,6 +2267,32 @@ app.init_token_page = (tokenIdHex) =>
         }
       });
 
+      app.slpsocket.on_mempool = (sna) => {
+        if (! sna.slp.valid) {
+          return;
+        }
+
+        if (sna.slp.detail.tokenIdHex !== tokenIdHex) {
+            return;
+        }
+
+        const transactions_page = app.util.get_pagination_page($('#token-transactions-table-container'));
+        if (transactions_page !== 0) {
+          return;
+        }
+
+        if (sna.slp.detail.transactionType === 'SEND') {
+          console.log('SEND TX');
+          const tbody = $('#token-transactions-table tbody');
+
+          tbody.prepend(app.template.token_tx({ tx: sna }));
+          tbody.find('tbody tr:last').remove();
+
+          app.util.set_token_icon(tbody.find('.token-icon-small:first'), 32);
+
+        }
+      };
+
       resolve();
     })
   )
@@ -2395,6 +2458,55 @@ app.init_address_page = (address) =>
         app.util.create_time_period_plot(address_monthly_usage, 'plot-address-monthly-usage');
       });
 
+      app.slpsocket.on_mempool = (sna) => {
+        if (! sna.slp.valid) {
+          return;
+        }
+
+        let found = false;
+
+        for (const m of sna.in) {
+            if (m.e.a === address) {
+                found = true;
+            }
+        }
+
+        for (const m of sna.out) {
+            if (m.e.a === address) {
+                found = true;
+            }
+        }
+
+        if (! found) {
+            return;
+        }
+
+        const transactions_page = app.util.get_pagination_page($('#address-transactions-table-container'));
+        if (transactions_page !== 0) {
+          return;
+        }
+
+        if (sna.slp.detail.transactionType === 'SEND') {
+          app.slpdb.query(app.slpdb.tx(sna.tx.h))
+          .then((tx) => {
+            if (tx.u.length === 0 && tx.c.length === 0) {
+              return;
+            }
+
+            const tbody = $('#address-transactions-table tbody');
+
+            tbody.prepend(app.template.address_transactions_tx({
+              tx: tx.u.length > 0 ? tx.u[0] : tx.c[0],
+              address: address
+            }));
+            tbody.find('tbody tr:last').remove();
+
+            app.util.set_token_icon(tbody.find('.token-icon-small:first'), 32);
+          });
+        }
+      };
+
+
       resolve();
     })
   })
@@ -2455,6 +2567,7 @@ app.router = (whash, push_history = true) => {
   $('html').scrollTop(0);
   $('#main-search').autocomplete('dispose');
 
+  app.slpsocket.reset();
   method().then(() => {
     tippy('[data-tippy-content]');
     jdenticon();
@@ -2474,6 +2587,8 @@ $(document).ready(() => {
   });
 
   app.util.attach_search_handler('#header-search');
+
+  app.slpsocket.init();
 
   const views = [
     'index_page',
