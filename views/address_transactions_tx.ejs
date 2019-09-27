@@ -1,15 +1,6 @@
 <tr>
   <td>
     <div class="flex-vcenter">
-      <% if (tx.blk) { %>
-        <a href="#block/<%= tx.blk.i %>"><%= tx.blk.i %></a>
-      <% } else { %>
-        <a href="#block/mempool">Pending</a>
-      <% } %>
-    </div>
-  </td>
-  <td>
-    <div class="flex-vcenter">
       <a class="txid" href="/#tx/<%= tx.tx.h %>"><%= app.util.compress_txid(tx.tx.h) %></a>
     </div>
   </td>
@@ -57,4 +48,14 @@
       <% } %>
     </div>
   </td>
+  <td>
+    <div class="flex-vcenter">
+      <% if (tx.blk) { %>
+        <a href="#block/<%= tx.blk.i %>"><%= tx.blk.i %></a>
+      <% } else { %>
+        <a href="#block/mempool">Pending</a>
+      <% } %>
+    </div>
+  </td>
+  <td><% if (tx.blk) { %><%= new Date(tx.blk.t*1000).toLocaleString() %><% } else { %>Pending<% } %></td>
 </tr>
