@@ -1868,7 +1868,7 @@ app.init_tx_page = (txid) =>
 
       tx = tx[0];
 
-      if (! tx.slp.valid || tx.graph.length === 0) {
+      if (! tx.slp || tx.slp.valid || tx.graph.length === 0) {
         return resolve(app.init_error_invalid_tx_page(tx));
       }
 
