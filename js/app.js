@@ -1786,7 +1786,7 @@ app.init_index_page = () =>
 
         sna.token = [token];
 
-		const tbody = $('recent-transactions-table');
+		const tbody = $('#recent-transactions-table tbody');
         tbody.prepend(
           app.template.latest_transactions_tx({ tx: sna })
         );
