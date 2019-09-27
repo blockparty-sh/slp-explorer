@@ -753,6 +753,24 @@ html.index-page header {
     text-align:center;
 }
 
+.flash {
+    -webkit-animation-name: flash-animation;
+    -webkit-animation-duration: 0.8s;
+
+    animation-name: flash-animation;
+    animation-duration: 0.8s;
+}
+
+@-webkit-keyframes flash-animation {
+    from { background: #75e275; }
+    to   { background: default; }
+}
+
+@keyframes flash-animation {
+    from { background: #75e275; }
+    to   { background: default; }
+}
+
 #token-exchange-exchanges {
     text-align:center;
 }

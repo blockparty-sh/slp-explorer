@@ -449,6 +449,14 @@ app.util = {
   is_verified: (txid) => {
     return app.verified_tokens.has(txid);
   },
+
+  flash_latest_item: ($table) => {
+    const $el = $table.find('tr:first');
+    if ($el) {
+      $el.addClass('flash');
+      setTimeout(() => { $el.removeClass('flash'); }, 1000);
+    }
+  },
 };
 
 const btoa_ext = buf => Buffer.Buffer.from(buf).toString('base64');
@@ -1645,15 +1653,15 @@ app.init_index_page = () =>
 
         sna.token = [token];
 
-        $('#recent-transactions-table tbody').prepend(
-          app.template.latest_transactions_tx({
-            tx: sna
-          })
+		const tbody = $('recent-transactions-table');
+        tbody.prepend(
+          app.template.latest_transactions_tx({ tx: sna })
         );
 
-        app.util.set_token_icon($('#recent-transactions-table tbody .token-icon-small:first'), 32);
+        app.util.set_token_icon(tbody.find('.token-icon-small:first'), 32);
+        app.util.flash_latest_item(tbody);
 
-        $('#recent-transactions-table').find('tbody tr:last').remove();
+        tbody.find('tr:last').remove();
       });
     }
 
@@ -1919,11 +1927,15 @@ app.init_block_mempool_page = (height) =>
         );
       }
 
-      app.slpsocket.on_mempool((sna) => {
+      app.slpsocket.on_mempool = (sna) => {
         if (! sna.slp.valid) {
           return;
         }
 
+        const transactions_page = app.util.get_pagination_page($('#block-transactions-table-container'));
+        if (transactions_page !== 0) {
+          return;
+        }
         app.slpdb.query(app.slpdb.token(sna.slp.detail.tokenIdHex))
         .then((token_data) => {
           if (! token_data || ! token_data.t || token_data.t.length === 0) {
@@ -1934,15 +1946,16 @@ app.init_block_mempool_page = (height) =>
 
           sna.token = [token];
 
-          $('#block-transactions-table tbody').prepend(
-            app.template.block_tx({
-              tx: sna
-            })
+          const tbody = $('#block-transactions-table tbody');
+          tbody.prepend(
+            app.template.block_tx({ tx: sna })
           );
+          tbody.find('tr:last').remove();
 
-          app.util.set_token_icon($('#block-transactions-table tbody .token-icon-small:first'), 32);
+          app.util.flash_latest_item(tbody);
+          app.util.set_token_icon(tbody.find('.token-icon-small:first'), 32);
         });
-      });
+      }
 
       resolve();
     })
@@ -2286,7 +2299,9 @@ app.init_token_page = (tokenIdHex) =>
           const tbody = $('#token-transactions-table tbody');
 
           tbody.prepend(app.template.token_tx({ tx: sna }));
-          tbody.find('tbody tr:last').remove();
+          tbody.find('tr:last').remove();
+
+          app.util.flash_latest_item(tbody);
 
           app.util.set_token_icon(tbody.find('.token-icon-small:first'), 32);
 
@@ -2494,12 +2509,13 @@ app.init_address_page = (address) =>
             }
 
             const tbody = $('#address-transactions-table tbody');
-
             tbody.prepend(app.template.address_transactions_tx({
               tx: tx.u.length > 0 ? tx.u[0] : tx.c[0],
               address: address
             }));
-            tbody.find('tbody tr:last').remove();
+            tbody.find('tr:last').remove();
+
+            app.util.flash_latest_item(tbody);
 
             app.util.set_token_icon(tbody.find('.token-icon-small:first'), 32);
           });
