@@ -106,6 +106,10 @@ app.util = {
     return bn.substr(0, nzpos+1);
   },
   format_bignum_str: (str, decimals) => app.util.format_bignum(new BigNumber(str).toFormat(decimals), decimals),
+  format_bignum_bch_str: (str) => {
+    const bn = new BigNumber(str).dividedBy(100000000);
+	return app.util.format_bignum_str(bn.toFormat(8), 8);
+  },
   compress_txid: (txid) => `${txid.substring(0, 12)}...${txid.substring(59)}`,
   compress_tokenid: (tokenid) => `${tokenid.substring(0, 12)}...${tokenid.substring(59)}`,
   compress_string: (str, len=25) => str.substring(0, len) + ((str.length > len) ? '...' : ''),
@@ -1404,7 +1408,61 @@ app.bitdb = {
       },
       "limit": 1
     }
-  })
+  }),
+
+  tx: (txid) => ({
+    "v": 3,
+    "q": {
+      "db": ["c", "u"],
+      "aggregate": [
+        {
+          "$match": {
+            "tx.h": txid
+          }
+        },
+        {
+          "$limit": 1
+        },
+      ],
+      "limit": 1
+    }
+  }),
+  get_amounts_from_txid_vout_pairs: (pairs=[]) => ({
+    "v": 3,
+    "q": {
+      "db": ["c"],
+      "aggregate": [
+        {
+          "$match": {
+            "tx.h": {
+              "$in": [...new Set(pairs.map(v => v.txid))]
+            }
+          }
+        },
+        {
+          "$unwind": "$out"
+        },
+        {
+          "$match": {
+            "$or": pairs.map(v => ({
+              "$and": [
+                {
+                  "tx.h": v.txid
+                },
+                {
+                  "out.e.i": v.vout
+                }
+              ]
+            }))
+          }
+        }
+      ],
+      "limit": 20,
+    },
+    "r": {
+      "f": "[ .[] | { txid: .tx.h, vout: .out.e.i, amount: .out.e.v} ]"
+    }
+  }),
 };
 
 
@@ -1496,8 +1554,83 @@ app.init_404_page = () => new Promise((resolve, reject) => {
   resolve();
 });
 
-app.init_error_nonslp_tx_page = (txid) => new Promise((resolve, reject) => {
-  $('main[role=main]').html(app.template.error_nonslp_tx_page({
+app.init_nonslp_tx_page = (txid) =>
+  new Promise((resolve, reject) => {
+    app.bitdb.query(app.bitdb.tx(txid))
+    .then((tx) => {
+      tx = tx.u.concat(tx.c);
+      if (tx.length === 0) {
+        return resolve(app.init_error_notx_page(txid));
+      }
+
+      tx = tx[0];
+
+      const chunk_size = 20;
+
+      const input_txid_vout_pairs = tx.in.map(v => ({
+        txid: v.e.h,
+        vout: v.e.i
+      }));
+
+      let input_txid_vout_reqs = [];
+      for (let i=0; i<Math.ceil(input_txid_vout_pairs.length / chunk_size); ++i) {
+        const chunk = input_txid_vout_pairs.slice(chunk_size*i, (chunk_size*i)+chunk_size);
+
+        input_txid_vout_reqs.push(app.bitdb.query(
+          app.bitdb.get_amounts_from_txid_vout_pairs(chunk)
+        ));
+      }
+
+      Promise.all(input_txid_vout_reqs)
+      .then((results) => {
+        const input_pairs  = results.reduce((a, v) => a.concat(v.c), []);
+		console.log(input_pairs);
+
+        const input_amounts = input_pairs.reduce((a, v) => {
+          a[v.txid+':'+v.vout] = v.amount;
+          return a;
+        }, {});
+
+        const total_input_amount = Object.keys(input_amounts)
+          .map(k => new BigNumber(input_amounts[k]))
+          .reduce((a, v) => a.plus(v), new BigNumber(0));
+
+        const lookup_missing_spendtxid = (m, txid, vout) =>
+          app.bitdb.query(app.bitdb.lookup_tx_by_input(txid, vout))
+          .then((tx) => {
+            m['spendTxid'] = tx.u.length > 0
+              ? tx.u[0].tx.h
+              : tx.c.length > 0
+                ? tx.c[0].tx.h
+                : null;
+          });
+
+        const missing_lookups = tx.out.map((m) => {
+          return lookup_missing_spendtxid(m, tx.tx.h, m.e.i)
+        });
+
+        Promise.all(missing_lookups)
+        .then((lookups) => {
+          $('main[role=main]').html(app.template.nonslp_tx_page({
+            tx:            tx,
+            input_amounts: input_amounts
+          }));
+
+          resolve();
+        });
+      });
+    })
+  });
+
+app.init_error_invalid_tx_page = (tx) => new Promise((resolve, reject) => {
+  $('main[role=main]').html(app.template.error_invalid_tx_page({
+    tx: tx
+  }));
+  resolve();
+});
+
+app.init_error_notx_page = (txid) => new Promise((resolve, reject) => {
+  $('main[role=main]').html(app.template.error_notx_page({
     txid: txid
   }));
   resolve();
@@ -1730,17 +1863,13 @@ app.init_tx_page = (txid) =>
     .then((tx) => {
       tx = tx.u.concat(tx.c);
       if (tx.length == 0) {
-        return resolve(app.init_error_nonslp_tx_page(txid));
+        return resolve(app.init_nonslp_tx_page(txid));
       }
 
       tx = tx[0];
 
       if (! tx.slp.valid || tx.graph.length === 0) {
-        $('main[role=main]').html(app.template.error_invalid_tx_page({
-          tx: tx,
-        }));
-
-        return resolve();
+        return resolve(app.init_error_invalid_tx_page(tx));
       }
 
       const chunk_size = 20;
@@ -1748,10 +1877,6 @@ app.init_tx_page = (txid) =>
       const input_txid_vout_pairs = tx.in.map(v => ({
         txid: v.e.h,
         vout: v.e.i
-      }));
-      const output_txid_vout_pairs = tx.slp.detail.outputs.map((_, i) => ({
-        txid: tx.tx.h,
-        vout: i+1
       }));
 
 
@@ -2612,6 +2737,7 @@ $(document).ready(() => {
     'all_tokens_page',
     'all_tokens_token',
     'tx_page',
+    'nonslp_tx_page',
     'block_page',
     'block_tx',
     'token_page',
@@ -2624,8 +2750,8 @@ $(document).ready(() => {
     'address_transactions_tx',
     'address_token',
     'error_404_page',
-    'error_nonslp_tx_page',
     'error_invalid_tx_page',
+    'error_notx_page',
     'error_badaddress_page',
   ];
 
