@@ -1918,7 +1918,7 @@ app.init_tx_page = (txid) =>
 
           let missing_lookups = [];
           for (let m of tx.graph[0].graphTxn.outputs) {
-            if (m.spendTxid === null) {
+            if (! m.spendTxid) {
               missing_lookups.push(
                 lookup_missing_spendtxid(m, tx.graph[0].graphTxn.txid, m.vout)
               );
