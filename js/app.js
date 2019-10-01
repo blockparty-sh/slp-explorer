@@ -1540,14 +1540,25 @@ app.extract_sent_amount_from_tx = (tx, addr) => {
   return app.util.format_bignum(amount.toFormat(tx.slp.detail.decimals));
 };
 
-app.extract_recv_amount_from_tx = (tx, addr) =>
-  app.util.format_bignum(
+app.extract_recv_amount_from_tx = (tx, addr) => {
+  if (tx.graph && tx.graph[0] && addr) {
+    return app.util.format_bignum(
+      tx.graph[0].graphTxn.outputs
+        .filter((e) => e.address === addr)
+        .map(v => new BigNumber(v.amount))
+        .reduce((a, v) => a.plus(v), new BigNumber(0))
+        .toFormat(tx.slp.detail.decimals)
+    );
+  }
+
+  return app.util.format_bignum(
     tx.slp.detail.outputs
       .filter((e) => e.address === addr)
       .map(v => new BigNumber(v.amount))
       .reduce((a, v) => a.plus(v), new BigNumber(0))
       .toFormat(tx.slp.detail.decimals)
-  )
+  );
+};
 
 app.init_404_page = () => new Promise((resolve, reject) => {
   $('main[role=main]').html(app.template.error_404_page());
