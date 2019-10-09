@@ -3,7 +3,7 @@ const app = {};
 app.verified_tokens = [];
 
 app.util = {
-  get_exchange_links: (tokenIdHex) => {
+  generate_exchange_links: ($el, tokenIdHex) => {
     const altilly_tokens = {
       '527a337f34e04b1974cb8a1edc7ca30b2e444bea111afc122259552243c1dbe3': 'LLM',
       '077c832a3ef15068ca2c72dd262883fb24a8a0f612e8a92f579f7dee3eaca372': 'YCLO',
@@ -33,7 +33,7 @@ app.util = {
       '0f3f223902c44dc2bee6d3f77d565904d8501affba5ee0c56f7b32e8080ce14b': 'https://cryptophyl.com/trade/DROP-BCH',
     };
 
-    let ret = [];
+    let links = [];
     /* waiting for launch
     ret.push({
       'link': `https://slpdex.cash/tokens/${tokenIdHex}`,
@@ -41,7 +41,7 @@ app.util = {
     });
     */
     if (cryptophyl_tokens.hasOwnProperty(tokenIdHex)) {
-      ret.push({
+      links.push({
         'type': 'cryptophyl',
         'link': `${cryptophyl_tokens[tokenIdHex]}?r=blockparty`,
         'class': 'exchange-cryptophyl-icon'
@@ -49,8 +49,8 @@ app.util = {
     }
 
     if (sideshift_tokens.hasOwnProperty(tokenIdHex)) {
-      ret.push({
-        'type': 'shapeshift',
+      links.push({
+        'type': 'sideshift',
         'link': sideshift_tokens[tokenIdHex],
         'class': 'exchange-sideshift-icon',
         'meta': {
@@ -60,7 +60,7 @@ app.util = {
     }
 
     if (coinex_tokens.hasOwnProperty(tokenIdHex)) {
-      ret.push({
+      links.push({
         'type': 'coinex',
         'link': coinex_tokens[tokenIdHex],
         'class': 'exchange-coinex-icon'
@@ -68,14 +68,34 @@ app.util = {
     }
 
     if (altilly_tokens.hasOwnProperty(tokenIdHex)) {
-      ret.push({
+      links.push({
         'type': 'altilly',
         'link': `https://www.altilly.com/asset/${altilly_tokens[tokenIdHex]}`,
         'class': 'exchange-altilly-icon'
       });
     }
 
-    return ret;
+    if (links.length > 0) {
+      $el.append('<hr>');
+    }
+    for (const m of links) {
+      $obj = $(`<a href="${m.link}" target="blank"><div class="exchange-icon ${m.class}"></div></a>`);
+      if (m.type === 'sideshift') {
+        $obj.click((event) => {
+          event.preventDefault();
+		  window.scrollTo(0, 0);
+          window.__SIDESHIFT__ = {
+            testerId: "9a8b1c79b64edf17",
+            parentAffiliateId: "jsKIdsWiF",
+            defaultDepositMethodId: "bch" || undefined,
+			defaultSettleMethodId: m.meta.settleMethodId,
+            settleAddress: "" || undefined,
+          };
+          sideshift.show();
+        });
+      }
+      $el.append($obj);
+    }
   },
   format_bignum: (bn) => {
     let dpos  = -1;
@@ -108,7 +128,7 @@ app.util = {
   format_bignum_str: (str, decimals) => app.util.format_bignum(new BigNumber(str).toFormat(decimals), decimals),
   format_bignum_bch_str: (str) => {
     const bn = new BigNumber(str).dividedBy(100000000);
-	return app.util.format_bignum_str(bn.toFormat(8), 8);
+    return app.util.format_bignum_str(bn.toFormat(8), 8);
   },
   compress_txid: (txid) => `${txid.substring(0, 12)}...${txid.substring(59)}`,
   compress_tokenid: (tokenid) => `${tokenid.substring(0, 12)}...${tokenid.substring(59)}`,
@@ -1541,16 +1561,6 @@ app.extract_sent_amount_from_tx = (tx, addr) => {
 };
 
 app.extract_recv_amount_from_tx = (tx, addr) => {
-  if (tx.graph && tx.graph[0] && addr) {
-    return app.util.format_bignum(
-      tx.graph[0].graphTxn.outputs
-        .filter((e) => e.address === addr)
-        .map(v => new BigNumber(v.amount))
-        .reduce((a, v) => a.plus(v), new BigNumber(0))
-        .toFormat(tx.slp.detail.decimals)
-    );
-  }
-
   return app.util.format_bignum(
     tx.slp.detail.outputs
       .filter((e) => e.address === addr)
@@ -1595,7 +1605,7 @@ app.init_nonslp_tx_page = (txid) =>
       Promise.all(input_txid_vout_reqs)
       .then((results) => {
         const input_pairs  = results.reduce((a, v) => a.concat(v.c), []);
-		console.log(input_pairs);
+        console.log(input_pairs);
 
         const input_amounts = input_pairs.reduce((a, v) => {
           a[v.txid+':'+v.vout] = v.amount;
@@ -1797,7 +1807,7 @@ app.init_index_page = () =>
 
         sna.token = [token];
 
-		const tbody = $('#recent-transactions-table tbody');
+        const tbody = $('#recent-transactions-table tbody');
         tbody.prepend(
           app.template.latest_transactions_tx({ tx: sna })
         );
@@ -2444,6 +2454,7 @@ app.init_token_page = (tokenIdHex) =>
         }
       };
 
+      app.util.generate_exchange_links($('#token-exchange-exchanges'), token.tokenDetails.tokenIdHex);
       resolve();
     })
   )
@@ -2468,14 +2479,17 @@ app.init_address_page = (address) =>
         address: address
       }));
 
-      const qrcode = new QRCode(document.getElementById("qrcode-address-"+address), {
-        text: address,
-        width:  512,
-        height: 512,
-        colorDark: "#222",
-        colorLight: "#fff",
-        correctLevel: QRCode.CorrectLevel.M,
-      });
+      let qrcode = null;
+      try {
+        qrcode = new QRCode(document.getElementById("qrcode-address-"+address), {
+          text: address,
+          width:  512,
+          height: 512,
+          colorDark: "#222",
+          colorLight: "#fff",
+          correctLevel: QRCode.CorrectLevel.M,
+        });
+      } catch (e) { console.error(e); }
 
       const load_paginated_tokens = (limit, skip, done) => {
         app.slpdb.query(app.slpdb.tokens_by_slp_address(address, limit, skip))

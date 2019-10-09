@@ -98,21 +98,11 @@
         </table>
       </div>
 
-      <%
-        const exchange_links = app.util.get_exchange_links(token.tokenDetails.tokenIdHex);
-        if (exchange_links.length > 0) {
-      %>
-        <hr>
-
-        <div>
-          <!-- <div id="token-exchange-title">Exchange</div> -->
-          <div id="token-exchange-exchanges">
-            <% for(let m of exchange_links) { %>
-              <a href="<%= m.link %>" target="blank"><div class="exchange-icon <%= m.class %>"></div></a>
-            <% } %>
-          </div>
+      <div>
+        <!-- <div id="token-exchange-title">Exchange</div> -->
+        <div id="token-exchange-exchanges">
         </div>
-      <% } %>
+      </div>
     </div>
   </div>
   <div class="rounded_row">
