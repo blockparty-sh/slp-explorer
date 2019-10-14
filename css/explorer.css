@@ -7,6 +7,11 @@ html, body {
     color: #000;
 }
 
+::selection {
+    background-color: #00adff;
+    color: #fff;
+}
+
 body {
     background: #ffffff;
     background: url(/img/top.svg) top right no-repeat, url(/img/bottom.svg) bottom left no-repeat;
