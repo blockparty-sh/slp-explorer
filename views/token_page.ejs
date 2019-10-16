@@ -198,7 +198,7 @@
 <div class="rounded_row_50percent_container">
   <div class="rounded_row">
     <div id="token-transactions-table-container" class="rounded box-shadow table-container">
-      <h3 class="border-bottom border-gray">Transactions</h3>
+      <h3 class="border-bottom border-gray">Transactions (<%= Number(token.tokenStats.qty_valid_txns_since_genesis).toLocaleString() %>)</h3>
       <div class="table-responsive">
         <table class="table" id="token-transactions-table">
           <thead>
@@ -255,7 +255,7 @@
 
 <div class="rounded_row">
   <div id="token-mint-history-table-container" class="rounded box-shadow table-container">
-    <h3>Mint History</h3>
+    <h3>Mint History (<%= Number(total_token_mint_transactions).toLocaleString() %>)</h3>
     <div class="table-responsive">
       <table class="table" id="token-mint-history-table">
         <thead>
@@ -280,7 +280,7 @@
 <div class="rounded_row_50percent_container">
   <div class="rounded_row">
     <div id="token-addresses-table-container" class="rounded box-shadow table-container">
-      <h3 class="border-bottom border-gray">Addresses</h3>
+      <h3 class="border-bottom border-gray">Addresses (<%= Number(token.tokenStats.qty_valid_token_addresses).toLocaleString() %>)</h3>
       <div class="table-responsive">
         <table class="table" id="token-addresses-table">
           <thead>
@@ -309,7 +309,7 @@
 
 <div class="rounded_row">
   <div id="token-burn-history-table-container" class="rounded box-shadow table-container">
-    <h3>Burn History</h3>
+    <h3>Burn History (<%= Number(total_token_burn_transactions).toLocaleString() %>)</h3>
     <div class="table-responsive">
       <table class="table" id="token-burn-history-table">
         <thead>

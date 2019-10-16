@@ -2125,7 +2125,9 @@ app.init_token_page = (tokenIdHex) =>
       token = token.t[0];
 
       $('main[role=main]').html(app.template.token_page({
-        token: token
+        token: token,
+        total_token_burn_transactions: total_token_burn_transactions.g,
+        total_token_mint_transactions: total_token_mint_transactions.c,
       }));
 
       app.util.set_token_icon($('main[role=main] .transaction_box .token-icon-large'), 128);
@@ -2476,7 +2478,9 @@ app.init_address_page = (address) =>
       total_transactions = app.util.extract_total(total_transactions);
 
       $('main[role=main]').html(app.template.address_page({
-        address: address
+        address: address,
+        total_tokens: total_tokens.a,
+        total_transactions: total_transactions.c+total_transactions.u
       }));
 
       let qrcode = null;
@@ -2592,7 +2596,7 @@ app.init_address_page = (address) =>
         );
       }
 
-      if (total_transactions.c === 0) {
+      if (total_transactions.c + total_transactions.u === 0) {
         $('#address-transactions-table tbody').html('<tr><td>No transactions found.</td></tr>');
       } else {
         app.util.create_pagination(

@@ -15,7 +15,7 @@
 
 <div class="rounded_row">
   <div id="address-tokens-table-container" class="rounded box-shadow table-container">
-    <h3>Token Balances</h3>
+    <h3>Token Balances (<%= Number(total_tokens).toLocaleString() %>)</h3>
     <div class="table-responsive">
       <table class="table" id="address-tokens-table">
         <thead>
@@ -38,7 +38,7 @@
 
 <div class="rounded_row">
   <div id="address-transactions-table-container" class="rounded box-shadow table-container">
-    <h3>Transactions</h3>
+    <h3>Transactions (<%= Number(total_transactions).toLocaleString() %>)</h3>
     <div class="table-responsive">
       <table class="table" id="address-transactions-table">
         <thead>
