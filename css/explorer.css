@@ -788,6 +788,10 @@ html.index-page header {
     border-bottom: 1px solid #e95555;
 }
 
+.cashaccount-icon-small {
+    width:1rem;
+}
+
 @media only screen and (max-width: 890px) {
     .rounded_row {
         overflow: auto;

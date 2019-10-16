@@ -14,6 +14,26 @@
 </div>
 
 <div class="rounded_row">
+  <div class="rounded box-shadow table-container">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th><h3>Details</h3></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th role="col">Cash Account</th>
+            <td><%- app.util.get_cash_account_html(cashaccount) %></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+  
+<div class="rounded_row">
   <div id="address-tokens-table-container" class="rounded box-shadow table-container">
     <h3>Token Balances (<%= Number(total_tokens).toLocaleString() %>)</h3>
     <div class="table-responsive">
