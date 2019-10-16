@@ -2295,6 +2295,7 @@ app.init_all_tokens_page = () =>
       all_tokens_count = app.util.extract_total(all_tokens_count);
 
       $('main[role=main]').html(app.template.all_tokens_page());
+	  $('#all-tokens-total-tokens').text(Number(all_tokens_count.t).toLocaleString());
 
       const load_paginated_tokens = (limit, skip, done) => {
         app.slpdb.query(app.slpdb.all_tokens(limit, skip))
@@ -2319,7 +2320,6 @@ app.init_all_tokens_page = () =>
           done();
         });
       };
-
 
       if (all_tokens_count.t === 0) {
         $('#all-tokens-table tbody').html('<tr><td>No tokens found.</td></tr>');
