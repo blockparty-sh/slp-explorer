@@ -689,7 +689,8 @@ html.index-page header {
     max-height: 128px;
 }
 
-.address-qr-code img {
+.address-qr-code img,
+.address-qr-code canvas {
 	image-rendering: pixelated;
     max-width: 128px;
     max-height: 128px;
