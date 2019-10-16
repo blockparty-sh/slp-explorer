@@ -1509,22 +1509,25 @@ app.slpdb = {
   recent_tokens: (limit=100, skip=0) => ({
     "v": 3,
     "q": {
-      "db": ["t"],
+      "db": ["c"],
       "aggregate": [
 		{
-		  "$match": {}
+		  "$match": {
+			"slp.detail.transactionType": "GENESIS",
+			"slp.valid": true
+		  }
 		},
         {
           "$lookup": {
-            "from": "confirmed",
-            "localField": "tokenDetails.tokenIdHex",
-            "foreignField": "tx.h",
-            "as": "tx"
+            "from": "tokens",
+            "localField": "tx.h",
+            "foreignField": "tokenDetails.tokenIdHex",
+            "as": "token"
           }
         },
         {
           "$sort": {
-            "tx.blk.i": -1
+            "blk.i": -1
           }
         },
         {
@@ -2137,17 +2140,17 @@ app.init_index_page = () =>
 
     const load_paginated_tokens = (limit, skip, done) => {
       app.slpdb.query(app.slpdb.recent_tokens(limit, skip))
-      .then((tokens) => {
-        tokens = tokens.t;
-		console.log(tokens);
+      .then((genesises) => {
+        genesises = genesises.c;
+		console.log(genesises);
 
         const tbody = $('#index-tokens-table tbody');
         tbody.html('');
 
-        tokens.forEach((token) => {
+        genesises.forEach((tx) => {
           tbody.append(
             app.template.index_token({
-              token: token
+              tx: tx
             })
           );
         });
