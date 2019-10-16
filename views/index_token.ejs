@@ -1,0 +1,30 @@
+<tr>
+  <td>
+    <div class="flex-vcenter">
+      <a class="tokenid" href="/#token/<%= token.tokenDetails.tokenIdHex %>">
+        <%= app.util.compress_tokenid(token.tokenDetails.tokenIdHex) %>
+      </a>
+    </div>
+  </td>
+  <td>
+    <div class="flex-vcenter">
+      <span class="token-icon-small" data-tokenid="<%= token.tokenDetails.tokenIdHex %>"></span>
+      <%= token.tokenDetails.name %>
+    </div>
+  </td>
+  <td><%= token.tokenDetails.symbol %></td>
+  <td>
+    <% if (token.tx[0] && token.tx[0].blk) { %>
+      <a href="#block/<%= token.tx[0].blk.i %>"><%= token.tx[0].blk.i %></a>
+    <% } else { %>
+      <a href="#block/mempool">Pending</a>
+    <% } %>
+  </td>
+  <td>
+    <% if (token.tx[0] && token.tx[0].blk) { %>
+      <%= new Date(token.tx[0].blk.t*1000).toLocaleString() %>
+    <% } else { %>
+      Pending
+    <% } %>
+  </td>
+</tr>

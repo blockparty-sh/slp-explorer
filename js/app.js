@@ -1111,6 +1111,105 @@ app.slpdb = {
     }
   }),
 
+  count_total_burn_transactions: () => ({
+    "v": 3,
+    "q": {
+      "db": ["g"],
+      "aggregate": [
+        {
+          "$match": {
+            "graphTxn.outputs": {
+              "$elemMatch": {
+                "status": {
+                  "$in": [
+                    "SPENT_NON_SLP",
+                    "BATON_SPENT_INVALID_SLP",
+                    "SPENT_INVALID_SLP",
+                    "BATON_SPENT_NON_SLP",
+                    "MISSING_BCH_VOUT",
+                    "BATON_MISSING_BCH_VOUT",
+                    "BATON_SPENT_NOT_IN_MINT",
+                    "EXCESS_INPUT_BURNED"
+                  ]
+                },
+                "slpAmount": {
+                  "$gt": 0
+                }
+              }
+            }
+          }
+        },
+        {
+          "$group": {
+            "_id": null,
+            "count": { "$sum": 1 }
+          }
+        }
+      ]
+    },
+    "r": {
+      "f": "[ .[] | {count: .count } ]"
+    }
+  }),
+  total_burn_history: (limit=100, skip=0) => ({
+    "v": 3,
+    "q": {
+      "db": ["g"],
+      "aggregate": [
+        {
+          "$match": {
+            "graphTxn.outputs": {
+              "$elemMatch": {
+                "status": {
+                  "$in": [
+                    "SPENT_NON_SLP",
+                    "BATON_SPENT_INVALID_SLP",
+                    "SPENT_INVALID_SLP",
+                    "BATON_SPENT_NON_SLP",
+                    "MISSING_BCH_VOUT",
+                    "BATON_MISSING_BCH_VOUT",
+                    "BATON_SPENT_NOT_IN_MINT",
+                    "EXCESS_INPUT_BURNED"
+                  ]
+                },
+                "slpAmount": {
+                  "$gt": 0
+                }
+              }
+            }
+          }
+        },
+        {
+          "$lookup": {
+            "from": "confirmed",
+            "localField": "graphTxn.txid",
+            "foreignField": "tx.h",
+            "as": "tx"
+          }
+        },
+        {
+          "$lookup": {
+            "from": "tokens",
+            "localField": "tx.slp.detail.tokenIdHex",
+            "foreignField": "tokenDetails.tokenIdHex",
+            "as": "token"
+          }
+        },
+        {
+          "$sort": {
+            "tx.blk.i": -1
+          }
+        },
+        {
+          "$skip": skip
+        },
+        {
+          "$limit": limit
+        }
+      ]
+    }
+  }),
+
   token_child_nfts: (tokenIdHex, limit=100, skip=0) => ({
     "v": 3,
     "q": {
@@ -1385,6 +1484,58 @@ app.slpdb = {
             "as": "token"
           }
         }
+      ],
+      "limit": limit
+    }
+  }),
+  count_tokens: () => ({
+    "v": 3,
+    "q": {
+      "db": ["t"],
+      "aggregate": [
+        {
+          "$match": {}
+        },
+        {
+          "$group": {
+            "_id": null,
+            "count": { "$sum": 1 }
+          }
+        }
+      ]
+    },
+    "r": {
+      "f": "[ .[] | {count: .count } ]"
+    }
+  }),
+
+  recent_tokens: (limit=100, skip=0) => ({
+    "v": 3,
+    "q": {
+      "db": ["t"],
+      "aggregate": [
+		{
+		  "$match": {}
+		},
+        {
+          "$lookup": {
+            "from": "confirmed",
+            "localField": "tokenDetails.tokenIdHex",
+            "foreignField": "tx.h",
+            "as": "tx"
+          }
+        },
+        {
+          "$sort": {
+            "tx.blk.i": -1
+          }
+        },
+        {
+          "$skip": skip
+        },
+        {
+          "$limit": limit
+        },
       ],
       "limit": limit
     }
@@ -1990,33 +2141,107 @@ app.init_index_page = () =>
       }
     });
 
-    
-    app.slpdb.query(app.slpdb.count_txs_per_block({
-      "$and": [
-        { "slp.valid": true },
-        { "slp.detail.transactionType": "GENESIS" },
-        { "blk.t": {
-          "$gte": (+(new Date) / 1000) - (60*60*24*30),
-          "$lte": (+(new Date) / 1000)
-        } }
-      ]
-    }))
-    .then((tokens_created) => {
-      app.util.create_time_period_plot(tokens_created, 'plot-token-creation', 'Genesis Transactions')
-    });
+    const load_paginated_tokens = (limit, skip, done) => {
+      app.slpdb.query(app.slpdb.recent_tokens(limit, skip))
+      .then((tokens) => {
+        tokens = tokens.t;
+		console.log(tokens);
 
-    app.slpdb.query(app.slpdb.count_txs_per_block({
-      "$and": [
-        { "slp.valid": false },
-        { "blk.t": {
-          "$gte": (+(new Date) / 1000) - (60*60*24*30),
-          "$lte": (+(new Date) / 1000)
-        } }
-      ]
-    }))
-    .then((token_burns) => {
-      app.util.create_time_period_plot(token_burns, 'plot-token-burns', 'REKT Transactions')
-    });
+        const tbody = $('#index-tokens-table tbody');
+        tbody.html('');
+
+        tokens.forEach((token) => {
+          tbody.append(
+            app.template.index_token({
+              token: token
+            })
+          );
+        });
+
+        $('#index-tokens-table tbody .token-icon-small').each(function() {
+          app.util.set_token_icon($(this), 32);
+        });
+
+        done();
+      });
+    };
+
+    const load_paginated_burn_history = (limit, skip, done) => {
+      app.slpdb.query(app.slpdb.total_burn_history(limit, skip))
+      .then((transactions) => {
+        transactions = transactions.g;
+
+        const tbody = $('#index-burn-history-table tbody');
+        tbody.html('');
+
+        transactions.forEach((tx) => {
+          const total_burnt = tx.graphTxn.outputs.reduce((a, v) => {
+            switch (v.status) {
+              case 'UNSPENT':
+              case 'SPENT_SAME_TOKEN':
+              case 'BATON_SPENT':
+              case 'BATON_SPENT_IN_MINT':
+                return a;
+              default:
+                return a.plus(new BigNumber(v.slpAmount));
+            }
+          }, new BigNumber(0));
+
+          tx.tx = tx.tx[0] || null;
+
+          tbody.append(
+            app.template.index_burn_tx({
+              tx: tx,
+              total_burnt: total_burnt
+            })
+          );
+        });
+        $('#index-burn-history-table tbody .token-icon-small').each(function() {
+          app.util.set_token_icon($(this), 32);
+        });
+
+        done();
+      });
+    };
+
+
+    app.slpdb.query(app.slpdb.count_tokens())
+	.then((total_tokens) => {
+	  total_tokens = app.util.extract_total(total_tokens);
+
+      if (total_tokens.t === 0) {
+        $('#index-tokens-table tbody').html('<tr><td>No tokens found.</td></tr>');
+      } else {
+        app.util.create_pagination(
+          $('#index-tokens-table-container'),
+          0,
+          Math.ceil(total_tokens.t / 10),
+          (page, done) => {
+            load_paginated_tokens(10, 10*page, done);
+          }
+        );
+      }
+	});
+
+	Promise.all([
+      app.slpdb.query(app.slpdb.count_address_burn_transactions()),
+	]).then(([
+	  total_burn_transactions
+	]) => {
+	  total_burn_transactions = app.util.extract_total(total_burn_transactions);
+      if (total_burn_transactions.g === 0) {
+        $('#index-burn-history-table tbody').html('<tr><td>No burns found.</td></tr>');
+      } else {
+        app.util.create_pagination(
+          $('#index-burn-history-table-container'),
+          0,
+          Math.ceil(total_burn_transactions.g / 10),
+          (page, done) => {
+            load_paginated_burn_history(10, 10*page, done);
+          }
+        );
+      }
+	});
 
     app.slpsocket.on_mempool = (sna) => {
       if (! sna.slp.valid) {
@@ -3063,6 +3288,8 @@ $(document).ready(() => {
 
   const views = [
     'index_page',
+    'index_burn_tx',
+    'index_token',
     'latest_transactions_tx',
     'all_tokens_page',
     'all_tokens_token',
