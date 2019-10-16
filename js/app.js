@@ -509,9 +509,6 @@ app.util = {
       name = name.replace(/[^a-zA-Z0-9_]/gi, '');
     }
 
-    console.log(cashaccount);
-
-
     const arrayFromHex = hexString => new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
     const avatars = [ '1f47b', '1f412', '1f415', '1f408', '1f40e', '1f404', '1f416', '1f410', '1f42a', '1f418', '1f401', '1f407', '1f43f', '1f987', '1f413', '1f427', '1f986', '1f989', '1f422', '1f40d', '1f41f', '1f419', '1f40c', '1f98b', '1f41d', '1f41e', '1f577', '1f33b', '1f332', '1f334', '1f335', '1f341', '1f340', '1f347', '1f349', '1f34b', '1f34c', '1f34e', '1f352', '1f353', '1f95d', '1f965', '1f955', '1f33d', '1f336', '1f344', '1f9c0', '1f95a', '1f980', '1f36a', '1f382', '1f36d', '1f3e0', '1f697', '1f6b2', '26f5', '2708', '1f681', '1f680', '231a', '2600', '2b50', '1f308', '2602', '1f388', '1f380', '26bd', '2660', '2665', '2666', '2663', '1f453', '1f451', '1f3a9', '1f514', '1f3b5', '1f3a4', '1f3a7', '1f3b8', '1f3ba', '1f941', '1f50d', '1f56f', '1f4a1', '1f4d6', '2709', '1f4e6', '270f', '1f4bc', '1f4cb', '2702', '1f511', '1f512', '1f528', '1f527', '2696', '262f', '1f6a9', '1f463', '1f35e' ];
     const concat = cashaccount.blockhash + cashaccount.txid;
@@ -1982,8 +1979,6 @@ app.init_nonslp_tx_page = (txid) =>
       Promise.all(input_txid_vout_reqs)
       .then((results) => {
         const input_pairs  = results.reduce((a, v) => a.concat(v.c), []);
-        console.log(input_pairs);
-
         const input_amounts = input_pairs.reduce((a, v) => {
           a[v.txid+':'+v.vout] = v.amount;
           return a;
@@ -2117,10 +2112,9 @@ app.init_index_page = () =>
     ])
     .then(([monthly_usage, token_usage]) => {
       app.util.create_time_period_plot(monthly_usage, 'plot-monthly-usage')
-
-
       let token_usage_monthly = token_usage.c;
       const total_slp_tx_month = monthly_usage.c.reduce((a, v) => a+v.txs, 0);
+	  $('#monthly-transaction-count').text(Number(total_slp_tx_month).toLocaleString());
 
       token_usage_monthly.push({
         token_name: 'Other',
@@ -2208,6 +2202,7 @@ app.init_index_page = () =>
     app.slpdb.query(app.slpdb.count_tokens())
 	.then((total_tokens) => {
 	  total_tokens = app.util.extract_total(total_tokens);
+	  $('#index-tokens-count').text(Number(total_tokens.t).toLocaleString());
 
       if (total_tokens.t === 0) {
         $('#index-tokens-table tbody').html('<tr><td>No tokens found.</td></tr>');
@@ -2223,12 +2218,11 @@ app.init_index_page = () =>
       }
 	});
 
-	Promise.all([
-      app.slpdb.query(app.slpdb.count_address_burn_transactions()),
-	]).then(([
-	  total_burn_transactions
-	]) => {
+    app.slpdb.query(app.slpdb.count_address_burn_transactions())
+	.then((total_burn_transactions) => {
 	  total_burn_transactions = app.util.extract_total(total_burn_transactions);
+	  $('#index-burn-count').text(Number(total_burn_transactions.g).toLocaleString());
+
       if (total_burn_transactions.g === 0) {
         $('#index-burn-history-table tbody').html('<tr><td>No burns found.</td></tr>');
       } else {
@@ -2834,6 +2828,7 @@ app.init_token_page = (tokenIdHex) =>
         ]
       })).then((token_monthly_usage) => {
         app.util.create_time_period_plot(token_monthly_usage, 'plot-token-monthly-usage');
+	    $('#token-monthly-usage-count').text(Number(token_monthly_usage.c.reduce((a, v) => a+v.txs, 0)).toLocaleString());
       });
 
       app.slpdb.query(app.slpdb.token_addresses(tokenIdHex, 10))
@@ -3151,6 +3146,7 @@ app.init_address_page = (address) =>
         }))
       ]).then(([address_monthly_usage]) => {
         app.util.create_time_period_plot(address_monthly_usage, 'plot-address-monthly-usage');
+	    $('#address-monthly-usage-count').text(Number(address_monthly_usage.c.reduce((a, v) => a+v.txs, 0)).toLocaleString());
       });
 
       app.slpsocket.on_mempool = (sna) => {

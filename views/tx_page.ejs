@@ -155,7 +155,7 @@
   <div class="rounded_row">
     <div class="input_output">
       <div class="rounded box-shadow table-container">
-        <h3>Inputs (<%= Object.keys(input_amounts).length %>)</h3>
+        <h3>Inputs (<%= Number(Object.keys(input_amounts).length).toLocaleString() %>)</h3>
         <div class="table-responsive">
           <table class="table fixed-header">
             <thead>
@@ -203,7 +203,7 @@
   <div class="rounded_row">
       <div class="input_output">
         <div class="rounded box-shadow table-container">
-          <h3>Outputs (<%= tx.graph[0].graphTxn.outputs.length %>)</h3>
+          <h3>Outputs (<%= Number(tx.graph[0].graphTxn.outputs.length).toLocaleString() %>)</h3>
           <div class="table-responsive">
             <table class="table">
               <thead>
