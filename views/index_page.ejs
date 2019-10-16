@@ -56,11 +56,30 @@
     <div id="plot-token-creation" style="width:100%">Loading...</div>
   </div>
 
-  <div class="rounded_row graph">
-    <h3>Token Burns</h3>
-    <div id="plot-token-burns" style="width:100%;">Loading...</div>
+  <div class="rounded_row">
+    <div id="index-burn-history-table-container" class="rounded box-shadow table-container">
+      <h3>Token Burns</h3>
+      <div class="table-responsive">
+        <table class="table" id="index-burn-history-table">
+          <thead>
+            <tr>
+              <th>Txid</th>
+              <th class="amount">Amount Burnt</th>
+              <th>Token</th>
+              <th>Block Height</th>
+              <th>Block Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Loading...</td></tr>
+          </tbody>
+        </table>
+        <ul class="pagination">
+        </ul>
+      </div>
+    </div>
   </div>
-
+  
   <div class="clearfix"></div>
 </div>
 
