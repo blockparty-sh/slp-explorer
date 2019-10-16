@@ -485,8 +485,8 @@ app.util = {
   cash_address_to_raw_address: (address) => {
     let source_value = address;
     if (address.substring(0, 12) != 'bitcoincash:') {
-	  source_value = 'bitcoincash:' + address;
-	}
+      source_value = 'bitcoincash:' + address;
+    }
 
     let raw = cashaddr.decode(source_value);
     payload_hex = raw.hash
@@ -499,35 +499,36 @@ app.util = {
     return types[payload_type]+payload_hex;
   },
   get_cash_account_html: (cashaccount) => {
-	if (! cashaccount) {
-	  return '';
-	}
+    if (! cashaccount) {
+      return '';
+    }
 
-	let name = cashaccount.name;
+    let name = cashaccount.name;
     const regex = new RegExp("/^[a-zA-Z0-9_]{1,99}$/");
     if (! regex.test(cashaccount.name) || cashaccount.blockheight <= 563620) {
       name = name.replace(/[^a-zA-Z0-9_]/gi, '');
     }
 
-	console.log(cashaccount);
-    const avatar_url = '/img/cashaccount-avatars/emoji_u'+app.util.cashaccount_avatar(cashaccount)+'.svg';
-    return `<img src="${avatar_url}" class="cashaccount-icon-small">${name}#${cashaccount.blockheight - 563620}`;
+    console.log(cashaccount);
+
+
+    const arrayFromHex = hexString => new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+    const avatars = [ '1f47b', '1f412', '1f415', '1f408', '1f40e', '1f404', '1f416', '1f410', '1f42a', '1f418', '1f401', '1f407', '1f43f', '1f987', '1f413', '1f427', '1f986', '1f989', '1f422', '1f40d', '1f41f', '1f419', '1f40c', '1f98b', '1f41d', '1f41e', '1f577', '1f33b', '1f332', '1f334', '1f335', '1f341', '1f340', '1f347', '1f349', '1f34b', '1f34c', '1f34e', '1f352', '1f353', '1f95d', '1f965', '1f955', '1f33d', '1f336', '1f344', '1f9c0', '1f95a', '1f980', '1f36a', '1f382', '1f36d', '1f3e0', '1f697', '1f6b2', '26f5', '2708', '1f681', '1f680', '231a', '2600', '2b50', '1f308', '2602', '1f388', '1f380', '26bd', '2660', '2665', '2666', '2663', '1f453', '1f451', '1f3a9', '1f514', '1f3b5', '1f3a4', '1f3a7', '1f3b8', '1f3ba', '1f941', '1f50d', '1f56f', '1f4a1', '1f4d6', '2709', '1f4e6', '270f', '1f4bc', '1f4cb', '2702', '1f511', '1f512', '1f528', '1f527', '2696', '262f', '1f6a9', '1f463', '1f35e' ];
+    const concat = cashaccount.blockhash + cashaccount.txid;
+    const hash = sha256(arrayFromHex(concat));
+    const account_hash = hash.substring(0, 8);
+    const account_emoji = hash.substring(hash.length - 8);
+    //step 4
+    const account_hash_step4 = parseInt(account_hash, 16);
+    const emoji_index = parseInt(account_emoji, 16) % avatars.length;
+    //step 5
+    const account_hash_step5 = account_hash_step4.toString().split("").reverse().join("").padEnd(10, '0');
+
+    const avatar_url = '/img/cashaccount-avatars/emoji_u'+avatars[emoji_index]+'.svg';
+    return `<img src="${avatar_url}" class="cashaccount-icon-small">${name}#${cashaccount.blockheight - 563620}.${account_hash_step5}`;
   },
 
   cashaccount_avatar: (cashaccount) => {
-    let arrayFromHex = hexString => new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
-    let avatars = [ '1f47b', '1f412', '1f415', '1f408', '1f40e', '1f404', '1f416', '1f410', '1f42a', '1f418', '1f401', '1f407', '1f43f', '1f987', '1f413', '1f427', '1f986', '1f989', '1f422', '1f40d', '1f41f', '1f419', '1f40c', '1f98b', '1f41d', '1f41e', '1f577', '1f33b', '1f332', '1f334', '1f335', '1f341', '1f340', '1f347', '1f349', '1f34b', '1f34c', '1f34e', '1f352', '1f353', '1f95d', '1f965', '1f955', '1f33d', '1f336', '1f344', '1f9c0', '1f95a', '1f980', '1f36a', '1f382', '1f36d', '1f3e0', '1f697', '1f6b2', '26f5', '2708', '1f681', '1f680', '231a', '2600', '2b50', '1f308', '2602', '1f388', '1f380', '26bd', '2660', '2665', '2666', '2663', '1f453', '1f451', '1f3a9', '1f514', '1f3b5', '1f3a4', '1f3a7', '1f3b8', '1f3ba', '1f941', '1f50d', '1f56f', '1f4a1', '1f4d6', '2709', '1f4e6', '270f', '1f4bc', '1f4cb', '2702', '1f511', '1f512', '1f528', '1f527', '2696', '262f', '1f6a9', '1f463', '1f35e' ];
-    let concat = cashaccount.blockhash + cashaccount.txid;
-    let hash = sha256(arrayFromHex(concat));
-    let account_hash = hash.substring(0, 8);
-    let account_emoji = hash.substring(hash.length - 8);
-    //step 4
-    let account_hash_step4 = parseInt(account_hash, 16);
-    let emoji_index = parseInt(account_emoji, 16) % avatars.length;
-    //step 5
-    let account_hash_step5 = account_hash_step4.toString().split("").reverse().join("").padEnd(10, '0');
-
-	return avatars[emoji_index];
   },
 };
 
@@ -1263,6 +1264,61 @@ app.slpdb = {
               },
               { "slp.valid": true }
             ]
+          }
+        },
+        {
+          "$group": {
+            "_id": null,
+            "count": { "$sum": 1 }
+          }
+        }
+      ]
+    },
+    "r": {
+      "f": "[ .[] | {count: .count } ]"
+    }
+  }),
+  count_address_sent_transactions: (address) => ({
+    "v": 3,
+    "q": {
+      "db": [
+        "c",
+        "u"
+      ],
+      "aggregate": [
+        {
+          "$match": {
+              "in.e.a":  address,
+            "slp.valid": true
+          }
+        },
+        {
+          "$group": {
+            "_id": null,
+            "count": { "$sum": 1 }
+          }
+        }
+      ]
+    },
+    "r": {
+      "f": "[ .[] | {count: .count } ]"
+    }
+  }),
+  count_address_recv_transactions: (address) => ({
+    "v": 3,
+    "q": {
+      "db": [
+        "c",
+        "u"
+      ],
+      "aggregate": [
+        {
+          "$match": {
+              "in.e.a": {
+              "$ne": address
+            },
+            "out.e.a": address,
+            "slp.valid": true
           }
         },
         {
@@ -2644,27 +2700,36 @@ app.init_address_page = (address) =>
       app.slpdb.query(app.slpdb.count_tokens_by_slp_address(address)),
       app.slpdb.query(app.slpdb.count_total_transactions_by_slp_address(address)),
       app.slpdb.query(app.slpdb.count_address_burn_transactions(address)),
-	  app.bitdb.query(app.bitdb.get_cashaccount(app.util.cash_address_to_raw_address(slpjs.Utils.toCashAddress(address)))),
+      app.bitdb.query(app.bitdb.get_cashaccount(app.util.cash_address_to_raw_address(slpjs.Utils.toCashAddress(address)))),
+      app.slpdb.query(app.slpdb.count_address_sent_transactions(address)),
+      app.slpdb.query(app.slpdb.count_address_recv_transactions(address)),
     ]).then(([
-	  total_tokens,
-	  total_transactions,
-	  total_address_burn_transactions,
-	  cashaccount
+      total_tokens,
+      total_transactions,
+      total_address_burn_transactions,
+      cashaccount,
+      total_sent_transactions,
+      total_recv_transactions,
     ]) => {
       total_tokens = app.util.extract_total(total_tokens);
       total_transactions = app.util.extract_total(total_transactions);
       total_address_burn_transactions = app.util.extract_total(total_address_burn_transactions);
 
-	  cashaccount = cashaccount.u.length > 0 ? cashaccount.u[0]
-				  : cashaccount.c.length > 0 ? cashaccount.c[0]
-				  : null;
+      cashaccount = cashaccount.u.length > 0 ? cashaccount.u[0]
+                  : cashaccount.c.length > 0 ? cashaccount.c[0]
+                  : null;
+
+      total_sent_transactions = app.util.extract_total(total_sent_transactions);
+      total_recv_transactions = app.util.extract_total(total_recv_transactions);
 
       $('main[role=main]').html(app.template.address_page({
         address: address,
-		cashaccount: cashaccount,
+        cashaccount: cashaccount,
         total_tokens: total_tokens.a,
         total_transactions: total_transactions.c+total_transactions.u,
         total_address_burn_transactions: total_address_burn_transactions.g,
+        total_sent_transactions: total_sent_transactions.c + total_sent_transactions.u,
+        total_recv_transactions: total_recv_transactions.c + total_recv_transactions.u,
       }));
 
       let qrcode = null;

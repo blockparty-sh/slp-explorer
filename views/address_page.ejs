@@ -24,8 +24,28 @@
         </thead>
         <tbody>
           <tr>
+            <th role="col">SLP Address</th>
+            <td><%= slpjs.Utils.toSlpAddress(address) %></td>
+          </tr>
+          <tr>
+            <th role="col">Cash Address</th>
+            <td><%= slpjs.Utils.toCashAddress(address) %></td>
+          </tr>
+          <tr>
+            <th role="col">Legacy Address</th>
+            <td><%= slpjs.Utils.toLegacyAddress(address) %></td>
+          </tr>
+          <tr>
             <th role="col">Cash Account</th>
             <td><%- app.util.get_cash_account_html(cashaccount) %></td>
+          </tr>
+          <tr>
+            <th role="col">Sent SLP Transactions</th>
+            <td><%= total_sent_transactions %></td>
+          </tr>
+          <tr>
+            <th role="col">Received SLP Transactions</th>
+            <td><%= total_recv_transactions %></td>
           </tr>
         </tbody>
       </table>
