@@ -65,3 +65,28 @@
   <h3>Monthly Transaction Graph</h3>
   <div id="plot-address-monthly-usage" style="width:100%"></div>
 </div>
+
+<div class="rounded_row">
+  <div id="address-burn-history-table-container" class="rounded box-shadow table-container">
+    <h3>Burn History (<%= Number(total_address_burn_transactions).toLocaleString() %>)</h3>
+    <div class="table-responsive">
+      <table class="table" id="address-burn-history-table">
+        <thead>
+          <tr>
+            <th>Txid</th>
+            <th class="amount">Amount Burnt</th>
+            <th>Token</th>
+            <th>Block Height</th>
+            <th>Block Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Loading...</td></tr>
+        </tbody>
+      </table>
+      <ul class="pagination">
+      </ul>
+    </div>
+  </div>
+</div>
+
