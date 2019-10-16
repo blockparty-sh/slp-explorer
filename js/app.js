@@ -413,7 +413,7 @@ app.util = {
           })
         ]).then(([tokens, transactions]) => {
           let sugs = [];
-  
+
           for (let m of tokens.t) {
             if (m.tokenDetails.tokenIdHex === search_value) {
               $(selector).val('');
@@ -458,6 +458,18 @@ app.util = {
                 category: 'Tx'
               }
             });
+          }
+
+          if (search_value.match(/^\d+$/)) {
+            if (parseInt(search_value, 10) >= 543375) {
+              sugs.push({
+                value: search_value,
+                data: {
+                  url: '/#block/'+search_value,
+                  category: 'Blocks',
+                }
+              });
+            }
           }
   
           done({ suggestions: sugs });
@@ -1511,12 +1523,12 @@ app.slpdb = {
     "q": {
       "db": ["c"],
       "aggregate": [
-		{
-		  "$match": {
-			"slp.detail.transactionType": "GENESIS",
-			"slp.valid": true
-		  }
-		},
+        {
+          "$match": {
+            "slp.detail.transactionType": "GENESIS",
+            "slp.valid": true
+          }
+        },
         {
           "$lookup": {
             "from": "tokens",
@@ -2117,7 +2129,7 @@ app.init_index_page = () =>
       app.util.create_time_period_plot(monthly_usage, 'plot-monthly-usage')
       let token_usage_monthly = token_usage.c;
       const total_slp_tx_month = monthly_usage.c.reduce((a, v) => a+v.txs, 0);
-	  $('#monthly-transaction-count').text(Number(total_slp_tx_month).toLocaleString());
+      $('#monthly-transaction-count').text(Number(total_slp_tx_month).toLocaleString());
 
       token_usage_monthly.push({
         token_name: 'Other',
@@ -2142,7 +2154,7 @@ app.init_index_page = () =>
       app.slpdb.query(app.slpdb.recent_tokens(limit, skip))
       .then((genesises) => {
         genesises = genesises.c;
-		console.log(genesises);
+        console.log(genesises);
 
         const tbody = $('#index-tokens-table tbody');
         tbody.html('');
@@ -2203,9 +2215,9 @@ app.init_index_page = () =>
 
 
     app.slpdb.query(app.slpdb.count_tokens())
-	.then((total_tokens) => {
-	  total_tokens = app.util.extract_total(total_tokens);
-	  $('#index-tokens-count').text(Number(total_tokens.t).toLocaleString());
+    .then((total_tokens) => {
+      total_tokens = app.util.extract_total(total_tokens);
+      $('#index-tokens-count').text(Number(total_tokens.t).toLocaleString());
 
       if (total_tokens.t === 0) {
         $('#index-tokens-table tbody').html('<tr><td>No tokens found.</td></tr>');
@@ -2219,12 +2231,12 @@ app.init_index_page = () =>
           }
         );
       }
-	});
+    });
 
     app.slpdb.query(app.slpdb.count_address_burn_transactions())
-	.then((total_burn_transactions) => {
-	  total_burn_transactions = app.util.extract_total(total_burn_transactions);
-	  $('#index-burn-count').text(Number(total_burn_transactions.g).toLocaleString());
+    .then((total_burn_transactions) => {
+      total_burn_transactions = app.util.extract_total(total_burn_transactions);
+      $('#index-burn-count').text(Number(total_burn_transactions.g).toLocaleString());
 
       if (total_burn_transactions.g === 0) {
         $('#index-burn-history-table tbody').html('<tr><td>No burns found.</td></tr>');
@@ -2238,7 +2250,7 @@ app.init_index_page = () =>
           }
         );
       }
-	});
+    });
 
     app.slpsocket.on_mempool = (sna) => {
       if (! sna.slp.valid) {
@@ -2831,7 +2843,7 @@ app.init_token_page = (tokenIdHex) =>
         ]
       })).then((token_monthly_usage) => {
         app.util.create_time_period_plot(token_monthly_usage, 'plot-token-monthly-usage');
-	    $('#token-monthly-usage-count').text(Number(token_monthly_usage.c.reduce((a, v) => a+v.txs, 0)).toLocaleString());
+        $('#token-monthly-usage-count').text(Number(token_monthly_usage.c.reduce((a, v) => a+v.txs, 0)).toLocaleString());
       });
 
       app.slpdb.query(app.slpdb.token_addresses(tokenIdHex, 10))
@@ -3149,7 +3161,7 @@ app.init_address_page = (address) =>
         }))
       ]).then(([address_monthly_usage]) => {
         app.util.create_time_period_plot(address_monthly_usage, 'plot-address-monthly-usage');
-	    $('#address-monthly-usage-count').text(Number(address_monthly_usage.c.reduce((a, v) => a+v.txs, 0)).toLocaleString());
+        $('#address-monthly-usage-count').text(Number(address_monthly_usage.c.reduce((a, v) => a+v.txs, 0)).toLocaleString());
       });
 
       app.slpsocket.on_mempool = (sna) => {

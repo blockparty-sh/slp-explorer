@@ -8,12 +8,14 @@
   </td>
   <td>
     <div class="flex-vcenter">
-      <span class="token-icon-small" data-tokenid="<%= tx.token[0].tokenDetails.tokenIdHex %>"></span>
-      <% if (tx.token[0].tokenDetails.symbol.length > 0) { %>
-        <a href="#token/<%= tx.token[0].tokenDetails.tokenIdHex %>"><%= tx.token[0].tokenDetails.name %> $<%= tx.token[0].tokenDetails.symbol %></a>
-      <% } else { %>
-        <span class="mono"><a href="#token/<%= tx.token[0].tokenDetails.tokenIdHex %>">[none]</a></span>
-      <% } %>
+      <% if (tx.token.length > 0) { %>
+        <span class="token-icon-small" data-tokenid="<%= tx.token[0].tokenDetails.tokenIdHex %>"></span>
+        <% if (tx.token[0].tokenDetails.symbol.length > 0) { %>
+          <a href="#token/<%= tx.token[0].tokenDetails.tokenIdHex %>"><%= tx.token[0].tokenDetails.name %> $<%= tx.token[0].tokenDetails.symbol %></a>
+        <% } else { %>
+          <span class="mono"><a href="#token/<%= tx.token[0].tokenDetails.tokenIdHex %>">[none]</a></span>
+        <% } %>
+      <% } else { console.log('TODO: remove when mongo transactions fix this', tx); } %>
     </div>
   </td>
   <td>
