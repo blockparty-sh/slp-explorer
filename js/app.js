@@ -525,7 +525,7 @@ app.util = {
     const account_hash_step5 = account_hash_step4.toString().split("").reverse().join("").padEnd(10, '0');
 
     const avatar_url = '/img/cashaccount-avatars/emoji_u'+avatars[emoji_index]+'.svg';
-    return `<img src="${avatar_url}" class="cashaccount-icon-small">${name}#${cashaccount.blockheight - 563620}.${account_hash_step5}`;
+    return `<img src="${avatar_url}" class="cashaccount-icon-small">${name}#${cashaccount.blockheight - 563620}.<span class="cashaccount-step5">${account_hash_step5}</span>`;
   },
 
   cashaccount_avatar: (cashaccount) => {
