@@ -185,7 +185,7 @@
             </tr>
             <tr>
               <th scope="row">Satoshis Locked Up</th>
-              <td><%= new BigNumber(token.tokenStats.qty_satoshis_locked_up).toFixed() %></td>
+              <td><%= app.util.format_bignum_str(new BigNumber(token.tokenStats.qty_satoshis_locked_up).toFixed()) %></td>
             </tr>
           </tbody>
         </table>
