@@ -188,7 +188,8 @@
                     </tr>
                   <% } %>
                 <% } %>
-              <% } else { %>
+              <% } %>
+              <% if (Object.keys(input_amounts).length === 0) { %>
                 <tr>
                   <td>No inputs.</td>
                 </tr>
