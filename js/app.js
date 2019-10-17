@@ -1785,7 +1785,7 @@ app.bitdb = {
       return resolve(false);
     }
     const b64 = btoa_ext(JSON.stringify(query));
-    const url = "https://bitdb.fountainhead.cash/q/" + b64;
+    const url = "https://bitdb2.fountainhead.cash/q/" + b64;
 
     console.log(url)
 
