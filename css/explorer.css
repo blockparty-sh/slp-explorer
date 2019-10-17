@@ -383,6 +383,7 @@ h6 {
     max-width: 745px;
     box-sizing: border-box;
     font-family: 'Source Code Pro', monospace;
+    overflow:scroll;
 }
 
 .autocomplete-suggestion:hover {
@@ -402,8 +403,8 @@ h6 {
 }
 
 .autocomplete-suggestion {
-    padding: 2px 2px;
-    font-size: 0.9em;
+    padding: 2px 9px;
+    font-size: 14px;
 }
 
 .dataTables_info {

@@ -411,8 +411,31 @@ app.util = {
               "find": {"tx.h": search_value},
               "limit": 1
             }
-          })
-        ]).then(([tokens, transactions]) => {
+          }),
+          app.bitdb.query({
+            "v": 3,
+            "q": {
+              "db": ["u", "c"],
+              "find": {
+                "out.h1": "01010101",
+                "blk.i": {
+                  "$gte": 563620
+                },
+                "out.s2": {
+                  "$regex": "^"+search_value+".*",
+                  "$options": "i"
+                }
+              },
+              "sort": {
+                "blk.i": -1
+              },
+              "limit": 10
+            },
+            "r": {
+              "f": "[ .[] | ( .out[] | select(.b0.op==106) ) as $outWithData | { blockheight: .blk.i?, blockhash: .blk.h?, txid: .tx.h?, name: $outWithData.s2, data: $outWithData.h3 } ]"
+            }
+          }),
+        ]).then(([tokens, transactions, cashaccounts]) => {
           let sugs = [];
 
           for (let m of tokens.t) {
@@ -423,16 +446,14 @@ app.util = {
   
             let tval = null;
             const verified = app.util.is_verified(m.tokenDetails.tokenIdHex);
-            tval = (verified ? '✔ ' : '… ')
-              + app.util.compress_txid(m.tokenDetails.tokenIdHex)
-              + (m.tokenDetails.symbol ? (' | ' + m.tokenDetails.symbol) : '')
-              + (m.tokenDetails.name   ? (' | ' + m.tokenDetails.name)   : '');
+            tval = `<div class="flex-vcenter">${(verified ? '<img src="/img/verified-checkmark.png">' : '<img src="/img/verified-empty.png">')}&nbsp;${app.util.compress_txid(m.tokenDetails.tokenIdHex)}&nbsp;<span class="token-icon-small" data-tokenid="${m.tokenDetails.tokenIdHex}"></span> ${m.tokenDetails.name} $${m.tokenDetails.symbol}</div>`;
   
             sugs.push({
-              value: tval,
+              value: m.tokenDetails.tokenIdHex,
               data: {
                 url: '/#token/'+m.tokenDetails.tokenIdHex,
                 category: 'Tokens',
+                html: tval,
                 verified: verified,
                 qty_valid_txns_since_genesis: m.tokenStats.qty_valid_txns_since_genesis,
               }
@@ -461,6 +482,22 @@ app.util = {
             });
           }
 
+          cashaccounts = cashaccounts.u.concat(cashaccounts.c);
+          for (let m of cashaccounts) {
+            const cash_addr = app.util.raw_address_to_cash_address(m.data);
+            if (cash_addr !== null) {
+              const slp_addr = slpjs.Utils.toSlpAddress(cash_addr);
+              sugs.push({
+                value: slp_addr,
+                data: {
+                  url: '/#address/'+slp_addr, // TODO decode address
+                  html: app.util.get_cash_account_html(m),
+                  category: 'Cash Accounts'
+                }
+              });
+            }
+          }
+
           if (search_value.match(/^\d+$/)) {
             if (parseInt(search_value, 10) >= 543375) {
               sugs.push({
@@ -479,7 +516,19 @@ app.util = {
       onSelect: function (sug) {
         $(selector).val('');
         app.router(sug.data.url);
-      }
+      },
+      onSearchComplete: function (query, sug) {
+        $('.autocomplete-suggestion .token-icon-small').each(function() {
+           app.util.set_token_icon($(this), 32);
+        });
+      },
+      formatResult: function (sug) {
+        if (sug.data.html) {
+          return sug.data.html;
+        } else {
+          return sug.value;
+        }
+      },
     });
   },
 
@@ -511,6 +560,19 @@ app.util = {
 
     return types[payload_type]+payload_hex;
   },
+
+  raw_address_to_cash_address: (address) => {
+    try {
+      const arrayFromHex = (hexString) => new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+
+      const types = {"01": "P2PKH","02": "P2SH","03": "P2PC","04": "P2SK"}
+      const type = types[address.substring(0, 2)];
+      const payment_data = address.substring(2);
+
+      return cashaddr.encode('bitcoincash', type, arrayFromHex(payment_data));
+    } catch (e) { return null; }
+  },
+
   get_cash_account_html: (cashaccount) => {
     if (! cashaccount) {
       return '';
