@@ -246,7 +246,7 @@ app.util = {
     y_title='Transactions',
     time_period=60*60*24*30*1000,
     split_time_period=60*60*24*1000,
-	line_type='hvh',
+    line_type='hvh',
   ) => {
     for (let o of usage.c) {
       o.block_epoch = new Date(o.block_epoch * 1000);
@@ -2133,7 +2133,7 @@ app.init_index_page = () =>
           'Transactions',
           time_period*1000,
           split_time_period*1000,
-		  line_type
+          line_type
         );
         let token_usage_monthly = token_usage.c;
         const total_slp_tx_month = monthly_usage.c.reduce((a, v) => a+v.txs, 0);
@@ -2159,27 +2159,40 @@ app.init_index_page = () =>
       });
     };
     create_transaction_graph(60*60*24*30, 60*60*24);
-	$('#plot-usage-month').addClass('active');
-	$('#plot-usage-year').click(function() {
-      create_transaction_graph(60*60*24*365, 60*60*24*7, 'hvh');
-	  $('.plot-time-selector span').removeClass('active');
-	  $(this).addClass('active');
-	});
-	$('#plot-usage-month').click(function() {
-      create_transaction_graph(60*60*24*30, 60*60*24, 'hvh');
-	  $('.plot-time-selector span').removeClass('active');
-	  $(this).addClass('active');
-	});
-	$('#plot-usage-week').click(function() {
-      create_transaction_graph(60*60*24*7, 60*60*6, 'hvh');
-	  $('.plot-time-selector span').removeClass('active');
-	  $(this).addClass('active');
-	});
-	$('#plot-usage-day').click(function() {
-      create_transaction_graph(60*60*24*1, 60*60*2, 'hvh');
-	  $('.plot-time-selector span').removeClass('active');
-	  $(this).addClass('active');
-	});
+    $('#plot-usage-month').addClass('active');
+    [
+      {
+        id: '#plot-usage-year',
+        time_period: 60*60*24*365,
+        split_time_period: 60*60*24*7,
+      },
+      {
+        id: '#plot-usage-month',
+        time_period: 60*60*24*30,
+        split_time_period: 60*60*24,
+      },
+      {
+        id: '#plot-usage-week',
+        time_period: 60*60*24*7,
+        split_time_period: 60*60*6
+      },
+      {
+        id: '#plot-usage-day',
+        time_period: 60*60*24,
+        split_time_period: 60*60*2
+      },
+    ].forEach((data) => {
+      $(data.id).click(function() {
+        create_transaction_graph(
+          data.time_period,
+          data.split_time_period,
+          'hvh'
+         );
+        $('.plot-time-selector span').removeClass('active');
+        $(this).addClass('active');
+        $('#plot-usage').html('Loading...');
+      });
+    });
 
     const load_paginated_tokens = (limit, skip, done) => {
       app.slpdb.query(app.slpdb.recent_tokens(limit, skip))
@@ -2875,38 +2888,52 @@ app.init_token_page = (tokenIdHex) =>
           ]
         })).then((token_usage) => {
           app.util.create_time_period_plot(
-			token_usage,
-			'plot-token-usage',
-			'Transactions',
+            token_usage,
+            'plot-token-usage',
+            'Transactions',
             time_period*1000,
             split_time_period*1000,
-		    line_type
-		  );
+            line_type
+          );
           $('#token-usage-count').text(Number(token_usage.c.reduce((a, v) => a+v.txs, 0)).toLocaleString());
         });
-	  };
+      };
       create_transaction_graph(60*60*24*30, 60*60*24);
-	  $('#plot-token-usage-month').addClass('active');
-	  $('#plot-token-usage-year').click(function() {
-        create_transaction_graph(60*60*24*365, 60*60*24*7, 'hvh');
-	    $('.plot-time-selector span').removeClass('active');
-	    $(this).addClass('active');
-	  });
-	  $('#plot-token-usage-month').click(function() {
-        create_transaction_graph(60*60*24*30, 60*60*24, 'hvh');
-	    $('.plot-time-selector span').removeClass('active');
-	    $(this).addClass('active');
-	  });
-	  $('#plot-token-usage-week').click(function() {
-        create_transaction_graph(60*60*24*7, 60*60*6, 'hvh');
-	    $('.plot-time-selector span').removeClass('active');
-	    $(this).addClass('active');
-	  });
-	  $('#plot-token-usage-day').click(function() {
-        create_transaction_graph(60*60*24*1, 60*60*2, 'hvh');
-	    $('.plot-time-selector span').removeClass('active');
-	    $(this).addClass('active');
-	  });
+      $('#plot-token-usage-month').addClass('active');
+
+      [
+        {
+          id: '#plot-token-usage-year',
+          time_period: 60*60*24*365,
+          split_time_period: 60*60*24*7,
+        },
+        {
+          id: '#plot-token-usage-month',
+          time_period: 60*60*24*30,
+          split_time_period: 60*60*24,
+        },
+        {
+          id: '#plot-token-usage-week',
+          time_period: 60*60*24*7,
+          split_time_period: 60*60*6
+        },
+        {
+          id: '#plot-token-usage-day',
+          time_period: 60*60*24,
+          split_time_period: 60*60*2
+        },
+      ].forEach((data) => {
+        $(data.id).click(function() {
+          create_transaction_graph(
+            data.time_period,
+            data.split_time_period,
+            'hvh'
+           );
+          $('.plot-time-selector span').removeClass('active');
+          $(this).addClass('active');
+          $('#plot-token-usage').html('Loading...');
+        });
+      });
 
       app.slpdb.query(app.slpdb.token_addresses(tokenIdHex, 10))
       .then((token_addresses) => {
@@ -3207,23 +3234,67 @@ app.init_address_page = (address) =>
       }
 
 
-      Promise.all([
-        app.slpdb.query(app.slpdb.count_txs_per_block({
-          "$and": [
-            { "slp.valid": true },
-            { "blk.t": {
-              "$gte": (+(new Date) / 1000) - (60*60*24*30),
-              "$lte": (+(new Date) / 1000)
-            } }
-          ],
-          "$or": [
-            { "in.e.a":  address },
-            { "out.e.a": address }
-          ]
-        }))
-      ]).then(([address_monthly_usage]) => {
-        app.util.create_time_period_plot(address_monthly_usage, 'plot-address-monthly-usage');
-        $('#address-monthly-usage-count').text(Number(address_monthly_usage.c.reduce((a, v) => a+v.txs, 0)).toLocaleString());
+      const create_transaction_graph = (time_period, split_time_period, line_type) => {
+        Promise.all([
+          app.slpdb.query(app.slpdb.count_txs_per_block({
+            "$and": [
+              { "slp.valid": true },
+              { "blk.t": {
+                "$gte": (+(new Date) / 1000) - time_period,
+                "$lte": (+(new Date) / 1000)
+              } }
+            ],
+            "$or": [
+              { "in.e.a":  address },
+              { "out.e.a": address }
+            ]
+          }))
+        ]).then(([address_usage]) => {
+          app.util.create_time_period_plot(
+            address_usage,
+            'plot-address-usage',
+            'Transactions',
+            time_period*1000,
+            split_time_period*1000,
+            line_type
+          );
+          $('#address-usage-count').text(Number(address_usage.c.reduce((a, v) => a+v.txs, 0)).toLocaleString());
+        });
+      };
+      create_transaction_graph(60*60*24*30, 60*60*24);
+      $('#plot-address-usage-month').addClass('active');
+      [
+        {
+          id: '#plot-address-usage-year',
+          time_period: 60*60*24*365,
+          split_time_period: 60*60*24*7,
+        },
+        {
+          id: '#plot-address-usage-month',
+          time_period: 60*60*24*30,
+          split_time_period: 60*60*24,
+        },
+        {
+          id: '#plot-address-usage-week',
+          time_period: 60*60*24*7,
+          split_time_period: 60*60*6
+        },
+        {
+          id: '#plot-address-usage-day',
+          time_period: 60*60*24,
+          split_time_period: 60*60*2
+        },
+      ].forEach((data) => {
+        $(data.id).click(function() {
+          create_transaction_graph(
+            data.time_period,
+            data.split_time_period,
+            'hvh'
+           );
+          $('.plot-time-selector span').removeClass('active');
+          $(this).addClass('active');
+          $('#plot-address-usage').html('Loading...');
+        });
       });
 
       app.slpsocket.on_mempool = (sna) => {

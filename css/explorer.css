@@ -691,7 +691,7 @@ html.index-page header {
 
 .address-qr-code img,
 .address-qr-code canvas {
-	image-rendering: pixelated;
+    image-rendering: pixelated;
     max-width: 128px;
     max-height: 128px;
 }
@@ -734,8 +734,8 @@ html.index-page header {
 .exchange-icon {
     width:190px;
     height:54px;
-	display:inline-block;
-	margin:1rem;
+    display:inline-block;
+    margin:1rem;
     background-repeat:no-repeat;
     background-position:center center;
 }
