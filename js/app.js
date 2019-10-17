@@ -550,7 +550,7 @@ app.slpdb = {
       return resolve(false);
     }
     const b64 = btoa_ext(JSON.stringify(query));
-    const url = "https://slpdb.bitcoin.com/q/" + b64;
+    const url = "https://slpdb.fountainhead.cash/q/" + b64;
 
     console.log(url)
 
@@ -2147,9 +2147,15 @@ app.init_index_page = () =>
         $('#plot-token-usage').html('');
         try {
           Plotly.newPlot('plot-token-usage', [{
-            labels: token_usage_monthly.map(v => v.token_name),
-            values: token_usage_monthly.map(v => v.txs),
-            type: 'pie',
+            x: token_usage_monthly.map(v => v.token_name),
+            y: token_usage_monthly.map(v => v.txs),
+            type: 'bar',
+            marker: {
+              color: token_usage_monthly.map((v, i) =>
+                (i < token_usage_monthly.length-1) ? 'rgba(100, 167, 205, 1)'
+                                                   : 'rgba(232, 102, 102, 1)'
+              ),
+            },
           }], {
             title: 'Popular Tokens',
           })
@@ -2191,6 +2197,7 @@ app.init_index_page = () =>
         $('.plot-time-selector span').removeClass('active');
         $(this).addClass('active');
         $('#plot-usage').html('Loading...');
+        $('#plot-token-usage').html('');
       });
     });
 
