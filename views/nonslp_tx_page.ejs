@@ -43,6 +43,16 @@
                 <th role="col">Txid</th>
                 <td><a class="txid" href="#tx/<%= tx.tx.h %>"><%= tx.tx.h %></a></td>
               </tr>
+              <tr>
+                <th role="col">SLP Invalid Reason</th>
+                <td>
+                  <% if (slp) { %>
+                    <%= slp.invalidReason %>
+                  <% } else { %>
+                    This is not a SLP transaction.
+                  <% } %>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -61,6 +71,7 @@
             <thead>
               <tr>
                 <th>Tx</th>
+                <th>Vout</th>
                 <th class="amount">Amount</th>
                 <th>Address</th>
               </tr>
@@ -71,6 +82,7 @@
                   <% if (input_amounts[m.e.h+':'+m.e.i]) { %>
                     <tr>
                       <td><a class="txid" href="/#tx/<%= m.e.h %>" style="font-weight:bold">&larr;</a></td>
+                      <td><%= m.e.i %></td>
                       <td class="amount">
                          <%= app.util.format_bignum_bch_str(input_amounts[m.e.h+':'+m.e.i])  %>
                       </td>
@@ -104,6 +116,7 @@
               <thead>
                 <tr>
                   <th>Tx</th>
+                  <th>Vout</th>
                   <th class="amount">Amount</th>
                   <th>Address</th>
                 </tr>
@@ -119,6 +132,7 @@
                           </a>
                         <% } %>
                       </td>
+                      <td><%= m.e.i %></td>
                       <td class="amount">
                         <%= app.util.format_bignum_bch_str(m.e.v) %>
                       </td>

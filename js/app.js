@@ -2027,7 +2027,7 @@ app.init_404_page = () => new Promise((resolve, reject) => {
   resolve();
 });
 
-app.init_nonslp_tx_page = (txid) =>
+app.init_nonslp_tx_page = (txid, slp=null) =>
   new Promise((resolve, reject) => {
     app.bitdb.query(app.bitdb.tx(txid))
     .then((tx) => {
@@ -2084,7 +2084,8 @@ app.init_nonslp_tx_page = (txid) =>
         .then((lookups) => {
           $('main[role=main]').html(app.template.nonslp_tx_page({
             tx:            tx,
-            input_amounts: input_amounts
+            input_amounts: input_amounts,
+			slp:           slp,
           }));
 
           resolve();
@@ -2095,13 +2096,6 @@ app.init_nonslp_tx_page = (txid) =>
 
 app.init_error_processing_tx_page = (tx) => new Promise((resolve, reject) => {
   $('main[role=main]').html(app.template.error_processing_tx_page({
-    tx: tx
-  }));
-  resolve();
-});
-
-app.init_error_invalid_tx_page = (tx) => new Promise((resolve, reject) => {
-  $('main[role=main]').html(app.template.error_invalid_tx_page({
     tx: tx
   }));
   resolve();
@@ -2469,7 +2463,8 @@ app.init_tx_page = (txid) =>
       tx = tx[0];
 
 	  if (! tx.slp || ! tx.slp.valid) {
-        return resolve(app.init_error_invalid_tx_page(tx));
+		console.log(tx.slp);
+        return resolve(app.init_nonslp_tx_page(tx.h, tx.slp));
 	  }
 
 	  if (tx.graph.length === 0) {
@@ -3536,7 +3531,6 @@ $(document).ready(() => {
     'address_burn_tx',
     'error_404_page',
     'error_processing_tx_page',
-    'error_invalid_tx_page',
     'error_notx_page',
     'error_badaddress_page',
   ];
