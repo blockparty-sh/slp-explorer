@@ -2468,13 +2468,12 @@ app.init_tx_page = (txid) =>
 
       tx = tx[0];
 
-      if (! tx.slp || ! tx.slp.valid || tx.graph.length === 0) {
-        console.log('invalid', tx);
-        if (tx.graph.length === 0) {
-            return resolve(app.init_error_processing_tx_page(tx));
-        } else {
-            return resolve(app.init_error_invalid_tx_page(tx));
-        }
+	  if (! tx.slp || ! tx.slp.valid) {
+        return resolve(app.init_error_invalid_tx_page(tx));
+	  }
+
+	  if (tx.graph.length === 0) {
+        return resolve(app.init_error_processing_tx_page(tx));
       }
 
       const chunk_size = 20;
