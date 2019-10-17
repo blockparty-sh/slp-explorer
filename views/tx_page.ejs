@@ -135,9 +135,9 @@
                 <th scope="row">Verified</th>
                 <td>
                   <% if (app.util.is_verified(token.tokenDetails.tokenIdHex)) { %>
-                    ✔
+                    <img src="/img/verified-checkmark.png">
                   <% } else { %>
-                    …
+                    <img src="/img/verified-empty.png">
                   <% } %>
                 </td>
               </tr>
