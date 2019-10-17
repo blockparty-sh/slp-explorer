@@ -2031,6 +2031,13 @@ app.init_nonslp_tx_page = (txid) =>
     })
   });
 
+app.init_error_processing_tx_page = (tx) => new Promise((resolve, reject) => {
+  $('main[role=main]').html(app.template.error_processing_tx_page({
+    tx: tx
+  }));
+  resolve();
+});
+
 app.init_error_invalid_tx_page = (tx) => new Promise((resolve, reject) => {
   $('main[role=main]').html(app.template.error_invalid_tx_page({
     tx: tx
@@ -2400,7 +2407,12 @@ app.init_tx_page = (txid) =>
       tx = tx[0];
 
       if (! tx.slp || ! tx.slp.valid || tx.graph.length === 0) {
-        return resolve(app.init_error_invalid_tx_page(tx));
+        console.log('invalid', tx);
+        if (tx.graph.length === 0) {
+            return resolve(app.init_error_processing_tx_page(tx));
+        } else {
+            return resolve(app.init_error_invalid_tx_page(tx));
+        }
       }
 
       const chunk_size = 20;
@@ -3459,6 +3471,7 @@ $(document).ready(() => {
     'address_token',
     'address_burn_tx',
     'error_404_page',
+    'error_processing_tx_page',
     'error_invalid_tx_page',
     'error_notx_page',
     'error_badaddress_page',
