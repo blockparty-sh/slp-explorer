@@ -797,6 +797,14 @@ html.index-page header {
     font-style: italic;
 }
 
+.plot-time-selector .active {
+    text-decoration:underline;
+    font-weight:bold;
+}
+.plot-time-selector span:hover {
+    cursor: pointer;
+}
+
 @media only screen and (max-width: 890px) {
     .rounded_row {
         overflow: auto;

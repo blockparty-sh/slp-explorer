@@ -245,7 +245,8 @@ app.util = {
     dom_id,
     y_title='Transactions',
     time_period=60*60*24*30*1000,
-    split_time_period=60*60*24*1000
+    split_time_period=60*60*24*1000,
+	line_type='hvh',
   ) => {
     for (let o of usage.c) {
       o.block_epoch = new Date(o.block_epoch * 1000);
@@ -310,7 +311,7 @@ app.util = {
           fill: 'tonexty',
           type: 'scatter',
           name: 'Daily',
-          /* line: { shape: 'spline' }, // maybe we're not ready for curves yet */
+          line: { shape: line_type }, // maybe we're not ready for curves yet
         }
       ], {
         yaxis: {
@@ -549,7 +550,7 @@ app.slpdb = {
       return resolve(false);
     }
     const b64 = btoa_ext(JSON.stringify(query));
-    const url = "https://slpdb.fountainhead.cash/q/" + b64;
+    const url = "https://slpdb.bitcoin.com/q/" + b64;
 
     console.log(url)
 
@@ -1580,7 +1581,7 @@ app.slpdb = {
             }
           }
         ],
-        "limit": 10000
+        "limit": 100000
       },
       "r": {
         "f": "[ .[] | {block_epoch: ._id, txs: .count} ]"
@@ -2079,82 +2080,111 @@ app.init_index_page = () =>
     });
 
 
-    // load graphs in background
-    Promise.all([
-      app.slpdb.query(app.slpdb.count_txs_per_block({
-        "$and": [
-          { "slp.valid": true },
-          { "blk.t": {
-            "$gte": (+(new Date) / 1000) - (60*60*24*30),
-            "$lte": (+(new Date) / 1000)
-          } }
-        ]
-      })),
-      app.slpdb.query({
-        "v": 3,
-        "q": {
-          "aggregate": [
-            {
-              "$match": {
-                "blk.t": {
-                  "$gte": (+(new Date) / 1000) - (60*60*24*30),
-                  "$lte": (+(new Date) / 1000),
-                }
-              }
-            },
-            {
-              "$group": {
-                "_id": "$slp.detail.name",
-                "count": {
-                  "$sum": 1
-                }
-              }
-            },
-            {
-              "$sort": {
-                "count": -1
-              }
-            },
-              {
-              "$limit": 20
-            }
+    const create_transaction_graph = (time_period, split_time_period, line_type) => {
+      Promise.all([
+        app.slpdb.query(app.slpdb.count_txs_per_block({
+          "$and": [
+            { "slp.valid": true },
+            { "blk.t": {
+              "$gte": (+(new Date) / 1000) - time_period,
+              "$lte": (+(new Date) / 1000)
+            } }
           ]
-        },
-        "r": {
-          "f": "[ .[] | {token_name: ._id, txs: .count} ]"
-        }
-      }),
-    ])
-    .then(([monthly_usage, token_usage]) => {
-      app.util.create_time_period_plot(monthly_usage, 'plot-monthly-usage')
-      let token_usage_monthly = token_usage.c;
-      const total_slp_tx_month = monthly_usage.c.reduce((a, v) => a+v.txs, 0);
-      $('#monthly-transaction-count').text(Number(total_slp_tx_month).toLocaleString());
+        })),
+        app.slpdb.query({
+          "v": 3,
+          "q": {
+            "aggregate": [
+              {
+                "$match": {
+                  "blk.t": {
+                    "$gte": (+(new Date) / 1000) - time_period,
+                    "$lte": (+(new Date) / 1000),
+                  }
+                }
+              },
+              {
+                "$group": {
+                  "_id": "$slp.detail.name",
+                  "count": {
+                    "$sum": 1
+                  }
+                }
+              },
+              {
+                "$sort": {
+                  "count": -1
+                }
+              },
+                {
+                "$limit": 20
+              }
+            ]
+          },
+          "r": {
+            "f": "[ .[] | {token_name: ._id, txs: .count} ]"
+          }
+        }),
+      ])
+      .then(([monthly_usage, token_usage]) => {
+        app.util.create_time_period_plot(
+          monthly_usage,
+          'plot-usage',
+          'Transactions',
+          time_period*1000,
+          split_time_period*1000,
+		  line_type
+        );
+        let token_usage_monthly = token_usage.c;
+        const total_slp_tx_month = monthly_usage.c.reduce((a, v) => a+v.txs, 0);
+        $('#transaction-count').text(Number(total_slp_tx_month).toLocaleString());
 
-      token_usage_monthly.push({
-        token_name: 'Other',
-        txs: total_slp_tx_month - token_usage_monthly.reduce((a, v) => a + v.txs, 0)
-      })
-
-      $('#plot-token-usage').html('');
-      try {
-        Plotly.newPlot('plot-token-usage', [{
-          labels: token_usage_monthly.map(v => v.token_name),
-          values: token_usage_monthly.map(v => v.txs),
-          type: 'pie',
-        }], {
-          title: 'Popular Tokens This Month',
+        token_usage_monthly.push({
+          token_name: 'Other',
+          txs: total_slp_tx_month - token_usage_monthly.reduce((a, v) => a + v.txs, 0)
         })
-      } catch (e) {
-        console.error('Plotly.newPlot failed', e);
-      }
-    });
+
+        $('#plot-token-usage').html('');
+        try {
+          Plotly.newPlot('plot-token-usage', [{
+            labels: token_usage_monthly.map(v => v.token_name),
+            values: token_usage_monthly.map(v => v.txs),
+            type: 'pie',
+          }], {
+            title: 'Popular Tokens',
+          })
+        } catch (e) {
+          console.error('Plotly.newPlot failed', e);
+        }
+      });
+    };
+    create_transaction_graph(60*60*24*30, 60*60*24);
+	$('#plot-usage-month').addClass('active');
+	$('#plot-usage-year').click(function() {
+      create_transaction_graph(60*60*24*365, 60*60*24*7, 'hvh');
+	  $('.plot-time-selector span').removeClass('active');
+	  $(this).addClass('active');
+	});
+	$('#plot-usage-month').click(function() {
+      create_transaction_graph(60*60*24*30, 60*60*24, 'hvh');
+	  $('.plot-time-selector span').removeClass('active');
+	  $(this).addClass('active');
+	});
+	$('#plot-usage-week').click(function() {
+      create_transaction_graph(60*60*24*7, 60*60*6, 'hvh');
+	  $('.plot-time-selector span').removeClass('active');
+	  $(this).addClass('active');
+	});
+	$('#plot-usage-day').click(function() {
+      create_transaction_graph(60*60*24*1, 60*60*2, 'hvh');
+	  $('.plot-time-selector span').removeClass('active');
+	  $(this).addClass('active');
+	});
 
     const load_paginated_tokens = (limit, skip, done) => {
       app.slpdb.query(app.slpdb.recent_tokens(limit, skip))
       .then((genesises) => {
         genesises = genesises.c;
-        console.log(genesises);
 
         const tbody = $('#index-tokens-table tbody');
         tbody.html('');
@@ -2295,7 +2325,7 @@ app.init_all_tokens_page = () =>
       all_tokens_count = app.util.extract_total(all_tokens_count);
 
       $('main[role=main]').html(app.template.all_tokens_page());
-	  $('#all-tokens-total-tokens').text(Number(all_tokens_count.t).toLocaleString());
+      $('#all-tokens-total-tokens').text(Number(all_tokens_count.t).toLocaleString());
 
       const load_paginated_tokens = (limit, skip, done) => {
         app.slpdb.query(app.slpdb.all_tokens(limit, skip))
@@ -2832,19 +2862,51 @@ app.init_token_page = (tokenIdHex) =>
         });
       }
 
-      app.slpdb.query(app.slpdb.count_txs_per_block({
-        "$and": [
-          { "slp.valid": true },
-          { "blk.t": {
-            "$gte": (+(new Date) / 1000) - (60*60*24*30),
-            "$lte": (+(new Date) / 1000)
-          } },
-          { "slp.detail.tokenIdHex": tokenIdHex }
-        ]
-      })).then((token_monthly_usage) => {
-        app.util.create_time_period_plot(token_monthly_usage, 'plot-token-monthly-usage');
-        $('#token-monthly-usage-count').text(Number(token_monthly_usage.c.reduce((a, v) => a+v.txs, 0)).toLocaleString());
-      });
+
+      const create_transaction_graph = (time_period, split_time_period, line_type) => {
+        app.slpdb.query(app.slpdb.count_txs_per_block({
+          "$and": [
+            { "slp.valid": true },
+            { "blk.t": {
+              "$gte": (+(new Date) / 1000) - time_period,
+              "$lte": (+(new Date) / 1000)
+            } },
+            { "slp.detail.tokenIdHex": tokenIdHex }
+          ]
+        })).then((token_usage) => {
+          app.util.create_time_period_plot(
+			token_usage,
+			'plot-token-usage',
+			'Transactions',
+            time_period*1000,
+            split_time_period*1000,
+		    line_type
+		  );
+          $('#token-usage-count').text(Number(token_usage.c.reduce((a, v) => a+v.txs, 0)).toLocaleString());
+        });
+	  };
+      create_transaction_graph(60*60*24*30, 60*60*24);
+	  $('#plot-token-usage-month').addClass('active');
+	  $('#plot-token-usage-year').click(function() {
+        create_transaction_graph(60*60*24*365, 60*60*24*7, 'hvh');
+	    $('.plot-time-selector span').removeClass('active');
+	    $(this).addClass('active');
+	  });
+	  $('#plot-token-usage-month').click(function() {
+        create_transaction_graph(60*60*24*30, 60*60*24, 'hvh');
+	    $('.plot-time-selector span').removeClass('active');
+	    $(this).addClass('active');
+	  });
+	  $('#plot-token-usage-week').click(function() {
+        create_transaction_graph(60*60*24*7, 60*60*6, 'hvh');
+	    $('.plot-time-selector span').removeClass('active');
+	    $(this).addClass('active');
+	  });
+	  $('#plot-token-usage-day').click(function() {
+        create_transaction_graph(60*60*24*1, 60*60*2, 'hvh');
+	    $('.plot-time-selector span').removeClass('active');
+	    $(this).addClass('active');
+	  });
 
       app.slpdb.query(app.slpdb.token_addresses(tokenIdHex, 10))
       .then((token_addresses) => {
