@@ -1881,7 +1881,7 @@ app.bitdb = {
   get_amounts_from_txid_vout_pairs: (pairs=[]) => ({
     "v": 3,
     "q": {
-      "db": ["c"],
+      "db": ["c", "u"],
       "aggregate": [
         {
           "$match": {
@@ -2056,7 +2056,7 @@ app.init_nonslp_tx_page = (txid, slp=null) =>
 
       Promise.all(input_txid_vout_reqs)
       .then((results) => {
-        const input_pairs  = results.reduce((a, v) => a.concat(v.c), []);
+        const input_pairs  = results.reduce((a, v) => a.concat(v.u).concat(v.c), []);
         const input_amounts = input_pairs.reduce((a, v) => {
           a[v.txid+':'+v.vout] = v.amount;
           return a;
