@@ -1986,16 +1986,16 @@ app.extract_sent_amount_from_tx = (tx, addr) => {
   // if self_send we count entirety of outputs as send amount
   if (self_send) {
     let amount = tx.slp.detail.outputs
-        .map(v => new BigNumber(v.amount))
-        .reduce((a, v) => a.plus(v), new BigNumber(0));
+      .map(v => new BigNumber(v.amount))
+      .reduce((a, v) => a.plus(v), new BigNumber(0));
 
     if (addr && tx.graph[0]) {
-        const in_amount = tx.graph[0].graphTxn.inputs
-            .filter((e) => e.address == addr)
-            .map(v => new BigNumber(v.slpAmount))
-            .reduce((a, v) => a.plus(v), new BigNumber(0));
+      const in_amount = tx.graph[0].graphTxn.inputs
+        .filter((e) => e.address == addr)
+        .map(v => new BigNumber(v.slpAmount))
+        .reduce((a, v) => a.plus(v), new BigNumber(0));
 
-        amount = amount.minus(amount.minus(in_amount));
+      amount = amount.minus(amount.minus(in_amount));
     }
 
     return app.util.format_bignum(amount.toFormat(tx.slp.detail.decimals));
