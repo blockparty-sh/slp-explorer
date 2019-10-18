@@ -2027,7 +2027,7 @@ app.init_404_page = () => new Promise((resolve, reject) => {
   resolve();
 });
 
-app.init_nonslp_tx_page = (txid, slp=null) =>
+app.init_nonslp_tx_page = (txid, highlight=[], slp=null) =>
   new Promise((resolve, reject) => {
     app.bitdb.query(app.bitdb.tx(txid))
     .then((tx) => {
@@ -2069,11 +2069,14 @@ app.init_nonslp_tx_page = (txid, slp=null) =>
         const lookup_missing_spendtxid = (m, txid, vout) =>
           app.bitdb.query(app.bitdb.lookup_tx_by_input(txid, vout))
           .then((tx) => {
-            m['spendTxid'] = tx.u.length > 0
-              ? tx.u[0].tx.h
-              : tx.c.length > 0
-                ? tx.c[0].tx.h
-                : null;
+            const ttx = tx.u.length > 0 ? tx.u[0] : tx.c.length > 0 ? tx.c[0] : null;
+            m['spendTxid'] = null;
+            m['spendVout'] = null;
+            if (ttx !== null) {
+              m['spendTxid'] = ttx.tx.h;
+              m['spendVout'] = ttx.in.filter(v => v.e.h === txid && v.e.i === vout)[0].i;
+              console.log(txid, vout, ttx);
+            }
           });
 
         const missing_lookups = tx.out.map((m) => {
@@ -2085,8 +2088,20 @@ app.init_nonslp_tx_page = (txid, slp=null) =>
           $('main[role=main]').html(app.template.nonslp_tx_page({
             tx:            tx,
             input_amounts: input_amounts,
-			slp:           slp,
+            slp:           slp,
           }));
+
+          for (const h of highlight) {
+            if (h.length < 2) continue;
+            const type = h[0] == 'i' ? 'input' : 'output';
+            const idx  = parseInt(h.slice(1), 10);
+            const $selector = $('#'+type+'s-list .table tr:nth-child('+(1+idx)+')');
+            $selector.addClass('highlight');
+            /*
+            $('html,body').animate({
+               scrollTop: $selector.offset().top - 100
+            });*/
+          }
 
           resolve();
         });
@@ -2451,23 +2466,22 @@ app.init_all_tokens_page = () =>
     })
   )
 
-app.init_tx_page = (txid) =>
+app.init_tx_page = (txid, highlight=[]) =>
   new Promise((resolve, reject) =>
     app.slpdb.query(app.slpdb.tx(txid))
     .then((tx) => {
       tx = tx.u.concat(tx.c);
       if (tx.length == 0) {
-        return resolve(app.init_nonslp_tx_page(txid));
+        return resolve(app.init_nonslp_tx_page(txid, highlight));
       }
 
       tx = tx[0];
 
-	  if (! tx.slp || ! tx.slp.valid) {
-		console.log(tx.slp);
-        return resolve(app.init_nonslp_tx_page(tx.h, tx.slp));
-	  }
+      if (! tx.slp || ! tx.slp.valid) {
+        return resolve(app.init_nonslp_tx_page(tx.h, highlight, tx.slp));
+      }
 
-	  if (tx.graph.length === 0) {
+      if (tx.graph.length === 0) {
         return resolve(app.init_error_processing_tx_page(tx));
       }
 
@@ -2508,21 +2522,19 @@ app.init_tx_page = (txid) =>
           const lookup_missing_spendtxid = (m, txid, vout) =>
             app.bitdb.query(app.bitdb.lookup_tx_by_input(txid, vout))
             .then((tx) => {
-              m['missingTxid'] = tx.u.length > 0
-                ? tx.u[0].tx.h
-                : tx.c.length > 0
-                  ? tx.c[0].tx.h
-                  : null;
+              const ttx = tx.u.length > 0 ? tx.u[0] : tx.c.length > 0 ? tx.c[0] : null;
+              m['spendTxid'] = null;
+              m['spendVout'] = null;
+              if (ttx !== null) {
+                m['spendTxid'] = ttx.tx.h;
+                m['spendVout'] = ttx.in.filter(v => v.e.h === txid && v.e.i === vout)[0].i + 1;
+                console.log(txid, vout, ttx);
+              }
             });
 
-          let missing_lookups = [];
-          for (let m of tx.graph[0].graphTxn.outputs) {
-            if (! m.spendTxid) {
-              missing_lookups.push(
-                lookup_missing_spendtxid(m, tx.graph[0].graphTxn.txid, m.vout)
-              );
-            }
-          }
+          const missing_lookups = tx.graph[0].graphTxn.outputs.map((m) => {
+            return lookup_missing_spendtxid(m, tx.graph[0].graphTxn.txid, m.vout)
+          });
 
           Promise.all(missing_lookups)
           .then(() => {
@@ -2531,8 +2543,23 @@ app.init_tx_page = (txid) =>
               token: token.t[0],
               input_amounts: input_amounts
             }));
-
             app.util.set_token_icon($('main[role=main] .transaction_box .token-icon-large'), 128);
+
+            for (const h of highlight) {
+              if (h.length < 2) continue;
+              const type = h[0] == 'i' ? 'input' : 'output';
+              const idx  = parseInt(h.slice(1), 10) - 1;
+              const $selector = $('#'+type+'s-list .table tr:nth-child('+(idx+1)+')');
+              if ($selector.length > 0) {
+                $selector.addClass('highlight');
+                /*
+                $('html,body').animate({
+                   scrollTop: $selector.offset().top
+                });
+                */
+              }
+            }
+
             resolve();
           });
         });
@@ -3435,7 +3462,7 @@ app.router = (whash, push_history = true) => {
     whash = window.location.hash.substring(1);
   }
 
-  const [_, path, key] = whash.split('/');
+  const [_, path, ...key] = whash.split('/');
 
 
   let method = null;
@@ -3454,24 +3481,28 @@ app.router = (whash, push_history = true) => {
       method = () => app.init_all_tokens_page();
       break;
     case '#tx':
-      document.title = 'Transaction ' + key + ' - SLP Explorer';
-      method = () => app.init_tx_page(key);
+      document.title = 'Transaction ' + key[0] + ' - SLP Explorer';
+      method = () => app.init_tx_page(key[0], key.slice(1));
+      break;
+    case '#bchtx':
+      document.title = 'Bitcoin Cash Transaction ' + key[0] + ' - SLP Explorer';
+      method = () => app.init_nonslp_tx_page(key[0], key.slice(1));
       break;
     case '#block':
-      document.title = 'Block ' + key + ' - SLP Explorer';
-      if (key === 'mempool') {
+      document.title = 'Block ' + key[0] + ' - SLP Explorer';
+      if (key[0] === 'mempool') {
         method = () => app.init_block_mempool_page();
       } else {
-        method = () => app.init_block_page(parseInt(key));
+        method = () => app.init_block_page(parseInt(key[0]));
       }
       break;
     case '#token':
-      document.title = 'Token ' + key + ' - SLP Explorer';
-      method = () => app.init_token_page(key);
+      document.title = 'Token ' + key[0] + ' - SLP Explorer';
+      method = () => app.init_token_page(key[0]);
       break;
     case '#address':
-      document.title = 'Address ' + key + ' - SLP Explorer';
-      method = () => app.init_address_page(key);
+      document.title = 'Address ' + key[0] + ' - SLP Explorer';
+      method = () => app.init_address_page(key[0]);
       break;
     default:
       document.title = '404 | SLP Explorer';
