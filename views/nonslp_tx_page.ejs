@@ -63,7 +63,7 @@
 
 <div class="rounded_row_50percent_container">
   <div class="rounded_row">
-    <div class="input_output">
+    <div class="input_output" id="inputs-list">
       <div class="rounded box-shadow table-container">
         <h3>Inputs</h3>
         <div class="table-responsive">
@@ -81,7 +81,7 @@
                 <% for (let m of tx.in) { %>
                   <% if (input_amounts[m.e.h+':'+m.e.i]) { %>
                     <tr>
-                      <td><a class="txid" href="/#tx/<%= m.e.h %>" style="font-weight:bold">&larr;</a></td>
+                      <td><a class="txid" href="/#tx/<%= m.e.h %>/o<%= m.e.i %>" style="font-weight:bold">&larr;</a></td>
                       <td><%= m.e.i %></td>
                       <td class="amount">
                          <%= app.util.format_bignum_bch_str(input_amounts[m.e.h+':'+m.e.i])  %>
@@ -108,7 +108,7 @@
     </div>
   </div>
   <div class="rounded_row">
-      <div class="input_output">
+      <div class="input_output" id="outputs-list">
         <div class="rounded box-shadow table-container">
           <h3>Outputs</h3>
           <div class="table-responsive">
@@ -127,7 +127,7 @@
                     <tr>
                       <td>
                         <% if (m['spendTxid']) { %>
-                          <a class="txid" href="/#tx/<%= m['spendTxid'] %>" style="font-weight:bold">
+                          <a class="txid" href="/#tx/<%= m['spendTxid'] %>/i<%= m['spendVout'] %>" style="font-weight:bold">
                               &#10004;
                           </a>
                         <% } %>

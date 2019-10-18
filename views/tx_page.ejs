@@ -153,7 +153,7 @@
 
 <div class="rounded_row_50percent_container">
   <div class="rounded_row">
-    <div class="input_output">
+    <div class="input_output" id="inputs-list">
       <div class="rounded box-shadow table-container">
         <h3>Inputs (<%= Number(Object.keys(input_amounts).length).toLocaleString() %>)</h3>
         <div class="table-responsive">
@@ -170,7 +170,7 @@
                 <% for (let m of tx.in) { %>
                   <% if (input_amounts[m.e.h+':'+m.e.i]) { %>
                     <tr>
-                      <td><a class="txid" href="/#tx/<%= m.e.h %>" style="font-weight:bold">&larr;</a></td>
+                      <td><a class="txid" href="/#tx/<%= m.e.h %>/o<%= m.e.i %>" style="font-weight:bold">&larr;</a></td>
                       <td class="amount">
                         <% if (tx.slp.detail.transactionType == 'SEND') { %>
                             <%= app.util.format_bignum_str(input_amounts[m.e.h+':'+m.e.i], token.tokenDetails.decimals)  %>
@@ -201,7 +201,7 @@
     </div>
   </div>
   <div class="rounded_row">
-      <div class="input_output">
+      <div class="input_output" id="outputs-list">
         <div class="rounded box-shadow table-container">
           <h3>Outputs (<%= Number(tx.graph[0].graphTxn.outputs.length).toLocaleString() %>)</h3>
           <div class="table-responsive">
@@ -228,15 +228,7 @@
                     <% break; } %>
                       <td>
                         <% if (m['spendTxid']) { %>
-                          <a class="txid" href="/#tx/<%= m['spendTxid'] %>" style="font-weight:bold">
-                            <% if (burnt) { %>
-                              &#62;:D
-                            <% } else { %>
-                              &#10004;
-                            <% } %>
-                          </a>
-                        <% } else if (m['missingTxid']) { %>
-                          <a class="txid" href="/#tx/<%= m['missingTxid'] %>" style="font-weight:bold">
+                          <a class="txid" href="/#tx/<%= m['spendTxid'] %>/i<%= m['spendVout'] %>" style="font-weight:bold">
                             <% if (burnt) { %>
                               &#62;:D
                             <% } else { %>
