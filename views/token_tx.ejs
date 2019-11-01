@@ -2,14 +2,8 @@
   <td><a class="txid" href="/#tx/<%= tx.tx.h %>"><%= app.util.compress_txid(tx.tx.h) %></a></td>
   <td><%= tx.slp.detail.transactionType[0].toUpperCase() + tx.slp.detail.transactionType.substr(1).toLowerCase() %></td>
   <td class="amount">
-    <% if (tx.slp.detail.transactionType === 'SEND') { %>
-      <% const sent_amount = app.extract_sent_amount_from_tx(tx); %>
-      <span class="<%= app.util.format_balance_class(sent_amount) %>"><%=  sent_amount %></span>
-    <% } %>
-    <% if (tx.slp.detail.transactionType === 'GENESIS'
-        || tx.slp.detail.transactionType === 'MINT') { %>
-      <%= tx.slp.detail.outputs[0].amount %>
-    <% } %>
+    <% const sent_amount = app.extract_sent_amount_from_tx(tx); %>
+    <span class="<%= app.util.format_balance_class(sent_amount) %>"><%=  sent_amount %></span>
   </td>
   <td>
     <% if (tx.blk) { %>
