@@ -892,4 +892,10 @@ html.index-page header {
     .row {
         padding: 0;
     }
+
+    #address_page_header .address-qr-code {
+        float: none;
+        width: 128px;
+        margin:0px auto;
+    }
 }
