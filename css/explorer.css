@@ -818,10 +818,17 @@ html.index-page header {
     }
     .transaction_box {
         margin-top: 160px;
+        margin-left:0px;
+        margin-right:0px;
+    }
+    .rounded_row_50percent_container {
+        display: block;
     }
     .rounded_row {
         overflow: auto;
         padding:10px;
+        margin-left:0px;
+        margin-right:0px;
     }
     .hide-desktop {
         display:block!important;
