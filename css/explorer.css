@@ -885,4 +885,11 @@ html.index-page header {
         margin-bottom:1rem;
     }
 
+    .super-wrapper {
+        width: 100%;
+    }
+
+    .row {
+        padding: 0;
+    }
 }
