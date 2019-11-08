@@ -895,4 +895,8 @@ html.index-page header {
         width: 128px;
         margin:0px auto;
     }
+
+    #all-tokens-table {
+        margin-top: 70px;
+    }
 }
