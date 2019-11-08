@@ -155,7 +155,10 @@
             <tr>
               <th scope="row">Minting Baton UTXO</th>
               <td>
-                <a href="#tx/<%= token.mintBatonUtxo.split(':')[0] %>"><%= token.mintBatonUtxo %></a>
+                <a href="#tx/<%= token.mintBatonUtxo.split(':')[0] %>">
+                  <% const mintBatonUtxoParts = token.mintBatonUtxo.split(':'); %>
+                  <%= app.util.compress_txid(mintBatonUtxoParts[0]) %>:<%= mintBatonUtxoParts[1] %>
+                </a>
               </td>
             </tr>
             <% } %>
