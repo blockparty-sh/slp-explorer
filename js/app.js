@@ -132,7 +132,7 @@ app.util = {
     const bn = new BigNumber(str).dividedBy(100000000);
     return app.util.format_bignum_str(bn.toFormat(8), 8);
   },
-  compress_txid: (txid) => `${txid.substring(0, 8)}...${txid.substring(56)}`,
+  compress_txid: (txid) => `${txid.substring(0, 12)}...${txid.substring(59)}`,
   compress_tokenid: (tokenid) => `${tokenid.substring(0, 12)}...${tokenid.substring(59)}`,
   compress_string: (str, len=25) => str.substring(0, len) + ((str.length > len) ? '...' : ''),
   document_link: (doc) => {
