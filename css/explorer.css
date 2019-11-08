@@ -125,12 +125,12 @@ body {
 
 /* Header */
 header {
-    background-color: #60bd6c;
+    background-color: #06212A;
     position: fixed;
     top: 0;
     width: 100%;
     z-index: 100;
-    border-bottom: 1px solid #ededed;
+    border-bottom: 1px solid #104658;
 }
 
 header.loading {
