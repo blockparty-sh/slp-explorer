@@ -1,113 +1,117 @@
 <div class="header_infobox">
-  <img src="/img/slpdb.svg">
-  <h2>The Simple Ledger Protocol Explorer</h2>
-  <p>browse tokens built on Bitcoin Cash</p>
+  <div class="align-center"><img id="logo" src="img/slp-logo.svg" alt="Simple Ledger Protocol" /></div>
+  <h1>SLP Tokens Explorer</h1>
+  <h2>Browse tokens built on Bitcoin Cash</h2>
   <form class="form">
     <div class="md-form index-search-wrapper">
       <input class="index-search-input form-control" type="text" placeholder="Search by txid, address or token name.." aria-label="Search" id="main-search">
     </div>
   </form>
   <p class="normal">This website is built on top of <a target="_blank" href="https://github.com/simpleledger/SLPDB">SLPDB</a>, an offshoot of <a target="_blank" href="https://github.com/fountainhead-cash/bitd">BitDB FH</a>, view code and submit issues on <a target="_blank" href="https://github.com/blockparty-sh/slp-explorer">Github</a>.<br>Get some of your own tokens at the <a href="https://simpleledger.network/">faucet</a>.</p>
+  <a href="#alltokens" id="index-view-all-tokens" class="button button-large align-center">View all tokens</a>
 </div>
 
-<a id="index-view-all-tokens" href="#alltokens"><h1>View all tokens</h1></a>
+<div class="row super-wrapper">
 
-<div class="rounded_row">
-  <div id="recent-transactions-table-container" class="table-container loading">
-    <h3>Latest Transactions</h3>
+    <div class="rounded_row">
+      <div id="recent-transactions-table-container" class="table-container loading">
+        <h3>Latest Transactions</h3>
 
-      <div class="table-responsive">
-        <table id="recent-transactions-table">
-          <thead>
-            <tr>
-              <th><div class="flex-hcenter">Transaction Hash</div></th>
-              <th><div class="flex-hcenter">Symbol</div></th>
-              <th><div class="flex-hcenter amount">Amount</div></th>
-              <th><div class="flex-hcenter">Version</div></th>
-              <th><div class="flex-hcenter">Block Height</div></th>
-              <th><div class="flex-hcenter">Block Time</div></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td>Loading...</td></tr>
-          </tbody>
-        </table>
+          <div class="table-responsive">
+            <table id="recent-transactions-table">
+              <thead>
+                <tr>
+                  <th><div class="flex-hcenter">Transaction Hash</div></th>
+                  <th><div class="flex-hcenter">Symbol</div></th>
+                  <th><div class="flex-hcenter amount">Amount</div></th>
+                  <th><div class="flex-hcenter">Version</div></th>
+                  <th><div class="flex-hcenter">Block Height</div></th>
+                  <th><div class="flex-hcenter">Block Time</div></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
       </div>
-  </div>
-</div>
-
-<div class="rounded_row graph">
-  <h3>Transaction Charts (<span id="transaction-count">...</span>)</h3>
-  <div class="plot-time-selector">
-      <span id="plot-usage-year">year</span>
-      <span id="plot-usage-month">month</span>
-      <span id="plot-usage-week">week</span>
-      <span id="plot-usage-day">day</span>
-  </div>
-  <div id="plot-usage" style="width:100%">Loading...</div>
-  <div id="plot-token-usage" style="width:100%;"></div>
-</div>
-
-<div class="clearfix"></div>
-</div>
-
-<div class="rounded_row_50percent_container">
-  <div class="rounded_row">
-    <div id="index-tokens-table-container" class="rounded box-shadow table-container">
-      <h3>Tokens Created (<span id="index-tokens-count">...</span>)</h3>
-      <div class="table-responsive">
-        <table class="table" id="index-tokens-table">
-          <thead>
-            <tr>
-              <th>Token Id</th>
-              <th>Token</th>
-              <th>Block Height</th>
-              <th>Block Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td>loading...</td><tr>
-          </tbody>
-        </table>
-      </div>
-      <ul class="pagination">
-      </ul>
     </div>
-  </div>
 
-  <div class="rounded_row">
-    <div id="index-burn-history-table-container" class="rounded box-shadow table-container">
-      <h3>Token Burns (<span id="index-burn-count">...</span>)</h3>
-      <div class="table-responsive">
-        <table class="table" id="index-burn-history-table">
-          <thead>
-            <tr>
-              <th>Txid</th>
-              <th class="amount">Amount Burnt</th>
-              <th>Token</th>
-              <th>Block Height</th>
-              <th>Block Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td>Loading...</td></tr>
-          </tbody>
-        </table>
+    <div class="rounded_row graph">
+      <h3>Transaction Charts (<span id="transaction-count">...</span>)</h3>
+      <div class="plot-time-selector">
+          <span id="plot-usage-year">year</span>
+          <span id="plot-usage-month">month</span>
+          <span id="plot-usage-week">week</span>
+          <span id="plot-usage-day">day</span>
+      </div>
+      <div id="plot-usage" style="width:100%">Loading...</div>
+      <div id="plot-token-usage" style="width:100%;"></div>
+    </div>
+
+    <div class="clearfix"></div>
+    </div>
+</div>
+
+<div class="row super-wrapper">
+  <div class="rounded_row_50percent_container">
+    <div class="rounded_row">
+      <div id="index-tokens-table-container" class="rounded box-shadow table-container">
+        <h3>Tokens Created (<span id="index-tokens-count">...</span>)</h3>
+        <div class="table-responsive">
+          <table class="table" id="index-tokens-table">
+            <thead>
+              <tr>
+                <th>Token Id</th>
+                <th>Token</th>
+                <th>Block Height</th>
+                <th>Block Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>loading...</td><tr>
+            </tbody>
+          </table>
+        </div>
         <ul class="pagination">
         </ul>
       </div>
     </div>
-  </div>
-  
-  <div class="clearfix"></div>
-</div>
 
-<div class="rounded_row">
-  <h1>Exchanges:</h1>
-  <div id="exchange-exchanges">
-      <a href="https://cryptophyl.com/?r=blockparty" target="blank"><div class="exchange-icon exchange-cryptophyl-icon"></div></a>
-      <a href="https://sideshift.ai/a/jsKIdsWiF" target="blank"><div class="exchange-icon exchange-sideshift-icon"></div></a>
-      <a href="https://www.coinex.com/register?refer_code=c39pv" target="blank"><div class="exchange-icon exchange-coinex-icon"></div></a>
-      <a href="https://altilly.com/" target="blank"><div class="exchange-icon exchange-altilly-icon"></div></a>
+    <div class="rounded_row">
+      <div id="index-burn-history-table-container" class="rounded box-shadow table-container">
+        <h3>Token Burns (<span id="index-burn-count">...</span>)</h3>
+        <div class="table-responsive">
+          <table class="table" id="index-burn-history-table">
+            <thead>
+              <tr>
+                <th>Txid</th>
+                <th class="amount">Amount Burnt</th>
+                <th>Token</th>
+                <th>Block Height</th>
+                <th>Block Time</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Loading...</td></tr>
+            </tbody>
+          </table>
+          <ul class="pagination">
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="clearfix"></div>
   </div>
+
+  <div class="row">
+    <h3>Exchanges:</h3>
+    <div id="exchange-exchanges">
+        <a href="https://cryptophyl.com/?r=blockparty" target="blank"><img src="img/cryptophyl.png" /></a>
+        <a href="https://sideshift.ai/a/jsKIdsWiF" target="blank"><img src="img/sideshift-ai.png" /></a>
+        <a href="https://www.coinex.com/register?refer_code=c39pv" target="blank"><img src="img/coinex.png" /></a>
+        <a href="https://altilly.com/" target="blank"><img src="img/altilly.png" /></a>
+    </div>
+  </row>
 </div>

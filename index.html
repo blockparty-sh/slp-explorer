@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
     <link rel="stylesheet" href="css/explorer.css" rel="stylesheet">
-    <title>SLP Explorer</title>
+    <title>SLP Token Explorer</title>
 
     <!-- Favicon -->
     <link rel="apple-touch-icon" sizes="60x60" href="/apple-touch-icon.png">
@@ -33,27 +33,39 @@
   </head>
   <body>
     <div class="maintenance">
-        simpleledger.info currently undergoing maintenance, expect degraded performance.
+      simpleledger.info currently undergoing maintenance, expect degraded performance.
     </div>
     <header class="loading">
-        <div class="maintenance">
-            simpleledger.info currently undergoing maintenance, expect degraded performance.
-        </div>
-        <ul id="top-menu">
-            <li><a class="show-mobile" id="header-logo" href="#">SLP</a></li>
-            <li><a class="hide-mobile" href="#alltokens">All Tokens</a></li>
-            <li><a class="hide-mobile" href="#">Explorer</a></li>
-            <li class="search">
-              <form>
-                <input type="text" placeholder="Search by txid, address or token name..." autocapitalize="off" spellcheck="off" id="header-search">
-              </form>
-            </li>
-        </ul>
+      <div class="maintenance">
+        simpleledger.info currently undergoing maintenance, expect degraded performance.
+      </div>
+      <ul id="top-menu" class="hide-mobile">
+        <li><a href="#" id="header-logo"></a></li>
+        <li><a href="#">Explorer</a></li>
+        <li><a href="#alltokens">All Tokens</a></li>
+        <li class="search">
+          <form>
+            <input type="text" placeholder="Search by txid, address or token name..." autocapitalize="off" spellcheck="off" id="header-search">
+          </form>
+        </li>
+      </ul>
+      <ul id="top-menu" class="hide-desktop show-mobile">
+        <li><a href="#" id="header-logo"></a></li>
+        <li><a href="#">Explorer</a></li>
+        <li><a href="#alltokens">All Tokens</a></li>
+      </ul>
+      <ul class="search hide-desktop show-mobile">
+        <li>
+          <form>
+            <input type="text" placeholder="Search by txid, address or token name..." autocapitalize="off" spellcheck="off" id="header-search">
+          </form>
+        </li>
+      </ul>
     </header>
 
-    <div class="row super-wrapper">
-        <main role="main" class="container-fluid">
-        </main>
+    <div class="container-main">
+      <main role="main" class="container-fluid">
+      </main>
     </div>
 
     <div class="loading-modal">
@@ -63,8 +75,11 @@
       </div>
     </div>
 
-   <footer class="display-none">
+    <footer class="display-none">
       <div class="row">
+        <div class="col">
+          <a href="#"><img id="logo" src="img/slp-logo.svg" alt="Simple Ledger Protocol" /></a>
+        </div>
         <div class="col">
           <h4>Source Code</h4>
           <ul class="list-unstyled text-small">
@@ -96,19 +111,19 @@
       </div>
     </footer>
     <div id="error-modal" class="display-none">
-        <h1>Oops... an error occured!</h1>
-        <pre id="error-modal-text"></pre>
-        <p>
+      <h1>Oops... an error occured!</h1>
+      <pre id="error-modal-text"></pre>
+      <p>
         Sorry for the inconvenience, we will look into this as soon as possible. If you'd like, you can report this error <a href="https://github.com/blockparty-sh/slp-explorer">here</a>.<br>Reloading the page might help.
-        </p>
+      </p>
 
-        <a onclick="reload_page()">
-          <button type="button" class="button button_green">Reload Page</button>
-        </a>
-        <br><br>
-        <a href="/">
-          <button type="button" class="button button_green">Go Home</button>
-        </a>
+      <a onclick="reload_page()">
+        <button type="button" class="button button_green">Reload Page</button>
+      </a>
+      <br><br>
+      <a href="/">
+        <button type="button" class="button button_green">Go Home</button>
+      </a>
     </div>
 
 
