@@ -326,10 +326,12 @@ tr.burnt-tx {
   border-radius: 0;
   text-align: center;
   font-size:0.8rem;
+  border: 1px solid #eee;
+  white-space:nowrap;
 }
 
 .pagination li {
-    display:inline;
+    display:inline-block;
 }
 .pagination a {
   color: black;
@@ -337,20 +339,9 @@ tr.burnt-tx {
   padding: 8px;
   text-decoration: none;
   transition: background-color .3s;
-  border: 1px solid #ddd; /* Gray */
   cursor:pointer;
   min-width: 2rem;
   background-color:#fff;
-}
-
-.pagination li:first-child a {
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
-}
-
-.pagination li:last-child a {
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
 }
 
 .pagination li.active a {
