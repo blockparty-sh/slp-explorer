@@ -484,10 +484,6 @@ html.full-width .row {
 main.container-fluid {
     padding-top: 1px;
 }
-    50% {
-        opacity: 0;
-    }
-}
 
 .loading_dank_memes {
     text-align: center;
