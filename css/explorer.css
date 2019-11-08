@@ -810,6 +810,10 @@ html.index-page header {
 	background: linear-gradient(to right, #e0ff9e 0%,rgba(255,255,255,0) 100%);
 }
 
+.decimal-part {
+    color: #8a8a8a;
+}
+
 @media only screen and (max-width: 890px) {
     .rounded_row {
         overflow: auto;

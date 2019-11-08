@@ -135,16 +135,6 @@ app.util = {
   compress_txid: (txid) => `${txid.substring(0, 12)}...${txid.substring(59)}`,
   compress_tokenid: (tokenid) => `${tokenid.substring(0, 12)}...${tokenid.substring(59)}`,
   compress_string: (str, len=25) => str.substring(0, len) + ((str.length > len) ? '...' : ''),
-  format_balance_class: (balance) => {
-    balance = String(balance);
-    const splitted = balance.split('.');
-    let len = 0;
-    if (splitted.length === 1) {
-      return 'format-balance' + 10;
-    } else {
-      return 'format-balance' + (9-splitted[1].length);
-    }
-  },
   document_link: (doc) => {
     const email_regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
@@ -603,6 +593,31 @@ app.util = {
   },
 
   cashaccount_avatar: (cashaccount) => {
+  },
+
+  decimal_formatting: (td_selector) => {
+    let biggest_decimals = 0;
+
+    td_selector.each(function() {
+      $(this).html($(this).html().trim());
+
+      const val = $(this).html();
+      const dotidx = val.indexOf('.');
+      if (dotidx >= 0) {
+        biggest_decimals = Math.max(biggest_decimals, val.length - dotidx);
+      }
+    });
+
+    td_selector.each(function() {
+      const val = $(this).html();
+      const dotidx = val.indexOf('.');
+      const skip = dotidx < 0 ? biggest_decimals : biggest_decimals-(val.length - dotidx);
+      if (dotidx >= 0) {
+        const dparts = val.split('.');
+        $(this).html(`${dparts[0]}.<span class="decimal-part">${dparts[1]}</span>`);
+      }
+      $(this).html($(this).html()+("&nbsp;").repeat(skip));
+    });
   },
 };
 
@@ -2156,6 +2171,8 @@ app.init_index_page = () =>
         app.util.set_token_icon($(this), 32);
       });
 
+      app.util.decimal_formatting($('#recent-transactions-table tbody tr td:nth-child(3)'));
+
       $('#recent-transactions-table-container').removeClass('loading');
     });
 
@@ -2339,6 +2356,8 @@ app.init_index_page = () =>
           app.util.set_token_icon($(this), 32);
         });
 
+        app.util.decimal_formatting($('#index-burn-history-table tbody tr td:nth-child(2)'));
+
         done();
       });
     };
@@ -2404,6 +2423,8 @@ app.init_index_page = () =>
 
         app.util.set_token_icon(tbody.find('.token-icon-small:first'), 32);
         app.util.flash_latest_item(tbody);
+
+        app.util.decimal_formatting($('#recent-transactions-table tbody tr td:nth-child(3)'));
 
         tbody.find('tr:last').remove();
       });
@@ -2545,7 +2566,12 @@ app.init_tx_page = (txid, highlight=[]) =>
               token: token.t[0],
               input_amounts: input_amounts
             }));
+
             app.util.set_token_icon($('main[role=main] .transaction_box .token-icon-large'), 128);
+
+
+            app.util.decimal_formatting($('#inputs-list tbody tr td:nth-child(2)'));
+            app.util.decimal_formatting($('#outputs-list tbody tr td:nth-child(2)'));
 
             for (const h of highlight) {
               if (h.length < 2) continue;
@@ -2604,6 +2630,8 @@ app.init_block_page = (height) =>
           $('#block-transactions-table tbody .token-icon-small').each(function() {
             app.util.set_token_icon($(this), 32);
           });
+          
+          app.util.decimal_formatting($('#block-transactions-table tbody tr td:nth-child(3)'));
 
           done();
         });
@@ -2797,6 +2825,8 @@ app.init_token_page = (tokenIdHex) =>
             );
           });
 
+          app.util.decimal_formatting($('#token-addresses-table tbody tr td:nth-child(2)'));
+
           done();
         });
       };
@@ -2817,6 +2847,8 @@ app.init_token_page = (tokenIdHex) =>
               })
             );
           });
+
+          app.util.decimal_formatting($('#token-mint-history-table tbody tr td:nth-child(3)'));
 
           done();
         });
@@ -2852,6 +2884,8 @@ app.init_token_page = (tokenIdHex) =>
               })
             );
           });
+
+          app.util.decimal_formatting($('#token-burn-history-table tbody tr td:nth-child(2)'));
 
           done();
         });
@@ -2912,6 +2946,8 @@ app.init_token_page = (tokenIdHex) =>
                 })
               );
             });
+
+            app.util.decimal_formatting($('#token-transactions-table tbody tr td:nth-child(3)'));
 
             done();
           });
@@ -3195,6 +3231,8 @@ app.init_address_page = (address) =>
             app.util.set_token_icon($(this), 32);
           });
 
+          app.util.decimal_formatting($('#address-tokens-table tbody tr td:nth-child(4)'));
+
           done();
         });
       };
@@ -3257,6 +3295,8 @@ app.init_address_page = (address) =>
             $('#address-transactions-table tbody .token-icon-small').each(function() {
               app.util.set_token_icon($(this), 32);
             });
+            
+            app.util.decimal_formatting($('#address-transactions-table tbody tr td:nth-child(3)'));
 
             done();
           });
