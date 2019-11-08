@@ -2108,6 +2108,9 @@ app.init_nonslp_tx_page = (txid, highlight=[], slp=null) =>
             slp:           slp,
           }));
 
+          app.util.decimal_formatting($('#inputs-list tbody tr td:nth-child(3)'));
+          app.util.decimal_formatting($('#outputs-list tbody tr td:nth-child(3)'));
+
           for (const h of highlight) {
             if (h.length < 2) continue;
             const type = h[0] == 'i' ? 'input' : 'output';
@@ -2568,7 +2571,6 @@ app.init_tx_page = (txid, highlight=[]) =>
             }));
 
             app.util.set_token_icon($('main[role=main] .transaction_box .token-icon-large'), 128);
-
 
             app.util.decimal_formatting($('#inputs-list tbody tr td:nth-child(2)'));
             app.util.decimal_formatting($('#outputs-list tbody tr td:nth-child(2)'));
