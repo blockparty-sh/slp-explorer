@@ -834,6 +834,7 @@ html.index-page header {
     }
     .rounded_row {
         overflow: auto;
+        padding:10px;
     }
     .hide-desktop {
         display:block!important;
