@@ -625,23 +625,6 @@ footer #logo {
     white-space: nowrap;
 }
 
-/*
- * TODO this is for the format_balance_class fn
- * im not sure if its useful, and this doesnt work
- * might be cool to try in future
- *
-.format-balance1::after  { content: ' '; }
-.format-balance2::after  { content: '  '; }
-.format-balance3::after  { content: '   '; }
-.format-balance4::after  { content: '    '; }
-.format-balance5::after  { content: '     '; }
-.format-balance6::after  { content: '      '; }
-.format-balance7::after  { content: '       '; }
-.format-balance8::after  { content: '        '; }
-.format-balance9::after  { content: '         '; }
-.format-balance10::after { content:'          '; }
-*/
-
 html.index-page header {
     display: none;
 }
