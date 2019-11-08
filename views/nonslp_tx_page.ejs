@@ -40,6 +40,16 @@
                 </td>
               </tr>
               <tr>
+                <th role="col">Block Time</th>
+                <td>
+                  <% if (tx.blk) { %>
+                    <%= new Date(tx.blk.t*1000).toLocaleString() %>
+                  <% } else { %>
+                    Pending
+                  <% } %>
+                </td>
+              </tr>
+              <tr>
                 <th role="col">Txid</th>
                 <td><a class="txid" href="#tx/<%= tx.tx.h %>"><%= tx.tx.h %></a></td>
               </tr>
