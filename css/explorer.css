@@ -320,7 +320,6 @@ tr.burnt-tx {
 }
 
 .pagination {
-  position: absolute;
   display: inline-block;
   padding: 0;
   margin: 8px 0;
