@@ -45,7 +45,7 @@
         <li><a href="#alltokens">All Tokens</a></li>
         <li class="search">
           <form>
-            <input type="text" placeholder="Search by txid, address or token name..." autocapitalize="off" spellcheck="off" id="header-search">
+            <input type="text" placeholder="Search by txid, address or token name..." autocapitalize="off" spellcheck="off" class="header-search" id="header-search-desktop">
           </form>
         </li>
       </ul>
@@ -57,10 +57,11 @@
       <ul class="search hide-desktop show-mobile">
         <li>
           <form>
-            <input type="text" placeholder="Search by txid, address or token name..." autocapitalize="off" spellcheck="off" id="header-search">
+            <input type="text" placeholder="Search by txid, address or token name..." autocapitalize="off" spellcheck="off" class="header-search" id="header-search-mobile">
           </form>
         </li>
       </ul>
+      <div class="suggestions-container" id="header-search-suggestions-container"></div>
     </header>
 
     <div class="container-main">
@@ -125,7 +126,6 @@
         <button type="button" class="button button_green">Go Home</button>
       </a>
     </div>
-
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

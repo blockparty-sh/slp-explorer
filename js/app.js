@@ -340,31 +340,34 @@ app.util = {
     }
   },
 
-  attach_search_handler: (selector) => {
-    $(selector).closest('form').submit(false);
+  attach_search_handler: ($selector, $container) => {
+    $selector.closest('form').submit(false);
     
-    $(selector).autocomplete({
+    $selector.autocomplete({
       groupBy: 'category',
       preventBadQueries: false, // retry query in case slpdb hasnt yet indexed something
       triggerSelectOnValidInput: false, // disables reload on clicking into box again
       autoSelectFirst: true, // first item will be selected when showing suggestions
+      showNoSuggestionNotice: true,
+      noSuggestionNotice: "No results found...",
+      appendTo: $container,
       width: 'flex',
       lookup: function (query, done) {
-        let search_value = $(selector).val().trim();
+        let search_value = $selector.val().trim();
   
         // check if address entered
         if (slpjs.Utils.isSlpAddress(search_value)) {
-          $(selector).val('');
+          $selector.val('');
           return app.router('/#address/'+slpjs.Utils.toSlpAddress(search_value));
         }
   
         if (slpjs.Utils.isCashAddress(search_value)) {
-          $(selector).val('');
+          $selector.val('');
           return app.router('/#address/'+slpjs.Utils.toSlpAddress(search_value));
         }
   
         if (slpjs.Utils.isLegacyAddress(search_value)) {
-          $(selector).val('');
+          $selector.val('');
           return app.router('/#address/'+slpjs.Utils.toSlpAddress(search_value));
         }
     
@@ -432,13 +435,13 @@ app.util = {
 
           for (let m of tokens.t) {
             if (m.tokenDetails.tokenIdHex === search_value) {
-              $(selector).val('');
+              $selector.val('');
               return app.router('/#token/'+m.tokenDetails.tokenIdHex);
             }
   
             let tval = null;
             const verified = app.util.is_verified(m.tokenDetails.tokenIdHex);
-            tval = `<div class="flex-vcenter">${(verified ? '<img src="/img/verified-checkmark.png">' : '<img src="/img/verified-empty.png">')}&nbsp;${app.util.compress_txid(m.tokenDetails.tokenIdHex)}&nbsp;<span class="token-icon-small" data-tokenid="${m.tokenDetails.tokenIdHex}"></span> ${m.tokenDetails.name} $${m.tokenDetails.symbol}</div>`;
+            tval = `<div class="flex-vcenter">${(verified ? '<img src="/img/verified-checkmark.png">' : '<img src="/img/verified-empty.png">')}&nbsp;<span class="token-icon-small" data-tokenid="${m.tokenDetails.tokenIdHex}"></span> ${m.tokenDetails.name} $${m.tokenDetails.symbol}</div>`;
   
             sugs.push({
               value: m.tokenDetails.tokenIdHex,
@@ -461,7 +464,7 @@ app.util = {
           transactions = transactions.u.concat(transactions.c);
           for (let m of transactions) {
             if (m.tx.h === search_value) {
-              $(selector).val('');
+              $selector.val('');
               return app.router('/#tx/'+m.tx.h);
             }
   
@@ -506,7 +509,7 @@ app.util = {
         });
       },
       onSelect: function (sug) {
-        $(selector).val('');
+        $selector.val('');
         app.router(sug.data.url);
       },
       onSearchComplete: function (query, sug) {
@@ -2155,7 +2158,7 @@ app.init_index_page = () =>
     $('main[role=main]')
     .html(app.template.index_page());
 
-    app.util.attach_search_handler('#main-search');
+    app.util.attach_search_handler($('#main-search'), $('#main-search-suggestions-container'));
 
     app.slpdb.query(app.slpdb.recent_transactions(10))
     .then((data) => {
@@ -3560,11 +3563,16 @@ app.router = (whash, push_history = true) => {
   $('html').addClass('loading');
   $('html').scrollTop(0);
   $('#main-search').autocomplete('dispose');
+  $('#header-search-desktop').autocomplete('dispose');
+  $('#header-search-mobile').autocomplete('dispose');
 
   app.slpsocket.reset();
   method().then(() => {
     tippy('[data-tippy-content]');
     jdenticon();
+
+    app.util.attach_search_handler($('#header-search-desktop'), $('#header-search-suggestions-container'));
+    app.util.attach_search_handler($('#header-search-mobile'),  $('#header-search-suggestions-container'));
 
     $('html').removeClass('loading');
     $('footer').removeClass('display-none');
@@ -3579,8 +3587,6 @@ $(document).ready(() => {
   $(window).on('popstate', (e) => {
     app.router(window.location.pathname+window.location.hash, false);
   });
-
-  app.util.attach_search_handler('#header-search');
 
   app.slpsocket.init();
 

@@ -5,6 +5,7 @@
   <form class="form">
     <div class="md-form index-search-wrapper">
       <input class="index-search-input form-control" type="text" placeholder="Search by txid, address or token name.." aria-label="Search" id="main-search">
+      <div class="suggestions-container" id="main-search-suggestions-container"></div>
     </div>
   </form>
   <p class="normal">This website is built on top of <a target="_blank" href="https://github.com/simpleledger/SLPDB">SLPDB</a>, an offshoot of <a target="_blank" href="https://github.com/fountainhead-cash/bitd">BitDB FH</a>, view code and submit issues on <a target="_blank" href="https://github.com/blockparty-sh/slp-explorer">Github</a>.<br>Get some of your own tokens at the <a href="https://simpleledger.network/">faucet</a>.</p>
@@ -12,45 +13,44 @@
 </div>
 
 <div class="row super-wrapper">
+  <div class="rounded_row">
+    <div id="recent-transactions-table-container" class="table-container loading">
+      <h3>Latest Transactions</h3>
 
-    <div class="rounded_row">
-      <div id="recent-transactions-table-container" class="table-container loading">
-        <h3>Latest Transactions</h3>
-
-          <div class="table-responsive">
-            <table id="recent-transactions-table">
-              <thead>
-                <tr>
-                  <th><div class="flex-hcenter">Transaction Hash</div></th>
-                  <th><div class="flex-hcenter">Symbol</div></th>
-                  <th><div class="flex-hcenter amount">Amount</div></th>
-                  <th><div class="flex-hcenter">Version</div></th>
-                  <th><div class="flex-hcenter">Block Height</div></th>
-                  <th><div class="flex-hcenter">Block Time</div></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td>Loading...</td></tr>
-              </tbody>
-            </table>
-          </div>
-      </div>
+        <div class="table-responsive">
+          <table id="recent-transactions-table">
+            <thead>
+              <tr>
+                <th><div class="flex-hcenter">Transaction Hash</div></th>
+                <th><div class="flex-hcenter">Symbol</div></th>
+                <th><div class="flex-hcenter amount">Amount</div></th>
+                <th><div class="flex-hcenter">Version</div></th>
+                <th><div class="flex-hcenter">Block Height</div></th>
+                <th><div class="flex-hcenter">Block Time</div></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
     </div>
+  </div>
 
-    <div class="rounded_row graph">
-      <h3>Transaction Charts (<span id="transaction-count">...</span>)</h3>
-      <div class="plot-time-selector">
-          <span id="plot-usage-year">year</span>
-          <span id="plot-usage-month">month</span>
-          <span id="plot-usage-week">week</span>
-          <span id="plot-usage-day">day</span>
-      </div>
-      <div id="plot-usage" style="width:100%">Loading...</div>
-      <div id="plot-token-usage" style="width:100%;"></div>
+  <div class="rounded_row graph">
+    <h3>Transaction Charts (<span id="transaction-count">...</span>)</h3>
+    <div class="plot-time-selector">
+        <span id="plot-usage-year">year</span>
+        <span id="plot-usage-month">month</span>
+        <span id="plot-usage-week">week</span>
+        <span id="plot-usage-day">day</span>
     </div>
+    <div id="plot-usage" style="width:100%">Loading...</div>
+    <div id="plot-token-usage" style="width:100%;"></div>
+  </div>
 
-    <div class="clearfix"></div>
-    </div>
+  <div class="clearfix"></div>
+  </div>
 </div>
 
 <div class="row super-wrapper">
@@ -108,10 +108,10 @@
   <div class="row">
     <h3>Exchanges:</h3>
     <div id="exchange-exchanges">
-        <a href="https://cryptophyl.com/?r=blockparty" target="blank"><img src="img/cryptophyl.png" /></a>
-        <a href="https://sideshift.ai/a/jsKIdsWiF" target="blank"><img src="img/sideshift-ai.png" /></a>
-        <a href="https://www.coinex.com/register?refer_code=c39pv" target="blank"><img src="img/coinex.png" /></a>
-        <a href="https://altilly.com/" target="blank"><img src="img/altilly.png" /></a>
+      <a href="https://cryptophyl.com/?r=blockparty" target="blank"><img src="img/cryptophyl.png" /></a>
+      <a href="https://sideshift.ai/a/jsKIdsWiF" target="blank"><img src="img/sideshift-ai.png" /></a>
+      <a href="https://www.coinex.com/register?refer_code=c39pv" target="blank"><img src="img/coinex.png" /></a>
+      <a href="https://altilly.com/" target="blank"><img src="img/altilly.png" /></a>
     </div>
   </row>
 </div>

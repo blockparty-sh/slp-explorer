@@ -171,7 +171,7 @@ header #top-menu a {
 }
 
 header #top-menu a:hover {
-    color: #333;
+    color: #EEE;
 }
 
 header #top-menu li a {
@@ -381,37 +381,45 @@ tr.burnt-tx {
 }
 
 .autocomplete-suggestions {
-    color: #000;
-    background: #f5f5f5;
+    background-color:#010608;
+    color:#fff;
     padding: 10px 10px;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
     width: 100%;
-    max-width: 745px;
     box-sizing: border-box;
     font-family: 'Source Code Pro', monospace;
     overflow:scroll;
 }
 
+.header_infobox .suggestions-container img {
+    width: initial;
+    height: initial;
+}
+
+.suggestions-container .autocomplete-suggestion .cashaccount-icon-small {
+    width: 1em;
+}
+
 .autocomplete-suggestion:hover {
     cursor: pointer;
-    background: #ffffff;
 }
 
 .autocomplete-selected {
-    background: #fff;
+    background-color:#04171f;
 }
 
 .autocomplete-group {
-    color: #000;
+    color: #fff;
     font-size: 1em;
     font-weight: bold;
     margin-top: 5px;
 }
 
 .autocomplete-suggestion {
-    padding: 2px 9px;
+    padding: 1rem;
     font-size: 14px;
+    border-bottom:1px solid rgb(15, 19, 18);
 }
 
 .dataTables_info {
@@ -825,6 +833,14 @@ html.index-page header {
     color: #8a8a8a;
 }
 
+.suggestions-container {
+    position:relative;
+}
+
+#header-search-suggestions-container .autocomplete-suggestions {
+    right:0px;
+}
+
 @media only screen and (max-width: 890px) {
     .container-page {
         padding-top: 200px;
@@ -855,14 +871,26 @@ html.index-page header {
         width: max-content
     }
     .autocomplete-suggestions {
-        position:fixed;
-        max-height:1000000px!important;
+        position:fixed!important;
+        top:150px!important;
         left:0!important;
+        /* this must be subtracted with the top amount */
+        max-height:calc(100vh - 150px)!important;
     }
     .autocomplete-suggestion {
         padding:1rem;
-        border-bottom:1px solid rgba(255, 255, 255, 0.5);
     }
+    #main-search-suggestions-container {
+        position: absolute;
+        width: 100%;
+        left: 0px;
+    }
+    #main-search-suggestions-container .autocomplete-suggestions {
+        position:absolute!important;
+        top:inherit!important;
+        left:0px!important;
+    }
+
     footer .col {
         width: 100%;
     }
