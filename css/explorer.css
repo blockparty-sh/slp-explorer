@@ -893,7 +893,9 @@ html.index-page header {
         padding: 0;
     }
 
-    #address_page_header .address-qr-code {
+    .transaction_box .address-qr-code,
+    .transaction_box .token-icon-large
+    {
         float: none;
         width: 128px;
         margin:0px auto;
