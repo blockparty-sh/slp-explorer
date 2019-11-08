@@ -371,7 +371,7 @@ tr.burnt-tx {
     max-width: 100%;
     background: #ffffff;
     padding: 30px;
-    margin: 140px 10px 20px 10px;
+    margin: 120px 10px 20px 10px;
     box-sizing: border-box;
     overflow: auto;
     border-radius: 3px;
@@ -829,7 +829,7 @@ html.index-page header {
         padding-top: 200px;
     }
     .transaction_box {
-        margin-top: 200px;
+        margin-top: 160px;
     }
     .rounded_row {
         overflow: auto;
