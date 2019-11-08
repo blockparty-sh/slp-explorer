@@ -36,12 +36,6 @@ app.util = {
     };
 
     let links = [];
-    /* waiting for launch
-    ret.push({
-      'link': `https://slpdex.cash/tokens/${tokenIdHex}`,
-      'class': 'exchange-slpdex-icon'
-    });
-    */
     if (cryptophyl_tokens.hasOwnProperty(tokenIdHex)) {
       links.push({
         'type': 'cryptophyl',
