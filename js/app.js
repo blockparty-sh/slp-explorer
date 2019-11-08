@@ -972,7 +972,7 @@ app.slpdb = {
         ]
       },
       "sort": {
-        "blk.i": 1
+        "blk.i": -1
       },
       "limit": limit,
       "skip": skip
