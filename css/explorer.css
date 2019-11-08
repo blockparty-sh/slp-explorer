@@ -876,6 +876,7 @@ html.index-page header {
 
     footer .col {
         width: 100%;
+        text-align: center;
     }
 
     .transaction_box button.button {
