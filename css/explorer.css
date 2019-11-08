@@ -818,7 +818,7 @@ html.index-page header {
 }
 
 .highlight td:first-child {
-    background: linear-gradient(to right, #e0ff9e 0%,rgba(255,255,255,0) 100%);
+    background: linear-gradient(to right, #baffa9 0%,rgba(255,255,255,0) 100%);
 }
 
 .decimal-part {
