@@ -723,7 +723,8 @@ html.index-page header {
     background-image:url('/img/coinex.png');
 }
 .exchange-sideshift-icon {
-    background-image:url('/img/sideshift.png');
+    background-image:url('/img/sideshift-ai.png');
+    height: 71px;
 }
 .exchange-slpdex-icon {
     background-image:url('/img/slpdex.png');
@@ -897,6 +898,6 @@ html.index-page header {
     }
 
     #all-tokens-table {
-        margin-top: 70px;
+        margin-top: 160px;
     }
 }
