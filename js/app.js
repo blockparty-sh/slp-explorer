@@ -2768,6 +2768,7 @@ app.init_token_page = (tokenIdHex) =>
       }));
 
       app.util.set_token_icon($('main[role=main] .transaction_box .token-icon-large'), 128);
+      app.util.decimal_formatting($('#token-stats-table tr.decimal-stats td'));
 
 
       if (token.tokenDetails.versionType === 129) {

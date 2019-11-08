@@ -607,6 +607,9 @@ footer .col {
     padding: 0.3rem;
     font-size: 1.1rem;
 }
+#token-stats-table td {
+    text-align:right;
+}
 
 .nowrap {
     white-space: nowrap;
