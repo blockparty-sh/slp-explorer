@@ -5,25 +5,25 @@
       <h6>View all transactions confirmed in block</h6>
 
       <a href="#block/<%= height-1 %>">
-        <button type="button" class="button button_red left" >&larr; block <%= height-1 %></button>
+        <button type="button" class="button left" >&larr; block <%= height-1 %></button>
       </a>
       <% if (next_block_exists) { %>
         <a href="#block/<%= height+1 %>">
-          <button type="button" class="button button_red left">block <%= height+1 %> &rarr;</button>
+          <button type="button" class="button left">block <%= height+1 %> &rarr;</button>
         </a>
       <% } else { %>
         <a href="#block/mempool %>">
-          <button type="button" class="button button_red left">mempool &rarr;</button>
+          <button type="button" class="button left">mempool &rarr;</button>
         </a>
       <% } %>
 
       <a target="_blank" href="https://explorer.bitcoin.com/bch/block/<%= height %>">
-        <button type="button" class="button button_green right">View on BCH Explorer</button>
+        <button type="button" class="button right">View on BCH Explorer</button>
       </a>
     <% } else { %>
       <h2 class="text-white">Mempool | <%= total_txs %> transactions</h2>
       <a href="#block/<%= most_recent_block_height %>">
-        <button type="button" class="button button_red left" >&larr; block <%= most_recent_block_height %></button>
+        <button type="button" class="button left" >&larr; block <%= most_recent_block_height %></button>
       </a>
     <% } %>
   </div>
