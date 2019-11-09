@@ -130,7 +130,7 @@ header {
     top: 0;
     width: 100%;
     z-index: 100000000;
-    border-bottom: 1px solid #104658;
+    border-bottom: 1px solid #054458;
 }
 
 header.loading {
