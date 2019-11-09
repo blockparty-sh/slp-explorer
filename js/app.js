@@ -621,7 +621,7 @@ app.util = {
 const btoa_ext = buf => Buffer.Buffer.from(buf).toString('base64');
 
 app.slpdb = {
-  query: (query) => new Promise((resolve, reject) => {
+  query: (query, $runkit_container = null) => new Promise((resolve, reject) => {
     if (! query) {
       return resolve(false);
     }
@@ -629,6 +629,19 @@ app.slpdb = {
     const url = "https://slpdb.fountainhead.cash/q/" + b64;
 
     console.log(url)
+
+    if ($runkit_container) {
+      $runkit_container.find('.runkit-button').click(() => {
+        $runkit_container.html('');
+        RunKit.createNotebook({
+          element: $runkit_container[0],
+          source:`const getJSON = require("async-get-json");
+const btoa = require("btoa");
+const query = ${JSON.stringify(query, null, 2)};
+await getJSON("https://slpdb.fountainhead.cash/q/"+btoa(JSON.stringify(query)));`
+        });
+      });
+    }
 
     fetch(url)
     .then((r) => r = r.json())
@@ -2154,7 +2167,7 @@ app.init_index_page = () =>
 
     app.util.attach_search_handler($('#main-search'), $('#main-search-suggestions-container'));
 
-    app.slpdb.query(app.slpdb.recent_transactions(10))
+    app.slpdb.query(app.slpdb.recent_transactions(10), $('#runkit-latest-transactions'))
     .then((data) => {
       const transactions =  data.u.concat(data.c);
       $('#recent-transactions-table tbody').html('');
@@ -2187,7 +2200,7 @@ app.init_index_page = () =>
               "$lte": (+(new Date) / 1000)
             } }
           ]
-        })),
+        }), $('#runkit-plot-usage')),
         app.slpdb.query({
           "v": 3,
           "q": {
@@ -2221,7 +2234,7 @@ app.init_index_page = () =>
           "r": {
             "f": "[ .[] | {token_name: ._id, txs: .count} ]"
           }
-        }),
+        }, $('#runkit-token-usage')),
       ])
       .then(([monthly_usage, token_usage]) => {
         app.util.create_time_period_plot(
@@ -2299,7 +2312,7 @@ app.init_index_page = () =>
     });
 
     const load_paginated_tokens = (limit, skip, done) => {
-      app.slpdb.query(app.slpdb.recent_tokens(limit, skip))
+      app.slpdb.query(app.slpdb.recent_tokens(limit, skip), $('#runkit-index-tokens'))
       .then((genesises) => {
         genesises = genesises.c;
 
@@ -2323,7 +2336,7 @@ app.init_index_page = () =>
     };
 
     const load_paginated_burn_history = (limit, skip, done) => {
-      app.slpdb.query(app.slpdb.total_burn_history(limit, skip))
+      app.slpdb.query(app.slpdb.total_burn_history(limit, skip), $('#runkit-index-burn-history'))
       .then((transactions) => {
         transactions = transactions.g;
 
