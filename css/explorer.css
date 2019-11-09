@@ -480,10 +480,6 @@ html.full-width .row {
     max-width: initial;
 }
 
-main.container-fluid {
-    padding-top: 1px;
-}
-
 .loading_dank_memes {
     text-align: center;
     margin-top: 20vh;
@@ -491,10 +487,6 @@ main.container-fluid {
 
 html.full-width .row {
     max-width: initial;
-}
-
-main.container-fluid {
-    padding-top: 1px;
 }
 
 .rounded_row h3::after {
