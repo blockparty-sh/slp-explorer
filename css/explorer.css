@@ -102,6 +102,35 @@ a:hover, a.txid:hover, a.tokenid:hover { text-decoration: underline; }
     margin-top: 2em;
 }
 
+.button-hamburger {
+	padding: 0.4rem 1.2rem;
+	margin-top: 9px;
+    height: 100%;
+    border-radius: 5%;
+    background-color: rgba(255, 255, 255, 0.2);
+    background-image: url(/img/hamburger_icon.svg);
+    filter: invert(100%);
+    color: rgba(0,0,0,0);
+    background-size: 70%;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-blend-mode: color-burn;
+	box-shadow: 0px 1px 2px 0px rgba(255, 255, 255, 1);
+}
+
+.button-hamburger:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.hamburger-hide {
+	display: none!important;
+}
+
+.hamburger-show {
+	display: block!important;
+}
+
+
 a button.button.left:first-child {
     margin-right:1rem;
 }
@@ -807,7 +836,7 @@ html.index-page header {
         padding-top: 200px;
     }
     .transaction_box {
-        margin-top: 160px;
+        margin-top: 80px;
         margin-left:0px;
         margin-right:0px;
     }
@@ -821,13 +850,13 @@ html.index-page header {
         margin-right:0px;
     }
     .hide-desktop {
-        display:block!important;
+        display:block;
     }
     .hide-mobile {
-        display:none!important;
+        display:none;
     }
     .show-mobile {
-        display:block!important;
+        display:block;
     }
     header li a {
         padding: 12px 16px;
@@ -884,9 +913,5 @@ html.index-page header {
         float: none;
         width: 128px;
         margin:0px auto;
-    }
-
-    #all-tokens-table {
-        margin-top: 160px;
     }
 }

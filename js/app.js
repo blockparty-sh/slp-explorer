@@ -3582,6 +3582,13 @@ $(document).ready(() => {
     app.router(window.location.pathname+window.location.hash, false);
   });
 
+  $('.button-hamburger').click(() => {
+    const shown  = $('.hamburger-show');
+    const hidden = $('.hamburger-hide');
+    shown.removeClass('hamburger-show').addClass('hamburger-hide');
+    hidden.removeClass('hamburger-hide').addClass('hamburger-show');
+  });
+
   app.slpsocket.init();
 
   const views = [
