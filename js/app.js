@@ -596,9 +596,9 @@ app.util = {
     let biggest_decimals = 0;
 
     td_selector.each(function() {
-      $(this).html($(this).html().trim());
+      $(this).html($(this).text().trim());
 
-      const val = $(this).html();
+      const val = $(this).text();
       const dotidx = val.indexOf('.');
       if (dotidx >= 0) {
         biggest_decimals = Math.max(biggest_decimals, val.length - dotidx);
