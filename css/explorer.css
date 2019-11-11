@@ -108,7 +108,7 @@ a:hover, a.txid:hover, a.tokenid:hover { text-decoration: underline; }
     height: 100%;
     border-radius: 5%;
     background-color: rgba(255, 255, 255, 0.2);
-    background-image: url(/img/hamburger_icon.svg);
+    background-image: url(/img/search_icon.svg);
     filter: invert(100%);
     color: rgba(0,0,0,0);
     background-size: 70%;
@@ -184,7 +184,7 @@ header li.search {
 }
 
 .search.show-mobile {
-    padding: 0 .5em 1em .5em;
+    padding-bottom: 1rem;
 }
 
 header #top-menu {
@@ -227,7 +227,6 @@ header input[type='text'] {
     height: 44px;
     margin-top: 9px;
     padding: 0px 10px;
-    border-radius: 2px;
     font-size: 0.9em;
 }
 

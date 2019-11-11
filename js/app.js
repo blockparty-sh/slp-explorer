@@ -3591,6 +3591,7 @@ $(document).ready(() => {
     const hidden = $('.hamburger-hide');
     shown.removeClass('hamburger-show').addClass('hamburger-hide');
     hidden.removeClass('hamburger-hide').addClass('hamburger-show');
+    $('#header-search-mobile').focus();
   });
 
   app.slpsocket.init();
