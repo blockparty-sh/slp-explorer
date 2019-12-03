@@ -1741,14 +1741,14 @@ app.slpdb = {
   }),
 };
 
-app.slpsocket = {
+app.slpstream = {
   reset: () => {
-    app.slpsocket.on_block = (height, data) => {
-      console.log('slpsocket.on_block', height, data);
+    app.slpstream.on_block = (height, data) => {
+      console.log('slpstream.on_block', height, data);
     };
 
-    app.slpsocket.on_mempool = (sna) => {
-      console.log('slpsocket.on_mempool', sna);
+    app.slpstream.on_mempool = (sna) => {
+      console.log('slpstream.on_mempool', sna);
     };
   },
 
@@ -1757,7 +1757,7 @@ app.slpsocket = {
       return resolve(false);
     }
     const b64 = btoa_ext(JSON.stringify(query));
-    const url = "https://slpsocket.fountainhead.cash/s/" + b64;
+    const url = "https://slpstream.fountainhead.cash/s/" + b64;
 
     const sse = new EventSource(url);
     sse.onmessage = (e) => fn(JSON.parse(e.data));
@@ -1765,28 +1765,28 @@ app.slpsocket = {
   },
 
   init: () => {
-    console.log('initializing slpsocket');
-    app.slpsocket.reset();
+    console.log('initializing slpstream');
+    app.slpstream.reset();
 
-    app.slpsocket.init_listener({
+    app.slpstream.init_listener({
       "v": 3,
       "q": {
         "db": ["u", "c"],
         "find": {}
       }
     }, (data) => {
-      console.log('slpsocket data: ', data);
+      console.log('slpstream data: ', data);
       if ((data.type !== 'mempool' && data.type !== 'block')
       ||   data.data.length < 1) {
         return;
       }
 
       if (data.type === 'block') {
-        app.slpsocket.on_block(data.index, data.data);
+        app.slpstream.on_block(data.data);
       }
 
       if (data.type === 'mempool') {
-        app.slpsocket.on_mempool(data.data[0]);
+        app.slpstream.on_mempool(data.data[0]);
       }
     });
   },
@@ -2401,15 +2401,11 @@ app.init_index_page = () =>
       }
     });
 
-    app.slpsocket.on_mempool = (sna) => {
-      if (! sna.slp.valid) {
-        return;
-      }
-
-      app.slpdb.query(app.slpdb.token(sna.slp.detail.tokenIdHex))
+    app.slpstream.on_mempool = (sna) => {
+      app.slpdb.query(app.slpdb.token(sna.slp.tokenIdHex))
       .then((token_data) => {
         if (token_data.t.length === 0) {
-          console.error('slpsocket token not found');
+          console.error('slpstream token not found');
           return;
         }
         const token = token_data.t[0];
@@ -2430,7 +2426,7 @@ app.init_index_page = () =>
       });
     }
 
-    app.slpsocket.on_block = (index, data) => {
+    app.slpstream.on_block = (index, data) => {
       // TODO delete all pending items from list, add add in block
       // then do query for mempool items and add those on top
       // ensure ordering is the same
@@ -2709,19 +2705,15 @@ app.init_block_mempool_page = (height) =>
         );
       }
 
-      app.slpsocket.on_mempool = (sna) => {
-        if (! sna.slp.valid) {
-          return;
-        }
-
+      app.slpstream.on_mempool = (sna) => {
         const transactions_page = app.util.get_pagination_page($('#block-transactions-table-container'));
         if (transactions_page !== 0) {
           return;
         }
-        app.slpdb.query(app.slpdb.token(sna.slp.detail.tokenIdHex))
+        app.slpdb.query(app.slpdb.token(sna.slp.tokenIdHex))
         .then((token_data) => {
           if (! token_data || ! token_data.t || token_data.t.length === 0) {
-            console.error('slpsocket token not found');
+            console.error('slpstream token not found');
             return;
           }
           const token = token_data.t[0];
@@ -3125,12 +3117,8 @@ app.init_token_page = (tokenIdHex) =>
         }
       });
 
-      app.slpsocket.on_mempool = (sna) => {
-        if (! sna.slp.valid) {
-          return;
-        }
-
-        if (sna.slp.detail.tokenIdHex !== tokenIdHex) {
+      app.slpstream.on_mempool = (sna) => {
+        if (sna.slp.tokenIdHex !== tokenIdHex) {
             return;
         }
 
@@ -3139,7 +3127,7 @@ app.init_token_page = (tokenIdHex) =>
           return;
         }
 
-        if (sna.slp.detail.transactionType === 'SEND') {
+        if (sna.slp.transactionType === 'SEND') {
           console.log('SEND TX');
           const tbody = $('#token-transactions-table tbody');
 
@@ -3448,11 +3436,7 @@ app.init_address_page = (address) =>
         });
       });
 
-      app.slpsocket.on_mempool = (sna) => {
-        if (! sna.slp.valid) {
-          return;
-        }
-
+      app.slpstream.on_mempool = (sna) => {
         let found = false;
 
         for (const m of sna.in) {
@@ -3476,7 +3460,7 @@ app.init_address_page = (address) =>
           return;
         }
 
-        if (sna.slp.detail.transactionType === 'SEND') {
+        if (sna.slp.transactionType === 'SEND') {
           app.slpdb.query(app.slpdb.tx(sna.tx.h))
           .then((tx) => {
             if (tx.u.length === 0 && tx.c.length === 0) {
@@ -3564,7 +3548,7 @@ app.router = (whash, push_history = true) => {
   $('#header-search-desktop').autocomplete('dispose');
   $('#header-search-mobile').autocomplete('dispose');
 
-  app.slpsocket.reset();
+  app.slpstream.reset();
   method().then(() => {
     tippy('[data-tippy-content]');
     jdenticon();
@@ -3594,7 +3578,7 @@ $(document).ready(() => {
     $('#header-search-mobile').focus();
   });
 
-  app.slpsocket.init();
+  app.slpstream.init();
 
   const views = [
     'index_page',
