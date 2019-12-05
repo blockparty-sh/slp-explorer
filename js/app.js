@@ -535,8 +535,10 @@ app.util = {
 
   cash_address_to_raw_address: (address) => {
     let source_value = address;
-    if (address.substring(0, 12) != 'bitcoincash:') {
-      source_value = 'bitcoincash:' + address;
+    switch (address.split(':')[0]) {
+      case 'bitcoincash': break;
+      case 'bchtest': break;
+      default: source_value = 'bitcoincash:'+address;
     }
 
     let raw = cashaddr.decode(source_value);
