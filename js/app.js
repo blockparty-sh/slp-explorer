@@ -2404,7 +2404,7 @@ app.init_index_page = () =>
     });
 
     app.slpstream.on_mempool = (sna) => {
-      app.slpdb.query(app.slpdb.token(sna.slp.tokenIdHex))
+      app.slpdb.query(app.slpdb.token(sna.slp.detail.tokenIdHex))
       .then((token_data) => {
         if (token_data.t.length === 0) {
           console.error('slpstream token not found');
@@ -2712,7 +2712,7 @@ app.init_block_mempool_page = (height) =>
         if (transactions_page !== 0) {
           return;
         }
-        app.slpdb.query(app.slpdb.token(sna.slp.tokenIdHex))
+        app.slpdb.query(app.slpdb.token(sna.slp.detail.tokenIdHex))
         .then((token_data) => {
           if (! token_data || ! token_data.t || token_data.t.length === 0) {
             console.error('slpstream token not found');
@@ -3129,7 +3129,7 @@ app.init_token_page = (tokenIdHex) =>
           return;
         }
 
-        if (sna.slp.transactionType === 'SEND') {
+        if (sna.slp.detail.transactionType === 'SEND') {
           console.log('SEND TX');
           const tbody = $('#token-transactions-table tbody');
 
@@ -3462,7 +3462,7 @@ app.init_address_page = (address) =>
           return;
         }
 
-        if (sna.slp.transactionType === 'SEND') {
+        if (sna.slp.detail.transactionType === 'SEND') {
           app.slpdb.query(app.slpdb.tx(sna.tx.h))
           .then((tx) => {
             if (tx.u.length === 0 && tx.c.length === 0) {
