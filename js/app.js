@@ -3468,10 +3468,13 @@ app.init_address_page = (address) =>
             if (tx.u.length === 0 && tx.c.length === 0) {
               return;
             }
+            tx = tx.u.length > 0 ? tx.u[0] : tx.c[0];
+            tx.slp = sna.slp; // we do this because slpdb might not have done yet
 
             const tbody = $('#address-transactions-table tbody');
+
             tbody.prepend(app.template.address_transactions_tx({
-              tx: tx.u.length > 0 ? tx.u[0] : tx.c[0],
+              tx: tx,
               address: address
             }));
             tbody.find('tr:last').remove();
