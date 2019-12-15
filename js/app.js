@@ -2413,6 +2413,11 @@ app.init_index_page = () =>
         const token = token_data.t[0];
 
         sna.token = [token];
+        sna.slp.detail.outputs = sna.slp.detail.outputs.map(v => {
+          const bn = new BigNumber(v.amount).dividedBy(10 ** sna.token[0].tokenDetails.decimals);
+          v.amount  = bn.toString();
+          return v;
+        });
 
         const tbody = $('#recent-transactions-table tbody');
         tbody.prepend(
@@ -2719,8 +2724,13 @@ app.init_block_mempool_page = (height) =>
             return;
           }
           const token = token_data.t[0];
-
           sna.token = [token];
+          sna.slp.detail.outputs = sna.slp.detail.outputs.map(v => {
+            const bn = new BigNumber(v.amount).dividedBy(10 ** sna.token[0].tokenDetails.decimals);
+            v.amount  = bn.toString();
+            return v;
+          });
+
 
           const tbody = $('#block-transactions-table tbody');
           tbody.prepend(
@@ -3120,7 +3130,7 @@ app.init_token_page = (tokenIdHex) =>
       });
 
       app.slpstream.on_mempool = (sna) => {
-        if (sna.slp.tokenIdHex !== tokenIdHex) {
+        if (sna.slp.detail.tokenIdHex !== tokenIdHex) {
             return;
         }
 
@@ -3128,6 +3138,13 @@ app.init_token_page = (tokenIdHex) =>
         if (transactions_page !== 0) {
           return;
         }
+
+        sna.slp.detail.outputs = sna.slp.detail.outputs.map(v => {
+          const bn = new BigNumber(v.amount).dividedBy(10 ** token.tokenDetails.decimals);
+          v.amount  = bn.toString();
+          return v;
+        });
+
 
         if (sna.slp.detail.transactionType === 'SEND') {
           console.log('SEND TX');
@@ -3463,18 +3480,26 @@ app.init_address_page = (address) =>
         }
 
         if (sna.slp.detail.transactionType === 'SEND') {
-          app.slpdb.query(app.slpdb.tx(sna.tx.h))
-          .then((tx) => {
-            if (tx.u.length === 0 && tx.c.length === 0) {
+
+          app.slpdb.query(app.slpdb.token(sna.slp.detail.tokenIdHex))
+          .then((token_data) => {
+            if (token_data.t.length === 0) {
+              console.error('slpstream token not found');
               return;
             }
-            tx = tx.u.length > 0 ? tx.u[0] : tx.c[0];
-            tx.slp = sna.slp; // we do this because slpdb might not have done yet
+            const token = token_data.t[0];
+
+            sna.token = [token];
+            sna.slp.detail.outputs = sna.slp.detail.outputs.map(v => {
+              const bn = new BigNumber(v.amount).dividedBy(10 ** sna.token[0].tokenDetails.decimals);
+              v.amount  = bn.toString();
+              return v;
+            })
 
             const tbody = $('#address-transactions-table tbody');
 
             tbody.prepend(app.template.address_transactions_tx({
-              tx: tx,
+              tx: sna,
               address: address
             }));
             tbody.find('tr:last').remove();
