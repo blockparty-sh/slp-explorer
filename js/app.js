@@ -924,16 +924,44 @@ app.slpdb = {
   token_addresses: (tokenIdHex, limit=100, skip=0) => ({
     "v": 3,
     "q": {
-      "db": ["a"],
-      "find": {
-        "tokenDetails.tokenIdHex": tokenIdHex,
-        /* https://github.com/simpleledger/SLPDB/issues/23
-        "token_balance": {
-          "$ne": 0
+      "db": ["g"],
+      "aggregate": [
+        {
+          "$match": {
+            "tokenDetails.tokenIdHex": tokenIdHex
+          }
+        },
+        {
+          "$unwind": "$graphTxn.outputs"
+        },
+        {
+          "$match": {
+            "graphTxn.outputs.status": "UNSPENT"
+          }
+        },
+        {
+          "$group": {
+            "_id": "$graphTxn.outputs.address",
+            "slpAmount": {
+              "$sum": "$graphTxn.outputs.slpAmount"
+            }
+          }
+        },
+        {
+          "$match": {
+            "slpAmount": {
+              "$gt": 0
+            }
+          }
         }
-        */
+      ],
+      "sort": {
+        "slpAmount": -1
       },
-      "sort": { "token_balance": -1 },
+      "project": {
+        "address": "$_id",
+        "token_balance": "$slpAmount"
+      },
       "limit": limit,
       "skip": skip
     }
@@ -2847,7 +2875,7 @@ app.init_token_page = (tokenIdHex) =>
          const tbody = $('#token-addresses-table tbody');
          tbody.html('');
 
-          addresses.a.forEach((address) => {
+          addresses.g.forEach((address) => {
             tbody.append(
               app.template.token_address({
                 address:  address,
@@ -3110,7 +3138,7 @@ app.init_token_page = (tokenIdHex) =>
       .then((token_addresses) => {
         let data = [];
 
-        for (let a of token_addresses.a) {
+        for (let a of token_addresses.g) {
           data.push({
             address: a.address.split(':')[1],
             token_balance: a.token_balance,
