@@ -676,19 +676,6 @@ app.slpdb = {
     }
   }),
 
-  tokens_by_slp_address: (address, limit=100, skip=0) => ({
-    "v": 3,
-    "q": {
-      "db": ["a"],
-      "find": {
-        "address": address,
-      },
-      "sort": { "token_balance": -1 },
-      "limit": limit,
-      "skip": skip
-    }
-  }),
-
   count_unconfirmed_token_transaction_history: (tokenIdHex, address=null) => {
     let match;
 
@@ -1520,14 +1507,28 @@ app.slpdb = {
       "f": "[ .[] | {count: .count } ]"
     }
   }),
+
   count_tokens_by_slp_address: (address) => ({
     "v": 3,
     "q": {
-      "db": ["a"],
+      "db": ["g"],
       "aggregate": [
         {
           "$match": {
-            "address": address
+            "graphTxn.outputs.address": address
+          }
+        },
+        {
+          "$unwind": "$graphTxn.outputs"
+        },
+        {
+          "$match": {
+            "graphTxn.outputs.status": "UNSPENT"
+          }
+        },
+        {
+          "$group": {
+            "_id": "$tokenDetails.tokenIdHex"
           }
         },
         {
@@ -1536,7 +1537,7 @@ app.slpdb = {
             "count": { "$sum": 1 }
           }
         }
-      ]
+      ],
     },
     "r": {
       "f": "[ .[] | {count: .count } ]"
@@ -1546,36 +1547,58 @@ app.slpdb = {
   tokens_by_slp_address: (address, limit=100, skip=0) => ({
     "v": 3,
     "q": {
-      "db": ["a"],
+      "db": ["g"],
       "aggregate": [
         {
           "$match": {
-            "address": address,
+            "graphTxn.outputs.address": address
+          }
+        },
+        {
+          "$unwind": "$graphTxn.outputs"
+        },
+        {
+          "$match": {
+            "graphTxn.outputs.status": "UNSPENT"
+          }
+        },
+        {
+          "$group": {
+            "_id": "$tokenDetails.tokenIdHex",
+            "slpAmount": {
+              "$sum": "$graphTxn.outputs.slpAmount"
+            }
           }
         },
         {
           "$sort": {
-            "token_balance": -1
+            "slpAmount": -1
           }
-        },
+         },
         {
-          "$skip": skip
-        },
-        {
-          "$limit": limit
+          "$match": {
+            "slpAmount": {
+              "$gt": 0
+            }
+          }
         },
         {
           "$lookup": {
             "from": "tokens",
-            "localField": "tokenDetails.tokenIdHex",
+            "localField": "_id",
             "foreignField": "tokenDetails.tokenIdHex",
             "as": "token"
           }
         }
       ],
+      "sort": {
+        "slpAmount": -1
+       },
+      "skip": skip,
       "limit": limit
     }
   }),
+
   count_tokens: () => ({
     "v": 3,
     "q": {
@@ -3203,7 +3226,7 @@ app.init_address_page = (address) =>
       $('main[role=main]').html(app.template.address_page({
         address: address,
         cashaccount: cashaccount,
-        total_tokens: total_tokens.a,
+        total_tokens: total_tokens.g,
         total_transactions: total_transactions.c+total_transactions.u,
         total_address_burn_transactions: total_address_burn_transactions.g,
         total_sent_transactions: total_sent_transactions.c + total_sent_transactions.u,
@@ -3225,7 +3248,7 @@ app.init_address_page = (address) =>
       const load_paginated_tokens = (limit, skip, done) => {
         app.slpdb.query(app.slpdb.tokens_by_slp_address(address, limit, skip))
         .then((tokens) => {
-          tokens = tokens.a;
+          tokens = tokens.g;
 
           const tbody = $('#address-tokens-table tbody');
           tbody.html('');
@@ -3352,13 +3375,13 @@ app.init_address_page = (address) =>
         });
       };
 
-      if (total_tokens.a === 0) {
+      if (total_tokens.g === 0) {
         $('#address-tokens-table tbody').html('<tr><td>No tokens balances found.</td></tr>');
       } else {
         app.util.create_pagination(
           $('#address-tokens-table-container'),
           0,
-          Math.ceil(total_tokens.a / 10),
+          Math.ceil(total_tokens.g / 10),
           (page, done) => {
             load_paginated_tokens(10, 10*page, done);
           }
