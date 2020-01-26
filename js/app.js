@@ -1551,7 +1551,8 @@ app.slpdb = {
         },
         {
           "$match": {
-            "graphTxn.outputs.status": "UNSPENT"
+            "graphTxn.outputs.status": "UNSPENT",
+            "graphTxn.outputs.address": address
           }
         },
         {
@@ -1587,7 +1588,8 @@ app.slpdb = {
         },
         {
           "$match": {
-            "graphTxn.outputs.status": "UNSPENT"
+            "graphTxn.outputs.status": "UNSPENT",
+            "graphTxn.outputs.address": address
           }
         },
         {
