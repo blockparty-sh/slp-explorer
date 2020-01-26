@@ -165,48 +165,53 @@
   <div class="rounded_row">
     <div class="input_output" id="inputs-list">
       <div class="rounded box-shadow table-container">
-        <h3>Inputs (<%= Number(Object.keys(input_amounts).length).toLocaleString() %>)</h3>
-        <div class="table-responsive">
-          <table class="table fixed-header">
-            <thead>
-              <tr>
-                <th>Tx</th>
-                <th class="amount">Amount</th>
-                <th>Address</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% if (tx.slp.detail.transactionType == 'SEND' || tx.slp.detail.transactionType == 'MINT') { %>
-                <% for (let m of tx.in) { %>
-                  <% if (input_amounts[m.e.h+':'+m.e.i]) { %>
-                    <tr>
-                      <td><a class="txid" href="/#tx/<%= m.e.h %>/o<%= m.e.i %>" style="font-weight:bold">&larr;</a></td>
-                      <td class="amount">
-                        <% if (tx.slp.detail.transactionType == 'SEND') { %>
-                            <%= app.util.format_bignum_str(input_amounts[m.e.h+':'+m.e.i], token.tokenDetails.decimals)  %>
-                        <% } else if(tx.slp.detail.transactionType == 'MINT') { %>
-                            Mint Baton
-                        <% } %>
-                      </td>
-                      <td>
-                        <% if (typeof m.e.a !== 'undefined') { %>
-                          <a class="address" href="/#address/<%= slpjs.Utils.toSlpAddress(m.e.a) %>"><%= slpjs.Utils.toSlpAddress(m.e.a) %></a>
-                        <% } else { %>
-                          SLPDB Address Error
-                        <% } %>
-                      </td>
-                    </tr>
+        <% if (tx.slp.detail.transactionType !== 'GENESIS') { %>
+          <h3>Inputs (<%= Number(Object.keys(input_amounts).length).toLocaleString() %>)</h3>
+          <div class="table-responsive">
+            <table class="table fixed-header">
+              <thead>
+                <tr>
+                  <th>Tx</th>
+                  <th class="amount">Amount</th>
+                  <th>Address</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (tx.slp.detail.transactionType == 'SEND' || tx.slp.detail.transactionType == 'MINT') { %>
+                  <% for (let m of tx.in) { %>
+                    <% if (input_amounts[m.e.h+':'+m.e.i]) { %>
+                      <tr>
+                        <td><a class="txid" href="/#tx/<%= m.e.h %>/o<%= m.e.i %>" style="font-weight:bold">&larr;</a></td>
+                        <td class="amount">
+                          <% if(tx.slp.detail.transactionType == 'MINT' && m.e.i == tx.slp.detail.txnBatonVout) { %>
+                              Mint Baton
+                          <% } else { %>
+                              <%= app.util.format_bignum_str(input_amounts[m.e.h+':'+m.e.i], token.tokenDetails.decimals)  %>
+                          <% } %>
+                        </td>
+                        <td>
+                          <% if (typeof m.e.a !== 'undefined') { %>
+                            <a class="address" href="/#address/<%= slpjs.Utils.toSlpAddress(m.e.a) %>"><%= slpjs.Utils.toSlpAddress(m.e.a) %></a>
+                          <% } else { %>
+                            SLPDB Address Error
+                          <% } %>
+                        </td>
+                      </tr>
+                    <% } %>
                   <% } %>
                 <% } %>
-              <% } %>
-              <% if (Object.keys(input_amounts).length === 0) { %>
-                <tr>
-                  <td>No inputs.</td>
-                </tr>
-              <% } %>
-            </tbody>
-          </table>
-        </div>
+                <% if (Object.keys(input_amounts).length === 0) { %>
+                  <tr>
+                    <td>No inputs.</td>
+                  </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        <% } else { %>
+          <h3>Genesis</h3>
+          <p>TokenType1 genesis transactions do not have any SLP inputs.<br>NFT1 Child transactions can see the input from looking at the Version row in the Token Details pane.</p>
+        <% } %>
       </div>
     </div>
   </div>
