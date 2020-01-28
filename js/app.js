@@ -2606,8 +2606,10 @@ app.init_tx_page = (txid, highlight=[]) =>
               m['spendVout'] = null;
               if (ttx !== null) {
                 m['spendTxid'] = ttx.tx.h;
-                m['spendVout'] = ttx.in.filter(v => v.e.h === txid && v.e.i === vout)[0].i + 1;
-                console.log(txid, vout, ttx);
+                const ifilt = ttx.in.filter(v => v.e.h === txid && v.e.i === vout);
+                if (ifilt.length > 0) {
+                  m['spendVout'] = ifilt[0].i + 1;
+                }
               }
             });
 
