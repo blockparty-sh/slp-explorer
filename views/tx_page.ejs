@@ -264,13 +264,13 @@
                         <% }%>
                       </td>
                       <td>
-                        <a class="address" href="/#address/<%= m.address %>">
-                          <%= m.address %>
-
-                          <% if (burnt) { %>
-                            [burn: <%= m.status.split('_').map(v => v.toLowerCase()).join(' ') %>]
-                          <% } %>
-                        </a>
+                        <% if (burnt) { %>
+                          [burn: <%= m.status.split('_').map(v => v.toLowerCase()).join(' ') %>]
+                        <% } else { %>
+                          <a class="address" href="/#address/<%= m.address %>">
+                            <%= m.address %>
+                          </a>
+                        <% } %>
                       </td>
                     </tr>
                   <% } %>
