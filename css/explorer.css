@@ -120,6 +120,9 @@ a:hover, a.txid:hover, a.tokenid:hover { text-decoration: underline; }
     background-repeat: no-repeat;
     background-blend-mode: color-burn;
 	box-shadow: 0px 1px 2px 0px rgba(255, 255, 255, 1);
+    position: absolute;
+    top: -25px;
+    right: 0px;
 }
 
 .button-hamburger:hover {
