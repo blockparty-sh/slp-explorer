@@ -1996,7 +1996,7 @@ app.bitdb = {
         }
       },
       "sort": {
-        "blk.i": -1
+        "blk.i": 1
       },
       "limit": 1
     },
