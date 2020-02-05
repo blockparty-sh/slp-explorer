@@ -148,7 +148,11 @@
             <tr>
               <th scope="row">Minting Baton Status</th>
               <td>
-                <%= token.tokenStats.minting_baton_status.toLowerCase().split('_').map(v => v[0].toUpperCase() + v.substring(1).toLowerCase()).join(' ') %>
+                <% if (token.mintBatonStatus) { /* TODO DELETE AFTER 1.0 */ %>
+                  <%= token.mintBatonStatus.toLowerCase().split('_').map(v => v[0].toUpperCase() + v.substring(1).toLowerCase()).join(' ') %>
+                <% } else if (token.tokenStats.minting_baton_status) { %>
+                  <%= token.tokenStats.minting_baton_status.toLowerCase().split('_').map(v => v[0].toUpperCase() + v.substring(1).toLowerCase()).join(' ') %>
+                <% } %>
               </td>
             </tr>
             <% if (token.mintBatonUtxo && token.mintBatonUtxo.split(':').length === 2) { %>
