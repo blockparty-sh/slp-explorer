@@ -2602,7 +2602,7 @@ app.init_tx_page = (txid, highlight=[]) =>
       tx = tx[0];
 
       if (! tx.slp || ! tx.slp.valid) {
-        return resolve(app.init_nonslp_tx_page(tx.h, highlight, tx.slp));
+        return resolve(app.init_nonslp_tx_page(tx.tx.h, highlight, tx.slp));
       }
 
       if (tx.graph.length === 0) {
