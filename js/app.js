@@ -1986,16 +1986,9 @@ app.bitdb = {
     "v": 3,
     "q": {
       "db": ["c", "u"],
-      "aggregate": [
-        {
-          "$match": {
-            "tx.h": txid
-          }
-        },
-        {
-          "$limit": 1
-        },
-      ],
+      "find": {
+        "tx.h": txid
+      },
       "limit": 1
     }
   }),
