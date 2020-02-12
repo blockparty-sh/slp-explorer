@@ -2853,13 +2853,8 @@ app.init_token_page = (tokenIdHex) =>
   new Promise((resolve, reject) =>
     Promise.all([
       app.slpdb.query(app.slpdb.token(tokenIdHex)),
-      app.slpdb.query(app.slpdb.count_token_mint_transactions(tokenIdHex)),
-      app.slpdb.query(app.slpdb.count_token_burn_transactions(tokenIdHex)),
     ])
-    .then(([token, total_token_mint_transactions, total_token_burn_transactions]) => {
-      total_token_mint_transactions = app.util.extract_total(total_token_mint_transactions);
-      total_token_burn_transactions = app.util.extract_total(total_token_burn_transactions);
-
+    .then(([token]) => {
       if (token.t.length == 0) {
         return resolve(app.init_404_page());
       } 
@@ -2867,9 +2862,7 @@ app.init_token_page = (tokenIdHex) =>
       token = token.t[0];
 
       $('main[role=main]').html(app.template.token_page({
-        token: token,
-        total_token_burn_transactions: total_token_burn_transactions.g,
-        total_token_mint_transactions: total_token_mint_transactions.c,
+        token: token
       }));
 
       app.util.set_token_icon($('main[role=main] .transaction_box .token-icon-large'), 128);
@@ -3075,31 +3068,45 @@ app.init_token_page = (tokenIdHex) =>
         );
       }
 
-      if (total_token_mint_transactions.c === 0) {
-        $('#token-mint-history-table tbody').html('<tr><td>No mints found.</td></tr>');
-      } else {
-        app.util.create_pagination(
-          $('#token-mint-history-table-container'),
-          0,
-          Math.ceil(total_token_mint_transactions.c / 10),
-          (page, done) => {
-            load_paginated_token_mint_history(10, 10*page, done);
-          }
-        );
-      }
 
-      if (total_token_burn_transactions.g === 0) {
-        $('#token-burn-history-table tbody').html('<tr><td>No burns found.</td></tr>');
-      } else {
-        app.util.create_pagination(
-          $('#token-burn-history-table-container'),
-          0,
-          Math.ceil(total_token_burn_transactions.g / 10),
-          (page, done) => {
-            load_paginated_token_burn_history(10, 10*page, done);
-          }
-        );
-      }
+      app.slpdb.query(app.slpdb.count_token_mint_transactions(tokenIdHex))
+      .then((total_token_mint_transactions) => {
+        total_token_mint_transactions = app.util.extract_total(total_token_mint_transactions).c;
+        $('#total_token_mint_transactions').html(Number(total_token_mint_transactions).toLocaleString());
+
+        if (total_token_mint_transactions === 0) {
+          $('#token-mint-history-table tbody').html('<tr><td>No mints found.</td></tr>');
+        } else {
+          app.util.create_pagination(
+            $('#token-mint-history-table-container'),
+            0,
+            Math.ceil(total_token_mint_transactions / 10),
+            (page, done) => {
+              load_paginated_token_mint_history(10, 10*page, done);
+            }
+          );
+        }
+      });
+
+
+      app.slpdb.query(app.slpdb.count_token_burn_transactions(tokenIdHex))
+      .then((total_token_burn_transactions) => {
+        total_token_burn_transactions = app.util.extract_total(total_token_burn_transactions).g;
+        $('#total_token_burn_transactions').html(Number(total_token_burn_transactions).toLocaleString());
+
+        if (total_token_burn_transactions === 0) {
+          $('#token-burn-history-table tbody').html('<tr><td>No burns found.</td></tr>');
+        } else {
+          app.util.create_pagination(
+            $('#token-burn-history-table-container'),
+            0,
+            Math.ceil(total_token_burn_transactions / 10),
+            (page, done) => {
+              load_paginated_token_burn_history(10, 10*page, done);
+            }
+          );
+        }
+      });
 
       if (token.tokenStats.qty_valid_txns_since_genesis === 0) {
         $('#token-transactions-table tbody').html('<tr><td>No transactions found.</td></tr>');
