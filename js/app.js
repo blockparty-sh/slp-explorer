@@ -635,7 +635,7 @@ app.slpdb = {
       return resolve(false);
     }
     const b64 = btoa_ext(JSON.stringify(query));
-    const url = "https://slpdb.fountainhead.cash/q/" + b64;
+    const url = "https://nyc1.slpdb.io/q/" + b64;
 
     console.log(url)
 
@@ -1027,6 +1027,272 @@ app.slpdb = {
       "f": "[ .[] | {count: .count } ]"
     }
   }),
+
+  token_get_total_burned: (tokenIdHex) => ({
+    "v": 3,
+    "q": {
+      "db": ["g"],
+      "aggregate": [
+        {
+          "$match": {
+            "tokenDetails.tokenIdHex": tokenIdHex,
+            "graphTxn.outputs.status": {
+              "$in": [
+                "SPENT_NON_SLP",
+                "BATON_SPENT_INVALID_SLP",
+                "SPENT_INVALID_SLP",
+                "BATON_SPENT_NON_SLP",
+                "MISSING_BCH_VOUT",
+                "BATON_MISSING_BCH_VOUT",
+                "BATON_SPENT_NOT_IN_MINT",
+                "EXCESS_INPUT_BURNED"
+              ]
+            }
+          }
+        },
+        {
+          "$unwind": "$graphTxn.outputs"
+        },
+        {
+          "$match": {
+            "graphTxn.outputs.status": {
+              "$in": [
+                "SPENT_NON_SLP",
+                "BATON_SPENT_INVALID_SLP",
+                "SPENT_INVALID_SLP",
+                "BATON_SPENT_NON_SLP",
+                "MISSING_BCH_VOUT",
+                "BATON_MISSING_BCH_VOUT",
+                "BATON_SPENT_NOT_IN_MINT",
+                "EXCESS_INPUT_BURNED"
+              ]
+            }
+          }
+        },
+        {
+          "$group": {
+            "_id": null,
+            "count": {
+              "$sum": "$graphTxn.outputs.slpAmount"
+            }
+          }
+        }
+      ],
+      "limit": 1
+    },
+    "r": {
+      "f": "[ .[] | {count: .count } ]"
+    }
+  }),
+
+  token_get_total_satoshis_locked: (tokenIdHex) => ({
+    "v": 3,
+    "q": {
+      "db": ["g"],
+      "aggregate": [
+        {
+          "$match": {
+            "tokenDetails.tokenIdHex": tokenIdHex,
+            "graphTxn.outputs.status": {
+              "$in": [
+                "UNSPENT",
+                "BATON_UNSPENT"
+              ]
+            }
+          }
+        },
+        {
+          "$unwind": "$graphTxn.outputs"
+        },
+        {
+          "$match": {
+            "graphTxn.outputs.status": {
+              "$in": [
+                "UNSPENT",
+                "BATON_UNSPENT"
+              ]
+            }
+          }
+        },
+        {
+          "$group": {
+            "_id": null,
+            "count": {
+              "$sum": "$graphTxn.outputs.bchSatoshis"
+            }
+          }
+        }
+      ],
+      "limit": 1
+    },
+    "r": {
+      "f": "[ .[] | {count: .count} ]"
+    }
+  }),
+
+  token_get_total_minted: (tokenIdHex) => ({
+    "v": 3,
+    "q": {
+      "db": ["g"],
+      "aggregate": [
+        {
+          "$match": {
+            "tokenDetails.tokenIdHex": tokenIdHex,
+            "graphTxn.outputs.status": {
+              "$in": [
+                "BATON_SPENT_IN_MINT",
+                "BATON_UNSPENT",
+                "BATON_SPENT_NOT_IN_MINT"
+              ]
+            }
+          }
+        },
+        {
+          "$unwind": "$graphTxn.outputs"
+        },
+        {
+          "$group": {
+            "_id": null,
+            "count": {
+              "$sum": "$graphTxn.outputs.slpAmount"
+            }
+          }
+        }
+      ],
+      "limit": 1
+    },
+    "r": {
+      "f": "[ .[] | {count: .count } ]"
+    }
+  }),
+
+  token_get_total_transactions: (tokenIdHex) => ({
+    "v": 3,
+    "q": {
+      "db": ["g"],
+      "aggregate": [
+        {
+          "$match": {
+            "tokenDetails.tokenIdHex": tokenIdHex
+          }
+        },
+        {
+          "$group": {
+            "_id": null,
+            "count": {
+              "$sum": 1
+            }
+          }
+        }
+      ],
+      "limit": 1
+    },
+    "r": {
+      "f": "[ .[] | {count: .count} ]"
+    }
+  }),
+
+  token_get_total_utxos: (tokenIdHex) => ({
+    "v": 3,
+    "q": {
+      "db": ["g"],
+      "aggregate": [
+        {
+          "$match": {
+            "tokenDetails.tokenIdHex": tokenIdHex,
+            "graphTxn.outputs.status": {
+              "$in": [
+                "UNSPENT",
+                "BATON_UNSPENT"
+              ]
+            }
+          }
+        },
+        {
+          "$unwind": "$graphTxn.outputs"
+        },
+        {
+          "$match": {
+            "graphTxn.outputs.status": {
+              "$in": [
+                "UNSPENT",
+                "BATON_UNSPENT"
+              ]
+            },
+            "graphTxn.outputs.slpAmount": {
+              "$gt": 0
+            }
+          }
+        },
+        {
+          "$group": {
+            "_id": null,
+            "count": {
+              "$sum": 1
+            }
+          }
+        }
+      ],
+      "limit": 1
+    },
+    "r": {
+      "f": "[ .[] | {count: .count} ]"
+    }
+  }),
+
+  token_get_total_addresses: (tokenIdHex) => ({
+    "v": 3,
+    "q": {
+      "db": ["g"],
+      "aggregate": [
+        {
+          "$match": {
+            "tokenDetails.tokenIdHex": tokenIdHex,
+            "graphTxn.outputs.status": {
+              "$in": [
+                "UNSPENT",
+                "BATON_UNSPENT"
+              ]
+            }
+          }
+        },
+        {
+          "$unwind": "$graphTxn.outputs"
+        },
+        {
+          "$match": {
+            "graphTxn.outputs.status": {
+              "$in": [
+                "UNSPENT",
+                "BATON_UNSPENT"
+              ]
+            },
+            "graphTxn.outputs.slpAmount": {
+              "$gt": 0
+            }
+          }
+        },
+        {
+          "$group": {
+            "_id": "$graphTxn.outputs.address"
+          }
+        },
+        {
+          "$group": {
+            "_id": null,
+            "count": {
+              "$sum": 1
+            }
+          }
+        }
+      ],
+      "limit": 1
+    },
+    "r": {
+      "f": "[ .[] | {count: .count} ]"
+    }
+  }),
+
   token_burn_history: (tokenIdHex, limit=100, skip=0) => ({
     "v": 3,
     "q": {
@@ -2873,7 +3139,6 @@ app.init_token_page = (tokenIdHex) =>
       }));
 
       app.util.set_token_icon($('main[role=main] .transaction_box .token-icon-large'), 128);
-      app.util.decimal_formatting($('#token-stats-table tr.decimal-stats td'));
 
 
       if (token.tokenDetails.versionType === 129) {
@@ -3062,20 +3327,6 @@ app.init_token_page = (tokenIdHex) =>
         });
       };
 
-      if (token.tokenStats.qty_valid_token_addresses === 0) {
-        $('#token-addresses-table tbody').html('<tr><td>No addresses found.</td></tr>');
-      } else {
-        app.util.create_pagination(
-          $('#token-addresses-table-container'),
-          0,
-          Math.ceil(token.tokenStats.qty_valid_token_addresses / 10),
-          (page, done) => {
-            load_paginated_token_addresses(10, 10*page, done);
-          }
-        );
-      }
-
-
       app.slpdb.query(app.slpdb.count_token_mint_transactions(tokenIdHex))
       .then((total_token_mint_transactions) => {
         total_token_mint_transactions = app.util.extract_total(total_token_mint_transactions).c;
@@ -3115,28 +3366,81 @@ app.init_token_page = (tokenIdHex) =>
         }
       });
 
-      if (token.tokenStats.qty_valid_txns_since_genesis === 0) {
-        $('#token-transactions-table tbody').html('<tr><td>No transactions found.</td></tr>');
-      } else {
-        app.slpdb.query(app.slpdb.count_unconfirmed_token_transaction_history(tokenIdHex))
-        .then((total_unconfirmed_token_transactions) => {
-          total_unconfirmed_token_transactions = app.util.extract_total(total_unconfirmed_token_transactions).u;
+      Promise.all([
+        app.slpdb.query(app.slpdb.token_get_total_transactions(tokenIdHex)),
+        app.slpdb.query(app.slpdb.token_get_total_utxos(tokenIdHex)),
+        app.slpdb.query(app.slpdb.token_get_total_addresses(tokenIdHex)),
+        app.slpdb.query(app.slpdb.token_get_total_satoshis_locked(tokenIdHex)),
+        app.slpdb.query(app.slpdb.token_get_total_minted(tokenIdHex)),
+        app.slpdb.query(app.slpdb.token_get_total_burned(tokenIdHex)),
+      ])
+      .then(([
+        total_transactions,
+        total_utxos,
+        total_addresses,
+        total_satoshis_locked,
+        total_minted,
+        total_burned
+      ]) => {
+        total_transactions = app.util.extract_total(total_transactions).g;
+        total_utxos = app.util.extract_total(total_utxos).g;
+        total_addresses = app.util.extract_total(total_addresses).g;
+        total_satoshis_locked = app.util.extract_total(total_satoshis_locked).g;
+        total_minted = app.util.extract_total(total_minted).g;
+        total_burned = app.util.extract_total(total_burned).g;
+
+        $('#tokenstats_valid_token_transactions').html(Number(total_transactions).toLocaleString());
+        $('#token_transactions_count').html(Number(total_transactions).toLocaleString());
+        $('#tokenstats_valid_token_utxos').html(Number(total_utxos).toLocaleString());
+        $('#tokenstats_valid_token_addresses').html(Number(total_addresses).toLocaleString());
+        $('#token_addresses_count').html(Number(total_addresses).toLocaleString());
+        $('#tokenstats_satoshis_locked_up').html(app.util.format_bignum_str(new BigNumber(total_satoshis_locked).toFixed()));
+        $('#tokenstats_tokens_minted').html(app.util.format_bignum_str(total_minted, token.tokenDetails.decimals));
+        $('#tokenstats_tokens_burned').html(app.util.format_bignum_str(total_burned, token.tokenDetails.decimals));
+        const circulatingSupply = new BigNumber(token.tokenDetails.genesisOrMintQuantity)
+          .plus(new BigNumber(total_minted))
+          .minus(new BigNumber(total_burned));
+        $('#tokenstats_circulating_supply').html(app.util.format_bignum_str(circulatingSupply.toFixed()));
+
+        app.util.decimal_formatting($('#token-stats-table tr.decimal-stats td'));
+        $('#token-stats-table-container').removeClass('loading');
 
 
-          const total_confirmed = token.tokenStats.qty_valid_txns_since_genesis
-                                - total_unconfirmed_token_transactions;
-
+        if (total_addresses === 0) {
+          $('#token-addresses-table tbody').html('<tr><td>No addresses found.</td></tr>');
+        } else {
           app.util.create_pagination(
-            $('#token-transactions-table-container'),
+            $('#token-addresses-table-container'),
             0,
-            Math.ceil((total_confirmed % 10 == 0 ? total_confirmed : (total_confirmed + 1)) / 10),
+            Math.ceil(total_addresses / 10),
             (page, done) => {
-              load_paginated_token_txs(10, 10*page, done);
+              load_paginated_token_addresses(10, 10*page, done);
             }
           );
-        });
-      }
+        }
 
+        if (total_transactions === 0) {
+          $('#token-transactions-table tbody').html('<tr><td>No transactions found.</td></tr>');
+        } else {
+          app.slpdb.query(app.slpdb.count_unconfirmed_token_transaction_history(tokenIdHex))
+          .then((total_unconfirmed_token_transactions) => {
+            total_unconfirmed_token_transactions = app.util.extract_total(total_unconfirmed_token_transactions).u;
+
+
+            const total_confirmed = total_transactions
+                                  - total_unconfirmed_token_transactions;
+
+            app.util.create_pagination(
+              $('#token-transactions-table-container'),
+              0,
+              Math.ceil((total_confirmed % 10 == 0 ? total_confirmed : (total_confirmed + 1)) / 10),
+              (page, done) => {
+                load_paginated_token_txs(10, 10*page, done);
+              }
+            );
+          });
+        }
+      });
 
       const create_transaction_graph = (time_period, split_time_period, line_type) => {
         app.slpdb.query(app.slpdb.count_txs_per_block({

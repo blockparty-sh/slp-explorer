@@ -106,7 +106,7 @@
     </div>
   </div>
   <div class="rounded_row">
-    <div id="token-stats-table-container" class="rounded box-shadow table-container">
+    <div id="token-stats-table-container" class="rounded box-shadow table-container loading">
       <div class="table-responsive">
         <table class="table" id="token-stats-table">
           <thead>
@@ -127,6 +127,7 @@
                 <% } %>
               </td>
             </tr>
+            <!--
             <tr>
               <th scope="row">Block Last Active Send</th>
               <td>
@@ -145,14 +146,11 @@
                 <% } %>
               </td>
             </tr>
+            -->
             <tr>
               <th scope="row">Minting Baton Status</th>
               <td>
-                <% if (token.mintBatonStatus) { /* TODO DELETE AFTER 1.0 */ %>
-                  <%= token.mintBatonStatus.toLowerCase().split('_').map(v => v[0].toUpperCase() + v.substring(1).toLowerCase()).join(' ') %>
-                <% } else if (token.tokenStats.minting_baton_status) { %>
-                  <%= token.tokenStats.minting_baton_status.toLowerCase().split('_').map(v => v[0].toUpperCase() + v.substring(1).toLowerCase()).join(' ') %>
-                <% } %>
+                <%= token.mintBatonStatus.split('_').map(v => v[0].toUpperCase() + v.substring(1).toLowerCase()).join(' ') %>
               </td>
             </tr>
             <% if (token.mintBatonUtxo && token.mintBatonUtxo.split(':').length === 2) { %>
@@ -168,31 +166,31 @@
             <% } %>
             <tr>
               <th scope="row">Valid Txns Since Genesis</th>
-              <td class="amount"><%= Number(token.tokenStats.qty_valid_txns_since_genesis).toLocaleString() %></td>
+              <td class="amount" id="tokenstats_valid_token_transactions">...</span></td>
             </tr>
             <tr>
               <th scope="row">Valid Token Utxos</th>
-              <td class="amount"><%= Number(token.tokenStats.qty_valid_token_utxos).toLocaleString() %></td>
+              <td class="amount" id="tokenstats_valid_token_utxos">...</td>
             </tr>
             <tr>
               <th scope="row">Valid Token Addresses</th>
-              <td class="amount"><%= Number(token.tokenStats.qty_valid_token_addresses).toLocaleString() %></td>
+              <td class="amount" id="tokenstats_valid_token_addresses">...</td>
             </tr>
             <tr>
               <th scope="row">Satoshis Locked Up</th>
-              <td class="amount"><%= app.util.format_bignum_str(new BigNumber(token.tokenStats.qty_satoshis_locked_up).toFixed()) %></td>
+              <td class="amount" id="tokenstats_satoshis_locked_up">...</td>
             </tr>
             <tr class="decimal-stats">
               <th scope="row">Tokens Minted</th>
-              <td class="amount"><%= app.util.format_bignum_str(token.tokenStats.qty_token_minted, token.tokenDetails.decimals) %></td>
+              <td class="amount" id="tokenstats_tokens_minted">...</td>
             </tr>
             <tr class="decimal-stats">
               <th scope="row">Tokens Burned</th>
-              <td class="amount"><%= app.util.format_bignum_str(token.tokenStats.qty_token_burned, token.tokenDetails.decimals) %></td>
+              <td class="amount" id="tokenstats_tokens_burned">...</td>
             </tr>
             <tr class="decimal-stats">
               <th scope="row">Circulating Supply</th>
-              <td class="amount"><%= app.util.format_bignum_str(token.tokenStats.qty_token_circulating_supply, token.tokenDetails.decimals) %></td>
+              <td class="amount" id="tokenstats_circulating_supply">...</td>
             </tr>
           </tbody>
         </table>
@@ -204,8 +202,8 @@
 
 <div class="rounded_row_50percent_container">
   <div class="rounded_row">
-    <div id="token-transactions-table-container" class="rounded box-shadow table-container">
-      <h3 class="border-bottom border-gray">Transactions (<%= Number(token.tokenStats.qty_valid_txns_since_genesis).toLocaleString() %>)</h3>
+    <div id="token-transactions-table-container" class="rounded box-shadow table-container loading">
+      <h3 class="border-bottom border-gray">Transactions (<span id="token_transactions_count">...</span>)</h3>
       <div class="table-responsive">
         <table class="table" id="token-transactions-table">
           <thead>
@@ -267,8 +265,8 @@
 <% } %>
 
 <div class="rounded_row">
-  <div id="token-mint-history-table-container" class="rounded box-shadow table-container">
-    <h3>Mint History (<%= Number(total_token_mint_transactions).toLocaleString() %>)</h3>
+  <div id="token-mint-history-table-container" class="rounded box-shadow table-container loading">
+    <h3>Mint History (<span id="total_token_mint_transactions">...</span>)</h3>
     <div class="table-responsive">
       <table class="table" id="token-mint-history-table">
         <thead>
@@ -292,8 +290,8 @@
 
 <div class="rounded_row_50percent_container">
   <div class="rounded_row">
-    <div id="token-addresses-table-container" class="rounded box-shadow table-container">
-      <h3 class="border-bottom border-gray">Addresses (<%= Number(token.tokenStats.qty_valid_token_addresses).toLocaleString() %>)</h3>
+    <div id="token-addresses-table-container" class="rounded box-shadow table-container loading">
+      <h3 class="border-bottom border-gray">Addresses (<span id="token_addresses_count">...</span>)</h3>
       <div class="table-responsive">
         <table class="table" id="token-addresses-table">
           <thead>
@@ -321,8 +319,8 @@
 </div>
 
 <div class="rounded_row">
-  <div id="token-burn-history-table-container" class="rounded box-shadow table-container">
-    <h3>Burn History (<%= Number(total_token_burn_transactions).toLocaleString() %>)</h3>
+  <div id="token-burn-history-table-container" class="rounded box-shadow table-container loading">
+    <h3>Burn History (<span id="total_token_burn_transactions">...</span>)</h3>
     <div class="table-responsive">
       <table class="table" id="token-burn-history-table">
         <thead>
