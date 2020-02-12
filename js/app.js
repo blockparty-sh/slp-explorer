@@ -432,11 +432,13 @@ app.util = {
               $selector.val('');
               return app.router('/#token/'+m.tokenDetails.tokenIdHex);
             }
-  
-            let tval = null;
+
             const verified = app.util.is_verified(m.tokenDetails.tokenIdHex);
-            tval = `<div class="flex-vcenter">${(verified ? '<img src="/img/verified-checkmark.png">' : '<img src="/img/verified-empty.png">')}&nbsp;<span class="token-icon-small" data-tokenid="${m.tokenDetails.tokenIdHex}"></span> ${m.tokenDetails.name} $${m.tokenDetails.symbol}</div>`;
-  
+            const tval = app.template.search_token_result({
+              verified: verified,
+              token: m
+            });
+
             sugs.push({
               value: m.tokenDetails.tokenIdHex,
               data: {
@@ -480,7 +482,7 @@ app.util = {
                 value: slp_addr,
                 data: {
                   url: '/#address/'+slp_addr, // TODO decode address
-                  html: app.util.get_cash_account_html(m),
+                  html: app.template.search_cashaccount_result(app.util.get_cash_account_data(m)),
                   category: 'Cash Accounts'
                 }
               });
@@ -564,9 +566,9 @@ app.util = {
     } catch (e) { return null; }
   },
 
-  get_cash_account_html: (cashaccount) => {
+  get_cash_account_data: (cashaccount) => {
     if (! cashaccount) {
-      return '';
+      return {};
     }
 
     let name = cashaccount.name;
@@ -588,7 +590,12 @@ app.util = {
     const account_hash_step5 = account_hash_step4.toString().split("").reverse().join("").padEnd(10, '0');
 
     const avatar_url = '/img/cashaccount-avatars/emoji_u'+avatars[emoji_index]+'.svg';
-    return `<img src="${avatar_url}" class="cashaccount-icon-small">${name}#${cashaccount.blockheight - 563620}.<span class="cashaccount-step5">${account_hash_step5}</span>`;
+    return {
+      avatar_url: avatar_url,
+      name: name,
+      blockheight: cashaccount.blockheight - 563620,
+      bits: account_hash_step5,
+    };
   },
 
   cashaccount_avatar: (cashaccount) => {
@@ -3742,6 +3749,8 @@ $(document).ready(() => {
     'error_processing_tx_page',
     'error_notx_page',
     'error_badaddress_page',
+    'search_token_result',
+    'search_cashaccount_result',
   ];
 
   app.template = {}

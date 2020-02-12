@@ -1,0 +1,10 @@
+<div class="flex-vcenter">
+  <% if (verified) { %>
+    <img src="/img/verified-checkmark.png">
+  <% } else { %>
+    <img src="/img/verified-empty.png">
+   <% } %>
+   &nbsp;
+  <span class="token-icon-small" data-tokenid="<%= token.tokenDetails.tokenIdHex %>"></span>
+  <%= token.tokenDetails.name %> $<%= token.tokenDetails.symbol %>
+</div>
