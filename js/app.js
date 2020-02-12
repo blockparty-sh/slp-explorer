@@ -3582,11 +3582,12 @@ app.init_address_page = (address) =>
       return resolve(app.init_error_badaddress_page(address));
     }
 
-    return Promise.all([
-      app.bitdb.query(app.bitdb.get_cashaccount(app.util.cash_address_to_raw_address(slpjs.Utils.toCashAddress(address)))),
-    ]).then(([
-      cashaccount,
-    ]) => {
+    return app.bitdb.query(
+      app.bitdb.get_cashaccount(
+        app.util.cash_address_to_raw_address(slpjs.Utils.toCashAddress(address))
+      )
+    )
+    .then((cashaccount) => {
       cashaccount = cashaccount.u.length > 0 ? cashaccount.u[0]
                   : cashaccount.c.length > 0 ? cashaccount.c[0]
                   : null;
