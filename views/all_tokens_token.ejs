@@ -9,9 +9,7 @@
     </div>
   </td>
   <td class="nowrap"><%= app.util.compress_string(token.tokenDetails.name) %></td>
-  <td><%= Number(token.tokenStats.qty_valid_txns_since_genesis).toLocaleString() %></td>
-  <td><%= Number(token.tokenStats.qty_valid_token_utxos).toLocaleString() %></td>
-  <td><%= Number(token.tokenStats.qty_valid_token_addresses).toLocaleString() %></td>
+  <td><%= Number(token.tokenStats.approx_txns_since_genesis).toLocaleString() %></td>
   <td class="nowrap">
     <% if (token.tokenDetails.documentUri) { %>
       <% const url = app.util.document_link(token.tokenDetails.documentUri); %>

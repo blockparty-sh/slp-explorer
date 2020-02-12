@@ -655,7 +655,7 @@ app.slpdb = {
       "db": ["t"],
       "find": {},
       "sort": {
-        "tokenStats.qty_valid_txns_since_genesis": -1
+        "tokenStats.approx_txns_since_genesis": -1
       },
       "limit": limit,
       "skip": skip
