@@ -3385,11 +3385,11 @@ app.init_token_page = (tokenIdHex) =>
         $('#tokenstats_valid_token_addresses').html(Number(total_addresses).toLocaleString());
         $('#token_addresses_count').html(Number(total_addresses).toLocaleString());
         $('#tokenstats_satoshis_locked_up').html(app.util.format_bignum_str(new BigNumber(total_satoshis_locked).toFixed()));
-        $('#tokenstats_tokens_minted').html(app.util.format_bignum_str(total_minted, token.tokenDetails.decimals));
+        const totalMinted = new BigNumber(token.tokenDetails.genesisOrMintQuantity)
+          .plus(new BigNumber(total_minted));
+        $('#tokenstats_tokens_minted').html(app.util.format_bignum_str(totalMinted.toFixed(), token.tokenDetails.decimals));
         $('#tokenstats_tokens_burned').html(app.util.format_bignum_str(total_burned, token.tokenDetails.decimals));
-        const circulatingSupply = new BigNumber(token.tokenDetails.genesisOrMintQuantity)
-          .plus(new BigNumber(total_minted))
-          .minus(new BigNumber(total_burned));
+        const circulatingSupply = totalMinted.minus(new BigNumber(total_burned));
         $('#tokenstats_circulating_supply').html(app.util.format_bignum_str(circulatingSupply.toFixed()));
 
         app.util.decimal_formatting($('#token-stats-table tr.decimal-stats td'));
