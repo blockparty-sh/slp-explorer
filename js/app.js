@@ -336,7 +336,7 @@ app.util = {
 
   attach_search_handler: ($selector, $container) => {
     $selector.closest('form').submit(false);
-    
+
     $selector.autocomplete({
       groupBy: 'category',
       preventBadQueries: false, // retry query in case slpdb hasnt yet indexed something
@@ -348,23 +348,23 @@ app.util = {
       width: 'flex',
       lookup: function (query, done) {
         let search_value = $selector.val().trim();
-  
+
         // check if address entered
         if (slpjs.Utils.isSlpAddress(search_value)) {
           $selector.val('');
           return app.router('/#address/'+slpjs.Utils.toSlpAddress(search_value));
         }
-  
+
         if (slpjs.Utils.isCashAddress(search_value)) {
           $selector.val('');
           return app.router('/#address/'+slpjs.Utils.toSlpAddress(search_value));
         }
-  
+
         if (slpjs.Utils.isLegacyAddress(search_value)) {
           $selector.val('');
           return app.router('/#address/'+slpjs.Utils.toSlpAddress(search_value));
         }
-    
+
         Promise.all([
           app.slpdb.query({
             "v": 3,
@@ -461,7 +461,7 @@ app.util = {
               $selector.val('');
               return app.router('/#tx/'+m.tx.h);
             }
-  
+
             sugs.push({
               value: m.tx.h,
               data: {
@@ -498,7 +498,7 @@ app.util = {
               });
             }
           }
-  
+
           done({ suggestions: sugs });
         });
       },
@@ -2539,7 +2539,7 @@ app.init_index_page = () =>
     };
     resolve();
   })
-  
+
 app.init_all_tokens_page = () =>
   new Promise((resolve, reject) =>
     app.slpdb.query(app.slpdb.count_all_tokens())
@@ -2732,7 +2732,7 @@ app.init_block_page = (height) =>
           $('#block-transactions-table tbody .token-icon-small').each(function() {
             app.util.set_token_icon($(this), 32);
           });
-          
+
           app.util.decimal_formatting($('#block-transactions-table tbody tr td:nth-child(3)'));
 
           done();
@@ -2857,7 +2857,7 @@ app.init_token_page = (tokenIdHex) =>
     .then(([token]) => {
       if (token.t.length == 0) {
         return resolve(app.init_404_page());
-      } 
+      }
 
       token = token.t[0];
 
@@ -3413,7 +3413,7 @@ app.init_address_page = (address) =>
             $('#address-transactions-table tbody .token-icon-small').each(function() {
               app.util.set_token_icon($(this), 32);
             });
-            
+
             app.util.decimal_formatting($('#address-transactions-table tbody tr td:nth-child(3)'));
 
             done();
