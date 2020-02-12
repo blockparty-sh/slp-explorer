@@ -4,7 +4,7 @@
       <div class="address-qr-code left" id="qrcode-address-<%= address %>"></div>
     </div>
     <div>
-      <h2 class="nowrap"><%- app.util.get_cash_account_html(cashaccount) %> Address</h2>
+      <h2 class="nowrap"><%- cashaccount_html %> Address</h2>
     </div>
     <h6><%= address %></h6>
     <a target="_blank" href="https://explorer.bitcoin.com/bch/address/<%= address %>">
@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <th role="col">Cash Account</th>
-            <td><%- app.util.get_cash_account_html(cashaccount) %></td>
+            <td><%- cashaccount_html %></td>
           </tr>
           <tr>
             <th role="col">Sent SLP Transactions</th>

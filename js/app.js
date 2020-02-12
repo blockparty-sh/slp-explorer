@@ -3614,13 +3614,14 @@ app.init_address_page = (address) =>
       cashaccount = cashaccount.u.length > 0 ? cashaccount.u[0]
                   : cashaccount.c.length > 0 ? cashaccount.c[0]
                   : null;
+      const cashaccount_html = cashaccount ? app.template.address_cashaccount(app.util.get_cash_account_data(cashaccount)) : '';
 
       total_sent_transactions = app.util.extract_total(total_sent_transactions);
       total_recv_transactions = app.util.extract_total(total_recv_transactions);
 
       $('main[role=main]').html(app.template.address_page({
         address: address,
-        cashaccount: cashaccount,
+		cashaccount_html: cashaccount_html,
         total_tokens: total_tokens.g,
         total_transactions: total_transactions.c+total_transactions.u,
         total_address_burn_transactions: total_address_burn_transactions.g,
@@ -4046,6 +4047,7 @@ $(document).ready(() => {
     'token_child_nft',
     'token_tx',
     'address_page',
+	'address_cashaccount',
     'address_transactions_tx',
     'address_token',
     'address_burn_tx',
