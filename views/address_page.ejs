@@ -41,11 +41,11 @@
           </tr>
           <tr>
             <th role="col">Sent SLP Transactions</th>
-            <td><%= total_sent_transactions %></td>
+            <td><span id="total_sent_transactions">...</span></td>
           </tr>
           <tr>
             <th role="col">Received SLP Transactions</th>
-            <td><%= total_recv_transactions %></td>
+            <td><span id="total_recv_transactions">...</span></td>
           </tr>
         </tbody>
       </table>
@@ -55,7 +55,7 @@
   
 <div class="rounded_row">
   <div id="address-tokens-table-container" class="rounded box-shadow table-container">
-    <h3>Token Balances (<%= Number(total_tokens).toLocaleString() %>)</h3>
+    <h3>Token Balances (<span id="total_tokens">...</span>)</h3>
     <div class="table-responsive">
       <table class="table" id="address-tokens-table">
         <thead>
@@ -78,7 +78,7 @@
 
 <div class="rounded_row">
   <div id="address-transactions-table-container" class="rounded box-shadow table-container">
-    <h3>Transactions (<%= Number(total_transactions).toLocaleString() %>)</h3>
+    <h3>Transactions (<span id="total_transactions">...</span>)</h3>
     <div class="table-responsive">
       <table class="table" id="address-transactions-table">
         <thead>
@@ -114,7 +114,7 @@
 
 <div class="rounded_row">
   <div id="address-burn-history-table-container" class="rounded box-shadow table-container">
-    <h3>Burn History (<%= Number(total_address_burn_transactions).toLocaleString() %>)</h3>
+    <h3>Burn History (<span id="total_address_burn_transactions">...</span>)</h3>
     <div class="table-responsive">
       <table class="table" id="address-burn-history-table">
         <thead>

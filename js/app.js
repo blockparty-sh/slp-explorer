@@ -1808,15 +1808,11 @@ app.slpdb = {
   count_address_sent_transactions: (address) => ({
     "v": 3,
     "q": {
-      "db": [
-        "c",
-        "u"
-      ],
+      "db": ["g"],
       "aggregate": [
         {
           "$match": {
-              "in.e.a":  address,
-            "slp.valid": true
+            "graphTxn.inputs.address":  address
           }
         },
         {
@@ -1834,18 +1830,14 @@ app.slpdb = {
   count_address_recv_transactions: (address) => ({
     "v": 3,
     "q": {
-      "db": [
-        "c",
-        "u"
-      ],
+      "db": ["g"],
       "aggregate": [
         {
           "$match": {
-              "in.e.a": {
+            "graphTxn.inputs.address": {
               "$ne": address
             },
-            "out.e.a": address,
-            "slp.valid": true
+            "graphTxn.outputs.address": address
           }
         },
         {
@@ -3591,40 +3583,19 @@ app.init_address_page = (address) =>
     }
 
     return Promise.all([
-      app.slpdb.query(app.slpdb.count_tokens_by_slp_address(address)),
-      app.slpdb.query(app.slpdb.count_total_transactions_by_slp_address(address)),
-      app.slpdb.query(app.slpdb.count_address_burn_transactions(address)),
       app.bitdb.query(app.bitdb.get_cashaccount(app.util.cash_address_to_raw_address(slpjs.Utils.toCashAddress(address)))),
-      app.slpdb.query(app.slpdb.count_address_sent_transactions(address)),
-      app.slpdb.query(app.slpdb.count_address_recv_transactions(address)),
     ]).then(([
-      total_tokens,
-      total_transactions,
-      total_address_burn_transactions,
       cashaccount,
-      total_sent_transactions,
-      total_recv_transactions,
     ]) => {
-      total_tokens = app.util.extract_total(total_tokens);
-      total_transactions = app.util.extract_total(total_transactions);
-      total_address_burn_transactions = app.util.extract_total(total_address_burn_transactions);
-
       cashaccount = cashaccount.u.length > 0 ? cashaccount.u[0]
                   : cashaccount.c.length > 0 ? cashaccount.c[0]
                   : null;
       const cashaccount_html = cashaccount ? app.template.address_cashaccount(app.util.get_cash_account_data(cashaccount)) : '';
 
-      total_sent_transactions = app.util.extract_total(total_sent_transactions);
-      total_recv_transactions = app.util.extract_total(total_recv_transactions);
 
       $('main[role=main]').html(app.template.address_page({
         address: address,
-		cashaccount_html: cashaccount_html,
-        total_tokens: total_tokens.g,
-        total_transactions: total_transactions.c+total_transactions.u,
-        total_address_burn_transactions: total_address_burn_transactions.g,
-        total_sent_transactions: total_sent_transactions.c + total_sent_transactions.u,
-        total_recv_transactions: total_recv_transactions.c + total_recv_transactions.u,
+		cashaccount_html: cashaccount_html
       }));
 
       let qrcode = null;
@@ -3769,45 +3740,70 @@ app.init_address_page = (address) =>
         });
       };
 
-      if (total_tokens.g === 0) {
-        $('#address-tokens-table tbody').html('<tr><td>No tokens balances found.</td></tr>');
-      } else {
-        app.util.create_pagination(
-          $('#address-tokens-table-container'),
-          0,
-          Math.ceil(total_tokens.g / 10),
-          (page, done) => {
-            load_paginated_tokens(10, 10*page, done);
-          }
-        );
-      }
+      app.slpdb.query(app.slpdb.count_tokens_by_slp_address(address))
+	  .then((total_tokens) => {
+        total_tokens = app.util.extract_total(total_tokens).g;
+		$('#total_tokens').html(Number(total_tokens).toLocaleString());
 
-      if (total_transactions.c + total_transactions.u === 0) {
-        $('#address-transactions-table tbody').html('<tr><td>No transactions found.</td></tr>');
-      } else {
-        app.util.create_pagination(
-          $('#address-transactions-table-container'),
-          0,
-          Math.ceil(total_transactions.c / 10),
-          (page, done) => {
-            load_paginated_transactions(10, 10*page, done);
-          }
-        );
-      }
+        if (total_tokens === 0) {
+          $('#address-tokens-table tbody').html('<tr><td>No tokens balances found.</td></tr>');
+        } else {
+          app.util.create_pagination(
+            $('#address-tokens-table-container'),
+            0,
+            Math.ceil(total_tokens / 10),
+            (page, done) => {
+              load_paginated_tokens(10, 10*page, done);
+            }
+          );
+        }
+	  });
 
-      if (total_address_burn_transactions.g === 0) {
-        $('#address-burn-history-table tbody').html('<tr><td>No burns found.</td></tr>');
-      } else {
-        app.util.create_pagination(
-          $('#address-burn-history-table-container'),
-          0,
-          Math.ceil(total_address_burn_transactions.g / 10),
-          (page, done) => {
-            load_paginated_address_burn_history(10, 10*page, done);
-          }
-        );
-      }
+      app.slpdb.query(app.slpdb.count_address_burn_transactions(address))
+	  .then((total_address_burn_transactions) => {
+        total_address_burn_transactions = app.util.extract_total(total_address_burn_transactions).g;
+		$('#total_address_burn_transactions').html(Number(total_address_burn_transactions).toFixed());
 
+        if (total_address_burn_transactions === 0) {
+          $('#address-burn-history-table tbody').html('<tr><td>No burns found.</td></tr>');
+        } else {
+          app.util.create_pagination(
+            $('#address-burn-history-table-container'),
+            0,
+            Math.ceil(total_address_burn_transactions / 10),
+            (page, done) => {
+              load_paginated_address_burn_history(10, 10*page, done);
+            }
+          );
+        }
+	  });
+
+	  Promise.all([
+        app.slpdb.query(app.slpdb.count_address_sent_transactions(address)),
+        app.slpdb.query(app.slpdb.count_address_recv_transactions(address)),
+      ])
+	  .then(([total_sent_transactions, total_recv_transactions]) => {
+        total_sent_transactions = app.util.extract_total(total_sent_transactions).g;
+        total_recv_transactions = app.util.extract_total(total_recv_transactions).g;
+		$('#total_sent_transactions').html(Number(total_sent_transactions).toLocaleString());
+		$('#total_recv_transactions').html(Number(total_recv_transactions).toLocaleString());
+
+		total_transactions = total_sent_transactions + total_recv_transactions;
+		$('#total_transactions').html(Number(total_transactions).toLocaleString());
+
+        if (total_transactions === 0) {
+          $('#address-transactions-table tbody').html('<tr><td>No transactions found.</td></tr>');
+        } else {
+          app.util.create_pagination(
+            $('#address-transactions-table-container'),
+            0,
+            Math.ceil(total_transactions / 10),
+            (page, done) => {
+              load_paginated_transactions(10, 10*page, done);
+            }
+          );
+        }
+	  });
 
       const create_transaction_graph = (time_period, split_time_period, line_type) => {
         Promise.all([
