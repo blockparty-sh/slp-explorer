@@ -3124,10 +3124,8 @@ app.init_block_mempool_page = (height) =>
 
 app.init_token_page = (tokenIdHex) =>
   new Promise((resolve, reject) =>
-    Promise.all([
-      app.slpdb.query(app.slpdb.token(tokenIdHex)),
-    ])
-    .then(([token]) => {
+    app.slpdb.query(app.slpdb.token(tokenIdHex))
+    .then((token) => {
       if (token.t.length == 0) {
         return resolve(app.init_404_page());
       }
