@@ -2964,17 +2964,12 @@ app.init_tx_page = (txid, highlight=[]) =>
 
 app.init_block_page = (height) =>
   new Promise((resolve, reject) =>
-    Promise.all([
-      app.slpdb.query(app.slpdb.count_txs_by_block(height)),
-      app.bitdb.query(app.bitdb.count_txs_by_block(height+1))
-    ])
-    .then(([total_txs_by_block, total_bch_txs_by_next_block]) => {
-      total_txs_by_block = app.util.extract_total(total_txs_by_block);
+    app.bitdb.query(app.bitdb.count_txs_by_block(height+1))
+    .then((total_bch_txs_by_next_block) => {
       total_bch_txs_by_next_block = app.util.extract_total(total_bch_txs_by_next_block);
 
       $('main[role=main]').html(app.template.block_page({
         height: height,
-        total_txs: total_txs_by_block.c,
         next_block_exists: total_bch_txs_by_next_block.c > 0
       }));
 
@@ -3005,18 +3000,24 @@ app.init_block_page = (height) =>
       };
 
 
-      if (total_txs_by_block.c === 0) {
-        $('#block-transactions-table tbody').html('<tr><td>No transactions found.</td></tr>');
-      } else {
-        app.util.create_pagination(
-          $('#block-transactions-table-container'),
-          0,
-          Math.ceil(total_txs_by_block.c / 15),
-          (page, done) => {
-            load_paginated_transactions(15, 15*page, done);
-          }
-        );
-      }
+      app.slpdb.query(app.slpdb.count_txs_by_block(height))
+      .then((total_txs_by_block) => {
+        total_txs_by_block = app.util.extract_total(total_txs_by_block).c;
+        $('#total_txs, #total_transactions').html(Number(total_txs_by_block).toLocaleString());
+
+        if (total_txs_by_block === 0) {
+          $('#block-transactions-table tbody').html('<tr><td>No transactions found.</td></tr>');
+        } else {
+          app.util.create_pagination(
+            $('#block-transactions-table-container'),
+            0,
+            Math.ceil(total_txs_by_block / 15),
+            (page, done) => {
+              load_paginated_transactions(15, 15*page, done);
+            }
+          );
+        }
+      });
 
       resolve();
     })
@@ -3596,7 +3597,7 @@ app.init_address_page = (address) =>
 
       $('main[role=main]').html(app.template.address_page({
         address: address,
-		cashaccount_html: cashaccount_html
+        cashaccount_html: cashaccount_html
       }));
 
       let qrcode = null;
@@ -3742,9 +3743,9 @@ app.init_address_page = (address) =>
       };
 
       app.slpdb.query(app.slpdb.count_tokens_by_slp_address(address))
-	  .then((total_tokens) => {
+      .then((total_tokens) => {
         total_tokens = app.util.extract_total(total_tokens).g;
-		$('#total_tokens').html(Number(total_tokens).toLocaleString());
+        $('#total_tokens').html(Number(total_tokens).toLocaleString());
 
         if (total_tokens === 0) {
           $('#address-tokens-table tbody').html('<tr><td>No tokens balances found.</td></tr>');
@@ -3758,12 +3759,12 @@ app.init_address_page = (address) =>
             }
           );
         }
-	  });
+      });
 
       app.slpdb.query(app.slpdb.count_address_burn_transactions(address))
-	  .then((total_address_burn_transactions) => {
+      .then((total_address_burn_transactions) => {
         total_address_burn_transactions = app.util.extract_total(total_address_burn_transactions).g;
-		$('#total_address_burn_transactions').html(Number(total_address_burn_transactions).toFixed());
+        $('#total_address_burn_transactions').html(Number(total_address_burn_transactions).toFixed());
 
         if (total_address_burn_transactions === 0) {
           $('#address-burn-history-table tbody').html('<tr><td>No burns found.</td></tr>');
@@ -3777,20 +3778,20 @@ app.init_address_page = (address) =>
             }
           );
         }
-	  });
+      });
 
-	  Promise.all([
+      Promise.all([
         app.slpdb.query(app.slpdb.count_address_sent_transactions(address)),
         app.slpdb.query(app.slpdb.count_address_recv_transactions(address)),
       ])
-	  .then(([total_sent_transactions, total_recv_transactions]) => {
+      .then(([total_sent_transactions, total_recv_transactions]) => {
         total_sent_transactions = app.util.extract_total(total_sent_transactions).g;
         total_recv_transactions = app.util.extract_total(total_recv_transactions).g;
-		$('#total_sent_transactions').html(Number(total_sent_transactions).toLocaleString());
-		$('#total_recv_transactions').html(Number(total_recv_transactions).toLocaleString());
+        $('#total_sent_transactions').html(Number(total_sent_transactions).toLocaleString());
+        $('#total_recv_transactions').html(Number(total_recv_transactions).toLocaleString());
 
-		total_transactions = total_sent_transactions + total_recv_transactions;
-		$('#total_transactions').html(Number(total_transactions).toLocaleString());
+        total_transactions = total_sent_transactions + total_recv_transactions;
+        $('#total_transactions').html(Number(total_transactions).toLocaleString());
 
         if (total_transactions === 0) {
           $('#address-transactions-table tbody').html('<tr><td>No transactions found.</td></tr>');
@@ -3804,7 +3805,7 @@ app.init_address_page = (address) =>
             }
           );
         }
-	  });
+      });
 
       const create_transaction_graph = (time_period, split_time_period, line_type) => {
         Promise.all([
@@ -4042,7 +4043,7 @@ $(document).ready(() => {
     'token_child_nft',
     'token_tx',
     'address_page',
-	'address_cashaccount',
+    'address_cashaccount',
     'address_transactions_tx',
     'address_token',
     'address_burn_tx',
