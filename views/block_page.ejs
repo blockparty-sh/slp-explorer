@@ -21,7 +21,7 @@
         <button type="button" class="button right">View on BCH Explorer</button>
       </a>
     <% } else { %>
-      <h2 class="text-white">Mempool | <%= total_txs %> transactions</h2>
+      <h2 class="text-white">Mempool | <span id="total_txs">...</span> transactions</h2>
       <h6>View all transactions waiting to be confirmed in block</h6>
       <a href="#block/<%= most_recent_block_height %>">
         <button type="button" class="button left" >&larr; block <%= most_recent_block_height %></button>

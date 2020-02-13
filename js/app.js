@@ -3025,17 +3025,12 @@ app.init_block_page = (height) =>
 
 app.init_block_mempool_page = (height) =>
   new Promise((resolve, reject) =>
-    Promise.all([
-      app.slpdb.query(app.slpdb.count_txs_in_mempool()),
-      app.bitdb.query(app.bitdb.recent_transactions(1))
-    ])
-    .then(([total_txs_in_mempool, most_recent_tx]) => {
-      total_txs_in_mempool = app.util.extract_total(total_txs_in_mempool);
+    app.bitdb.query(app.bitdb.recent_transactions(1))
+    .then((most_recent_tx) => {
       const most_recent_block_height = most_recent_tx.c[0].blk.i;
 
       $('main[role=main]').html(app.template.block_page({
         height: "mempool",
-        total_txs: total_txs_in_mempool.u,
         most_recent_block_height: most_recent_block_height
       }));
 
@@ -3065,18 +3060,24 @@ app.init_block_mempool_page = (height) =>
         });
       };
 
-      if (total_txs_in_mempool.u === 0) {
-        $('#block-transactions-table tbody').html('<tr><td>No transactions found.</td></tr>');
-      } else {
-        app.util.create_pagination(
-          $('#block-transactions-table-container'),
-          0,
-          Math.ceil(total_txs_in_mempool.u / 15),
-          (page, done) => {
-            load_paginated_transactions(15, 15*page, done);
-          }
-        );
-      }
+      app.slpdb.query(app.slpdb.count_txs_in_mempool())
+	  .then((total_txs_in_mempool) => {
+        total_txs_in_mempool = app.util.extract_total(total_txs_in_mempool).u;
+        $('#total_txs, #total_transactions').html(Number(total_txs_in_mempool).toLocaleString());
+
+        if (total_txs_in_mempool === 0) {
+          $('#block-transactions-table tbody').html('<tr><td>No transactions found.</td></tr>');
+        } else {
+          app.util.create_pagination(
+            $('#block-transactions-table-container'),
+            0,
+            Math.ceil(total_txs_in_mempool / 15),
+            (page, done) => {
+              load_paginated_transactions(15, 15*page, done);
+            }
+          );
+        }
+	  });
 
       app.slpstream.on_mempool = (sna) => {
         const transactions_page = app.util.get_pagination_page($('#block-transactions-table-container'));
