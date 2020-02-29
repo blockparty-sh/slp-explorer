@@ -625,6 +625,13 @@ app.util = {
       $(this).html($(this).html()+("&nbsp;").repeat(skip));
     });
   },
+
+  fetch_retry: (url, options, n=5) => fetch(url, options).catch(function(error) {
+    if (n === 0) throw error;
+    return new Promise((resolve) => {
+      setTimeout(() => resolve(app.util.fetch_retry(url, options, n - 1)), 500);
+    });
+  }),
 };
 
 const btoa_ext = buf => Buffer.Buffer.from(buf).toString('base64');
@@ -635,11 +642,11 @@ app.slpdb = {
       return resolve(false);
     }
     const b64 = btoa_ext(JSON.stringify(query));
-    const url = "https://nyc1.slpdb.io/q/" + b64;
+    const url = "https://slpdb.fountainhead.cash/q/" + b64;
 
     console.log(url)
 
-    fetch(url)
+    app.util.fetch_retry(url)
     .then((r) => r = r.json())
     .then((r) => {
       if (r.hasOwnProperty('error')) {
@@ -2175,7 +2182,7 @@ app.bitdb = {
 
     console.log(url)
 
-    fetch(url)
+    app.util.fetch_retry(url)
     .then((r) => r = r.json())
     .then((r) => {
       if (r.hasOwnProperty('error')) {
@@ -4059,7 +4066,7 @@ $(document).ready(() => {
   app.template = {}
 
   console.time('loading verified tokens');
-  fetch('/verified_tokens.json')
+  app.util.fetch_retry('/verified_tokens.json')
   .then(tokens => tokens.json())
   .then(tokens => {
     app.verified_tokens = new Set(tokens);
@@ -4070,7 +4077,7 @@ $(document).ready(() => {
     Promise.all(views.map(v => {
       const url = 'views/' + v + '.ejs';
       console.info('downloading view: ' + url);
-      return fetch(url).then(v => v.text())
+      return app.util.fetch_retry(url).then(v => v.text())
     }))
     .then(texts => {
       texts.forEach((v, i) => {
