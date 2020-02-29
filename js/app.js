@@ -404,7 +404,7 @@ app.util = {
           app.bitdb.query({
             "v": 3,
             "q": {
-              "db": ["u", "c"],
+              "db": ["c"],
               "find": {
                 "out.h1": "01010101",
                 "blk.i": {
