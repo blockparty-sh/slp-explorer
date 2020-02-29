@@ -473,7 +473,7 @@ app.util = {
             });
           }
 
-          cashaccounts = cashaccounts.u.concat(cashaccounts.c);
+          cashaccounts = cashaccounts.c;
           for (let m of cashaccounts) {
             const cash_addr = app.util.raw_address_to_cash_address(m.data);
             if (cash_addr !== null) {
