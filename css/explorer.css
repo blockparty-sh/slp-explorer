@@ -107,8 +107,8 @@ a:hover, a.txid:hover, a.tokenid:hover { text-decoration: underline; }
 }
 
 .button-hamburger {
-	padding: 0.4rem 1.2rem;
-	margin-top: 9px;
+    padding: 0.4rem 1.2rem;
+    margin-top: 9px;
     height: 100%;
     border-radius: 5%;
     background-color: rgba(255, 255, 255, 0.2);
@@ -119,7 +119,7 @@ a:hover, a.txid:hover, a.tokenid:hover { text-decoration: underline; }
     background-position: center center;
     background-repeat: no-repeat;
     background-blend-mode: color-burn;
-	box-shadow: 0px 1px 2px 0px rgba(255, 255, 255, 1);
+    box-shadow: 0px 1px 2px 0px rgba(255, 255, 255, 1);
     position: absolute;
     top: -25px;
     right: 0px;
@@ -130,11 +130,11 @@ a:hover, a.txid:hover, a.tokenid:hover { text-decoration: underline; }
 }
 
 .hamburger-hide {
-	display: none!important;
+    display: none!important;
 }
 
 .hamburger-show {
-	display: block!important;
+    display: block!important;
 }
 
 
@@ -835,6 +835,43 @@ html.index-page header {
 
 #header-search-suggestions-container .autocomplete-suggestions {
     right:0px;
+}
+
+#dividend-helper-table label {
+    font-weight: bold;
+}
+#dividend-helper-table p {
+    font-size: 0.8rem;
+}
+#dividend-helper-table input {
+    background-color: rgb(253, 253, 253);
+    text-align: left;
+    color: #000;
+    border: 1px solid #909090;
+    outline: 0px;
+    width: 28rem;
+    font-weight: 200;
+    height: 44px;
+    margin-top: 9px;
+    padding: 0px 10px;
+    font-size: 0.9em;
+}
+#dividend-helper-table textarea {
+    background-color: rgb(253, 253, 253);
+    text-align: left;
+    font-family: arial;
+    color: #000;
+    border: 1px solid #909090;
+    outline: 0px;
+    font-weight: 200;
+    margin-top: 9px;
+    padding: 10px 10px;
+    font-size: 0.9em;
+    width: 28rem;
+}
+
+#div_results {
+    text-align:center;
 }
 
 @media only screen and (max-width: 890px) {

@@ -2112,6 +2112,114 @@ app.slpdb = {
       "f": "[ .[] | { txid: .tx.h, in: { i: .in.e.i } } ]"
     }
   }),
+  dividend_calculate_bch_mempool: (tokenIdHex, slp_supply, bch_amount, ignoreAddresses) => ({
+    "v": 3,
+    "q": {
+      "db": ["g"],
+      "aggregate": [
+        {
+          "$match": {
+            "tokenDetails.tokenIdHex": tokenIdHex,
+            "graphTxn.outputs.status": "UNSPENT"
+          }
+        },
+        {
+          "$unwind": "$graphTxn.outputs"
+        },
+        {
+          "$match": {
+            "graphTxn.outputs.status": "UNSPENT",
+            "graphTxn.outputs.address": {
+              "$nin": ignoreAddresses
+            }
+          }
+        },
+        {
+          "$group": {
+            "_id": "$graphTxn.outputs.address",
+            "slpAmount": {
+              "$sum": "$graphTxn.outputs.slpAmount"
+            }
+          }
+        },
+        {
+          "$sort": {
+            "slpAmount": -1
+          }
+        },
+        {
+          "$project": {
+            "_id": 1,
+            "bchAmount": {
+              "$divide": ["$slpAmount", slp_supply]
+            }
+          }
+        },
+        {
+          "$project": {
+            "_id": 1,
+            "bchAmount": {
+              "$multiply": ["$bchAmount", bch_amount]
+            }
+          }
+        },
+        {
+          "$limit": 10000
+        },
+         {
+          "$match": {
+            "bchAmount": {
+              "$gte": 0.00000546
+            }
+          }
+        }
+      ],
+      "limit": 10000
+    },
+    "r": {
+      "f": "[ .[] | { address: ._id, bchAmount: .bchAmount } ]"
+    }
+  }),
+
+  dividend_count_ignore_amounts: (tokenIdHex, addresses) => ({
+    "v": 3,
+    "q": {
+      "db": ["g"],
+      "aggregate": [
+        {
+          "$match": {
+            "tokenDetails.tokenIdHex": tokenIdHex,
+            "graphTxn.outputs.status": "UNSPENT",
+            "graphTxn.outputs.address": {
+              "$in": addresses
+            }
+          }
+        },
+        {
+          "$unwind": "$graphTxn.outputs"
+        },
+        {
+          "$match": {
+            "graphTxn.outputs.status": "UNSPENT",
+            "graphTxn.outputs.address": {
+              "$in": addresses
+            }
+          }
+        },
+        {
+          "$group": {
+            "_id": "$graphTxn.outputs.address",
+            "count": {
+              "$sum": "$graphTxn.outputs.slpAmount"
+            }
+          }
+        }
+      ]
+    },
+    "r": {
+      "f": "[ .[] | {count: .count } ]"
+    }
+  }),
 };
 
 app.slpstream = {
@@ -2856,6 +2964,62 @@ app.init_all_tokens_page = () =>
     })
   )
 
+app.init_dividend_page = () =>
+  new Promise((resolve, reject) => {
+    $('main[role=main]').html(app.template.dividend_page());
+    $('#div_calculate').click(() => {
+      const tokenIdHex = $('#div_tokenid').val();
+      if(tokenIdHex.length != 64) {
+        alert('tokenid required');
+        return;
+      }
+
+      let ignoreAddresses = [];
+      try {
+          ignoreAddresses = $('#div_ignore_addresses').val()
+            .split('\n')
+            .filter(v => v.length !== 0)
+            .map(v => slpjs.Utils.toSlpAddress(v));
+      } catch (e) {
+        alert('invalid ignore address found');
+        return;
+      }
+
+      Promise.all([
+        app.slpdb.query(app.slpdb.token_get_total_minted(tokenIdHex)),
+        app.slpdb.query(app.slpdb.token_get_total_burned(tokenIdHex)),
+        app.slpdb.query(app.slpdb.dividend_count_ignore_amounts(tokenIdHex, ignoreAddresses)),
+      ])
+      .then(([
+        total_minted,
+        total_burned,
+        total_ignored
+      ]) => {
+        total_minted  = app.util.extract_total(total_minted).g;
+        total_burned  = app.util.extract_total(total_burned).g;
+        total_ignored = app.util.extract_total(total_ignored).g;
+
+        const supply = new BigNumber(total_minted)
+          .minus(new BigNumber(total_burned))
+          .minus(new BigNumber(total_ignored));
+
+        app.slpdb.query(app.slpdb.dividend_calculate_bch_mempool(
+          tokenIdHex,
+          Number(supply.toFixed()),
+          Number($('#div_bch').val()),
+          ignoreAddresses
+        ))
+        .then((data) => {
+          $('#div_results').html(
+            data.g.map((v) => `${slpjs.Utils.toCashAddress(v.address)},${Number(v.bchAmount).toFixed(8)}`)
+            .reduce((a, v) => a+v+"\n", "")
+          );
+        });
+      })
+    });
+    resolve();
+  })
+
 app.init_tx_page = (txid, highlight=[]) =>
   new Promise((resolve, reject) =>
     app.slpdb.query(app.slpdb.tx(txid))
@@ -3062,7 +3226,7 @@ app.init_block_mempool_page = (height) =>
       };
 
       app.slpdb.query(app.slpdb.count_txs_in_mempool())
-	  .then((total_txs_in_mempool) => {
+      .then((total_txs_in_mempool) => {
         total_txs_in_mempool = app.util.extract_total(total_txs_in_mempool).u;
         $('#total_txs, #total_transactions').html(Number(total_txs_in_mempool).toLocaleString());
 
@@ -3078,7 +3242,7 @@ app.init_block_mempool_page = (height) =>
             }
           );
         }
-	  });
+      });
 
       app.slpstream.on_mempool = (sna) => {
         const transactions_page = app.util.get_pagination_page($('#block-transactions-table-container'));
@@ -3956,6 +4120,10 @@ app.router = (whash, push_history = true) => {
       document.title = 'All Tokens - SLP Explorer';
       method = () => app.init_all_tokens_page();
       break;
+    case '#dividend':
+      document.title = 'Dividend Helper - SLP Explorer';
+      method = () => app.init_dividend_page();
+      break;
     case '#tx':
       document.title = 'Transaction ' + key[0] + ' - SLP Explorer';
       method = () => app.init_tx_page(key[0], key.slice(1));
@@ -4033,6 +4201,7 @@ $(document).ready(() => {
     'latest_transactions_tx',
     'all_tokens_page',
     'all_tokens_token',
+    'dividend_page',
     'tx_page',
     'nonslp_tx_page',
     'block_page',
