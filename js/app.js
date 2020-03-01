@@ -1145,13 +1145,10 @@ app.slpdb = {
         {
           "$match": {
             "tokenDetails.tokenIdHex": tokenIdHex,
-            "graphTxn.outputs.status": {
-              "$in": [
-                "BATON_SPENT_IN_MINT",
-                "BATON_UNSPENT",
-                "BATON_SPENT_NOT_IN_MINT"
-              ]
-            }
+            "$or": [
+              { "graphTxn.details.transactionType": "GENESIS" },
+              { "graphTxn.details.transactionType": "MINT" }
+            ]
           }
         },
         {
@@ -1166,10 +1163,7 @@ app.slpdb = {
           }
         }
       ],
-      "limit": 1
-    },
-    "r": {
-      "f": "[ .[] | {count: .count } ]"
+      "limit": 10
     }
   }),
 
@@ -3394,8 +3388,7 @@ app.init_token_page = (tokenIdHex) =>
         $('#tokenstats_valid_token_addresses').html(Number(total_addresses).toLocaleString());
         $('#token_addresses_count').html(Number(total_addresses).toLocaleString());
         $('#tokenstats_satoshis_locked_up').html(app.util.format_bignum_str(new BigNumber(total_satoshis_locked).toFixed()));
-        const totalMinted = new BigNumber(token.tokenDetails.genesisOrMintQuantity)
-          .plus(new BigNumber(total_minted));
+        const totalMinted = new BigNumber(total_minted);
         $('#tokenstats_tokens_minted').html(app.util.format_bignum_str(totalMinted.toFixed(), token.tokenDetails.decimals));
         $('#tokenstats_tokens_burned').html(app.util.format_bignum_str(total_burned, token.tokenDetails.decimals));
         const circulatingSupply = totalMinted.minus(new BigNumber(total_burned));
