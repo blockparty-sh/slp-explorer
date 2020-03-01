@@ -308,6 +308,10 @@ header li input::placeholder {
     box-shadow: 0px 0px 20px 0px rgba(96,189,108,1);
 }
 
+.header_infobox .button {
+    margin: 1rem;
+}
+
 /* Tables */
 table {
     width: 100%;
