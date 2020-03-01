@@ -389,7 +389,7 @@ app.util = {
                   }
                 ]
               },
-              "sort": {"tokenStats.qty_valid_txns_since_genesis": -1},
+              "sort": {"tokenStats.approx_txns_since_genesis": -1},
               "limit": 10
             }
           }),
@@ -446,14 +446,14 @@ app.util = {
                 category: 'Tokens',
                 html: tval,
                 verified: verified,
-                qty_valid_txns_since_genesis: m.tokenStats.qty_valid_txns_since_genesis,
+                txns_since_genesis: m.tokenStats.approx_txns_since_genesis,
               }
             });
           }
 
           sugs.sort((a, b) => {
-            const av = (a.data.verified*100000000)+a.data.qty_valid_txns_since_genesis;
-            const bv = (b.data.verified*100000000)+b.data.qty_valid_txns_since_genesis;
+            const av = (a.data.verified*100000000)+a.data.txns_since_genesis;
+            const bv = (b.data.verified*100000000)+b.data.txns_since_genesis;
             return bv-av;
           });
 
