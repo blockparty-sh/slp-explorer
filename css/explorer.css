@@ -850,10 +850,11 @@ html.index-page header {
 #dividend-helper-table input {
     background-color: rgb(253, 253, 253);
     text-align: left;
+    font-family: 'Source Code Pro', monospace;
     color: #000;
     border: 1px solid #909090;
     outline: 0px;
-    width: 28rem;
+    width: 34rem;
     font-weight: 200;
     height: 44px;
     margin-top: 9px;
@@ -863,7 +864,7 @@ html.index-page header {
 #dividend-helper-table textarea {
     background-color: rgb(253, 253, 253);
     text-align: left;
-    font-family: arial;
+    font-family: 'Source Code Pro', monospace;
     color: #000;
     border: 1px solid #909090;
     outline: 0px;
@@ -871,11 +872,12 @@ html.index-page header {
     margin-top: 9px;
     padding: 10px 10px;
     font-size: 0.9em;
-    width: 28rem;
+    width: 34rem;
 }
 
 #div_results {
     text-align:center;
+    font-family: 'Source Code Pro', monospace;
 }
 
 @media only screen and (max-width: 890px) {
