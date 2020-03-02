@@ -2208,7 +2208,7 @@ app.slpdb = {
         },
         {
           "$group": {
-            "_id": "$graphTxn.outputs.address",
+            "_id": null,
             "count": {
               "$sum": "$graphTxn.outputs.slpAmount"
             }
@@ -2999,9 +2999,13 @@ app.init_dividend_page = () =>
         total_burned  = app.util.extract_total(total_burned).g;
         total_ignored = app.util.extract_total(total_ignored).g;
 
+        console.log(total_minted, total_burned, total_ignored);
+
         const supply = new BigNumber(total_minted)
           .minus(new BigNumber(total_burned))
           .minus(new BigNumber(total_ignored));
+
+        console.log('supply', supply.toString());
 
         app.slpdb.query(app.slpdb.dividend_calculate_bch_mempool(
           tokenIdHex,
