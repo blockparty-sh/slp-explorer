@@ -1,3 +1,5 @@
+"use strict";
+
 const app = {};
 
 app.verified_tokens = [];
@@ -75,7 +77,7 @@ app.util = {
       $el.append('<hr>');
     }
     for (const m of links) {
-      $obj = $(`<a href="${m.link}" target="blank"><div class="exchange-icon ${m.class}"></div></a>`);
+      const $obj = $(`<a href="${m.link}" target="blank"><div class="exchange-icon ${m.class}"></div></a>`);
       if (m.type === 'sideshift') {
         $obj.click((event) => {
           event.preventDefault();
@@ -156,7 +158,7 @@ app.util = {
   },
 
   create_pagination: ($el, page=0, max_page=10, fn) => {
-    $paginator = $el.find('.pagination');
+    const $paginator = $el.find('.pagination');
     $paginator.html('');
 
     $el.addClass('loading');
@@ -313,13 +315,13 @@ app.util = {
     const tokenIdHex = $el.data('tokenid');
 
     const append_jdenticon = () => {
-      $jdenticon = $(`<svg width="${size}" height="${size}" data-jdenticon-hash="${tokenIdHex}"></svg>`);
+      const $jdenticon = $(`<svg width="${size}" height="${size}" data-jdenticon-hash="${tokenIdHex}"></svg>`);
       $jdenticon.jdenticon();
       $el.append($jdenticon);
     };
 
     if (window.sessionStorage.getItem('tokenimgerr_'+tokenIdHex) === null) {
-      $img = $('<img>');
+      const $img = $('<img>');
       $img.attr('src', `https://tokens.bch.sx/${size}/${tokenIdHex}.png`);
 
       $img.on('error', function() {
@@ -543,13 +545,13 @@ app.util = {
       default: source_value = 'bitcoincash:'+address;
     }
 
-    let raw = cashaddr.decode(source_value);
-    payload_hex = raw.hash
+    const raw = cashaddr.decode(source_value);
+    const payload_hex = raw.hash
       .reduce((str, byte) => str + byte.toString(16).padStart(2, '0'), '')
       .toLowerCase();
-    payload_type = raw.type;
+    const payload_type = raw.type;
 
-    types = {"P2PKH": "01","P2SH": "02","P2PC": "03","P2SK": "04"}
+    const types = {"P2PKH": "01","P2SH": "02","P2PC": "03","P2SK": "04"}
 
     return types[payload_type]+payload_hex;
   },
@@ -3810,7 +3812,7 @@ app.init_address_page = (address) =>
       const load_paginated_transactions = (limit, skip, done) => {
         app.slpdb.query(app.slpdb.count_total_transactions_by_slp_address(address))
         .then((total_transactions_by_slp_address) => {
-          total_unconfirmed_transactions_by_slp_address = app.util.extract_total(total_transactions_by_slp_address).u;
+          const total_unconfirmed_transactions_by_slp_address = app.util.extract_total(total_transactions_by_slp_address).u;
 
           let tasks = [];
           if (skip < total_unconfirmed_transactions_by_slp_address) {
@@ -3959,7 +3961,7 @@ app.init_address_page = (address) =>
         $('#total_sent_transactions').html(Number(total_sent_transactions).toLocaleString());
         $('#total_recv_transactions').html(Number(total_recv_transactions).toLocaleString());
 
-        total_transactions = total_sent_transactions + total_recv_transactions;
+        const total_transactions = total_sent_transactions + total_recv_transactions;
         $('#total_transactions').html(Number(total_transactions).toLocaleString());
 
         if (total_transactions === 0) {
@@ -4250,8 +4252,7 @@ $(document).ready(() => {
         console.info('compiling: ' + views[i]);
         app.template[views[i]] = ejs.compile(v);
       });
-    })
-    .then(() => {
+
       console.timeEnd('loading views');
       app.router(window.location.pathname+window.location.hash, false);
       $('header').removeClass('loading');
