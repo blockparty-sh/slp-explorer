@@ -1527,7 +1527,7 @@ app.slpdb = {
         },
         {
           "$sort": {
-            "tx.blk.i": 1
+            "tx.blk.i": -1
           }
         },
         {
