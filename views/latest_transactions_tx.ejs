@@ -1,6 +1,6 @@
 <% const sent_amount = app.extract_sent_amount_from_tx(tx); %>
 <tr>
-  <td>
+  <td class="nowrap">
     <div class="flex-vcenter">
       <a class="txid" href="/#tx/<%= tx.tx.h %>"><%= app.util.compress_txid(tx.tx.h) %></a>
       <button class="copybtn" data-clipboard-text="<%= tx.tx.h %>"></button>

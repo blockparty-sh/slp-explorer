@@ -390,11 +390,12 @@ tr.burnt-tx {
   cursor:pointer;
   min-width: 2rem;
   background-color:#fff;
+  border-top: 3px solid #fff;
+  border-bottom: 3px solid #fff;
 }
 
 .pagination li.active a {
-  background-color: #60bd6c;
-  color: #FFF;
+  border-bottom-color: #60bd6c;
 }
 
 .pagination li:hover:not(.active) a {

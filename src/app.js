@@ -2939,6 +2939,7 @@ app.init_all_tokens_page = () =>
             );
           });
 
+          app.util.attach_clipboard('#all-tokens-table');
           $('#all-tokens-table tbody .token-icon-small').each(function() {
             app.util.set_token_icon($(this), 32);
           });
