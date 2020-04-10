@@ -990,3 +990,7 @@ html.index-page header {
         margin:0px auto;
     }
 }
+
+#lottie-web-react {
+    display: none!important;
+}
