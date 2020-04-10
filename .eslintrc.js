@@ -18,5 +18,8 @@ module.exports = {
     'camelcase': 'off',
     'max-len': 'off',
     'no-invalid-this': 'off',
+    'key-spacing': 'off',
+    'no-multi-spaces': 'off',
+    'object-curly-spacing': 'off',
   },
 };

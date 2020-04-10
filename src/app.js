@@ -625,7 +625,7 @@ app.util = {
   to_cash_address: (addr) => {
     const decoded = cashaddr.decode(addr);
     return cashaddr.encode('bitcoincash', decoded.type, decoded.hash);
-  }
+  },
 };
 
 const btoa_ext = (buf) => Buffer.Buffer.from(buf).toString('base64');
@@ -3108,6 +3108,237 @@ app.init_tx_page = (txid, highlight=[]) =>
               }
             }
 
+            const cytoscape_colors = {
+              tx:              '#4DE935',
+              input:           '#CCCCCC',
+              address:         '#AAAAAA',
+              burn:            '#FAAAAA',
+              txin:            '#555555',
+              txin_slp:        '#DE35E9',
+              txout:           '#333333',
+              txout_slp:       '#35C1E9',
+              txout_slp_burn:  '#f94a4a',
+              txout_slp_baton: '#00ff00',
+              select_color:    '#E9358F',
+            };
+
+            const create_cytoscape_context = (selector='.graph_container') => {
+              const cy = cytoscape({
+                container: $(selector),
+                style: [
+                {
+                  selector: 'node',
+                  style: {
+                    'width': 10,
+                    'height': 10,
+                    'background-color': 'transparent',
+                    'border-color': 'data(color)',
+                    'border-width': 2,
+                    'padding': 'data(padding)',
+                    'shape': 'data(type)',
+                    'text-wrap': 'wrap',
+                    'text-rotation': '-20deg',
+                    'font-size': 2,
+                    'text-halign': 'right',
+                    'color': 'rgba(0,0,0,0.5)',
+                    'label': 'data(val)',
+                  },
+                },
+                {
+                  selector: ':selected',
+                  style: {
+                    'padding': 5,
+                    'background-color': 'transparent',
+                    'border-color': cytoscape_colors.select_color,
+                    'border-width': 4,
+                  },
+                },
+                {
+                  selector: 'edge',
+                  style: {
+                    'width': 1,
+                    'label': 'data(val)',
+                    'text-wrap': 'wrap',
+                    'text-halign': 'right',
+                    'font-size': 2,
+                    'line-color': 'data(color)',
+                    'target-arrow-color': 'data(color)',
+                    'text-background-opacity': 1,
+                    'text-background-color': 'data(color)',
+                    'text-border-color': 'data(color)',
+                    'text-border-width': 5,
+                    'text-border-style': 'solid',
+                    'color': 'white',
+                    'text-border-color': 'data(color)',
+                    'text-rotation': '-20deg',
+                    'text-border-width': 5,
+                    'curve-style': 'bezier',
+                    'target-arrow-shape': 'triangle',
+                  },
+                }],
+                layout: {
+                  name: 'klay',
+                  animate: true,
+                },
+              });
+
+              return cy;
+            };
+
+            const cytoscape_extract_graph = (tx) => {
+              const items        = [];
+              const addresses    = new Set();
+              const inputs       = new Set();
+              const output_vouts = new Set();
+              const burn_txids   = new Set();
+
+              items.push({ data: {
+                id:      tx.tx.h,
+                color:   cytoscape_colors.tx,
+                type:    'diamond',
+                kind:    'tx',
+                val:     tx.tx.h,
+                padding: 0,
+              }});
+
+              for (const m of tx.graph[0].graphTxn.inputs) {
+                const vin = m.txid + ':' + m.vout;
+                inputs.add(vin);
+
+                items.push({ data: {
+                  id:      m.txid + '/' + m.vout + '/in',
+                  source:  vin,
+                  target:  tx.tx.h,
+                  color:   cytoscape_colors.txin_slp,
+                  kind:    'txin',
+                  val:      `${m.slpAmount} ${tx.token[0].tokenDetails.symbol}`,
+                  padding: 0,
+                }});
+              }
+
+              for (const m of tx.in) {
+                const vin = m.e.h + ':' + m.e.i;
+                if (inputs.has(vin)) {
+                  continue;
+                }
+                inputs.add(vin);
+
+                items.push({ data: {
+                  id:      m.e.a + '/' + tx.tx.h + '/in',
+                  source:  vin,
+                  target:  tx.tx.h,
+                  color:   cytoscape_colors.txin,
+                  kind:    'txin',
+                  val:     'BCH',
+                  padding: 0,
+                }});
+              }
+
+              for (const m of tx.graph[0].graphTxn.outputs) {
+                output_vouts.add(m.vout);
+
+                if (m.status === 'EXCESS_INPUT_BURNED') {
+                  burn_txids.add(m.spendTxid);
+                  items.push({ data: {
+                    id:      m.spendTxid + '/' + tx.tx.h + '/burn',
+                    source:  tx.tx.h,
+                    target:  m.spendTxid,
+                    color:   cytoscape_colors.txout_slp_burn,
+                    kind:    'burn',
+                    val:     `BURN ${m.slpAmount} ${tx.token[0].tokenDetails.symbol}`,
+                    padding: 0,
+                  }});
+                } else if (
+                  m.status === 'BATON_SPENT_IN_MINT' ||
+                  m.status === 'BATON_UNSPENT'
+                ) {
+                  addresses.add(m.address);
+                  items.push({ data: {
+                    id:      m.spendTxid + '/' + tx.tx.h + '/baton',
+                    source:  tx.tx.h,
+                    target:  m.address,
+                    color:   cytoscape_colors.txout_slp_baton,
+                    kind:    'baton',
+                    val:     `BATON ${tx.token[0].tokenDetails.symbol}`,
+                    padding: 0,
+                  }});
+                } else {
+                  addresses.add(m.address);
+                  items.push({ data: {
+                    id:      m.address + '/' + tx.tx.h + '/slpout',
+                    source:  tx.tx.h,
+                    target:  m.address,
+                    color:   cytoscape_colors.txout_slp,
+                    kind:    'txout',
+                    val:     `${m.slpAmount} ${tx.token[0].tokenDetails.symbol}`,
+                    padding: 0,
+                  }});
+                }
+              }
+              for (const m of tx.out) {
+                if (typeof m.e.a === 'undefined') {
+                  continue;
+                }
+                if (output_vouts.has(m.e.i)) {
+                  continue;
+                }
+                addresses.add(m.e.a);
+
+                items.push({ data: {
+                  id:      m.e.a + '/' + tx.tx.h + '/out',
+                  source:  tx.tx.h,
+                  target:  m.e.a,
+                  color:   cytoscape_colors.txout,
+                  kind:    'txout',
+                  val:     app.util.format_bignum_bch_str(m.e.v) + ' BCH',
+                  padding: 0,
+                }});
+              }
+
+              inputs.forEach((v) => {
+                items.push({ data: {
+                  id:       v,
+                  color:   cytoscape_colors.input,
+                  type:    'square',
+                  kind:    'input',
+                  val:     v,
+                  padding: 0,
+                }});
+              });
+              addresses.forEach((v) => {
+                items.push({ data: {
+                  id:       v,
+                  color:   cytoscape_colors.address,
+                  type:    'square',
+                  kind:    'address',
+                  val:     v,
+                  padding: 0,
+                }});
+              });
+              burn_txids.forEach((v) => {
+                items.push({ data: {
+                  id:       v,
+                  color:   cytoscape_colors.burn,
+                  type:    'square',
+                  kind:    'burn',
+                  val:     v,
+                  padding: 0,
+                }});
+              });
+
+              return items;
+            };
+
+            $('#txgraph-container').css('height',
+              $('#token-details-table-container')
+              .closest('.rounded_row').outerHeight()
+            );
+
+            const cy = create_cytoscape_context('#txgraph-container');
+            cy.json({ elements: cytoscape_extract_graph(tx) })
+              .layout({ name: 'klay', animate: true })
+              .run();
+
             resolve();
           });
         });
@@ -3676,7 +3907,7 @@ app.init_token_page = (tokenIdHex) =>
         try {
           Plotly.newPlot('plot-token-address-rich', [{
             x: data.map((v) => (v.address !== 'Other') ?
-              `<a href="/#address/${v.address}">${v.address}</a>` :
+              `<a href="/#address/simpleledger:${v.address}">${v.address}</a>` :
               v.address,
             ),
             y: data.map((v) => v.token_balance),

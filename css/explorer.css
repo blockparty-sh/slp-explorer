@@ -246,7 +246,7 @@ header li input::placeholder {
 
 .header_infobox {
     background-color: #07212b;
-    padding: 60px 5% 100px 5%;
+    padding: 60px 5% 100px 10%;
     /*
     text-align: center;
     margin: auto;
