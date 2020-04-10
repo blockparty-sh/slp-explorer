@@ -60,7 +60,7 @@ app.util = {
     if (coinex_tokens.hasOwnProperty(tokenIdHex)) {
       links.push({
         'type': 'coinex',
-        'link': coinex_tokens[tokenIdHex],
+        'link': `${coinex_tokens[tokenIdHex]}&refer_code=c39pv`,
         'class': 'exchange-coinex-icon'
       });
     }
