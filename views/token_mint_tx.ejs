@@ -1,5 +1,8 @@
 <tr>
-  <td><a class="txid" href="/#tx/<%= tx.tx.h %>"><%= app.util.compress_txid(tx.tx.h) %></a></td>
+  <td>
+    <a class="txid" href="/#tx/<%= tx.tx.h %>"><%= app.util.compress_txid(tx.tx.h) %></a>
+    <button class="copybtn" data-clipboard-text="<%= tx.tx.h %>"></button>
+  </td>
   <td><%= tx.slp.detail.transactionType %></td>
   <td class="amount"><%= app.util.format_bignum_str(tx.slp.detail.outputs[0].amount, tx.slp.detail.decimals) %></td>
   <td>

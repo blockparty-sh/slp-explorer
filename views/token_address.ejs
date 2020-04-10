@@ -1,4 +1,7 @@
 <tr>
-  <td><a class="address" href="/#address/<%= address.address %>"><%= address.address %></a></td>
+  <td>
+    <a class="address" href="/#address/<%= address.address %>"><%= address.address %></a>
+    <button class="copybtn" data-clipboard-text="<%= address.address %>"></button>
+  </td>
   <td class="amount"><%= app.util.format_bignum_str(address.token_balance, decimals) %></a></td>
 </tr>

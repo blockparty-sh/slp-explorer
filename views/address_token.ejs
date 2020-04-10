@@ -4,6 +4,7 @@
       <a class="tokenid" href="/#token/<%= token.token[0].tokenDetails.tokenIdHex %>">
         <%= app.util.compress_tokenid(token.token[0].tokenDetails.tokenIdHex) %>
       </a>
+      <button class="copybtn" data-clipboard-text="<%= token.token[0].tokenDetails.tokenIdHex %>"></button>
     </div>
   </td>
   <td>

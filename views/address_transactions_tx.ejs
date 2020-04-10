@@ -2,6 +2,7 @@
   <td>
     <div class="flex-vcenter">
       <a class="txid" href="/#tx/<%= tx.tx.h %>"><%= app.util.compress_txid(tx.tx.h) %></a>
+      <button class="copybtn" data-clipboard-text="<%= tx.tx.h %>"></button>
     </div>
   </td>
   <td>

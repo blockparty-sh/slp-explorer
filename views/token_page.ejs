@@ -12,169 +12,178 @@
           Token
         </h2>
       </div>
-      <h6><%= token.tokenDetails.tokenIdHex %></h6>
+      <h6>
+        <%= token.tokenDetails.tokenIdHex %>
+        <button class="copybtn" data-clipboard-text="<%= token.tokenDetails.tokenIdHex %>"></button>
+      </h6>
       <a target="_blank" href="https://explorer.bitcoin.com/bch/tx/<%= token.tokenDetails.tokenIdHex %>">
         <button type="button" class="button right">View on BCH Explorer</button>
       </a>
     </div>
   </div>
   
-  <div class="rounded_row">
-    <div id="token-details-table-container" class="rounded box-shadow table-container">
-      <div class="table-responsive">
-        <table class="table" id="token-details-table">
-          <thead>
-            <tr>
-              <td>
-                  <h3>Details</h3>
-              </td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">Token Id</th>
-              <td><a class="tokenid" href="/#token/<%= token.tokenDetails.tokenIdHex %>"><%= token.tokenDetails.tokenIdHex %></a></span></td>
-            </tr>
-            <tr>
-              <th scope="row">Version</th>
-              <td>
-              <% if(token.tokenDetails.versionType === 1) { %>Type1<% } %>
-              <% if(token.tokenDetails.versionType === 129) { %>NFT1-Group<% } %>
-              <% if(token.tokenDetails.versionType === 65) { %>
-                <a href="/#token/<%= token.nftParentId %>">NFT1-Child [view parent]</a>
-              <% } %>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">Name</th>
-              <td><%= token.tokenDetails.name %></td>
-            </tr>
-            <tr>
-              <th scope="row">Symbol</th>
-              <td><%= token.tokenDetails.symbol %></td>
-            </tr>
-            <tr>
-              <th scope="row">Timestamp</th>
-              <td>
-                <% if (token.tokenDetails.timestamp_unix === null) { %>
-                  Pending
-                <% } else { %>
-                  <%= new Date(token.tokenDetails.timestamp_unix*1000).toLocaleString() %>
+  <div class="rounded_row_50percent_container">
+    <div class="rounded_row">
+      <div id="token-details-table-container" class="rounded box-shadow table-container">
+        <div class="table-responsive">
+          <table class="table" id="token-details-table">
+            <thead>
+              <tr>
+                <td>
+                    <h3>Details</h3>
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Token Id</th>
+                <td>
+                  <a class="tokenid" href="/#token/<%= token.tokenDetails.tokenIdHex %>"><%= token.tokenDetails.tokenIdHex %></a>
+                  <button class="copybtn" data-clipboard-text="<%= token.tokenDetails.tokenIdHex %>"></button>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Version</th>
+                <td>
+                <% if(token.tokenDetails.versionType === 1) { %>Type1<% } %>
+                <% if(token.tokenDetails.versionType === 129) { %>NFT1-Group<% } %>
+                <% if(token.tokenDetails.versionType === 65) { %>
+                  <a href="/#token/<%= token.nftParentId %>">NFT1-Child [view parent]</a>
+                  <button class="copybtn" data-clipboard-text="<%= token.nftParentId %>"></button>
                 <% } %>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">Decimals</th>
-              <td><%= token.tokenDetails.decimals %></td>
-            </tr>
-            <tr>
-              <th scope="row">Document URI</th>
-              <td>
-                <% if (token.tokenDetails.documentUri) { %>
-                  <% const url = app.util.document_link(token.tokenDetails.documentUri); %>
-                  <% if (url.length) { %>
-                    <a href="<%= url %>" target="blank"><%= token.tokenDetails.documentUri %></a>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Name</th>
+                <td><%= token.tokenDetails.name %></td>
+              </tr>
+              <tr>
+                <th scope="row">Symbol</th>
+                <td><%= token.tokenDetails.symbol %></td>
+              </tr>
+              <tr>
+                <th scope="row">Timestamp</th>
+                <td>
+                  <% if (token.tokenDetails.timestamp_unix === null) { %>
+                    Pending
                   <% } else { %>
-                    <%= token.tokenDetails.documentUri %>
+                    <%= new Date(token.tokenDetails.timestamp_unix*1000).toLocaleString() %>
                   <% } %>
-                <% } %>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">Document Checksum</th>
-              <td><span class="mono word-break-all"><%= token.tokenDetails.documentSha256Hex %></span></td>
-            </tr>
-            <tr>
-              <th scope="row">Verified</th>
-              <td>
-                <% if (app.util.is_verified(token.tokenDetails.tokenIdHex)) { %>
-                  <img src="/img/verified-checkmark.png">
-                <% } else { %>
-                  <img src="/img/verified-empty.png">
-                <% } %>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-  
-      <div>
-        <!-- <div id="token-exchange-title">Exchange</div> -->
-        <div id="token-exchange-exchanges">
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Decimals</th>
+                <td><%= token.tokenDetails.decimals %></td>
+              </tr>
+              <tr>
+                <th scope="row">Document URI</th>
+                <td>
+                  <% if (token.tokenDetails.documentUri) { %>
+                    <% const url = app.util.document_link(token.tokenDetails.documentUri); %>
+                    <% if (url.length) { %>
+                      <a href="<%= url %>" target="blank"><%= token.tokenDetails.documentUri %></a>
+                    <% } else { %>
+                      <%= token.tokenDetails.documentUri %>
+                    <% } %>
+                  <% } %>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Document Checksum</th>
+                <td><span class="mono word-break-all"><%= token.tokenDetails.documentSha256Hex %></span></td>
+              </tr>
+              <tr>
+                <th scope="row">Verified</th>
+                <td>
+                  <% if (app.util.is_verified(token.tokenDetails.tokenIdHex)) { %>
+                    <img src="/img/verified-checkmark.png">
+                  <% } else { %>
+                    <img src="/img/verified-empty.png">
+                  <% } %>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+    
+        <div>
+          <!-- <div id="token-exchange-title">Exchange</div> -->
+          <div id="token-exchange-exchanges">
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="rounded_row">
-    <div id="token-stats-table-container" class="rounded box-shadow table-container loading">
-      <div class="table-responsive">
-        <table class="table" id="token-stats-table">
-          <thead>
-            <tr>
-              <td>
-                  <h3>Stats</h3>
-              </td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th>Block Created</th>
-              <td>
-                <% if (token.tokenStats.block_created !== null) { %>
-                  <a href="#block/<%= token.tokenStats.block_created %>"><%= token.tokenStats.block_created %></a>
-                <% } else { %>
-                  <a href="#block/mempool">Pending</a>
-                <% } %>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">Minting Baton Status</th>
-              <td>
-                <%= token.mintBatonStatus.split('_').map(v => v[0].toUpperCase() + v.substring(1).toLowerCase()).join(' ') %>
-              </td>
-            </tr>
-            <% if (token.mintBatonUtxo && token.mintBatonUtxo.split(':').length === 2) { %>
-            <tr>
-              <th scope="row">Minting Baton UTXO</th>
-              <td>
-                <a href="#tx/<%= token.mintBatonUtxo.split(':')[0] %>">
-                  <% const mintBatonUtxoParts = token.mintBatonUtxo.split(':'); %>
-                  <%= app.util.compress_txid(mintBatonUtxoParts[0]) %>:<%= mintBatonUtxoParts[1] %>
-                </a>
-              </td>
-            </tr>
-            <% } %>
-            <tr>
-              <th scope="row">Valid Txns Since Genesis</th>
-              <td class="amount" id="tokenstats_valid_token_transactions">...</span></td>
-            </tr>
-            <tr>
-              <th scope="row">Valid Token Utxos</th>
-              <td class="amount" id="tokenstats_valid_token_utxos">...</td>
-            </tr>
-            <tr>
-              <th scope="row">Valid Token Addresses</th>
-              <td class="amount" id="tokenstats_valid_token_addresses">...</td>
-            </tr>
-            <tr>
-              <th scope="row">Satoshis Locked Up</th>
-              <td class="amount" id="tokenstats_satoshis_locked_up">...</td>
-            </tr>
-            <tr class="decimal-stats">
-              <th scope="row">Tokens Minted</th>
-              <td class="amount" id="tokenstats_tokens_minted">...</td>
-            </tr>
-            <tr class="decimal-stats">
-              <th scope="row">Tokens Burned</th>
-              <td class="amount" id="tokenstats_tokens_burned">...</td>
-            </tr>
-            <tr class="decimal-stats">
-              <th scope="row">Circulating Supply</th>
-              <td class="amount" id="tokenstats_circulating_supply">...</td>
-            </tr>
-          </tbody>
-        </table>
+    <div class="rounded_row">
+      <div id="token-stats-table-container" class="rounded box-shadow table-container loading">
+        <div class="table-responsive">
+          <table class="table" id="token-stats-table">
+            <thead>
+              <tr>
+                <td>
+                    <h3>Stats</h3>
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>Block Created</th>
+                <td>
+                  <% if (token.tokenStats.block_created !== null) { %>
+                    <a href="#block/<%= token.tokenStats.block_created %>"><%= token.tokenStats.block_created %></a>
+                  <% } else { %>
+                    <a href="#block/mempool">Pending</a>
+                  <% } %>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">Minting Baton Status</th>
+                <td>
+                  <%= token.mintBatonStatus.split('_').map(v => v[0].toUpperCase() + v.substring(1).toLowerCase()).join(' ') %>
+                </td>
+              </tr>
+              <% if (token.mintBatonUtxo && token.mintBatonUtxo.split(':').length === 2) { %>
+              <tr>
+                <th scope="row">Minting Baton UTXO</th>
+                <td>
+                  <a href="#tx/<%= token.mintBatonUtxo.split(':')[0] %>">
+                    <% const mintBatonUtxoParts = token.mintBatonUtxo.split(':'); %>
+                    <%= app.util.compress_txid(mintBatonUtxoParts[0]) %>:<%= mintBatonUtxoParts[1] %>
+                  </a>
+                </td>
+              </tr>
+              <% } %>
+              <tr>
+                <th scope="row">Valid Txns Since Genesis</th>
+                <td class="amount" id="tokenstats_valid_token_transactions">...</span></td>
+              </tr>
+              <tr>
+                <th scope="row">Valid Token Utxos</th>
+                <td class="amount" id="tokenstats_valid_token_utxos">...</td>
+              </tr>
+              <tr>
+                <th scope="row">Valid Token Addresses</th>
+                <td class="amount" id="tokenstats_valid_token_addresses">...</td>
+              </tr>
+              <tr>
+                <th scope="row">Satoshis Locked Up</th>
+                <td class="amount" id="tokenstats_satoshis_locked_up">...</td>
+              </tr>
+              <tr class="decimal-stats">
+                <th scope="row">Tokens Minted</th>
+                <td class="amount" id="tokenstats_tokens_minted">...</td>
+              </tr>
+              <tr class="decimal-stats">
+                <th scope="row">Tokens Burned</th>
+                <td class="amount" id="tokenstats_tokens_burned">...</td>
+              </tr>
+              <tr class="decimal-stats">
+                <th scope="row">Circulating Supply</th>
+                <td class="amount" id="tokenstats_circulating_supply">...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>

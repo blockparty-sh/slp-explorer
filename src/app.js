@@ -626,6 +626,13 @@ app.util = {
     const decoded = cashaddr.decode(addr);
     return cashaddr.encode('bitcoincash', decoded.type, decoded.hash);
   },
+
+  attach_clipboard: (container_selector) => {
+    const clipboard = new ClipboardJS(`${container_selector} .copybtn`);
+    tippy(`${container_selector} .copybtn`, {
+      content: 'Copy to clipboard'
+    });
+  },
 };
 
 const btoa_ext = (buf) => Buffer.Buffer.from(buf).toString('base64');
@@ -2568,7 +2575,7 @@ app.init_nonslp_tx_page = (txid, highlight=[], slp=null) =>
             input_amounts: input_amounts,
             slp: slp,
           }));
-
+          app.util.attach_clipboard('main[role=main]');
           app.util.decimal_formatting($('#inputs-list tbody tr td:nth-child(3)'));
           app.util.decimal_formatting($('#outputs-list tbody tr td:nth-child(3)'));
 
@@ -2631,6 +2638,7 @@ app.init_index_page = () =>
         );
       }
 
+      app.util.attach_clipboard('#recent-transactions-table');
       $('#recent-transactions-table tbody .token-icon-small').each(function() {
         app.util.set_token_icon($(this), 32);
       });
@@ -2778,6 +2786,7 @@ app.init_index_page = () =>
           );
         });
 
+        app.util.attach_clipboard('#index-tokens-table');
         $('#index-tokens-table tbody .token-icon-small').each(function() {
           app.util.set_token_icon($(this), 32);
         });
@@ -2816,11 +2825,12 @@ app.init_index_page = () =>
             }),
           );
         });
+        app.util.attach_clipboard('#index-burn-history-table');
         $('#index-burn-history-table tbody .token-icon-small').each(function() {
           app.util.set_token_icon($(this), 32);
         });
 
-        app.util.decimal_formatting($('#index-burn-history-table tbody tr td:nth-child(2)'));
+        app.util.decimal_formatting($('#index-burn-history-table tbody tr td:nth-child(3)'));
 
         done();
       });
@@ -3087,7 +3097,7 @@ app.init_tx_page = (txid, highlight=[]) =>
               token: token.t[0],
               input_amounts: input_amounts,
             }));
-
+            app.util.attach_clipboard('main[role=main]');
             app.util.set_token_icon($('main[role=main] .transaction_box .token-icon-large'), 128);
 
             app.util.decimal_formatting($('#inputs-list tbody tr td:nth-child(2)'));
@@ -3373,6 +3383,7 @@ app.init_block_page = (height) =>
             );
           });
 
+          app.util.attach_clipboard('#block-transactions-table');
           $('#block-transactions-table tbody .token-icon-small').each(function() {
             app.util.set_token_icon($(this), 32);
           });
@@ -3434,6 +3445,7 @@ app.init_block_mempool_page = (height) =>
             );
           });
 
+          app.util.attach_clipboard('#block-transactions-table');
           $('#block-transactions-table tbody .token-icon-small').each(function() {
             app.util.set_token_icon($(this), 32);
           });
@@ -3513,7 +3525,7 @@ app.init_token_page = (tokenIdHex) =>
       $('main[role=main]').html(app.template.token_page({
         token: token,
       }));
-
+      app.util.attach_clipboard('main[role=main]');
       app.util.set_token_icon($('main[role=main] .transaction_box .token-icon-large'), 128);
 
 
@@ -3536,6 +3548,7 @@ app.init_token_page = (tokenIdHex) =>
                 );
               });
 
+              app.util.attach_clipboard('#token-child-nfts-table');
               $('#token-child-nfts-table tbody .token-icon-small').each(function() {
                 app.util.set_token_icon($(this), 32);
               });
@@ -3574,6 +3587,7 @@ app.init_token_page = (tokenIdHex) =>
             );
           });
 
+          app.util.attach_clipboard('#token-addresses-table');
           app.util.decimal_formatting($('#token-addresses-table tbody tr td:nth-child(2)'));
 
           done();
@@ -3597,6 +3611,7 @@ app.init_token_page = (tokenIdHex) =>
             );
           });
 
+          app.util.attach_clipboard('#token-mint-history-table');
           app.util.decimal_formatting($('#token-mint-history-table tbody tr td:nth-child(3)'));
 
           done();
@@ -3634,6 +3649,7 @@ app.init_token_page = (tokenIdHex) =>
             );
           });
 
+          app.util.attach_clipboard('#token-burn-history-table');
           app.util.decimal_formatting($('#token-burn-history-table tbody tr td:nth-child(2)'));
 
           done();
@@ -3696,6 +3712,7 @@ app.init_token_page = (tokenIdHex) =>
               );
             });
 
+            app.util.attach_clipboard('#token-transactions-table');
             app.util.decimal_formatting($('#token-transactions-table tbody tr td:nth-child(3)'));
 
             done();
@@ -3982,6 +3999,7 @@ app.init_address_page = (address) =>
         address: address,
         cashaccount_html: cashaccount_html,
       }));
+      app.util.attach_clipboard('main[role=main]');
 
       try {
         new QRCode(document.getElementById('qrcode-address-'+address), {
@@ -4017,6 +4035,7 @@ app.init_address_page = (address) =>
             );
           });
 
+          app.util.attach_clipboard('#address-tokens-table');
           $('#address-tokens-table tbody .token-icon-small').each(function() {
             app.util.set_token_icon($(this), 32);
           });
@@ -4082,6 +4101,7 @@ app.init_address_page = (address) =>
               );
             });
 
+            app.util.attach_clipboard('#address-transactions-table');
             $('#address-transactions-table tbody .token-icon-small').each(function() {
               app.util.set_token_icon($(this), 32);
             });
@@ -4123,6 +4143,7 @@ app.init_address_page = (address) =>
               }),
             );
           });
+          app.util.attach_clipboard('#address-burn-history-table');
           $('#address-burn-history-table tbody .token-icon-small').each(function() {
             app.util.set_token_icon($(this), 32);
           });

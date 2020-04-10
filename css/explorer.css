@@ -906,6 +906,20 @@ html.index-page header {
     font-family: 'Source Code Pro', monospace;
 }
 
+.copybtn {
+    width:1rem;
+    height:1rem;
+    background-image:url(/img/copy.svg);
+    background-size: cover;
+    background-color: transparent;
+    border: 0;
+    outline: 0;
+}
+
+.copybtn:hover {
+    cursor: pointer;
+}
+
 @media only screen and (max-width: 890px) {
     .container-page {
         padding-top: 200px;

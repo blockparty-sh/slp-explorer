@@ -14,7 +14,10 @@
   
           Transaction
         </h2>
-        <h6><%= tx.tx.h %></h6>
+        <h6>
+          <%= tx.tx.h %>
+          <button class="copybtn" data-clipboard-text="<%= tx.tx.h %>"></button>
+        </h6>
         <a target="_blank" href="https://explorer.bitcoin.com/bch/tx/<%= tx.tx.h %>">
           <button type="button" class="button right">View on BCH Explorer</button>
         </a>
@@ -60,18 +63,27 @@
                 </tr>
                 <tr>
                   <th role="col">Txid</th>
-                  <td><a class="txid" href="#tx/<%= tx.tx.h %>"><%= tx.tx.h %></a></td>
+                  <td>
+                    <a class="txid" href="#tx/<%= tx.tx.h %>"><%= tx.tx.h %></a>
+                    <button class="copybtn" data-clipboard-text="<%= tx.tx.h %>"></button>
+                  </td>
                 </tr>
     
                 <% if (tx.slp.detail.transactionType == 'GENESIS') { %>
                   <tr>
                     <th role="col">Creator</th>
-                    <td><a class="address" href="#address/<%= tx.slp.detail.outputs[0].address %>"><%= tx.slp.detail.outputs[0].address %></a></td>
+                    <td>
+                      <a class="address" href="#address/<%= tx.slp.detail.outputs[0].address %>"><%= tx.slp.detail.outputs[0].address %></a>
+                      <button class="copybtn" data-clipboard-text="<%= tx.slp.detail.outputs[0].address %>"></button>
+                    </td>
                   </tr>
                 <% } %>
                 <tr>
                   <th scope="row">Token Id</th>
-                  <td><a class="tokenid" href="/#token/<%= tx.slp.detail.tokenIdHex %>"><%= tx.slp.detail.tokenIdHex %></a></td>
+                  <td>
+                    <a class="tokenid" href="/#token/<%= tx.slp.detail.tokenIdHex %>"><%= tx.slp.detail.tokenIdHex %></a>
+                    <button class="copybtn" data-clipboard-text="<%= tx.slp.detail.tokenIdHex %>"></button>
+                  </td>
                 </tr>
                 <tr>
                   <th scope="row">Version</th>
@@ -143,6 +155,7 @@
                           <td>
                             <% if (typeof m.e.a !== 'undefined') { %>
                               <a class="address" href="/#address/<%= app.util.to_slp_address(m.e.a) %>"><%= app.util.to_slp_address(m.e.a) %></a>
+                              <button class="copybtn" data-clipboard-text="<%= app.util.to_slp_address(m.e.a) %>"></button>
                             <% } else { %>
                               SLPDB Address Error
                             <% } %>
@@ -221,6 +234,7 @@
                             <a class="address" href="/#address/<%= m.address %>">
                               <%= m.address %>
                             </a>
+                            <button class="copybtn" data-clipboard-text="<%= app.util.to_slp_address(m.address) %>"></button>
                           <% } %>
                         </td>
                       </tr>

@@ -1,7 +1,7 @@
 <tr>
-  <td><a class="txid" href="/#tx/<%= tx.graphTxn.txid %>"><%= app.util.compress_txid(tx.graphTxn.txid) %></a></td>
-  <td class="amount">
-    <%= app.util.format_bignum_str(total_burnt) %>
+  <td>
+    <a class="txid" href="/#tx/<%= tx.graphTxn.txid %>"><%= app.util.compress_txid(tx.graphTxn.txid) %></a>
+    <button class="copybtn" data-clipboard-text="<%= tx.graphTxn.txid %>"></button>
   </td>
   <td>
     <div class="flex-vcenter">
@@ -14,6 +14,9 @@
         <% } %>
       <% } else { console.log('TODO: remove when mongo transactions fix this', tx); } %>
     </div>
+  </td>
+  <td class="amount">
+    <%= app.util.format_bignum_str(total_burnt) %>
   </td>
   <td>
     <% if (tx.tx && tx.tx.blk) { %>

@@ -1,5 +1,8 @@
 <tr>
-  <td><a class="txid" href="/#tx/<%= tx.graphTxn.txid %>"><%= app.util.compress_txid(tx.graphTxn.txid) %></a></td>
+  <td>
+    <a class="txid" href="/#tx/<%= tx.graphTxn.txid %>"><%= app.util.compress_txid(tx.graphTxn.txid) %></a>
+    <button class="copybtn" data-clipboard-text="<%= tx.graphTxn.txid %>"></button>
+  </td>
   <td class="amount">
     <%= app.util.format_bignum_str(total_burnt) %>
   </td>

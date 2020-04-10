@@ -7,7 +7,10 @@
       <div>
         <h2 class="nowrap"><%- cashaccount_html %> Address</h2>
       </div>
-      <h6><%= address %></h6>
+      <h6>
+        <%= address %>
+        <button class="copybtn" data-clipboard-text="<%= app.util.to_slp_address(address) %>"></button>
+      </h6>
       <a target="_blank" href="https://explorer.bitcoin.com/bch/address/<%= address %>">
         <button type="button" class="button right">View on BCH Explorer</button>
       </a>
@@ -26,15 +29,23 @@
           <tbody>
             <tr>
               <th role="col">SLP Address</th>
-              <td><%= app.util.to_slp_address(address) %></td>
+              <td>
+                <%= app.util.to_slp_address(address) %>
+                <button class="copybtn" data-clipboard-text="<%= app.util.to_slp_address(address) %>"></button>
+              </td>
             </tr>
             <tr>
               <th role="col">Cash Address</th>
-              <td><%= app.util.to_cash_address(address) %></td>
+              <td>
+                <%= app.util.to_cash_address(address) %>
+                <button class="copybtn" data-clipboard-text="<%= app.util.to_cash_address(address) %>"></button>
+              </td>
             </tr>
             <tr>
               <th role="col">Cash Account</th>
-              <td><%- cashaccount_html %></td>
+              <td>
+                <%- cashaccount_html %>
+              </td>
             </tr>
             <tr>
               <th role="col">Sent SLP Transactions</th>

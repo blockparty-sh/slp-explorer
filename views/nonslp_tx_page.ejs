@@ -6,7 +6,10 @@
         <h2 class="text-white">
           NON-SLP Transaction
         </h2>
-        <h6><%= tx.tx.h %></h6>
+        <h6>
+          <%= tx.tx.h %>
+          <button class="copybtn" data-clipboard-text="<%= tx.tx.h %>"></button>
+        </h6>
         <a target="_blank" href="https://explorer.bitcoin.com/bch/tx/<%= tx.tx.h %>">
           <button type="button" class="button right">View on BCH Explorer</button>
         </a>
@@ -52,7 +55,10 @@
                 </tr>
                 <tr>
                   <th role="col">Txid</th>
-                  <td><a class="txid" href="#tx/<%= tx.tx.h %>"><%= tx.tx.h %></a></td>
+                  <td>
+                    <a class="txid" href="#tx/<%= tx.tx.h %>"><%= tx.tx.h %></a>
+                    <button class="copybtn" data-clipboard-text="<%= tx.tx.h %>"></button>
+                  </td>
                 </tr>
                 <tr>
                   <th role="col">SLP Invalid Reason</th>
@@ -100,6 +106,7 @@
                         <td>
                           <% if (typeof m.e.a !== 'undefined') { %>
                             <a class="address" href="/#address/bitcoincash:<%= m.e.a %>">bitcoincash:<%= m.e.a %></a>
+                            <button class="copybtn" data-clipboard-text="bitcoincash:<%= m.e.a %>"></button>
                           <% } else { %>
                             SLPDB Address Error
                           <% } %>
@@ -152,6 +159,7 @@
                             <a class="address" href="/#address/bitcoincash:<= m.e.a %>">
                               bitcoincash:<%= m.e.a %>
                             </a>
+                            <button class="copybtn" data-clipboard-text="bitcoincash:<%= m.e.a %>"></button>
                           <% } else { %>
                             <%= m.str %>
                           <% } %>
