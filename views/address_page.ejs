@@ -1,134 +1,135 @@
-<div class="transaction_box" id="address_page_header">
-  <div>
+<div class="row super-wrapper">
+  <div class="transaction_box" id="address_page_header">
     <div>
-      <div class="address-qr-code left" id="qrcode-address-<%= address %>"></div>
-    </div>
-    <div>
-      <h2 class="nowrap"><%- cashaccount_html %> Address</h2>
-    </div>
-    <h6><%= address %></h6>
-    <a target="_blank" href="https://explorer.bitcoin.com/bch/address/<%= address %>">
-      <button type="button" class="button right">View on BCH Explorer</button>
-    </a>
-  </div>
-</div>
-
-<div class="rounded_row">
-  <div class="rounded box-shadow table-container">
-    <div class="table-responsive">
-      <table class="table">
-        <thead>
-          <tr>
-            <th><h3>Details</h3></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th role="col">SLP Address</th>
-            <td><%= app.util.to_slp_address(address) %></td>
-          </tr>
-          <tr>
-            <th role="col">Cash Address</th>
-            <td><%= app.util.to_cash_address(address) %></td>
-          </tr>
-          <tr>
-            <th role="col">Cash Account</th>
-            <td><%- cashaccount_html %></td>
-          </tr>
-          <tr>
-            <th role="col">Sent SLP Transactions</th>
-            <td><span id="total_sent_transactions">...</span></td>
-          </tr>
-          <tr>
-            <th role="col">Received SLP Transactions</th>
-            <td><span id="total_recv_transactions">...</span></td>
-          </tr>
-        </tbody>
-      </table>
+      <div>
+        <div class="address-qr-code left" id="qrcode-address-<%= address %>"></div>
+      </div>
+      <div>
+        <h2 class="nowrap"><%- cashaccount_html %> Address</h2>
+      </div>
+      <h6><%= address %></h6>
+      <a target="_blank" href="https://explorer.bitcoin.com/bch/address/<%= address %>">
+        <button type="button" class="button right">View on BCH Explorer</button>
+      </a>
     </div>
   </div>
-</div>
   
-<div class="rounded_row">
-  <div id="address-tokens-table-container" class="rounded box-shadow table-container loading">
-    <h3>Token Balances (<span id="total_tokens">...</span>)</h3>
-    <div class="table-responsive">
-      <table class="table" id="address-tokens-table">
-        <thead>
-          <tr>
-            <th data-tippy-content="The Token Id is the transaction id of the genesis transaction of the token.">Token Id</th>
-            <th>Name</th>
-            <th>Symbol</th>
-            <th class="amount">Balance</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>loading...</td><tr>
-        </tbody>
-      </table>
+  <div class="rounded_row">
+    <div class="rounded box-shadow table-container">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th><h3>Details</h3></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th role="col">SLP Address</th>
+              <td><%= app.util.to_slp_address(address) %></td>
+            </tr>
+            <tr>
+              <th role="col">Cash Address</th>
+              <td><%= app.util.to_cash_address(address) %></td>
+            </tr>
+            <tr>
+              <th role="col">Cash Account</th>
+              <td><%- cashaccount_html %></td>
+            </tr>
+            <tr>
+              <th role="col">Sent SLP Transactions</th>
+              <td><span id="total_sent_transactions">...</span></td>
+            </tr>
+            <tr>
+              <th role="col">Received SLP Transactions</th>
+              <td><span id="total_recv_transactions">...</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-    <ul class="pagination">
-    </ul>
   </div>
-</div>
-
-<div class="rounded_row">
-  <div id="address-transactions-table-container" class="rounded box-shadow table-container loading">
-    <h3>Transactions (<span id="total_transactions">...</span>)</h3>
-    <div class="table-responsive">
-      <table class="table" id="address-transactions-table">
-        <thead>
-          <tr>
-            <th>Txid</th>
-            <th>Type</th>
-            <th class="amount">Amount</th>
-            <th>Token</th>
-            <th>Block</th>
-            <th>Block Time</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>loading...</td></tr>
-        </tbody>
-      </table>
+    
+  <div class="rounded_row">
+    <div id="address-tokens-table-container" class="rounded box-shadow table-container loading">
+      <h3>Token Balances (<span id="total_tokens">...</span>)</h3>
+      <div class="table-responsive">
+        <table class="table" id="address-tokens-table">
+          <thead>
+            <tr>
+              <th data-tippy-content="The Token Id is the transaction id of the genesis transaction of the token.">Token Id</th>
+              <th>Name</th>
+              <th>Symbol</th>
+              <th class="amount">Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>loading...</td><tr>
+          </tbody>
+        </table>
+      </div>
       <ul class="pagination">
       </ul>
     </div>
   </div>
-</div>
-
-<div class="rounded_row">
-  <h3>Transactions Chart (<span id="address-usage-count">...</span>)</h3>
-  <div class="plot-time-selector">
-      <span id="plot-address-usage-year">year</span>
-      <span id="plot-address-usage-month">month</span>
-      <span id="plot-address-usage-week">week</span>
-      <span id="plot-address-usage-day">day</span>
+  
+  <div class="rounded_row">
+    <div id="address-transactions-table-container" class="rounded box-shadow table-container loading">
+      <h3>Transactions (<span id="total_transactions">...</span>)</h3>
+      <div class="table-responsive">
+        <table class="table" id="address-transactions-table">
+          <thead>
+            <tr>
+              <th>Txid</th>
+              <th>Type</th>
+              <th class="amount">Amount</th>
+              <th>Token</th>
+              <th>Block</th>
+              <th>Block Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>loading...</td></tr>
+          </tbody>
+        </table>
+        <ul class="pagination">
+        </ul>
+      </div>
+    </div>
   </div>
-  <div id="plot-address-usage" style="width:100%"></div>
-</div>
-
-<div class="rounded_row">
-  <div id="address-burn-history-table-container" class="rounded box-shadow table-container loading">
-    <h3>Burn History (<span id="total_address_burn_transactions">...</span>)</h3>
-    <div class="table-responsive">
-      <table class="table" id="address-burn-history-table">
-        <thead>
-          <tr>
-            <th>Txid</th>
-            <th class="amount">Amount Burnt</th>
-            <th>Token</th>
-            <th>Block Height</th>
-            <th>Block Time</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>Loading...</td></tr>
-        </tbody>
-      </table>
-      <ul class="pagination">
-      </ul>
+  
+  <div class="rounded_row">
+    <h3>Transactions Chart (<span id="address-usage-count">...</span>)</h3>
+    <div class="plot-time-selector">
+        <span id="plot-address-usage-year">year</span>
+        <span id="plot-address-usage-month">month</span>
+        <span id="plot-address-usage-week">week</span>
+        <span id="plot-address-usage-day">day</span>
+    </div>
+    <div id="plot-address-usage" style="width:100%"></div>
+  </div>
+  
+  <div class="rounded_row">
+    <div id="address-burn-history-table-container" class="rounded box-shadow table-container loading">
+      <h3>Burn History (<span id="total_address_burn_transactions">...</span>)</h3>
+      <div class="table-responsive">
+        <table class="table" id="address-burn-history-table">
+          <thead>
+            <tr>
+              <th>Txid</th>
+              <th class="amount">Amount Burnt</th>
+              <th>Token</th>
+              <th>Block Height</th>
+              <th>Block Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Loading...</td></tr>
+          </tbody>
+        </table>
+        <ul class="pagination">
+        </ul>
+      </div>
     </div>
   </div>
 </div>
-

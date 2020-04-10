@@ -1,24 +1,24 @@
-<div class="transaction_box">
-  <div>
-    <div class="token-icon-large left" data-tokenid="<%= token.tokenDetails.tokenIdHex %>"></div>
+<div class="row super-wrapper">
+  <div class="transaction_box">
     <div>
-      <h2 class="text-white">
-        <% if (token.tokenDetails.symbol) { %>
-          <%= token.tokenDetails.symbol %>
-        <% } else if (token.tokenDetails.name !== '') { %>
-          <%= token.tokenDetails.name %>
-        <% } %>
-        Token
-      </h2>
+      <div class="token-icon-large left" data-tokenid="<%= token.tokenDetails.tokenIdHex %>"></div>
+      <div>
+        <h2 class="text-white">
+          <% if (token.tokenDetails.symbol) { %>
+            <%= token.tokenDetails.symbol %>
+          <% } else if (token.tokenDetails.name !== '') { %>
+            <%= token.tokenDetails.name %>
+          <% } %>
+          Token
+        </h2>
+      </div>
+      <h6><%= token.tokenDetails.tokenIdHex %></h6>
+      <a target="_blank" href="https://explorer.bitcoin.com/bch/tx/<%= token.tokenDetails.tokenIdHex %>">
+        <button type="button" class="button right">View on BCH Explorer</button>
+      </a>
     </div>
-    <h6><%= token.tokenDetails.tokenIdHex %></h6>
-    <a target="_blank" href="https://explorer.bitcoin.com/bch/tx/<%= token.tokenDetails.tokenIdHex %>">
-      <button type="button" class="button right">View on BCH Explorer</button>
-    </a>
   </div>
-</div>
-
-<div class="rounded_row_50percent_container">
+  
   <div class="rounded_row">
     <div id="token-details-table-container" class="rounded box-shadow table-container">
       <div class="table-responsive">
@@ -97,7 +97,7 @@
           </tbody>
         </table>
       </div>
-
+  
       <div>
         <!-- <div id="token-exchange-title">Exchange</div> -->
         <div id="token-exchange-exchanges">
@@ -105,6 +105,7 @@
       </div>
     </div>
   </div>
+
   <div class="rounded_row">
     <div id="token-stats-table-container" class="rounded box-shadow table-container loading">
       <div class="table-responsive">
@@ -177,10 +178,7 @@
       </div>
     </div>
   </div>
-  <div class="clearfix"></div>
-</div>
-
-<div class="rounded_row_50percent_container">
+  
   <div class="rounded_row">
     <div id="token-transactions-table-container" class="rounded box-shadow table-container loading">
       <h3 class="border-bottom border-gray">Transactions (<span id="token_transactions_count">...</span>)</h3>
@@ -204,7 +202,7 @@
       </div>
     </div>
   </div>
-
+  
   <div class="rounded_row">
     <h3>Transactions Chart (<span id="token-usage-count">...</span>)</h3>
     <div class="plot-time-selector">
@@ -215,22 +213,44 @@
     </div>
     <div id="plot-token-usage" style="width:100%">Loading...</div>
   </div>
-
-  <div class="clearfix"></div>
-</div>
-
-<% if (token.tokenDetails.versionType === 129) { %>
+  
+  <% if (token.tokenDetails.versionType === 129) { %>
+    <div class="rounded_row">
+      <div id="token-child-nfts-table-container" class="rounded box-shadow table-container">
+        <h3>Child NFTs</h3>
+        <div class="table-responsive">
+          <table class="table" id="token-child-nfts-table">
+            <thead>
+              <tr>
+                <th>Token Id</th>
+                <th>Symbol</th>
+                <th>Name</th>
+                <th>Block Height</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Loading...</td></tr>
+            </tbody>
+          </table>
+          <ul class="pagination">
+          </ul>
+        </div>
+      </div>
+    </div>
+  <% } %>
+  
   <div class="rounded_row">
-    <div id="token-child-nfts-table-container" class="rounded box-shadow table-container">
-      <h3>Child NFTs</h3>
+    <div id="token-mint-history-table-container" class="rounded box-shadow table-container loading">
+      <h3>Mint History (<span id="total_token_mint_transactions">...</span>)</h3>
       <div class="table-responsive">
-        <table class="table" id="token-child-nfts-table">
+        <table class="table" id="token-mint-history-table">
           <thead>
             <tr>
-              <th>Token Id</th>
-              <th>Symbol</th>
-              <th>Name</th>
+              <th>Txid</th>
+              <th>Type</th>
+              <th class="amount">Amount</th>
               <th>Block Height</th>
+              <th>Block Time</th>
             </tr>
           </thead>
           <tbody>
@@ -242,33 +262,7 @@
       </div>
     </div>
   </div>
-<% } %>
-
-<div class="rounded_row">
-  <div id="token-mint-history-table-container" class="rounded box-shadow table-container loading">
-    <h3>Mint History (<span id="total_token_mint_transactions">...</span>)</h3>
-    <div class="table-responsive">
-      <table class="table" id="token-mint-history-table">
-        <thead>
-          <tr>
-            <th>Txid</th>
-            <th>Type</th>
-            <th class="amount">Amount</th>
-            <th>Block Height</th>
-            <th>Block Time</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>Loading...</td></tr>
-        </tbody>
-      </table>
-      <ul class="pagination">
-      </ul>
-    </div>
-  </div>
-</div>
-
-<div class="rounded_row_50percent_container">
+  
   <div class="rounded_row">
     <div id="token-addresses-table-container" class="rounded box-shadow table-container loading">
       <h3 class="border-bottom border-gray">Addresses (<span id="token_addresses_count">...</span>)</h3>
@@ -289,35 +283,32 @@
       </div>
     </div>
   </div>
-
+  
   <div class="rounded_row">
     <h3>Rich List</h3>
     <div id="plot-token-address-rich" style="width:100%"></div>
   </div>
-
-  <div class="clearfix"></div>
-</div>
-
-<div class="rounded_row">
-  <div id="token-burn-history-table-container" class="rounded box-shadow table-container loading">
-    <h3>Burn History (<span id="total_token_burn_transactions">...</span>)</h3>
-    <div class="table-responsive">
-      <table class="table" id="token-burn-history-table">
-        <thead>
-          <tr>
-            <th>Txid</th>
-            <th class="amount">Amount Burnt</th>
-            <th>Block Height</th>
-            <th>Block Time</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>Loading...</td></tr>
-        </tbody>
-      </table>
-      <ul class="pagination">
-      </ul>
+  
+  <div class="rounded_row">
+    <div id="token-burn-history-table-container" class="rounded box-shadow table-container loading">
+      <h3>Burn History (<span id="total_token_burn_transactions">...</span>)</h3>
+      <div class="table-responsive">
+        <table class="table" id="token-burn-history-table">
+          <thead>
+            <tr>
+              <th>Txid</th>
+              <th class="amount">Amount Burnt</th>
+              <th>Block Height</th>
+              <th>Block Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Loading...</td></tr>
+          </tbody>
+        </table>
+        <ul class="pagination">
+        </ul>
+      </div>
     </div>
   </div>
-</div>
-
+</div> 

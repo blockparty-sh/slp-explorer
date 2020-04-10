@@ -3,11 +3,12 @@
 html, body {
     padding: 0px;
     margin: 0px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Cabin', sans-serif;
 }
 
 h1, h2, h3, h4, h5, h6, p {
     margin:0;
+    font-family: 'Montserrat', sans-serif;
 }
 
 ::selection {
@@ -21,7 +22,8 @@ h1, h2, h3, h4, h5, h6, p {
     padding: 10px
 }
 .super-wrapper {
-    width: 95%;
+    width: 80vw;
+    margin: 0px auto;
 }
 .container-page {
     padding-top: 120px;
@@ -33,9 +35,9 @@ h1, h2, h3, h4, h5, h6, p {
     padding: 30px;
     border-radius: 3px;
     box-sizing: border-box;
-    -webkit-box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.2);
-    -moz-box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.2);
-    box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.2);
+    -webkit-box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.2);
+    -moz-box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.2);
+    box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.2);
 }
 
 .rounded_row_50percent_container {
@@ -69,7 +71,7 @@ h1, h2, h3, h4, h5, h6, p {
 
 /* Buttons and Links */
 a {
-    color: #60bd6c;
+    color: #000000;
     text-decoration: none;
     outline: none;
 }
@@ -78,6 +80,7 @@ a:hover, a.txid:hover, a.tokenid:hover { text-decoration: underline; }
 .button {
     display: inline-block;
     font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
     text-align: center;
     white-space: nowrap;
     cursor: pointer;
@@ -93,9 +96,9 @@ a:hover, a.txid:hover, a.tokenid:hover { text-decoration: underline; }
     letter-spacing: 1px;
     border-radius: 50px;
     transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-    -webkit-box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.2);
-    -moz-box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.2);
-    box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.2);
+    -webkit-box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.2);
+    -moz-box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.2);
+    box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.2);
 }
 .button:hover {
     text-decoration: none;
@@ -242,12 +245,19 @@ header li input::placeholder {
 }
 
 .header_infobox {
+    background-color: #07212b;
+    padding: 60px 5% 100px 5%;
+    /*
     text-align: center;
     margin: auto;
     background: url('/img/bg-header-infobox.png') no-repeat;
     background-size: cover;
-    background-color: #07212b;
-    padding: 60px 5% 100px 5%;
+    */
+}
+
+.header_infobox p a {
+    color: #ddd;
+    text-decoration: underline;
 }
 
 .header_infobox img {
@@ -278,13 +288,12 @@ header li input::placeholder {
 }
 
 .header_infobox input[type=text] {
-    width: 100%;
     padding: 20px;
     margin: 45px 0px 10px 0px;
     box-sizing: border-box;
     outline: 0;
     font-size: 1em;
-    width: 85%;
+    width: 65%;
     border: none;
     box-shadow: 0px 0px 4px 0px rgba(157,157,157,0.28);
     background: #fbfbfb;
@@ -303,9 +312,9 @@ header li input::placeholder {
     -ms-transition: background 0.25s;
     -o-transition: background 0.25s;
     transition: background 0.25s;
-    -webkit-box-shadow: 0px 0px 20px 0px rgba(96,189,108,1);
-    -moz-box-shadow: 0px 0px 20px 0px rgba(96,189,108,1);
-    box-shadow: 0px 0px 20px 0px rgba(96,189,108,1);
+    -webkit-box-shadow: 0px 0px 2px 0px rgba(96,189,108,1);
+    -moz-box-shadow: 0px 0px 2px 0px rgba(96,189,108,1);
+    box-shadow: 0px 0px 2px 0px rgba(96,189,108,1);
 }
 
 .header_infobox .button {
@@ -405,9 +414,9 @@ tr.burnt-tx {
     box-sizing: border-box;
     overflow: auto;
     border-radius: 3px;
-    -webkit-box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.2);
-    -moz-box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.2);
-    box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.2);
+    -webkit-box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.2);
+    -moz-box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.2);
+    box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.2);
 }
 
 .autocomplete-suggestions {

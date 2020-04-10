@@ -1,126 +1,82 @@
-<div class="transaction_box">
-  <div>
-    <div class="token-icon-large left"><img src="/img/bch-logo.png"></div>
+<div class="row super-wrapper">
+  <div class="transaction_box">
     <div>
-      <h2 class="text-white">
-        NON-SLP Transaction
-      </h2>
-      <h6><%= tx.tx.h %></h6>
-      <a target="_blank" href="https://explorer.bitcoin.com/bch/tx/<%= tx.tx.h %>">
-        <button type="button" class="button right">View on BCH Explorer</button>
-      </a>
-    </div>
-  </div>
-</div>
-
-<div class="rounded_row_50percent_container">
-  <div class="rounded_row">
-    <div class="col-md-6">
-      <div class="rounded box-shadow table-container">
-        <div class="table-responsive">
-          <table class="table">
-            <thead>
-              <tr>
-                <th><h3>Details</h3></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th role="col">Type</th>
-                <td>BCH</td>
-              </tr>
-              <tr>
-                <th role="col">Block</th>
-                <td>
-                  <% if (tx.blk) { %>
-                    <a href="#block/<%= tx.blk.i %>"><%= tx.blk.i %></a>
-                  <% } else { %>
-                    <a href="#block/mempool">Pending</a>
-                  <% } %>
-                </td>
-              </tr>
-              <tr>
-                <th role="col">Block Time</th>
-                <td>
-                  <% if (tx.blk) { %>
-                    <%= new Date(tx.blk.t*1000).toLocaleString() %>
-                  <% } else { %>
-                    Pending
-                  <% } %>
-                </td>
-              </tr>
-              <tr>
-                <th role="col">Txid</th>
-                <td><a class="txid" href="#tx/<%= tx.tx.h %>"><%= tx.tx.h %></a></td>
-              </tr>
-              <tr>
-                <th role="col">SLP Invalid Reason</th>
-                <td>
-                  <% if (slp) { %>
-                    <%= slp.invalidReason %>
-                  <% } else { %>
-                    This is not a SLP transaction.
-                  <% } %>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div class="token-icon-large left"><img src="/img/bch-logo.png"></div>
+      <div>
+        <h2 class="text-white">
+          NON-SLP Transaction
+        </h2>
+        <h6><%= tx.tx.h %></h6>
+        <a target="_blank" href="https://explorer.bitcoin.com/bch/tx/<%= tx.tx.h %>">
+          <button type="button" class="button right">View on BCH Explorer</button>
+        </a>
       </div>
     </div>
   </div>
-</div>
-
-<div class="rounded_row_50percent_container">
-  <div class="rounded_row">
-    <div class="input_output" id="inputs-list">
-      <div class="rounded box-shadow table-container">
-        <h3>Inputs</h3>
-        <div class="table-responsive">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Tx</th>
-                <th>Vout</th>
-                <th class="amount">Amount</th>
-                <th>Address</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% if (tx.in.length > 0) { %>
-                <% for (let m of tx.in) { %>
-                  <% if (input_amounts[m.e.h+':'+m.e.i]) { %>
-                    <tr>
-                      <td><a class="txid" href="/#tx/<%= m.e.h %>/o<%= m.e.i %>" style="font-weight:bold">&larr;</a></td>
-                      <td><%= m.e.i %></td>
-                      <td class="amount">
-                         <%= app.util.format_bignum_bch_str(input_amounts[m.e.h+':'+m.e.i])  %>
-                      </td>
-                      <td>
-                        <% if (typeof m.e.a !== 'undefined') { %>
-                          <a class="address" href="/#address/bitcoincash:<%= m.e.a %>">bitcoincash:<%= m.e.a %></a>
-                        <% } else { %>
-                          SLPDB Address Error
-                        <% } %>
-                      </td>
-                    </tr>
-                  <% } %>
-                <% } %>
-              <% } else { %>
-                <tr>
-                  <td>No inputs.</td>
-                </tr>
-              <% } %>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="rounded_row">
-      <div class="input_output" id="outputs-list">
+  
+  <div class="rounded_row_50percent_container">
+    <div class="rounded_row">
+      <div class="col-md-6">
         <div class="rounded box-shadow table-container">
-          <h3>Outputs</h3>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th><h3>Details</h3></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th role="col">Type</th>
+                  <td>BCH</td>
+                </tr>
+                <tr>
+                  <th role="col">Block</th>
+                  <td>
+                    <% if (tx.blk) { %>
+                      <a href="#block/<%= tx.blk.i %>"><%= tx.blk.i %></a>
+                    <% } else { %>
+                      <a href="#block/mempool">Pending</a>
+                    <% } %>
+                  </td>
+                </tr>
+                <tr>
+                  <th role="col">Block Time</th>
+                  <td>
+                    <% if (tx.blk) { %>
+                      <%= new Date(tx.blk.t*1000).toLocaleString() %>
+                    <% } else { %>
+                      Pending
+                    <% } %>
+                  </td>
+                </tr>
+                <tr>
+                  <th role="col">Txid</th>
+                  <td><a class="txid" href="#tx/<%= tx.tx.h %>"><%= tx.tx.h %></a></td>
+                </tr>
+                <tr>
+                  <th role="col">SLP Invalid Reason</th>
+                  <td>
+                    <% if (slp) { %>
+                      <%= slp.invalidReason %>
+                    <% } else { %>
+                      This is not a SLP transaction.
+                    <% } %>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="rounded_row_50percent_container">
+    <div class="rounded_row">
+      <div class="input_output" id="inputs-list">
+        <div class="rounded box-shadow table-container">
+          <h3>Inputs</h3>
           <div class="table-responsive">
             <table class="table">
               <thead>
@@ -132,34 +88,28 @@
                 </tr>
               </thead>
               <tbody>
-                <% if (tx.out.length > 0) { %>
-                  <% for (let m of tx.out) { %>
-                    <tr>
-                      <td>
-                        <% if (m['spendTxid']) { %>
-                          <a class="txid" href="/#tx/<%= m['spendTxid'] %>/i<%= m['spendVout'] %>" style="font-weight:bold">
-                              &#10004;
-                          </a>
-                        <% } %>
-                      </td>
-                      <td><%= m.e.i %></td>
-                      <td class="amount">
-                        <%= app.util.format_bignum_bch_str(m.e.v) %>
-                      </td>
-                      <td>
-                        <% if (m.e.a) { %>
-                          <a class="address" href="/#address/bitcoincash:<= m.e.a %>">
-                            bitcoincash:<%= m.e.a %>
-                          </a>
-                        <% } else { %>
-                          <%= m.str %>
-                        <% } %>
-                      </td>
-                    </tr>
+                <% if (tx.in.length > 0) { %>
+                  <% for (let m of tx.in) { %>
+                    <% if (input_amounts[m.e.h+':'+m.e.i]) { %>
+                      <tr>
+                        <td><a class="txid" href="/#tx/<%= m.e.h %>/o<%= m.e.i %>" style="font-weight:bold">&larr;</a></td>
+                        <td><%= m.e.i %></td>
+                        <td class="amount">
+                           <%= app.util.format_bignum_bch_str(input_amounts[m.e.h+':'+m.e.i])  %>
+                        </td>
+                        <td>
+                          <% if (typeof m.e.a !== 'undefined') { %>
+                            <a class="address" href="/#address/bitcoincash:<%= m.e.a %>">bitcoincash:<%= m.e.a %></a>
+                          <% } else { %>
+                            SLPDB Address Error
+                          <% } %>
+                        </td>
+                      </tr>
+                    <% } %>
                   <% } %>
                 <% } else { %>
                   <tr>
-                    <td>No outputs.</td>
+                    <td>No inputs.</td>
                   </tr>
                 <% } %>
               </tbody>
@@ -167,6 +117,58 @@
           </div>
         </div>
       </div>
+    </div>
+    <div class="rounded_row">
+        <div class="input_output" id="outputs-list">
+          <div class="rounded box-shadow table-container">
+            <h3>Outputs</h3>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Tx</th>
+                    <th>Vout</th>
+                    <th class="amount">Amount</th>
+                    <th>Address</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (tx.out.length > 0) { %>
+                    <% for (let m of tx.out) { %>
+                      <tr>
+                        <td>
+                          <% if (m['spendTxid']) { %>
+                            <a class="txid" href="/#tx/<%= m['spendTxid'] %>/i<%= m['spendVout'] %>" style="font-weight:bold">
+                                &#10004;
+                            </a>
+                          <% } %>
+                        </td>
+                        <td><%= m.e.i %></td>
+                        <td class="amount">
+                          <%= app.util.format_bignum_bch_str(m.e.v) %>
+                        </td>
+                        <td>
+                          <% if (m.e.a) { %>
+                            <a class="address" href="/#address/bitcoincash:<= m.e.a %>">
+                              bitcoincash:<%= m.e.a %>
+                            </a>
+                          <% } else { %>
+                            <%= m.str %>
+                          <% } %>
+                        </td>
+                      </tr>
+                    <% } %>
+                  <% } else { %>
+                    <tr>
+                      <td>No outputs.</td>
+                    </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
   </div>
-  <div class="clearfix"></div>
 </div>

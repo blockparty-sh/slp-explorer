@@ -1,282 +1,72 @@
-<div class="transaction_box">
-  <div>
-    <div class="token-icon-large left" data-tokenid="<%= tx.slp.detail.tokenIdHex %>"></div>
+<div class="row super-wrapper">
+  <div class="transaction_box">
     <div>
-      <h2 class="text-white">
-        <% if (token.tokenDetails.symbol) { %>
-          <%= token.tokenDetails.symbol %>
-        <% } else if (token.tokenDetails.name !== '') { %>
-          <%= token.tokenDetails.name %>
-        <% } %>
-
-        <%= tx.slp.detail.transactionType[0].toUpperCase() + tx.slp.detail.transactionType.substring(1).toLocaleLowerCase() %>
-
-        Transaction
-      </h2>
-      <h6><%= tx.tx.h %></h6>
-      <a target="_blank" href="https://explorer.bitcoin.com/bch/tx/<%= tx.tx.h %>">
-        <button type="button" class="button right">View on BCH Explorer</button>
-      </a>
-    </div>
-  </div>
-</div>
-
-<div class="rounded_row_50percent_container">
-  <div class="rounded_row">
-    <div class="col-md-6">
-      <div class="rounded box-shadow table-container">
-        <div class="table-responsive">
-          <table class="table">
-            <thead>
-              <tr>
-                <th><h3>Details</h3></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th role="col">Type</th>
-                <td><%= tx.slp.detail.transactionType %></td>
-              </tr>
-              <tr>
-                <th role="col">Block</th>
-                <td>
-                  <% if (tx.blk) { %>
-                    <a href="#block/<%= tx.blk.i %>"><%= tx.blk.i %></a>
-                  <% } else { %>
-                    <a href="#block/mempool">Pending</a>
-                  <% } %>
-                </td>
-              </tr>
-              <tr>
-                <th role="col">Block Time</th>
-                <td>
-                  <% if (tx.blk) { %>
-                    <%= new Date(tx.blk.t*1000).toLocaleString() %>
-                  <% } else { %>
-                    Pending
-                  <% } %>
-                </td>
-              </tr>
-              <tr>
-                <th role="col">Txid</th>
-                <td><a class="txid" href="#tx/<%= tx.tx.h %>"><%= tx.tx.h %></a></td>
-              </tr>
+      <div class="token-icon-large left" data-tokenid="<%= tx.slp.detail.tokenIdHex %>"></div>
+      <div>
+        <h2 class="text-white">
+          <% if (token.tokenDetails.symbol) { %>
+            <%= token.tokenDetails.symbol %>
+          <% } else if (token.tokenDetails.name !== '') { %>
+            <%= token.tokenDetails.name %>
+          <% } %>
   
-              <% if (tx.slp.detail.transactionType == 'GENESIS') { %>
-                <tr>
-                  <th role="col">Creator</th>
-                  <td><a class="address" href="#address/<%= tx.slp.detail.outputs[0].address %>"><%= tx.slp.detail.outputs[0].address %></a></td>
-                </tr>
-              <% } %>
-            </tbody>
-          </table>
-        </div>
+          <%= tx.slp.detail.transactionType[0].toUpperCase() + tx.slp.detail.transactionType.substring(1).toLocaleLowerCase() %>
+  
+          Transaction
+        </h2>
+        <h6><%= tx.tx.h %></h6>
+        <a target="_blank" href="https://explorer.bitcoin.com/bch/tx/<%= tx.tx.h %>">
+          <button type="button" class="button right">View on BCH Explorer</button>
+        </a>
       </div>
     </div>
   </div>
   
-  <div class="rounded_row">
-    <div class="col-md-6">
-      <div id="token-details-table-container" class="rounded box-shadow table-container">
-        <div class="table-responsive">
-          <table class="table" id="token-details-table">
-            <thead>
-              <tr>
-                <td>
-                    <h3>Token Details</h3>
-                </td>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row">Token Id</th>
-                <td><a class="tokenid" href="/#token/<%= tx.slp.detail.tokenIdHex %>"><%= tx.slp.detail.tokenIdHex %></a></td>
-              </tr>
-              <tr>
-                <th scope="row">Version</th>
-                <td>
-                <% if(token.tokenDetails.versionType === 1) { %>Type1<% } %>
-                <% if(token.tokenDetails.versionType === 129) { %>NFT1-Group<% } %>
-                <% if(token.tokenDetails.versionType === 65) { %>
-                  <a href="/#token/<%= token.nftParentId %>">NFT1-Child [view parent]</a>
-                <% } %>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">Name</th>
-                <td><%= token.tokenDetails.name %></td>
-              </tr>
-              <tr>
-                <th scope="row">Symbol</th>
-                <td><%= token.tokenDetails.symbol %></td>
-              </tr>
-              <tr>
-                <th scope="row">Timestamp</th>
-                <td>
-                  <% if (token.tokenDetails.timestamp_unix === null) { %>
-                    Pending
-                  <% } else { %>
-                    <%= new Date(token.tokenDetails.timestamp_unix*1000).toLocaleString() %>
-                  <% } %>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">Decimals</th>
-                <td><%= token.tokenDetails.decimals %></td>
-              </tr>
-              <tr>
-                <th scope="row">Document URI</th>
-                <td>
-                  <% if (token.tokenDetails.documentUri) { %>
-                    <% const url = app.util.document_link(token.tokenDetails.documentUri); %>
-                    <% if (url.length) { %>
-                      <a href="<%= url %>"><%= token.tokenDetails.documentUri %></a>
-                    <% } else { %>
-                      <%= token.tokenDetails.documentUri %>
-                    <% } %>
-                  <% } %>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">Document Checksum</th>
-                <td><%= token.tokenDetails.documentSha256Hex %></td>
-              </tr>
-              <tr>
-                <th scope="row">Verified</th>
-                <td>
-                  <% if (app.util.is_verified(token.tokenDetails.tokenIdHex)) { %>
-                    <img src="/img/verified-checkmark.png">
-                  <% } else { %>
-                    <img src="/img/verified-empty.png">
-                  <% } %>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="clearfix"></div>
-</div>
-
-
-<div class="rounded_row_50percent_container">
-  <div class="rounded_row">
-    <div class="input_output" id="inputs-list">
-      <div class="rounded box-shadow table-container">
-        <% if (tx.slp.detail.transactionType !== 'GENESIS') { %>
-          <h3>Inputs (<%= Number(Object.keys(input_amounts).length).toLocaleString() %>)</h3>
-          <div class="table-responsive">
-            <table class="table fixed-header">
-              <thead>
-                <tr>
-                  <th>Tx</th>
-                  <th class="amount">Amount</th>
-                  <th>Address</th>
-                </tr>
-              </thead>
-              <tbody>
-                <% if (tx.slp.detail.transactionType == 'SEND' || tx.slp.detail.transactionType == 'MINT') { %>
-                  <% for (let m of tx.in) { %>
-                    <% if (input_amounts[m.e.h+':'+m.e.i]) { %>
-                      <tr>
-                        <td><a class="txid" href="/#tx/<%= m.e.h %>/o<%= m.e.i %>" style="font-weight:bold">&larr;</a></td>
-                        <td class="amount">
-                          <% if(tx.slp.detail.transactionType == 'MINT' && m.e.i == tx.slp.detail.txnBatonVout) { %>
-                              Mint Baton
-                          <% } else { %>
-                              <%= app.util.format_bignum_str(input_amounts[m.e.h+':'+m.e.i], token.tokenDetails.decimals)  %>
-                          <% } %>
-                        </td>
-                        <td>
-                          <% if (typeof m.e.a !== 'undefined') { %>
-                            <a class="address" href="/#address/<%= app.util.to_slp_address(m.e.a) %>"><%= app.util.to_slp_address(m.e.a) %></a>
-                          <% } else { %>
-                            SLPDB Address Error
-                          <% } %>
-                        </td>
-                      </tr>
-                    <% } %>
-                  <% } %>
-                <% } %>
-                <% if (Object.keys(input_amounts).length === 0) { %>
-                  <tr>
-                    <td>No inputs.</td>
-                  </tr>
-                <% } %>
-              </tbody>
-            </table>
-          </div>
-        <% } else { %>
-          <h3>Genesis</h3>
-          <p>TokenType1 genesis transactions do not have any SLP inputs.<br>NFT1 Child transactions can see the input from looking at the Version row in the Token Details pane.</p>
-        <% } %>
-      </div>
-    </div>
-  </div>
-  <div class="rounded_row">
-      <div class="input_output" id="outputs-list">
+  <div class="rounded_row_50percent_container">
+    <div class="rounded_row">
+      <div class="col-md-6">
         <div class="rounded box-shadow table-container">
-          <h3>Outputs (<%= Number(tx.graph[0].graphTxn.outputs.length).toLocaleString() %>)</h3>
           <div class="table-responsive">
             <table class="table">
               <thead>
                 <tr>
-                  <th>Tx</th>
-                  <th class="amount">Amount</th>
-                  <th>Address</th>
+                  <th><h3>Details</h3></th>
                 </tr>
               </thead>
               <tbody>
-                <% if (tx.graph[0].graphTxn.outputs.length > 0) { %>
-                  <% for (let m of tx.graph[0].graphTxn.outputs) { %>
-                    <% let burnt = false; switch (m.status) {
-                      case 'BATON_UNSPENT':
-                      case 'BATON_SPENT_IN_MINT':
-                      case 'UNSPENT':
-                      case 'SPENT_SAME_TOKEN':
-                    %>
-                    <tr>
-                    <% break; default: burnt = true; %>
-                      <tr class="burnt-tx">
-                    <% break; } %>
-                      <td>
-                        <% if (m['spendTxid']) { %>
-                          <a class="txid" href="/#tx/<%= m['spendTxid'] %>/i<%= m['spendVout'] %>" style="font-weight:bold">
-                            <% if (burnt) { %>
-                              &#62;:D
-                            <% } else { %>
-                              &#10004;
-                            <% } %>
-                          </a>
-                        <% } else if (burnt) { %>
-                          <a class="txid" style="font-weight:bold">
-                            &#62;:D
-                          </a>
-                        <% } %>
-                      </td>
-                      <td class="amount">
-                        <% if (m.status === 'BATON_UNSPENT' || m.status ==='BATON_SPENT_IN_MINT') { %>
-                        Mint Baton
-                        <% } else { %>
-                          <%= app.util.format_bignum_str(m.slpAmount, tx.slp.detail.decimals) %>
-                        <% }%>
-                      </td>
-                      <td>
-                        <% if (burnt) { %>
-                          [burn: <%= m.status.split('_').map(v => v.toLowerCase()).join(' ') %>]
-                        <% } else { %>
-                          <a class="address" href="/#address/<%= m.address %>">
-                            <%= m.address %>
-                          </a>
-                        <% } %>
-                      </td>
-                    </tr>
-                  <% } %>
-                <% } else { %>
+                <tr>
+                  <th role="col">Type</th>
+                  <td><%= tx.slp.detail.transactionType %></td>
+                </tr>
+                <tr>
+                  <th role="col">Block</th>
+                  <td>
+                    <% if (tx.blk) { %>
+                      <a href="#block/<%= tx.blk.i %>"><%= tx.blk.i %></a>
+                    <% } else { %>
+                      <a href="#block/mempool">Pending</a>
+                    <% } %>
+                  </td>
+                </tr>
+                <tr>
+                  <th role="col">Block Time</th>
+                  <td>
+                    <% if (tx.blk) { %>
+                      <%= new Date(tx.blk.t*1000).toLocaleString() %>
+                    <% } else { %>
+                      Pending
+                    <% } %>
+                  </td>
+                </tr>
+                <tr>
+                  <th role="col">Txid</th>
+                  <td><a class="txid" href="#tx/<%= tx.tx.h %>"><%= tx.tx.h %></a></td>
+                </tr>
+    
+                <% if (tx.slp.detail.transactionType == 'GENESIS') { %>
                   <tr>
-                    <td>No outputs.</td>
+                    <th role="col">Creator</th>
+                    <td><a class="address" href="#address/<%= tx.slp.detail.outputs[0].address %>"><%= tx.slp.detail.outputs[0].address %></a></td>
                   </tr>
                 <% } %>
               </tbody>
@@ -284,6 +74,218 @@
           </div>
         </div>
       </div>
+    </div>
+    
+    <div class="rounded_row">
+      <div class="col-md-6">
+        <div id="token-details-table-container" class="rounded box-shadow table-container">
+          <div class="table-responsive">
+            <table class="table" id="token-details-table">
+              <thead>
+                <tr>
+                  <td>
+                      <h3>Token Details</h3>
+                  </td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th scope="row">Token Id</th>
+                  <td><a class="tokenid" href="/#token/<%= tx.slp.detail.tokenIdHex %>"><%= tx.slp.detail.tokenIdHex %></a></td>
+                </tr>
+                <tr>
+                  <th scope="row">Version</th>
+                  <td>
+                  <% if(token.tokenDetails.versionType === 1) { %>Type1<% } %>
+                  <% if(token.tokenDetails.versionType === 129) { %>NFT1-Group<% } %>
+                  <% if(token.tokenDetails.versionType === 65) { %>
+                    <a href="/#token/<%= token.nftParentId %>">NFT1-Child [view parent]</a>
+                  <% } %>
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">Name</th>
+                  <td><%= token.tokenDetails.name %></td>
+                </tr>
+                <tr>
+                  <th scope="row">Symbol</th>
+                  <td><%= token.tokenDetails.symbol %></td>
+                </tr>
+                <tr>
+                  <th scope="row">Timestamp</th>
+                  <td>
+                    <% if (token.tokenDetails.timestamp_unix === null) { %>
+                      Pending
+                    <% } else { %>
+                      <%= new Date(token.tokenDetails.timestamp_unix*1000).toLocaleString() %>
+                    <% } %>
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">Decimals</th>
+                  <td><%= token.tokenDetails.decimals %></td>
+                </tr>
+                <tr>
+                  <th scope="row">Document URI</th>
+                  <td>
+                    <% if (token.tokenDetails.documentUri) { %>
+                      <% const url = app.util.document_link(token.tokenDetails.documentUri); %>
+                      <% if (url.length) { %>
+                        <a href="<%= url %>"><%= token.tokenDetails.documentUri %></a>
+                      <% } else { %>
+                        <%= token.tokenDetails.documentUri %>
+                      <% } %>
+                    <% } %>
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">Document Checksum</th>
+                  <td><%= token.tokenDetails.documentSha256Hex %></td>
+                </tr>
+                <tr>
+                  <th scope="row">Verified</th>
+                  <td>
+                    <% if (app.util.is_verified(token.tokenDetails.tokenIdHex)) { %>
+                      <img src="/img/verified-checkmark.png">
+                    <% } else { %>
+                      <img src="/img/verified-empty.png">
+                    <% } %>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="clearfix"></div>
   </div>
-  <div class="clearfix"></div>
+  
+  
+  <div class="rounded_row_50percent_container">
+    <div class="rounded_row">
+      <div class="input_output" id="inputs-list">
+        <div class="rounded box-shadow table-container">
+          <% if (tx.slp.detail.transactionType !== 'GENESIS') { %>
+            <h3>Inputs (<%= Number(Object.keys(input_amounts).length).toLocaleString() %>)</h3>
+            <div class="table-responsive">
+              <table class="table fixed-header">
+                <thead>
+                  <tr>
+                    <th>Tx</th>
+                    <th class="amount">Amount</th>
+                    <th>Address</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (tx.slp.detail.transactionType == 'SEND' || tx.slp.detail.transactionType == 'MINT') { %>
+                    <% for (let m of tx.in) { %>
+                      <% if (input_amounts[m.e.h+':'+m.e.i]) { %>
+                        <tr>
+                          <td><a class="txid" href="/#tx/<%= m.e.h %>/o<%= m.e.i %>" style="font-weight:bold">&larr;</a></td>
+                          <td class="amount">
+                            <% if(tx.slp.detail.transactionType == 'MINT' && m.e.i == tx.slp.detail.txnBatonVout) { %>
+                                Mint Baton
+                            <% } else { %>
+                                <%= app.util.format_bignum_str(input_amounts[m.e.h+':'+m.e.i], token.tokenDetails.decimals)  %>
+                            <% } %>
+                          </td>
+                          <td>
+                            <% if (typeof m.e.a !== 'undefined') { %>
+                              <a class="address" href="/#address/<%= app.util.to_slp_address(m.e.a) %>"><%= app.util.to_slp_address(m.e.a) %></a>
+                            <% } else { %>
+                              SLPDB Address Error
+                            <% } %>
+                          </td>
+                        </tr>
+                      <% } %>
+                    <% } %>
+                  <% } %>
+                  <% if (Object.keys(input_amounts).length === 0) { %>
+                    <tr>
+                      <td>No inputs.</td>
+                    </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          <% } else { %>
+            <h3>Genesis</h3>
+            <p>TokenType1 genesis transactions do not have any SLP inputs.<br>NFT1 Child transactions can see the input from looking at the Version row in the Token Details pane.</p>
+          <% } %>
+        </div>
+      </div>
+    </div>
+    <div class="rounded_row">
+        <div class="input_output" id="outputs-list">
+          <div class="rounded box-shadow table-container">
+            <h3>Outputs (<%= Number(tx.graph[0].graphTxn.outputs.length).toLocaleString() %>)</h3>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Tx</th>
+                    <th class="amount">Amount</th>
+                    <th>Address</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (tx.graph[0].graphTxn.outputs.length > 0) { %>
+                    <% for (let m of tx.graph[0].graphTxn.outputs) { %>
+                      <% let burnt = false; switch (m.status) {
+                        case 'BATON_UNSPENT':
+                        case 'BATON_SPENT_IN_MINT':
+                        case 'UNSPENT':
+                        case 'SPENT_SAME_TOKEN':
+                      %>
+                      <tr>
+                      <% break; default: burnt = true; %>
+                        <tr class="burnt-tx">
+                      <% break; } %>
+                        <td>
+                          <% if (m['spendTxid']) { %>
+                            <a class="txid" href="/#tx/<%= m['spendTxid'] %>/i<%= m['spendVout'] %>" style="font-weight:bold">
+                              <% if (burnt) { %>
+                                &#62;:D
+                              <% } else { %>
+                                &#10004;
+                              <% } %>
+                            </a>
+                          <% } else if (burnt) { %>
+                            <a class="txid" style="font-weight:bold">
+                              &#62;:D
+                            </a>
+                          <% } %>
+                        </td>
+                        <td class="amount">
+                          <% if (m.status === 'BATON_UNSPENT' || m.status ==='BATON_SPENT_IN_MINT') { %>
+                          Mint Baton
+                          <% } else { %>
+                            <%= app.util.format_bignum_str(m.slpAmount, tx.slp.detail.decimals) %>
+                          <% }%>
+                        </td>
+                        <td>
+                          <% if (burnt) { %>
+                            [burn: <%= m.status.split('_').map(v => v.toLowerCase()).join(' ') %>]
+                          <% } else { %>
+                            <a class="address" href="/#address/<%= m.address %>">
+                              <%= m.address %>
+                            </a>
+                          <% } %>
+                        </td>
+                      </tr>
+                    <% } %>
+                  <% } else { %>
+                    <tr>
+                      <td>No outputs.</td>
+                    </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+  </div>
 </div>

@@ -1,54 +1,56 @@
-<div class="transaction_box">
-  <div>
-    <% if (height !== 'mempool') { %>
-      <h2 class="text-white">Block <%= height %> | <span id="total_txs">...</span> transactions</h2>
-      <h6>View all transactions confirmed in block</h6>
-
-      <a href="#block/<%= height-1 %>">
-        <button type="button" class="button left" >&larr; block <%= height-1 %></button>
-      </a>
-      <% if (next_block_exists) { %>
-        <a href="#block/<%= height+1 %>">
-          <button type="button" class="button left">block <%= height+1 %> &rarr;</button>
+<div class="row super-wrapper">
+  <div class="transaction_box">
+    <div>
+      <% if (height !== 'mempool') { %>
+        <h2 class="text-white">Block <%= height %> | <span id="total_txs">...</span> transactions</h2>
+        <h6>View all transactions confirmed in block</h6>
+  
+        <a href="#block/<%= height-1 %>">
+          <button type="button" class="button left" >&larr; block <%= height-1 %></button>
+        </a>
+        <% if (next_block_exists) { %>
+          <a href="#block/<%= height+1 %>">
+            <button type="button" class="button left">block <%= height+1 %> &rarr;</button>
+          </a>
+        <% } else { %>
+          <a href="#block/mempool %>">
+            <button type="button" class="button left">mempool &rarr;</button>
+          </a>
+        <% } %>
+  
+        <a target="_blank" href="https://explorer.bitcoin.com/bch/block/<%= height %>">
+          <button type="button" class="button right">View on BCH Explorer</button>
         </a>
       <% } else { %>
-        <a href="#block/mempool %>">
-          <button type="button" class="button left">mempool &rarr;</button>
+        <h2 class="text-white">Mempool | <span id="total_txs">...</span> transactions</h2>
+        <h6>View all transactions waiting to be confirmed in block</h6>
+        <a href="#block/<%= most_recent_block_height %>">
+          <button type="button" class="button left" >&larr; block <%= most_recent_block_height %></button>
         </a>
       <% } %>
-
-      <a target="_blank" href="https://explorer.bitcoin.com/bch/block/<%= height %>">
-        <button type="button" class="button right">View on BCH Explorer</button>
-      </a>
-    <% } else { %>
-      <h2 class="text-white">Mempool | <span id="total_txs">...</span> transactions</h2>
-      <h6>View all transactions waiting to be confirmed in block</h6>
-      <a href="#block/<%= most_recent_block_height %>">
-        <button type="button" class="button left" >&larr; block <%= most_recent_block_height %></button>
-      </a>
-    <% } %>
+    </div>
   </div>
-</div>
-
-<div class="rounded_row">
-  <div id="block-transactions-table-container" class="rounded box-shadow table-container loading <%= (height == 'mempool' ? 'mempool' : '') %>">
-    <h3 class="border-bottom border-gray">Transactions (<span id="total_transactions">...</span>)</h3>
-    <div class="table-responsive">
-      <table class="table" id="block-transactions-table">
-        <thead>
-          <tr>
-            <th>Txid</th>
-            <th>Type</th>
-            <th class="amount">Amount</th>
-            <th>Token</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>Loading...</td></tr>
-        </tbody>
-      </table>
-      <ul class="pagination">
-      </ul>
+  
+  <div class="rounded_row">
+    <div id="block-transactions-table-container" class="rounded box-shadow table-container loading <%= (height == 'mempool' ? 'mempool' : '') %>">
+      <h3 class="border-bottom border-gray">Transactions (<span id="total_transactions">...</span>)</h3>
+      <div class="table-responsive">
+        <table class="table" id="block-transactions-table">
+          <thead>
+            <tr>
+              <th>Txid</th>
+              <th>Type</th>
+              <th class="amount">Amount</th>
+              <th>Token</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Loading...</td></tr>
+          </tbody>
+        </table>
+        <ul class="pagination">
+        </ul>
+      </div>
     </div>
   </div>
 </div>
