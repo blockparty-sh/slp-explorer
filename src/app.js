@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const app = {};
 
@@ -37,12 +37,12 @@ app.util = {
       '0f3f223902c44dc2bee6d3f77d565904d8501affba5ee0c56f7b32e8080ce14b': 'https://cryptophyl.com/trade/DROP-BCH',
     };
 
-    let links = [];
+    const links = [];
     if (cryptophyl_tokens.hasOwnProperty(tokenIdHex)) {
       links.push({
         'type': 'cryptophyl',
         'link': `${cryptophyl_tokens[tokenIdHex]}?r=blockparty`,
-        'class': 'exchange-cryptophyl-icon'
+        'class': 'exchange-cryptophyl-icon',
       });
     }
 
@@ -52,8 +52,8 @@ app.util = {
         'link': sideshift_tokens[tokenIdHex],
         'class': 'exchange-sideshift-icon',
         'meta': {
-          'settleMethodId': sideshift_tokens_settle[tokenIdHex]
-        }
+          'settleMethodId': sideshift_tokens_settle[tokenIdHex],
+        },
       });
     }
 
@@ -61,7 +61,7 @@ app.util = {
       links.push({
         'type': 'coinex',
         'link': `${coinex_tokens[tokenIdHex]}&refer_code=c39pv`,
-        'class': 'exchange-coinex-icon'
+        'class': 'exchange-coinex-icon',
       });
     }
 
@@ -69,7 +69,7 @@ app.util = {
       links.push({
         'type': 'altilly',
         'link': `https://www.altilly.com/asset/${altilly_tokens[tokenIdHex]}`,
-        'class': 'exchange-altilly-icon'
+        'class': 'exchange-altilly-icon',
       });
     }
 
@@ -83,11 +83,11 @@ app.util = {
           event.preventDefault();
           window.scrollTo(0, 0);
           window.__SIDESHIFT__ = {
-            testerId: "9a8b1c79b64edf17",
-            parentAffiliateId: "jsKIdsWiF",
-            defaultDepositMethodId: "bch" || undefined,
+            testerId: '9a8b1c79b64edf17',
+            parentAffiliateId: 'jsKIdsWiF',
+            defaultDepositMethodId: 'bch' || undefined,
             defaultSettleMethodId: m.meta.settleMethodId,
-            settleAddress: "" || undefined,
+            settleAddress: '' || undefined,
           };
           sideshift.show();
         });
@@ -96,7 +96,7 @@ app.util = {
     }
   },
   format_bignum: (bn) => {
-    let dpos  = -1;
+    let dpos = -1;
     let nzpos = -1;
 
     for (let i=0; i<bn.length; ++i) {
@@ -172,7 +172,7 @@ app.util = {
     }
 
     let poffstart = page >= 2 ? page-2 : 0;
-    let poffend   = Math.min(poffstart+5, max_page);
+    const poffend = Math.min(poffstart+5, max_page);
 
     if (poffend === max_page) {
       poffstart = Math.max(0, poffend - 5);
@@ -206,7 +206,7 @@ app.util = {
       return $el.find('.pagination li.active').data('page');
   },
 
-  extract_total: (o, key="count") => {
+  extract_total: (o, key='count') => {
     if (! o) {
       return {
         u: 0,
@@ -236,17 +236,17 @@ app.util = {
     split_time_period=60*60*24*1000,
     line_type='hvh',
   ) => {
-    for (let o of usage.c) {
+    for (const o of usage.c) {
       o.block_epoch = new Date(o.block_epoch * 1000);
     }
     usage.c.sort((a, b) => a.block_epoch - b.block_epoch);
 
-    let usage_split_t = [];
+    const usage_split_t = [];
     if (usage.c.length > 0) {
       let ts = +(usage.c[0].block_epoch);
       let splitset = [];
 
-      for (let m of usage.c) {
+      for (const m of usage.c) {
         if (+(m.block_epoch) > ts + split_time_period) {
           ts = +(m.block_epoch);
           usage_split_t.push(splitset);
@@ -259,33 +259,33 @@ app.util = {
     }
 
     const usage_split = usage_split_t
-    .map(m =>
+    .map((m) =>
       m.reduce((a, v) =>
         ({
           block_epoch: a.block_epoch || v.block_epoch,
-          txs: a.txs + v.txs
+          txs: a.txs + v.txs,
         }), {
           block_epoch: null,
-          txs: 0
-        }
-      )
+          txs: 0,
+        },
+      ),
     );
 
-    let start_date = new Date((+(new Date)) - time_period);
+    const start_date = new Date((+(new Date)) - time_period);
 
-    let split_data = [];
+    const split_data = [];
     for (let i=0; i<Math.ceil(time_period / split_time_period); ++i) {
       split_data.push({
         block_epoch: new Date(start_date.getTime() + (split_time_period*i)),
-        txs: 0
+        txs: 0,
       });
     }
 
-    for (let m of usage_split_t) {
+    for (const m of usage_split_t) {
       const d_off = app.util.time_periods_between(
         start_date,
         m[0].block_epoch,
-        split_time_period
+        split_time_period,
       );
       split_data[d_off].txs = m.reduce((a, v) => a+v.txs, 0);
     }
@@ -294,18 +294,18 @@ app.util = {
     try {
       Plotly.newPlot(dom_id, [
         {
-          x: split_data.map(v => v.block_epoch),
-          y: split_data.map(v => v.txs),
+          x: split_data.map((v) => v.block_epoch),
+          y: split_data.map((v) => v.txs),
           fill: 'tonexty',
           type: 'scatter',
           name: 'Daily',
-          line: { shape: line_type }, // maybe we're not ready for curves yet
-        }
+          line: {shape: line_type}, // maybe we're not ready for curves yet
+        },
       ], {
         yaxis: {
-          title: y_title
-        }
-      })
+          title: y_title,
+        },
+      });
     } catch (e) {
       console.error('Plotly.newPlot failed', e);
     }
@@ -345,11 +345,11 @@ app.util = {
       triggerSelectOnValidInput: false, // disables reload on clicking into box again
       autoSelectFirst: true, // first item will be selected when showing suggestions
       showNoSuggestionNotice: true,
-      noSuggestionNotice: "No results found...",
+      noSuggestionNotice: 'No results found...',
       appendTo: $container,
       width: 'flex',
-      lookup: function (query, done) {
-        let search_value = $selector.val().trim();
+      lookup: function(query, done) {
+        const search_value = $selector.val().trim();
 
         // check if address entered
         if (slpjs.Utils.isSlpAddress(search_value)) {
@@ -369,67 +369,67 @@ app.util = {
 
         Promise.all([
           app.slpdb.query({
-            "v": 3,
-            "q": {
-              "db": ["t"],
-              "find": {
-                "$or": [
+            'v': 3,
+            'q': {
+              'db': ['t'],
+              'find': {
+                '$or': [
                   {
-                    "tokenDetails.tokenIdHex": search_value
+                    'tokenDetails.tokenIdHex': search_value,
                   },
                   {
-                    "tokenDetails.name": {
-                      "$regex": "^"+search_value+".*",
-                      "$options": "i"
-                    }
+                    'tokenDetails.name': {
+                      '$regex': '^'+search_value+'.*',
+                      '$options': 'i',
+                    },
                   },
                   {
-                    "tokenDetails.symbol": {
-                      "$regex": "^"+search_value+".*",
-                      "$options": "i"
-                    }
-                  }
-                ]
+                    'tokenDetails.symbol': {
+                      '$regex': '^'+search_value+'.*',
+                      '$options': 'i',
+                    },
+                  },
+                ],
               },
-              "sort": {"tokenStats.approx_txns_since_genesis": -1},
-              "limit": 10
-            }
+              'sort': {'tokenStats.approx_txns_since_genesis': -1},
+              'limit': 10,
+            },
           }),
           app.slpdb.query({
-            "v": 3,
-            "q": {
-              "db": ["u", "c"],
-              "find": {"tx.h": search_value},
-              "limit": 1
-            }
+            'v': 3,
+            'q': {
+              'db': ['u', 'c'],
+              'find': {'tx.h': search_value},
+              'limit': 1,
+            },
           }),
           app.bitdb.query({
-            "v": 3,
-            "q": {
-              "db": ["c"],
-              "find": {
-                "out.h1": "01010101",
-                "blk.i": {
-                  "$gte": 563620
+            'v': 3,
+            'q': {
+              'db': ['c'],
+              'find': {
+                'out.h1': '01010101',
+                'blk.i': {
+                  '$gte': 563620,
                 },
-                "out.s2": {
-                  "$regex": "^"+search_value+".*",
-                  "$options": "i"
-                }
+                'out.s2': {
+                  '$regex': '^'+search_value+'.*',
+                  '$options': 'i',
+                },
               },
-              "sort": {
-                "blk.i": -1
+              'sort': {
+                'blk.i': -1,
               },
-              "limit": 10
+              'limit': 10,
             },
-            "r": {
-              "f": "[ .[] | ( .out[] | select(.b0.op==106) ) as $outWithData | { blockheight: .blk.i?, blockhash: .blk.h?, txid: .tx.h?, name: $outWithData.s2, data: $outWithData.h3 } ]"
-            }
+            'r': {
+              'f': '[ .[] | ( .out[] | select(.b0.op==106) ) as $outWithData | { blockheight: .blk.i?, blockhash: .blk.h?, txid: .tx.h?, name: $outWithData.s2, data: $outWithData.h3 } ]',
+            },
           }),
         ]).then(([tokens, transactions, cashaccounts]) => {
-          let sugs = [];
+          const sugs = [];
 
-          for (let m of tokens.t) {
+          for (const m of tokens.t) {
             if (m.tokenDetails.tokenIdHex === search_value) {
               $selector.val('');
               return app.router('/#token/'+m.tokenDetails.tokenIdHex);
@@ -438,7 +438,7 @@ app.util = {
             const verified = app.util.is_verified(m.tokenDetails.tokenIdHex);
             const tval = app.template.search_token_result({
               verified: verified,
-              token: m
+              token: m,
             });
 
             sugs.push({
@@ -449,7 +449,7 @@ app.util = {
                 html: tval,
                 verified: verified,
                 txns_since_genesis: m.tokenStats.approx_txns_since_genesis,
-              }
+              },
             });
           }
 
@@ -460,7 +460,7 @@ app.util = {
           });
 
           transactions = transactions.u.concat(transactions.c);
-          for (let m of transactions) {
+          for (const m of transactions) {
             if (m.tx.h === search_value) {
               $selector.val('');
               return app.router('/#tx/'+m.tx.h);
@@ -470,13 +470,13 @@ app.util = {
               value: m.tx.h,
               data: {
                 url: '/#tx/'+m.tx.h,
-                category: 'Tx'
-              }
+                category: 'Tx',
+              },
             });
           }
 
           cashaccounts = cashaccounts.c;
-          for (let m of cashaccounts) {
+          for (const m of cashaccounts) {
             const cash_addr = app.util.raw_address_to_cash_address(m.data);
             if (cash_addr !== null) {
               const slp_addr = slpjs.Utils.toSlpAddress(cash_addr);
@@ -485,8 +485,8 @@ app.util = {
                 data: {
                   url: '/#address/'+slp_addr, // TODO decode address
                   html: app.template.search_cashaccount_result(app.util.get_cash_account_data(m)),
-                  category: 'Cash Accounts'
-                }
+                  category: 'Cash Accounts',
+                },
               });
             }
           }
@@ -498,24 +498,24 @@ app.util = {
                 data: {
                   url: '/#block/'+search_value,
                   category: 'Blocks',
-                }
+                },
               });
             }
           }
 
-          done({ suggestions: sugs });
+          done({suggestions: sugs});
         });
       },
-      onSelect: function (sug) {
+      onSelect: function(sug) {
         $selector.val('');
         app.router(sug.data.url);
       },
-      onSearchComplete: function (query, sug) {
+      onSearchComplete: function(query, sug) {
         $('.autocomplete-suggestion .token-icon-small').each(function() {
            app.util.set_token_icon($(this), 32);
         });
       },
-      formatResult: function (sug) {
+      formatResult: function(sug) {
         if (sug.data.html) {
           return sug.data.html;
         } else {
@@ -533,7 +533,9 @@ app.util = {
     const $el = $table.find('tr:first');
     if ($el) {
       $el.addClass('flash');
-      setTimeout(() => { $el.removeClass('flash'); }, 1000);
+      setTimeout(() => {
+ $el.removeClass('flash');
+}, 1000);
     }
   },
 
@@ -551,21 +553,23 @@ app.util = {
       .toLowerCase();
     const payload_type = raw.type;
 
-    const types = {"P2PKH": "01","P2SH": "02","P2PC": "03","P2SK": "04"}
+    const types = {'P2PKH': '01', 'P2SH': '02', 'P2PC': '03', 'P2SK': '04'};
 
     return types[payload_type]+payload_hex;
   },
 
   raw_address_to_cash_address: (address) => {
     try {
-      const arrayFromHex = (hexString) => new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+      const arrayFromHex = (hexString) => new Uint8Array(hexString.match(/.{1,2}/g).map((byte) => parseInt(byte, 16)));
 
-      const types = {"01": "P2PKH","02": "P2SH","03": "P2PC","04": "P2SK"}
+      const types = {'01': 'P2PKH', '02': 'P2SH', '03': 'P2PC', '04': 'P2SK'};
       const type = types[address.substring(0, 2)];
       const payment_data = address.substring(2);
 
       return cashaddr.encode('bitcoincash', type, arrayFromHex(payment_data));
-    } catch (e) { return null; }
+    } catch (e) {
+ return null;
+}
   },
 
   get_cash_account_data: (cashaccount) => {
@@ -574,22 +578,22 @@ app.util = {
     }
 
     let name = cashaccount.name;
-    const regex = new RegExp("/^[a-zA-Z0-9_]{1,99}$/");
+    const regex = new RegExp('/^[a-zA-Z0-9_]{1,99}$/');
     if (! regex.test(cashaccount.name) || cashaccount.blockheight <= 563620) {
       name = name.replace(/[^a-zA-Z0-9_]/gi, '');
     }
 
-    const arrayFromHex = hexString => new Uint8Array(hexString.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
-    const avatars = [ '1f47b', '1f412', '1f415', '1f408', '1f40e', '1f404', '1f416', '1f410', '1f42a', '1f418', '1f401', '1f407', '1f43f', '1f987', '1f413', '1f427', '1f986', '1f989', '1f422', '1f40d', '1f41f', '1f419', '1f40c', '1f98b', '1f41d', '1f41e', '1f577', '1f33b', '1f332', '1f334', '1f335', '1f341', '1f340', '1f347', '1f349', '1f34b', '1f34c', '1f34e', '1f352', '1f353', '1f95d', '1f965', '1f955', '1f33d', '1f336', '1f344', '1f9c0', '1f95a', '1f980', '1f36a', '1f382', '1f36d', '1f3e0', '1f697', '1f6b2', '26f5', '2708', '1f681', '1f680', '231a', '2600', '2b50', '1f308', '2602', '1f388', '1f380', '26bd', '2660', '2665', '2666', '2663', '1f453', '1f451', '1f3a9', '1f514', '1f3b5', '1f3a4', '1f3a7', '1f3b8', '1f3ba', '1f941', '1f50d', '1f56f', '1f4a1', '1f4d6', '2709', '1f4e6', '270f', '1f4bc', '1f4cb', '2702', '1f511', '1f512', '1f528', '1f527', '2696', '262f', '1f6a9', '1f463', '1f35e' ];
+    const arrayFromHex = (hexString) => new Uint8Array(hexString.match(/.{1,2}/g).map((byte) => parseInt(byte, 16)));
+    const avatars = ['1f47b', '1f412', '1f415', '1f408', '1f40e', '1f404', '1f416', '1f410', '1f42a', '1f418', '1f401', '1f407', '1f43f', '1f987', '1f413', '1f427', '1f986', '1f989', '1f422', '1f40d', '1f41f', '1f419', '1f40c', '1f98b', '1f41d', '1f41e', '1f577', '1f33b', '1f332', '1f334', '1f335', '1f341', '1f340', '1f347', '1f349', '1f34b', '1f34c', '1f34e', '1f352', '1f353', '1f95d', '1f965', '1f955', '1f33d', '1f336', '1f344', '1f9c0', '1f95a', '1f980', '1f36a', '1f382', '1f36d', '1f3e0', '1f697', '1f6b2', '26f5', '2708', '1f681', '1f680', '231a', '2600', '2b50', '1f308', '2602', '1f388', '1f380', '26bd', '2660', '2665', '2666', '2663', '1f453', '1f451', '1f3a9', '1f514', '1f3b5', '1f3a4', '1f3a7', '1f3b8', '1f3ba', '1f941', '1f50d', '1f56f', '1f4a1', '1f4d6', '2709', '1f4e6', '270f', '1f4bc', '1f4cb', '2702', '1f511', '1f512', '1f528', '1f527', '2696', '262f', '1f6a9', '1f463', '1f35e'];
     const concat = cashaccount.blockhash + cashaccount.txid;
     const hash = sha256(arrayFromHex(concat));
     const account_hash = hash.substring(0, 8);
     const account_emoji = hash.substring(hash.length - 8);
-    //step 4
+    // step 4
     const account_hash_step4 = parseInt(account_hash, 16);
     const emoji_index = parseInt(account_emoji, 16) % avatars.length;
-    //step 5
-    const account_hash_step5 = account_hash_step4.toString().split("").reverse().join("").padEnd(10, '0');
+    // step 5
+    const account_hash_step5 = account_hash_step4.toString().split('').reverse().join('').padEnd(10, '0');
 
     const avatar_url = '/img/cashaccount-avatars/emoji_u'+avatars[emoji_index]+'.svg';
     return {
@@ -624,7 +628,7 @@ app.util = {
         const dparts = val.split('.');
         $(this).html(`${dparts[0]}.<span class="decimal-part">${dparts[1]}</span>`);
       }
-      $(this).html($(this).html()+("&nbsp;").repeat(skip));
+      $(this).html($(this).html()+('&nbsp;').repeat(skip));
     });
   },
 
@@ -636,7 +640,7 @@ app.util = {
   }),
 };
 
-const btoa_ext = buf => Buffer.Buffer.from(buf).toString('base64');
+const btoa_ext = (buf) => Buffer.Buffer.from(buf).toString('base64');
 
 app.slpdb = {
   query: (query) => new Promise((resolve, reject) => {
@@ -644,9 +648,9 @@ app.slpdb = {
       return resolve(false);
     }
     const b64 = btoa_ext(JSON.stringify(query));
-    const url = "https://slpdb.fountainhead.cash/q/" + b64;
+    const url = 'https://slpdb.fountainhead.cash/q/' + b64;
 
-    console.log(url)
+    console.log(url);
 
     app.util.fetch_retry(url)
     .then((r) => r = r.json())
@@ -659,37 +663,37 @@ app.slpdb = {
   }),
 
   all_tokens: (limit=100, skip=0) => ({
-    "v": 3,
-    "q": {
-      "db": ["t"],
-      "find": {},
-      "sort": {
-        "tokenStats.approx_txns_since_genesis": -1
+    'v': 3,
+    'q': {
+      'db': ['t'],
+      'find': {},
+      'sort': {
+        'tokenStats.approx_txns_since_genesis': -1,
       },
-      "limit": limit,
-      "skip": skip
-    }
+      'limit': limit,
+      'skip': skip,
+    },
   }),
 
   count_all_tokens: () => ({
-    "v": 3,
-    "q": {
-      "db": ["t"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['t'],
+      'aggregate': [
         {
-          "$match": {}
+          '$match': {},
         },
         {
-          "$group": {
-            "_id": null,
-            "count": { "$sum": 1 }
-          }
-        }
-      ]
+          '$group': {
+            '_id': null,
+            'count': {'$sum': 1},
+          },
+        },
+      ],
     },
-    "r": {
-      "f": "[ .[] | {count: .count } ]"
-    }
+    'r': {
+      'f': '[ .[] | {count: .count } ]',
+    },
   }),
 
   count_unconfirmed_token_transaction_history: (tokenIdHex, address=null) => {
@@ -697,67 +701,67 @@ app.slpdb = {
 
     if (address == null) {
       match = {
-        "$and": [
-          { "slp.valid": true },
-          { "slp.detail.tokenIdHex": tokenIdHex },
-        ]
+        '$and': [
+          {'slp.valid': true},
+          {'slp.detail.tokenIdHex': tokenIdHex},
+        ],
       };
     } else {
       match = {
-        "$and": [
-          { "slp.valid": true },
-          { "slp.detail.tokenIdHex": tokenIdHex },
+        '$and': [
+          {'slp.valid': true},
+          {'slp.detail.tokenIdHex': tokenIdHex},
         ],
-        "$or": [
-          { "in.e.a":  address },
-          { "out.e.a": address }
-        ]
+        '$or': [
+          {'in.e.a': address},
+          {'out.e.a': address},
+        ],
       };
     }
 
     return {
-      "v": 3,
-      "q": {
-        "db": ["u"],
-        "aggregate": [
+      'v': 3,
+      'q': {
+        'db': ['u'],
+        'aggregate': [
           {
-            "$match": match
+            '$match': match,
           },
           {
-            "$group": {
-              "_id": null,
-              "count": { "$sum": 1 }
-            }
-          }
-        ]
+            '$group': {
+              '_id': null,
+              'count': {'$sum': 1},
+            },
+          },
+        ],
       },
-      "r": {
-        "f": "[ .[] | {count: .count } ]"
-      }
+      'r': {
+        'f': '[ .[] | {count: .count } ]',
+      },
     };
   },
 
   token_transaction_history: (db, tokenIdHex, address=null, limit=100, skip=0) => {
-    let q = {
-      "v": 3,
-      "q": {
-        "db": [db],
-        "find": {
-          "$and": [
-            { "slp.valid": true },
-            { "slp.detail.tokenIdHex": tokenIdHex },
-          ]
+    const q = {
+      'v': 3,
+      'q': {
+        'db': [db],
+        'find': {
+          '$and': [
+            {'slp.valid': true},
+            {'slp.detail.tokenIdHex': tokenIdHex},
+          ],
         },
-        "sort": { "blk.i": -1 },
-        "limit": limit,
-        "skip": skip
-      }
+        'sort': {'blk.i': -1},
+        'limit': limit,
+        'skip': skip,
+      },
     };
 
     if (address !== null) {
       q['q']['find']['$query']['$or'] = [
-        { "in.e.a":  address },
-        { "out.e.a": address }
+        {'in.e.a': address},
+        {'out.e.a': address},
       ];
     }
 
@@ -772,1002 +776,1002 @@ app.slpdb = {
   },
 
   tx: (txid) => ({
-    "v": 3,
-    "q": {
-      "db": ["c", "u"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['c', 'u'],
+      'aggregate': [
         {
-          "$match": {
-            "tx.h": txid
-          }
+          '$match': {
+            'tx.h': txid,
+          },
         },
         {
-          "$limit": 1
+          '$limit': 1,
         },
         {
-          "$lookup": {
-            "from": "graphs",
-            "localField": "tx.h",
-            "foreignField": "graphTxn.txid",
-            "as": "graph"
-          }
+          '$lookup': {
+            'from': 'graphs',
+            'localField': 'tx.h',
+            'foreignField': 'graphTxn.txid',
+            'as': 'graph',
+          },
         },
         {
-          "$lookup": {
-            "from": "tokens",
-            "localField": "slp.detail.tokenIdHex",
-            "foreignField": "tokenDetails.tokenIdHex",
-            "as": "token"
-          }
-        }
+          '$lookup': {
+            'from': 'tokens',
+            'localField': 'slp.detail.tokenIdHex',
+            'foreignField': 'tokenDetails.tokenIdHex',
+            'as': 'token',
+          },
+        },
       ],
-      "limit": 1
-    }
+      'limit': 1,
+    },
   }),
 
   count_txs_by_block: (height) => ({
-    "v": 3,
-    "q": {
-      "db": ["c"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['c'],
+      'aggregate': [
         {
-          "$match": {
-            "$and": [
-              { "slp.valid": true },
-              { "blk.i": height }
-            ]
-          }
+          '$match': {
+            '$and': [
+              {'slp.valid': true},
+              {'blk.i': height},
+            ],
+          },
         },
         {
-          "$group": {
-            "_id": null,
-            "count": { "$sum": 1 }
-          }
-        }
-      ]
+          '$group': {
+            '_id': null,
+            'count': {'$sum': 1},
+          },
+        },
+      ],
     },
-    "r": {
-      "f": "[ .[] | {count: .count } ]"
-    }
+    'r': {
+      'f': '[ .[] | {count: .count } ]',
+    },
   }),
 
   count_txs_in_mempool: () => ({
-    "v": 3,
-    "q": {
-      "db": ["u"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['u'],
+      'aggregate': [
         {
-          "$match": {
-            "slp.valid": true
-          }
+          '$match': {
+            'slp.valid': true,
+          },
         },
         {
-          "$group": {
-            "_id": null,
-            "count": { "$sum": 1 }
-          }
-        }
-      ]
+          '$group': {
+            '_id': null,
+            'count': {'$sum': 1},
+          },
+        },
+      ],
     },
-    "r": {
-      "f": "[ .[] | {count: .count } ]"
-    }
+    'r': {
+      'f': '[ .[] | {count: .count } ]',
+    },
   }),
 
   txs_by_block: (height, limit=150, skip=0) => ({
-    "v": 3,
-    "q": {
-      "db": ["c"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['c'],
+      'aggregate': [
         {
-          "$match": {
-            "$and": [
-              { "slp.valid": true },
-              { "blk.i": height }
-            ]
-          }
+          '$match': {
+            '$and': [
+              {'slp.valid': true},
+              {'blk.i': height},
+            ],
+          },
         },
         {
-          "$skip": skip
+          '$skip': skip,
         },
         {
-          "$limit": limit
+          '$limit': limit,
         },
         {
-          "$lookup": {
-            "from": "tokens",
-            "localField": "slp.detail.tokenIdHex",
-            "foreignField": "tokenDetails.tokenIdHex",
-            "as": "token"
-          }
-        }
+          '$lookup': {
+            'from': 'tokens',
+            'localField': 'slp.detail.tokenIdHex',
+            'foreignField': 'tokenDetails.tokenIdHex',
+            'as': 'token',
+          },
+        },
       ],
-      "limit": limit
-    }
+      'limit': limit,
+    },
   }),
 
   txs_in_mempool: (limit=150, skip=0) => ({
-    "v": 3,
-    "q": {
-      "db": ["u"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['u'],
+      'aggregate': [
         {
-          "$match": {
-            "slp.valid": true
-          }
+          '$match': {
+            'slp.valid': true,
+          },
         },
         {
-          "$skip": skip
+          '$skip': skip,
         },
         {
-          "$limit": limit
+          '$limit': limit,
         },
         {
-          "$lookup": {
-            "from": "tokens",
-            "localField": "slp.detail.tokenIdHex",
-            "foreignField": "tokenDetails.tokenIdHex",
-            "as": "token"
-          }
-        }
+          '$lookup': {
+            'from': 'tokens',
+            'localField': 'slp.detail.tokenIdHex',
+            'foreignField': 'tokenDetails.tokenIdHex',
+            'as': 'token',
+          },
+        },
       ],
-      "limit": limit
-    }
+      'limit': limit,
+    },
   }),
 
   token: (tokenIdHex) => ({
-    "v": 3,
-    "q": {
-      "db": ["t"],
-      "find": {
-        "tokenDetails.tokenIdHex": tokenIdHex
+    'v': 3,
+    'q': {
+      'db': ['t'],
+      'find': {
+        'tokenDetails.tokenIdHex': tokenIdHex,
       },
-      "limit": 1
-    }
+      'limit': 1,
+    },
   }),
   tokens: (tokenIdHexs) => ({
-    "v": 3,
-    "q": {
-      "db": ["t"],
-      "find": {
-        "tokenDetails.tokenIdHex": {
-          "$in": tokenIdHexs
-        }
+    'v': 3,
+    'q': {
+      'db': ['t'],
+      'find': {
+        'tokenDetails.tokenIdHex': {
+          '$in': tokenIdHexs,
+        },
       },
-      "limit": tokenIdHexs.length
-    }
+      'limit': tokenIdHexs.length,
+    },
   }),
   token_addresses: (tokenIdHex, limit=100, skip=0) => ({
-    "v": 3,
-    "q": {
-      "db": ["g"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['g'],
+      'aggregate': [
         {
-          "$match": {
-            "tokenDetails.tokenIdHex": tokenIdHex
-          }
+          '$match': {
+            'tokenDetails.tokenIdHex': tokenIdHex,
+          },
         },
         {
-          "$unwind": "$graphTxn.outputs"
+          '$unwind': '$graphTxn.outputs',
         },
         {
-          "$match": {
-            "graphTxn.outputs.status": "UNSPENT"
-          }
+          '$match': {
+            'graphTxn.outputs.status': 'UNSPENT',
+          },
         },
         {
-          "$group": {
-            "_id": "$graphTxn.outputs.address",
-            "slpAmount": {
-              "$sum": "$graphTxn.outputs.slpAmount"
-            }
-          }
+          '$group': {
+            '_id': '$graphTxn.outputs.address',
+            'slpAmount': {
+              '$sum': '$graphTxn.outputs.slpAmount',
+            },
+          },
         },
         {
-          "$match": {
-            "slpAmount": {
-              "$gt": 0
-            }
-          }
-        }
+          '$match': {
+            'slpAmount': {
+              '$gt': 0,
+            },
+          },
+        },
       ],
-      "sort": {
-        "slpAmount": -1
+      'sort': {
+        'slpAmount': -1,
       },
-      "project": {
-        "address": "$_id",
-        "token_balance": "$slpAmount"
+      'project': {
+        'address': '$_id',
+        'token_balance': '$slpAmount',
       },
-      "limit": limit,
-      "skip": skip
-    }
+      'limit': limit,
+      'skip': skip,
+    },
   }),
   token_mint_history: (tokenIdHex, limit=100, skip=0) => ({
-    "v": 3,
-    "q": {
-      "db": ["u", "c"],
-      "find": {
-        "slp.valid": true,
-        "slp.detail.tokenIdHex": tokenIdHex,
-        "$or": [
+    'v': 3,
+    'q': {
+      'db': ['u', 'c'],
+      'find': {
+        'slp.valid': true,
+        'slp.detail.tokenIdHex': tokenIdHex,
+        '$or': [
           {
-            "slp.detail.transactionType": "GENESIS"
+            'slp.detail.transactionType': 'GENESIS',
           },
           {
-            "slp.detail.transactionType": "MINT"
-          }
-        ]
+            'slp.detail.transactionType': 'MINT',
+          },
+        ],
       },
-      "sort": {
-        "blk.i": -1
+      'sort': {
+        'blk.i': -1,
       },
-      "limit": limit,
-      "skip": skip
-    }
+      'limit': limit,
+      'skip': skip,
+    },
   }),
   count_token_mint_transactions: (tokenIdHex) => ({
-    "v": 3,
-    "q": {
-      "db": ["c"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['c'],
+      'aggregate': [
         {
-          "$match": {
-            "slp.valid": true,
-            "slp.detail.tokenIdHex": tokenIdHex,
-            "$or": [
+          '$match': {
+            'slp.valid': true,
+            'slp.detail.tokenIdHex': tokenIdHex,
+            '$or': [
               {
-                "slp.detail.transactionType": "GENESIS"
+                'slp.detail.transactionType': 'GENESIS',
               },
               {
-                "slp.detail.transactionType": "MINT"
-              }
-            ]
-          }
+                'slp.detail.transactionType': 'MINT',
+              },
+            ],
+          },
         },
         {
-          "$group": {
-            "_id": null,
-            "count": { "$sum": 1 }
-          }
-        }
-      ]
+          '$group': {
+            '_id': null,
+            'count': {'$sum': 1},
+          },
+        },
+      ],
     },
-    "r": {
-      "f": "[ .[] | {count: .count } ]"
-    }
+    'r': {
+      'f': '[ .[] | {count: .count } ]',
+    },
   }),
 
   token_get_total_burned: (tokenIdHex) => ({
-    "v": 3,
-    "q": {
-      "db": ["g"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['g'],
+      'aggregate': [
         {
-          "$match": {
-            "tokenDetails.tokenIdHex": tokenIdHex,
-            "graphTxn.outputs.status": {
-              "$in": [
-                "SPENT_NON_SLP",
-                "BATON_SPENT_INVALID_SLP",
-                "SPENT_INVALID_SLP",
-                "BATON_SPENT_NON_SLP",
-                "MISSING_BCH_VOUT",
-                "BATON_MISSING_BCH_VOUT",
-                "BATON_SPENT_NOT_IN_MINT",
-                "EXCESS_INPUT_BURNED"
-              ]
-            }
-          }
+          '$match': {
+            'tokenDetails.tokenIdHex': tokenIdHex,
+            'graphTxn.outputs.status': {
+              '$in': [
+                'SPENT_NON_SLP',
+                'BATON_SPENT_INVALID_SLP',
+                'SPENT_INVALID_SLP',
+                'BATON_SPENT_NON_SLP',
+                'MISSING_BCH_VOUT',
+                'BATON_MISSING_BCH_VOUT',
+                'BATON_SPENT_NOT_IN_MINT',
+                'EXCESS_INPUT_BURNED',
+              ],
+            },
+          },
         },
         {
-          "$unwind": "$graphTxn.outputs"
+          '$unwind': '$graphTxn.outputs',
         },
         {
-          "$match": {
-            "graphTxn.outputs.status": {
-              "$in": [
-                "SPENT_NON_SLP",
-                "BATON_SPENT_INVALID_SLP",
-                "SPENT_INVALID_SLP",
-                "BATON_SPENT_NON_SLP",
-                "MISSING_BCH_VOUT",
-                "BATON_MISSING_BCH_VOUT",
-                "BATON_SPENT_NOT_IN_MINT",
-                "EXCESS_INPUT_BURNED"
-              ]
-            }
-          }
+          '$match': {
+            'graphTxn.outputs.status': {
+              '$in': [
+                'SPENT_NON_SLP',
+                'BATON_SPENT_INVALID_SLP',
+                'SPENT_INVALID_SLP',
+                'BATON_SPENT_NON_SLP',
+                'MISSING_BCH_VOUT',
+                'BATON_MISSING_BCH_VOUT',
+                'BATON_SPENT_NOT_IN_MINT',
+                'EXCESS_INPUT_BURNED',
+              ],
+            },
+          },
         },
         {
-          "$group": {
-            "_id": null,
-            "count": {
-              "$sum": "$graphTxn.outputs.slpAmount"
-            }
-          }
-        }
+          '$group': {
+            '_id': null,
+            'count': {
+              '$sum': '$graphTxn.outputs.slpAmount',
+            },
+          },
+        },
       ],
-      "limit": 1
+      'limit': 1,
     },
-    "r": {
-      "f": "[ .[] | {count: .count } ]"
-    }
+    'r': {
+      'f': '[ .[] | {count: .count } ]',
+    },
   }),
 
   token_get_total_satoshis_locked: (tokenIdHex) => ({
-    "v": 3,
-    "q": {
-      "db": ["g"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['g'],
+      'aggregate': [
         {
-          "$match": {
-            "tokenDetails.tokenIdHex": tokenIdHex,
-            "graphTxn.outputs.status": {
-              "$in": [
-                "UNSPENT",
-                "BATON_UNSPENT"
-              ]
-            }
-          }
+          '$match': {
+            'tokenDetails.tokenIdHex': tokenIdHex,
+            'graphTxn.outputs.status': {
+              '$in': [
+                'UNSPENT',
+                'BATON_UNSPENT',
+              ],
+            },
+          },
         },
         {
-          "$unwind": "$graphTxn.outputs"
+          '$unwind': '$graphTxn.outputs',
         },
         {
-          "$match": {
-            "graphTxn.outputs.status": {
-              "$in": [
-                "UNSPENT",
-                "BATON_UNSPENT"
-              ]
-            }
-          }
+          '$match': {
+            'graphTxn.outputs.status': {
+              '$in': [
+                'UNSPENT',
+                'BATON_UNSPENT',
+              ],
+            },
+          },
         },
         {
-          "$group": {
-            "_id": null,
-            "count": {
-              "$sum": "$graphTxn.outputs.bchSatoshis"
-            }
-          }
-        }
+          '$group': {
+            '_id': null,
+            'count': {
+              '$sum': '$graphTxn.outputs.bchSatoshis',
+            },
+          },
+        },
       ],
-      "limit": 1
+      'limit': 1,
     },
-    "r": {
-      "f": "[ .[] | {count: .count} ]"
-    }
+    'r': {
+      'f': '[ .[] | {count: .count} ]',
+    },
   }),
 
   token_get_total_minted: (tokenIdHex) => ({
-    "v": 3,
-    "q": {
-      "db": ["g"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['g'],
+      'aggregate': [
         {
-          "$match": {
-            "tokenDetails.tokenIdHex": tokenIdHex,
-            "$or": [
-              { "graphTxn.details.transactionType": "GENESIS" },
-              { "graphTxn.details.transactionType": "MINT" }
-            ]
-          }
+          '$match': {
+            'tokenDetails.tokenIdHex': tokenIdHex,
+            '$or': [
+              {'graphTxn.details.transactionType': 'GENESIS'},
+              {'graphTxn.details.transactionType': 'MINT'},
+            ],
+          },
         },
         {
-          "$unwind": "$graphTxn.outputs"
+          '$unwind': '$graphTxn.outputs',
         },
         {
-          "$group": {
-            "_id": null,
-            "count": {
-              "$sum": "$graphTxn.outputs.slpAmount"
-            }
-          }
-        }
+          '$group': {
+            '_id': null,
+            'count': {
+              '$sum': '$graphTxn.outputs.slpAmount',
+            },
+          },
+        },
       ],
-      "limit": 10
-    }
+      'limit': 10,
+    },
   }),
 
   token_get_total_transactions: (tokenIdHex) => ({
-    "v": 3,
-    "q": {
-      "db": ["g"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['g'],
+      'aggregate': [
         {
-          "$match": {
-            "tokenDetails.tokenIdHex": tokenIdHex
-          }
+          '$match': {
+            'tokenDetails.tokenIdHex': tokenIdHex,
+          },
         },
         {
-          "$group": {
-            "_id": null,
-            "count": {
-              "$sum": 1
-            }
-          }
-        }
+          '$group': {
+            '_id': null,
+            'count': {
+              '$sum': 1,
+            },
+          },
+        },
       ],
-      "limit": 1
+      'limit': 1,
     },
-    "r": {
-      "f": "[ .[] | {count: .count} ]"
-    }
+    'r': {
+      'f': '[ .[] | {count: .count} ]',
+    },
   }),
 
   token_get_total_utxos: (tokenIdHex) => ({
-    "v": 3,
-    "q": {
-      "db": ["g"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['g'],
+      'aggregate': [
         {
-          "$match": {
-            "tokenDetails.tokenIdHex": tokenIdHex,
-            "graphTxn.outputs.status": {
-              "$in": [
-                "UNSPENT",
-                "BATON_UNSPENT"
-              ]
-            }
-          }
-        },
-        {
-          "$unwind": "$graphTxn.outputs"
-        },
-        {
-          "$match": {
-            "graphTxn.outputs.status": {
-              "$in": [
-                "UNSPENT",
-                "BATON_UNSPENT"
-              ]
+          '$match': {
+            'tokenDetails.tokenIdHex': tokenIdHex,
+            'graphTxn.outputs.status': {
+              '$in': [
+                'UNSPENT',
+                'BATON_UNSPENT',
+              ],
             },
-            "graphTxn.outputs.slpAmount": {
-              "$gt": 0
-            }
-          }
+          },
         },
         {
-          "$group": {
-            "_id": null,
-            "count": {
-              "$sum": 1
-            }
-          }
-        }
+          '$unwind': '$graphTxn.outputs',
+        },
+        {
+          '$match': {
+            'graphTxn.outputs.status': {
+              '$in': [
+                'UNSPENT',
+                'BATON_UNSPENT',
+              ],
+            },
+            'graphTxn.outputs.slpAmount': {
+              '$gt': 0,
+            },
+          },
+        },
+        {
+          '$group': {
+            '_id': null,
+            'count': {
+              '$sum': 1,
+            },
+          },
+        },
       ],
-      "limit": 1
+      'limit': 1,
     },
-    "r": {
-      "f": "[ .[] | {count: .count} ]"
-    }
+    'r': {
+      'f': '[ .[] | {count: .count} ]',
+    },
   }),
 
   token_get_total_addresses: (tokenIdHex) => ({
-    "v": 3,
-    "q": {
-      "db": ["g"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['g'],
+      'aggregate': [
         {
-          "$match": {
-            "tokenDetails.tokenIdHex": tokenIdHex,
-            "graphTxn.outputs.status": {
-              "$in": [
-                "UNSPENT",
-                "BATON_UNSPENT"
-              ]
-            }
-          }
-        },
-        {
-          "$unwind": "$graphTxn.outputs"
-        },
-        {
-          "$match": {
-            "graphTxn.outputs.status": {
-              "$in": [
-                "UNSPENT",
-                "BATON_UNSPENT"
-              ]
+          '$match': {
+            'tokenDetails.tokenIdHex': tokenIdHex,
+            'graphTxn.outputs.status': {
+              '$in': [
+                'UNSPENT',
+                'BATON_UNSPENT',
+              ],
             },
-            "graphTxn.outputs.slpAmount": {
-              "$gt": 0
-            }
-          }
+          },
         },
         {
-          "$group": {
-            "_id": "$graphTxn.outputs.address"
-          }
+          '$unwind': '$graphTxn.outputs',
         },
         {
-          "$group": {
-            "_id": null,
-            "count": {
-              "$sum": 1
-            }
-          }
-        }
+          '$match': {
+            'graphTxn.outputs.status': {
+              '$in': [
+                'UNSPENT',
+                'BATON_UNSPENT',
+              ],
+            },
+            'graphTxn.outputs.slpAmount': {
+              '$gt': 0,
+            },
+          },
+        },
+        {
+          '$group': {
+            '_id': '$graphTxn.outputs.address',
+          },
+        },
+        {
+          '$group': {
+            '_id': null,
+            'count': {
+              '$sum': 1,
+            },
+          },
+        },
       ],
-      "limit": 1
+      'limit': 1,
     },
-    "r": {
-      "f": "[ .[] | {count: .count} ]"
-    }
+    'r': {
+      'f': '[ .[] | {count: .count} ]',
+    },
   }),
 
   token_burn_history: (tokenIdHex, limit=100, skip=0) => ({
-    "v": 3,
-    "q": {
-      "db": ["g"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['g'],
+      'aggregate': [
         {
-          "$match": {
-            "tokenDetails.tokenIdHex": tokenIdHex,
-            "graphTxn.outputs": {
-              "$elemMatch": {
-                "status": {
-                  "$in": [
-                    "SPENT_NON_SLP",
-                    "BATON_SPENT_INVALID_SLP",
-                    "SPENT_INVALID_SLP",
-                    "BATON_SPENT_NON_SLP",
-                    "MISSING_BCH_VOUT",
-                    "BATON_MISSING_BCH_VOUT",
-                    "BATON_SPENT_NOT_IN_MINT",
-                    "EXCESS_INPUT_BURNED"
-                  ]
+          '$match': {
+            'tokenDetails.tokenIdHex': tokenIdHex,
+            'graphTxn.outputs': {
+              '$elemMatch': {
+                'status': {
+                  '$in': [
+                    'SPENT_NON_SLP',
+                    'BATON_SPENT_INVALID_SLP',
+                    'SPENT_INVALID_SLP',
+                    'BATON_SPENT_NON_SLP',
+                    'MISSING_BCH_VOUT',
+                    'BATON_MISSING_BCH_VOUT',
+                    'BATON_SPENT_NOT_IN_MINT',
+                    'EXCESS_INPUT_BURNED',
+                  ],
                 },
-                "slpAmount": {
-                  "$gt": 0
-                }
-              }
-            }
-          }
+                'slpAmount': {
+                  '$gt': 0,
+                },
+              },
+            },
+          },
         },
         {
-          "$lookup": {
-            "from": "confirmed",
-            "localField": "graphTxn.txid",
-            "foreignField": "tx.h",
-            "as": "tx"
-          }
+          '$lookup': {
+            'from': 'confirmed',
+            'localField': 'graphTxn.txid',
+            'foreignField': 'tx.h',
+            'as': 'tx',
+          },
         },
         {
-          "$sort": {
-            "tx.blk.i": -1
-          }
+          '$sort': {
+            'tx.blk.i': -1,
+          },
         },
         {
-          "$skip": skip
+          '$skip': skip,
         },
         {
-          "$limit": limit
-        }
-      ]
-    }
+          '$limit': limit,
+        },
+      ],
+    },
   }),
   count_token_burn_transactions: (tokenIdHex) => ({
-    "v": 3,
-    "q": {
-      "db": ["g"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['g'],
+      'aggregate': [
         {
-          "$match": {
-            "tokenDetails.tokenIdHex": tokenIdHex,
-            "graphTxn.outputs": {
-              "$elemMatch": {
-                "status": {
-                  "$in": [
-                    "SPENT_NON_SLP",
-                    "BATON_SPENT_INVALID_SLP",
-                    "SPENT_INVALID_SLP",
-                    "BATON_SPENT_NON_SLP",
-                    "MISSING_BCH_VOUT",
-                    "BATON_MISSING_BCH_VOUT",
-                    "BATON_SPENT_NOT_IN_MINT",
-                    "EXCESS_INPUT_BURNED"
-                  ]
+          '$match': {
+            'tokenDetails.tokenIdHex': tokenIdHex,
+            'graphTxn.outputs': {
+              '$elemMatch': {
+                'status': {
+                  '$in': [
+                    'SPENT_NON_SLP',
+                    'BATON_SPENT_INVALID_SLP',
+                    'SPENT_INVALID_SLP',
+                    'BATON_SPENT_NON_SLP',
+                    'MISSING_BCH_VOUT',
+                    'BATON_MISSING_BCH_VOUT',
+                    'BATON_SPENT_NOT_IN_MINT',
+                    'EXCESS_INPUT_BURNED',
+                  ],
                 },
-                "slpAmount": {
-                  "$gt": 0
-                }
-              }
-            }
-          }
+                'slpAmount': {
+                  '$gt': 0,
+                },
+              },
+            },
+          },
         },
         {
-          "$group": {
-            "_id": null,
-            "count": { "$sum": 1 }
-          }
-        }
-      ]
+          '$group': {
+            '_id': null,
+            'count': {'$sum': 1},
+          },
+        },
+      ],
     },
-    "r": {
-      "f": "[ .[] | {count: .count } ]"
-    }
+    'r': {
+      'f': '[ .[] | {count: .count } ]',
+    },
   }),
 
   count_address_burn_transactions: (address) => ({
-    "v": 3,
-    "q": {
-      "db": ["g"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['g'],
+      'aggregate': [
         {
-          "$match": {
-            "$or": [
+          '$match': {
+            '$or': [
               {
-                "graphTxn.outputs": {
-                  "$elemMatch": {
-                    "address": address,
-                    "status": {
-                      "$in": [
-                        "SPENT_NON_SLP",
-                        "BATON_SPENT_INVALID_SLP",
-                        "SPENT_INVALID_SLP",
-                        "BATON_SPENT_NON_SLP",
-                        "MISSING_BCH_VOUT",
-                        "BATON_MISSING_BCH_VOUT",
-                        "BATON_SPENT_NOT_IN_MINT",
-                        "EXCESS_INPUT_BURNED"
-                      ]
+                'graphTxn.outputs': {
+                  '$elemMatch': {
+                    'address': address,
+                    'status': {
+                      '$in': [
+                        'SPENT_NON_SLP',
+                        'BATON_SPENT_INVALID_SLP',
+                        'SPENT_INVALID_SLP',
+                        'BATON_SPENT_NON_SLP',
+                        'MISSING_BCH_VOUT',
+                        'BATON_MISSING_BCH_VOUT',
+                        'BATON_SPENT_NOT_IN_MINT',
+                        'EXCESS_INPUT_BURNED',
+                      ],
                     },
-                    "slpAmount": {
-                      "$gt": 0
-                    }
-                  }
-                }
+                    'slpAmount': {
+                      '$gt': 0,
+                    },
+                  },
+                },
               },
               {
-                "graphTxn.inputs.address": address,
-                "graphTxn.outputs": {
-                  "$elemMatch": {
-                    "status": {
-                      "$in": [
-                        "SPENT_NON_SLP",
-                        "BATON_SPENT_INVALID_SLP",
-                        "SPENT_INVALID_SLP",
-                        "BATON_SPENT_NON_SLP",
-                        "MISSING_BCH_VOUT",
-                        "BATON_MISSING_BCH_VOUT",
-                        "BATON_SPENT_NOT_IN_MINT",
-                        "EXCESS_INPUT_BURNED"
-                      ]
+                'graphTxn.inputs.address': address,
+                'graphTxn.outputs': {
+                  '$elemMatch': {
+                    'status': {
+                      '$in': [
+                        'SPENT_NON_SLP',
+                        'BATON_SPENT_INVALID_SLP',
+                        'SPENT_INVALID_SLP',
+                        'BATON_SPENT_NON_SLP',
+                        'MISSING_BCH_VOUT',
+                        'BATON_MISSING_BCH_VOUT',
+                        'BATON_SPENT_NOT_IN_MINT',
+                        'EXCESS_INPUT_BURNED',
+                      ],
                     },
-                    "slpAmount": {
-                      "$gt": 0
-                    }
-                  }
-                }
-              }
-            ]
-          }
+                    'slpAmount': {
+                      '$gt': 0,
+                    },
+                  },
+                },
+              },
+            ],
+          },
         },
         {
-          "$group": {
-            "_id": null,
-            "count": { "$sum": 1 }
-          }
-        }
-      ]
+          '$group': {
+            '_id': null,
+            'count': {'$sum': 1},
+          },
+        },
+      ],
     },
-    "r": {
-      "f": "[ .[] | {count: .count } ]"
-    }
+    'r': {
+      'f': '[ .[] | {count: .count } ]',
+    },
   }),
   address_burn_history: (address, limit=100, skip=0) => ({
-    "v": 3,
-    "q": {
-      "db": ["g"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['g'],
+      'aggregate': [
         {
-          "$match": {
-            "$or": [
+          '$match': {
+            '$or': [
               {
-                "graphTxn.outputs": {
-                  "$elemMatch": {
-                    "address": address,
-                    "status": {
-                      "$in": [
-                        "SPENT_NON_SLP",
-                        "BATON_SPENT_INVALID_SLP",
-                        "SPENT_INVALID_SLP",
-                        "BATON_SPENT_NON_SLP",
-                        "MISSING_BCH_VOUT",
-                        "BATON_MISSING_BCH_VOUT",
-                        "BATON_SPENT_NOT_IN_MINT",
-                        "EXCESS_INPUT_BURNED"
-                      ]
+                'graphTxn.outputs': {
+                  '$elemMatch': {
+                    'address': address,
+                    'status': {
+                      '$in': [
+                        'SPENT_NON_SLP',
+                        'BATON_SPENT_INVALID_SLP',
+                        'SPENT_INVALID_SLP',
+                        'BATON_SPENT_NON_SLP',
+                        'MISSING_BCH_VOUT',
+                        'BATON_MISSING_BCH_VOUT',
+                        'BATON_SPENT_NOT_IN_MINT',
+                        'EXCESS_INPUT_BURNED',
+                      ],
                     },
-                    "slpAmount": {
-                      "$gt": 0
-                    }
-                  }
-                }
+                    'slpAmount': {
+                      '$gt': 0,
+                    },
+                  },
+                },
               },
               {
-                "graphTxn.inputs.address": address,
-                "graphTxn.outputs": {
-                  "$elemMatch": {
-                    "status": {
-                      "$in": [
-                        "SPENT_NON_SLP",
-                        "BATON_SPENT_INVALID_SLP",
-                        "SPENT_INVALID_SLP",
-                        "BATON_SPENT_NON_SLP",
-                        "MISSING_BCH_VOUT",
-                        "BATON_MISSING_BCH_VOUT",
-                        "BATON_SPENT_NOT_IN_MINT",
-                        "EXCESS_INPUT_BURNED"
-                      ]
+                'graphTxn.inputs.address': address,
+                'graphTxn.outputs': {
+                  '$elemMatch': {
+                    'status': {
+                      '$in': [
+                        'SPENT_NON_SLP',
+                        'BATON_SPENT_INVALID_SLP',
+                        'SPENT_INVALID_SLP',
+                        'BATON_SPENT_NON_SLP',
+                        'MISSING_BCH_VOUT',
+                        'BATON_MISSING_BCH_VOUT',
+                        'BATON_SPENT_NOT_IN_MINT',
+                        'EXCESS_INPUT_BURNED',
+                      ],
                     },
-                    "slpAmount": {
-                      "$gt": 0
-                    }
-                  }
-                }
-              }
-            ]
-          }
+                    'slpAmount': {
+                      '$gt': 0,
+                    },
+                  },
+                },
+              },
+            ],
+          },
         },
         {
-          "$lookup": {
-            "from": "confirmed",
-            "localField": "graphTxn.txid",
-            "foreignField": "tx.h",
-            "as": "tx"
-          }
+          '$lookup': {
+            'from': 'confirmed',
+            'localField': 'graphTxn.txid',
+            'foreignField': 'tx.h',
+            'as': 'tx',
+          },
         },
         {
-          "$lookup": {
-            "from": "tokens",
-            "localField": "tx.slp.detail.tokenIdHex",
-            "foreignField": "tokenDetails.tokenIdHex",
-            "as": "token"
-          }
+          '$lookup': {
+            'from': 'tokens',
+            'localField': 'tx.slp.detail.tokenIdHex',
+            'foreignField': 'tokenDetails.tokenIdHex',
+            'as': 'token',
+          },
         },
         {
-          "$sort": {
-            "tx.blk.i": -1
-          }
+          '$sort': {
+            'tx.blk.i': -1,
+          },
         },
         {
-          "$skip": skip
+          '$skip': skip,
         },
         {
-          "$limit": limit
-        }
-      ]
-    }
+          '$limit': limit,
+        },
+      ],
+    },
   }),
 
   count_total_burn_transactions: () => ({
-    "v": 3,
-    "q": {
-      "db": ["g"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['g'],
+      'aggregate': [
         {
-          "$match": {
-            "graphTxn.outputs": {
-              "$elemMatch": {
-                "status": {
-                  "$in": [
-                    "SPENT_NON_SLP",
-                    "BATON_SPENT_INVALID_SLP",
-                    "SPENT_INVALID_SLP",
-                    "BATON_SPENT_NON_SLP",
-                    "MISSING_BCH_VOUT",
-                    "BATON_MISSING_BCH_VOUT",
-                    "BATON_SPENT_NOT_IN_MINT",
-                    "EXCESS_INPUT_BURNED"
-                  ]
+          '$match': {
+            'graphTxn.outputs': {
+              '$elemMatch': {
+                'status': {
+                  '$in': [
+                    'SPENT_NON_SLP',
+                    'BATON_SPENT_INVALID_SLP',
+                    'SPENT_INVALID_SLP',
+                    'BATON_SPENT_NON_SLP',
+                    'MISSING_BCH_VOUT',
+                    'BATON_MISSING_BCH_VOUT',
+                    'BATON_SPENT_NOT_IN_MINT',
+                    'EXCESS_INPUT_BURNED',
+                  ],
                 },
-                "slpAmount": {
-                  "$gt": 0
-                }
-              }
-            }
-          }
+                'slpAmount': {
+                  '$gt': 0,
+                },
+              },
+            },
+          },
         },
         {
-          "$group": {
-            "_id": null,
-            "count": { "$sum": 1 }
-          }
-        }
-      ]
+          '$group': {
+            '_id': null,
+            'count': {'$sum': 1},
+          },
+        },
+      ],
     },
-    "r": {
-      "f": "[ .[] | {count: .count } ]"
-    }
+    'r': {
+      'f': '[ .[] | {count: .count } ]',
+    },
   }),
   total_burn_history: (limit=100, skip=0) => ({
-    "v": 3,
-    "q": {
-      "db": ["g"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['g'],
+      'aggregate': [
         {
-          "$match": {
-            "graphTxn.outputs": {
-              "$elemMatch": {
-                "status": {
-                  "$in": [
-                    "SPENT_NON_SLP",
-                    "BATON_SPENT_INVALID_SLP",
-                    "SPENT_INVALID_SLP",
-                    "BATON_SPENT_NON_SLP",
-                    "MISSING_BCH_VOUT",
-                    "BATON_MISSING_BCH_VOUT",
-                    "BATON_SPENT_NOT_IN_MINT",
-                    "EXCESS_INPUT_BURNED"
-                  ]
+          '$match': {
+            'graphTxn.outputs': {
+              '$elemMatch': {
+                'status': {
+                  '$in': [
+                    'SPENT_NON_SLP',
+                    'BATON_SPENT_INVALID_SLP',
+                    'SPENT_INVALID_SLP',
+                    'BATON_SPENT_NON_SLP',
+                    'MISSING_BCH_VOUT',
+                    'BATON_MISSING_BCH_VOUT',
+                    'BATON_SPENT_NOT_IN_MINT',
+                    'EXCESS_INPUT_BURNED',
+                  ],
                 },
-                "slpAmount": {
-                  "$gt": 0
-                }
-              }
-            }
-          }
+                'slpAmount': {
+                  '$gt': 0,
+                },
+              },
+            },
+          },
         },
         {
-          "$lookup": {
-            "from": "confirmed",
-            "localField": "graphTxn.txid",
-            "foreignField": "tx.h",
-            "as": "tx"
-          }
+          '$lookup': {
+            'from': 'confirmed',
+            'localField': 'graphTxn.txid',
+            'foreignField': 'tx.h',
+            'as': 'tx',
+          },
         },
         {
-          "$lookup": {
-            "from": "tokens",
-            "localField": "tx.slp.detail.tokenIdHex",
-            "foreignField": "tokenDetails.tokenIdHex",
-            "as": "token"
-          }
+          '$lookup': {
+            'from': 'tokens',
+            'localField': 'tx.slp.detail.tokenIdHex',
+            'foreignField': 'tokenDetails.tokenIdHex',
+            'as': 'token',
+          },
         },
         {
-          "$sort": {
-            "tx.blk.i": -1
-          }
+          '$sort': {
+            'tx.blk.i': -1,
+          },
         },
         {
-          "$skip": skip
+          '$skip': skip,
         },
         {
-          "$limit": limit
-        }
-      ]
-    }
+          '$limit': limit,
+        },
+      ],
+    },
   }),
 
   token_child_nfts: (tokenIdHex, limit=100, skip=0) => ({
-    "v": 3,
-    "q": {
-      "db": ["t"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['t'],
+      'aggregate': [
         {
-          "$match": {
-            "nftParentId": tokenIdHex,
-          }
+          '$match': {
+            'nftParentId': tokenIdHex,
+          },
         },
         {
-          "$sort": {
-            "tokenStats.block_created": -1
-          }
+          '$sort': {
+            'tokenStats.block_created': -1,
+          },
         },
         {
-          "$skip": skip
+          '$skip': skip,
         },
         {
-          "$limit": limit
-        }
-      ]
-    }
+          '$limit': limit,
+        },
+      ],
+    },
   }),
   count_token_child_nfts: (tokenIdHex) => ({
-    "v": 3,
-    "q": {
-      "db": ["t"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['t'],
+      'aggregate': [
         {
-          "$match": {
-            "nftParentId": tokenIdHex,
-          }
+          '$match': {
+            'nftParentId': tokenIdHex,
+          },
         },
         {
-          "$group": {
-            "_id": null,
-            "count": { "$sum": 1 }
-          }
-        }
-      ]
+          '$group': {
+            '_id': null,
+            'count': {'$sum': 1},
+          },
+        },
+      ],
     },
-    "r": {
-      "f": "[ .[] | {count: .count } ]"
-    }
+    'r': {
+      'f': '[ .[] | {count: .count } ]',
+    },
   }),
 
   recent_transactions: (limit=150, skip=0) => ({
-    "v": 3,
-    "q": {
-      "db": ["c", "u"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['c', 'u'],
+      'aggregate': [
         {
-          "$match": {
-            "slp.valid": true,
-            "slp.detail.transactionType": "SEND",
-          }
+          '$match': {
+            'slp.valid': true,
+            'slp.detail.transactionType': 'SEND',
+          },
         },
         {
-          "$sort": {
-            "_id": -1
-          }
+          '$sort': {
+            '_id': -1,
+          },
         },
         {
-          "$skip": skip
+          '$skip': skip,
         },
         {
-          "$limit": limit
+          '$limit': limit,
         },
         {
-          "$lookup": {
-            "from": "tokens",
-            "localField": "slp.detail.tokenIdHex",
-            "foreignField": "tokenDetails.tokenIdHex",
-            "as": "token"
-          }
-        }
+          '$lookup': {
+            'from': 'tokens',
+            'localField': 'slp.detail.tokenIdHex',
+            'foreignField': 'tokenDetails.tokenIdHex',
+            'as': 'token',
+          },
+        },
       ],
-      "limit": limit
-    }
+      'limit': limit,
+    },
   }),
   transactions_by_slp_address: (db, address, limit=100, skip=0) => ({
-    "v": 3,
-    "q": {
-      "db": [db],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': [db],
+      'aggregate': [
         {
-          "$match": {
-            "$and": [
-              { "slp.valid": true },
+          '$match': {
+            '$and': [
+              {'slp.valid': true},
               {
-                "$or": [
-                  { "in.e.a":  address },
-                  { "out.e.a": address }
-                ]
-              }
-            ]
-          }
+                '$or': [
+                  {'in.e.a': address},
+                  {'out.e.a': address},
+                ],
+              },
+            ],
+          },
         },
         {
-          "$sort": { "blk.i": -1 }
+          '$sort': {'blk.i': -1},
         },
         {
-          "$skip": skip
+          '$skip': skip,
         },
         {
-          "$limit": limit
+          '$limit': limit,
         },
         {
-          "$lookup": {
-            "from": "tokens",
-            "localField": "slp.detail.tokenIdHex",
-            "foreignField": "tokenDetails.tokenIdHex",
-            "as": "token"
-          }
+          '$lookup': {
+            'from': 'tokens',
+            'localField': 'slp.detail.tokenIdHex',
+            'foreignField': 'tokenDetails.tokenIdHex',
+            'as': 'token',
+          },
         },
         {
-          "$lookup": {
-            "from": "graphs",
-            "localField": "tx.h",
-            "foreignField": "graphTxn.txid",
-            "as": "graph"
-          }
-        }
+          '$lookup': {
+            'from': 'graphs',
+            'localField': 'tx.h',
+            'foreignField': 'graphTxn.txid',
+            'as': 'graph',
+          },
+        },
       ],
-      "limit": limit
-    }
+      'limit': limit,
+    },
   }),
   unconfirmed_transactions_by_slp_address: (address, limit=100, skip=0) => {
     return app.slpdb.transactions_by_slp_address('u', address, limit, skip);
@@ -1776,451 +1780,451 @@ app.slpdb = {
     return app.slpdb.transactions_by_slp_address('c', address, limit, skip);
   },
   count_total_transactions_by_slp_address: (address) => ({
-    "v": 3,
-    "q": {
-      "db": [
-        "c",
-        "u"
+    'v': 3,
+    'q': {
+      'db': [
+        'c',
+        'u',
       ],
-      "aggregate": [
+      'aggregate': [
         {
-          "$match": {
-            "$and": [
+          '$match': {
+            '$and': [
               {
-                "$or": [
-                  { "in.e.a":  address },
-                  { "out.e.a": address }
-                ]
+                '$or': [
+                  {'in.e.a': address},
+                  {'out.e.a': address},
+                ],
               },
-              { "slp.valid": true }
-            ]
-          }
+              {'slp.valid': true},
+            ],
+          },
         },
         {
-          "$group": {
-            "_id": null,
-            "count": { "$sum": 1 }
-          }
-        }
-      ]
+          '$group': {
+            '_id': null,
+            'count': {'$sum': 1},
+          },
+        },
+      ],
     },
-    "r": {
-      "f": "[ .[] | {count: .count } ]"
-    }
+    'r': {
+      'f': '[ .[] | {count: .count } ]',
+    },
   }),
   count_address_sent_transactions: (address) => ({
-    "v": 3,
-    "q": {
-      "db": ["g"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['g'],
+      'aggregate': [
         {
-          "$match": {
-            "graphTxn.inputs.address":  address
-          }
+          '$match': {
+            'graphTxn.inputs.address': address,
+          },
         },
         {
-          "$group": {
-            "_id": null,
-            "count": { "$sum": 1 }
-          }
-        }
-      ]
+          '$group': {
+            '_id': null,
+            'count': {'$sum': 1},
+          },
+        },
+      ],
     },
-    "r": {
-      "f": "[ .[] | {count: .count } ]"
-    }
+    'r': {
+      'f': '[ .[] | {count: .count } ]',
+    },
   }),
   count_address_recv_transactions: (address) => ({
-    "v": 3,
-    "q": {
-      "db": ["g"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['g'],
+      'aggregate': [
         {
-          "$match": {
-            "graphTxn.inputs.address": {
-              "$ne": address
+          '$match': {
+            'graphTxn.inputs.address': {
+              '$ne': address,
             },
-            "graphTxn.outputs.address": address
-          }
+            'graphTxn.outputs.address': address,
+          },
         },
         {
-          "$group": {
-            "_id": null,
-            "count": { "$sum": 1 }
-          }
-        }
-      ]
+          '$group': {
+            '_id': null,
+            'count': {'$sum': 1},
+          },
+        },
+      ],
     },
-    "r": {
-      "f": "[ .[] | {count: .count } ]"
-    }
+    'r': {
+      'f': '[ .[] | {count: .count } ]',
+    },
   }),
 
   count_tokens_by_slp_address: (address) => ({
-    "v": 3,
-    "q": {
-      "db": ["g"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['g'],
+      'aggregate': [
         {
-          "$match": {
-            "graphTxn.outputs.address": address
-          }
+          '$match': {
+            'graphTxn.outputs.address': address,
+          },
         },
         {
-          "$unwind": "$graphTxn.outputs"
+          '$unwind': '$graphTxn.outputs',
         },
         {
-          "$match": {
-            "graphTxn.outputs.status": "UNSPENT",
-            "graphTxn.outputs.address": address
-          }
+          '$match': {
+            'graphTxn.outputs.status': 'UNSPENT',
+            'graphTxn.outputs.address': address,
+          },
         },
         {
-          "$group": {
-            "_id": "$tokenDetails.tokenIdHex"
-          }
+          '$group': {
+            '_id': '$tokenDetails.tokenIdHex',
+          },
         },
         {
-          "$group": {
-            "_id": null,
-            "count": { "$sum": 1 }
-          }
-        }
+          '$group': {
+            '_id': null,
+            'count': {'$sum': 1},
+          },
+        },
       ],
     },
-    "r": {
-      "f": "[ .[] | {count: .count } ]"
-    }
+    'r': {
+      'f': '[ .[] | {count: .count } ]',
+    },
   }),
 
   tokens_by_slp_address: (address, limit=100, skip=0) => ({
-    "v": 3,
-    "q": {
-      "db": ["g"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['g'],
+      'aggregate': [
         {
-          "$match": {
-            "graphTxn.outputs.address": address
-          }
+          '$match': {
+            'graphTxn.outputs.address': address,
+          },
         },
         {
-          "$unwind": "$graphTxn.outputs"
+          '$unwind': '$graphTxn.outputs',
         },
         {
-          "$match": {
-            "graphTxn.outputs.status": "UNSPENT",
-            "graphTxn.outputs.address": address
-          }
+          '$match': {
+            'graphTxn.outputs.status': 'UNSPENT',
+            'graphTxn.outputs.address': address,
+          },
         },
         {
-          "$group": {
-            "_id": "$tokenDetails.tokenIdHex",
-            "slpAmount": {
-              "$sum": "$graphTxn.outputs.slpAmount"
-            }
-          }
+          '$group': {
+            '_id': '$tokenDetails.tokenIdHex',
+            'slpAmount': {
+              '$sum': '$graphTxn.outputs.slpAmount',
+            },
+          },
         },
         {
-          "$sort": {
-            "slpAmount": -1
-          }
+          '$sort': {
+            'slpAmount': -1,
+          },
          },
         {
-          "$match": {
-            "slpAmount": {
-              "$gt": 0
-            }
-          }
+          '$match': {
+            'slpAmount': {
+              '$gt': 0,
+            },
+          },
         },
         {
-          "$lookup": {
-            "from": "tokens",
-            "localField": "_id",
-            "foreignField": "tokenDetails.tokenIdHex",
-            "as": "token"
-          }
-        }
+          '$lookup': {
+            'from': 'tokens',
+            'localField': '_id',
+            'foreignField': 'tokenDetails.tokenIdHex',
+            'as': 'token',
+          },
+        },
       ],
-      "sort": {
-        "slpAmount": -1
+      'sort': {
+        'slpAmount': -1,
        },
-      "skip": skip,
-      "limit": limit
-    }
+      'skip': skip,
+      'limit': limit,
+    },
   }),
 
   count_tokens: () => ({
-    "v": 3,
-    "q": {
-      "db": ["t"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['t'],
+      'aggregate': [
         {
-          "$match": {}
+          '$match': {},
         },
         {
-          "$group": {
-            "_id": null,
-            "count": { "$sum": 1 }
-          }
-        }
-      ]
+          '$group': {
+            '_id': null,
+            'count': {'$sum': 1},
+          },
+        },
+      ],
     },
-    "r": {
-      "f": "[ .[] | {count: .count } ]"
-    }
+    'r': {
+      'f': '[ .[] | {count: .count } ]',
+    },
   }),
 
   recent_tokens: (limit=100, skip=0) => ({
-    "v": 3,
-    "q": {
-      "db": ["c"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['c'],
+      'aggregate': [
         {
-          "$match": {
-            "slp.detail.transactionType": "GENESIS",
-            "slp.valid": true
-          }
+          '$match': {
+            'slp.detail.transactionType': 'GENESIS',
+            'slp.valid': true,
+          },
         },
         {
-          "$lookup": {
-            "from": "tokens",
-            "localField": "tx.h",
-            "foreignField": "tokenDetails.tokenIdHex",
-            "as": "token"
-          }
+          '$lookup': {
+            'from': 'tokens',
+            'localField': 'tx.h',
+            'foreignField': 'tokenDetails.tokenIdHex',
+            'as': 'token',
+          },
         },
         {
-          "$sort": {
-            "blk.i": -1
-          }
+          '$sort': {
+            'blk.i': -1,
+          },
         },
         {
-          "$skip": skip
+          '$skip': skip,
         },
         {
-          "$limit": limit
+          '$limit': limit,
         },
       ],
-      "limit": limit
-    }
+      'limit': limit,
+    },
   }),
 
   tokengraph: (tokenIdHex, limit=10000, skip=0) => ({
-    "v": 3,
-    "q": {
-      "db": ["g"],
-      "find": {
-        "tokenDetails.tokenIdHex": tokenIdHex,
+    'v': 3,
+    'q': {
+      'db': ['g'],
+      'find': {
+        'tokenDetails.tokenIdHex': tokenIdHex,
       },
-      "limit": 10000
-    }
+      'limit': 10000,
+    },
   }),
 
   count_txs_per_block: (match_obj={}) => {
-    let obj = {
-      "v": 3,
-      "q": {
-        "db": ["c"],
-        "aggregate": [
+    const obj = {
+      'v': 3,
+      'q': {
+        'db': ['c'],
+        'aggregate': [
           {
-            "$match": match_obj
+            '$match': match_obj,
           },
           {
-            "$group": {
-               "_id" : "$blk.t",
-              "count": {"$sum": 1}
-            }
-          }
+            '$group': {
+               '_id': '$blk.t',
+              'count': {'$sum': 1},
+            },
+          },
         ],
-        "limit": 100000
+        'limit': 100000,
       },
-      "r": {
-        "f": "[ .[] | {block_epoch: ._id, txs: .count} ]"
-      }
+      'r': {
+        'f': '[ .[] | {block_epoch: ._id, txs: .count} ]',
+      },
     };
 
     return obj;
   },
 
   get_amounts_from_txid_vout_pairs: (pairs=[]) => ({
-    "v": 3,
-    "q": {
-      "db": ["g"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['g'],
+      'aggregate': [
         {
-          "$match": {
-            "graphTxn.txid": {
-              "$in": [...new Set(pairs.map(v => v.txid))]
-            }
-          }
+          '$match': {
+            'graphTxn.txid': {
+              '$in': [...new Set(pairs.map((v) => v.txid))],
+            },
+          },
         },
         {
-          "$unwind": "$graphTxn.outputs"
+          '$unwind': '$graphTxn.outputs',
         },
         {
-          "$match": {
-            "$or": pairs.map(v => ({
-              "$and": [
+          '$match': {
+            '$or': pairs.map((v) => ({
+              '$and': [
                 {
-                  "graphTxn.txid": v.txid
+                  'graphTxn.txid': v.txid,
                 },
                 {
-                  "graphTxn.outputs.vout": v.vout
-                }
-              ]
-            }))
-          }
-        }
+                  'graphTxn.outputs.vout': v.vout,
+                },
+              ],
+            })),
+          },
+        },
       ],
-      "limit": 20,
+      'limit': 20,
     },
-    "r": {
-      "f": "[ .[] | { txid: .graphTxn.txid, vout: .graphTxn.outputs.vout, slpAmount: .graphTxn.outputs.slpAmount} ]"
-    }
+    'r': {
+      'f': '[ .[] | { txid: .graphTxn.txid, vout: .graphTxn.outputs.vout, slpAmount: .graphTxn.outputs.slpAmount} ]',
+    },
   }),
   get_txs_from_txid_vout_pairs: (pairs=[]) => ({
-    "v": 3,
-    "q": {
-      "db": ["u", "c"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['u', 'c'],
+      'aggregate': [
         {
-          "$match": {
-            "in.e.h": {
-              "$in": [...new Set(pairs.map(v => v.txid))]
-            }
-          }
+          '$match': {
+            'in.e.h': {
+              '$in': [...new Set(pairs.map((v) => v.txid))],
+            },
+          },
         },
         {
-          "$unwind": "$in"
+          '$unwind': '$in',
         },
         {
-          "$match": {
-            "$or": pairs.map(v => ({
-              "$and": [
+          '$match': {
+            '$or': pairs.map((v) => ({
+              '$and': [
                 {
-                  "in.e.h": v.txid
+                  'in.e.h': v.txid,
                 },
                 {
-                  "in.e.i": v.vout
-                }
-              ]
-            }))
-          }
-        }
+                  'in.e.i': v.vout,
+                },
+              ],
+            })),
+          },
+        },
       ],
-      "limit": 20,
+      'limit': 20,
     },
-    "r": {
-      "f": "[ .[] | { txid: .tx.h, in: { i: .in.e.i } } ]"
-    }
+    'r': {
+      'f': '[ .[] | { txid: .tx.h, in: { i: .in.e.i } } ]',
+    },
   }),
   dividend_calculate_bch_mempool: (tokenIdHex, slp_supply, bch_amount, ignoreAddresses) => ({
-    "v": 3,
-    "q": {
-      "db": ["g"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['g'],
+      'aggregate': [
         {
-          "$match": {
-            "tokenDetails.tokenIdHex": tokenIdHex,
-            "graphTxn.outputs.status": "UNSPENT"
-          }
+          '$match': {
+            'tokenDetails.tokenIdHex': tokenIdHex,
+            'graphTxn.outputs.status': 'UNSPENT',
+          },
         },
         {
-          "$unwind": "$graphTxn.outputs"
+          '$unwind': '$graphTxn.outputs',
         },
         {
-          "$match": {
-            "graphTxn.outputs.status": "UNSPENT",
-            "graphTxn.outputs.address": {
-              "$nin": ignoreAddresses
-            }
-          }
+          '$match': {
+            'graphTxn.outputs.status': 'UNSPENT',
+            'graphTxn.outputs.address': {
+              '$nin': ignoreAddresses,
+            },
+          },
         },
         {
-          "$group": {
-            "_id": "$graphTxn.outputs.address",
-            "slpAmount": {
-              "$sum": "$graphTxn.outputs.slpAmount"
-            }
-          }
+          '$group': {
+            '_id': '$graphTxn.outputs.address',
+            'slpAmount': {
+              '$sum': '$graphTxn.outputs.slpAmount',
+            },
+          },
         },
         {
-          "$sort": {
-            "slpAmount": -1
-          }
+          '$sort': {
+            'slpAmount': -1,
+          },
         },
         {
-          "$project": {
-            "_id": 1,
-            "bchAmount": {
-              "$divide": ["$slpAmount", slp_supply]
-            }
-          }
+          '$project': {
+            '_id': 1,
+            'bchAmount': {
+              '$divide': ['$slpAmount', slp_supply],
+            },
+          },
         },
         {
-          "$project": {
-            "_id": 1,
-            "bchAmount": {
-              "$multiply": ["$bchAmount", bch_amount]
-            }
-          }
+          '$project': {
+            '_id': 1,
+            'bchAmount': {
+              '$multiply': ['$bchAmount', bch_amount],
+            },
+          },
         },
         {
-          "$limit": 10000
+          '$limit': 10000,
         },
          {
-          "$match": {
-            "bchAmount": {
-              "$gte": 0.00000546
-            }
-          }
-        }
+          '$match': {
+            'bchAmount': {
+              '$gte': 0.00000546,
+            },
+          },
+        },
       ],
-      "limit": 10000
+      'limit': 10000,
     },
-    "r": {
-      "f": "[ .[] | { address: ._id, bchAmount: .bchAmount } ]"
-    }
+    'r': {
+      'f': '[ .[] | { address: ._id, bchAmount: .bchAmount } ]',
+    },
   }),
 
   dividend_count_ignore_amounts: (tokenIdHex, addresses) => ({
-    "v": 3,
-    "q": {
-      "db": ["g"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['g'],
+      'aggregate': [
         {
-          "$match": {
-            "tokenDetails.tokenIdHex": tokenIdHex,
-            "graphTxn.outputs.status": "UNSPENT",
-            "graphTxn.outputs.address": {
-              "$in": addresses
-            }
-          }
+          '$match': {
+            'tokenDetails.tokenIdHex': tokenIdHex,
+            'graphTxn.outputs.status': 'UNSPENT',
+            'graphTxn.outputs.address': {
+              '$in': addresses,
+            },
+          },
         },
         {
-          "$unwind": "$graphTxn.outputs"
+          '$unwind': '$graphTxn.outputs',
         },
         {
-          "$match": {
-            "graphTxn.outputs.status": "UNSPENT",
-            "graphTxn.outputs.address": {
-              "$in": addresses
-            }
-          }
+          '$match': {
+            'graphTxn.outputs.status': 'UNSPENT',
+            'graphTxn.outputs.address': {
+              '$in': addresses,
+            },
+          },
         },
         {
-          "$group": {
-            "_id": null,
-            "count": {
-              "$sum": "$graphTxn.outputs.slpAmount"
-            }
-          }
-        }
-      ]
+          '$group': {
+            '_id': null,
+            'count': {
+              '$sum': '$graphTxn.outputs.slpAmount',
+            },
+          },
+        },
+      ],
     },
-    "r": {
-      "f": "[ .[] | {count: .count } ]"
-    }
+    'r': {
+      'f': '[ .[] | {count: .count } ]',
+    },
   }),
 };
 
@@ -2240,7 +2244,7 @@ app.slpstream = {
       return resolve(false);
     }
     const b64 = btoa_ext(JSON.stringify(query));
-    const url = "https://slpstream.fountainhead.cash/s/" + b64;
+    const url = 'https://slpstream.fountainhead.cash/s/' + b64;
 
     const sse = new EventSource(url);
     sse.onmessage = (e) => fn(JSON.parse(e.data));
@@ -2252,15 +2256,15 @@ app.slpstream = {
     app.slpstream.reset();
 
     app.slpstream.init_listener({
-      "v": 3,
-      "q": {
-        "db": ["u", "c"],
-        "find": {}
-      }
+      'v': 3,
+      'q': {
+        'db': ['u', 'c'],
+        'find': {},
+      },
     }, (data) => {
       console.log('slpstream data: ', data);
-      if ((data.type !== 'mempool' && data.type !== 'block')
-      ||   data.data.length < 1) {
+      if ((data.type !== 'mempool' && data.type !== 'block') ||
+      data.data.length < 1) {
         return;
       }
 
@@ -2282,9 +2286,9 @@ app.bitdb = {
       return resolve(false);
     }
     const b64 = btoa_ext(JSON.stringify(query));
-    const url = "https://bitdb2.fountainhead.cash/q/" + b64;
+    const url = 'https://bitdb2.fountainhead.cash/q/' + b64;
 
-    console.log(url)
+    console.log(url);
 
     app.util.fetch_retry(url)
     .then((r) => r = r.json())
@@ -2297,152 +2301,152 @@ app.bitdb = {
   }),
 
   count_txs_by_block: (height) => ({
-    "v": 3,
-    "q": {
-      "db": ["c"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['c'],
+      'aggregate': [
         {
-          "$match": {
-            "blk.i": height
-          }
+          '$match': {
+            'blk.i': height,
+          },
         },
         {
-          "$group": {
-            "_id": null,
-            "count": { "$sum": 1 }
-          }
-        }
-      ]
+          '$group': {
+            '_id': null,
+            'count': {'$sum': 1},
+          },
+        },
+      ],
     },
-    "r": {
-      "f": "[ .[] | {count: .count } ]"
-    }
+    'r': {
+      'f': '[ .[] | {count: .count } ]',
+    },
   }),
 
   recent_transactions: (limit=150, skip=0) => ({
-    "v": 3,
-    "q": {
-      "db": ["c"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['c'],
+      'aggregate': [
         {
-          "$match": {}
+          '$match': {},
         },
         {
-          "$sort": {
-            "blk.i": -1
-          }
+          '$sort': {
+            'blk.i': -1,
+          },
         },
         {
-          "$skip": skip
+          '$skip': skip,
         },
         {
-          "$limit": limit
-        }
+          '$limit': limit,
+        },
       ],
-      "limit": limit
-    }
+      'limit': limit,
+    },
   }),
 
   lookup_tx_by_input: (txid, vout) => ({
-    "v": 3,
-    "q": {
-      "find": {
-        "in": {
-          "$elemMatch": {
-            "e.h": txid,
-            "e.i": vout
-          }
-        }
+    'v': 3,
+    'q': {
+      'find': {
+        'in': {
+          '$elemMatch': {
+            'e.h': txid,
+            'e.i': vout,
+          },
+        },
       },
-      "limit": 1
-    }
+      'limit': 1,
+    },
   }),
 
   tx: (txid) => ({
-    "v": 3,
-    "q": {
-      "db": ["c", "u"],
-      "find": {
-        "tx.h": txid
+    'v': 3,
+    'q': {
+      'db': ['c', 'u'],
+      'find': {
+        'tx.h': txid,
       },
-      "limit": 1
-    }
+      'limit': 1,
+    },
   }),
   get_amounts_from_txid_vout_pairs: (pairs=[]) => ({
-    "v": 3,
-    "q": {
-      "db": ["c", "u"],
-      "aggregate": [
+    'v': 3,
+    'q': {
+      'db': ['c', 'u'],
+      'aggregate': [
         {
-          "$match": {
-            "tx.h": {
-              "$in": [...new Set(pairs.map(v => v.txid))]
-            }
-          }
+          '$match': {
+            'tx.h': {
+              '$in': [...new Set(pairs.map((v) => v.txid))],
+            },
+          },
         },
         {
-          "$unwind": "$out"
+          '$unwind': '$out',
         },
         {
-          "$match": {
-            "$or": pairs.map(v => ({
-              "$and": [
+          '$match': {
+            '$or': pairs.map((v) => ({
+              '$and': [
                 {
-                  "tx.h": v.txid
+                  'tx.h': v.txid,
                 },
                 {
-                  "out.e.i": v.vout
-                }
-              ]
-            }))
-          }
-        }
+                  'out.e.i': v.vout,
+                },
+              ],
+            })),
+          },
+        },
       ],
-      "limit": 20,
+      'limit': 20,
     },
-    "r": {
-      "f": "[ .[] | { txid: .tx.h, vout: .out.e.i, amount: .out.e.v} ]"
-    }
+    'r': {
+      'f': '[ .[] | { txid: .tx.h, vout: .out.e.i, amount: .out.e.v} ]',
+    },
   }),
 
   // thanks kos
   get_cashaccount: (raw_address) => ({
-    "v": 3,
-    "q": {
-      "find": {
-        "out.h1": "01010101",
-        "out.h3": raw_address,
-        "blk.i": {
-          "$gte": 563720
-        }
+    'v': 3,
+    'q': {
+      'find': {
+        'out.h1': '01010101',
+        'out.h3': raw_address,
+        'blk.i': {
+          '$gte': 563720,
+        },
       },
-      "sort": {
-        "blk.i": 1
+      'sort': {
+        'blk.i': 1,
       },
-      "limit": 1
+      'limit': 1,
     },
-    "r": {
-        "f": "[ .[] | ( .out[] | select(.b0.op==106) ) as $outWithData | { blockheight: .blk.i?, blockhash: .blk.h?, txid: .tx.h?, name: $outWithData.s2, data: $outWithData.h3 } ]"
-    }
+    'r': {
+        'f': '[ .[] | ( .out[] | select(.b0.op==106) ) as $outWithData | { blockheight: .blk.i?, blockhash: .blk.h?, txid: .tx.h?, name: $outWithData.s2, data: $outWithData.h3 } ]',
+    },
   }),
 };
 
 
 app.get_tokens_from_tokenids = (token_ids, chunk_size=50) => {
-  let reqs = [];
+  const reqs = [];
   for (let i=0; i<Math.ceil(token_ids.length / chunk_size); ++i) {
     reqs.push(app.slpdb.query(
-      app.slpdb.tokens(token_ids.slice(chunk_size*i, (chunk_size*i)+chunk_size))
+      app.slpdb.tokens(token_ids.slice(chunk_size*i, (chunk_size*i)+chunk_size)),
     ));
   }
 
   return Promise.all(reqs)
   .then((results) => {
-    let tx_tokens = [];
+    const tx_tokens = [];
     results
-    .map(v => v.t)
+    .map((v) => v.t)
     .reduce((a, v) => a.concat(v), [])
-    .forEach(v => tx_tokens[v.tokenDetails.tokenIdHex] = v)
+    .forEach((v) => tx_tokens[v.tokenDetails.tokenIdHex] = v);
 
     return tx_tokens;
   });
@@ -2450,7 +2454,7 @@ app.get_tokens_from_tokenids = (token_ids, chunk_size=50) => {
 
 app.get_tokens_from_transactions = (transactions, chunk_size=50) => {
   let token_ids = [];
-  for (let m of transactions) {
+  for (const m of transactions) {
     if (m.slp && m.slp.detail) token_ids.push(m.slp.detail.tokenIdHex);
   }
   token_ids = [...new Set(token_ids)]; // make unique
@@ -2459,14 +2463,14 @@ app.get_tokens_from_transactions = (transactions, chunk_size=50) => {
 };
 
 app.extract_sent_amount_from_tx = (tx, addr) => {
-  let outer = new Set(tx.in.map(v => v.e.a));
+  let outer = new Set(tx.in.map((v) => v.e.a));
 
   if (tx.graph && tx.graph[0] && addr) {
-    outer = new Set(tx.graph[0].graphTxn.inputs.map(v => v.address));
+    outer = new Set(tx.graph[0].graphTxn.inputs.map((v) => v.address));
   }
 
   let self_send = true;
-  for (let v of tx.slp.detail.outputs) {
+  for (const v of tx.slp.detail.outputs) {
     if (! outer.has(v.address)) {
       self_send = false;
       break;
@@ -2476,13 +2480,13 @@ app.extract_sent_amount_from_tx = (tx, addr) => {
   // if self_send we count entirety of outputs as send amount
   if (self_send) {
     let amount = tx.slp.detail.outputs
-      .map(v => new BigNumber(v.amount))
+      .map((v) => new BigNumber(v.amount))
       .reduce((a, v) => a.plus(v), new BigNumber(0));
 
     if (addr && tx.graph[0]) {
       const in_amount = tx.graph[0].graphTxn.inputs
         .filter((e) => e.address == addr)
-        .map(v => new BigNumber(v.slpAmount))
+        .map((v) => new BigNumber(v.slpAmount))
         .reduce((a, v) => a.plus(v), new BigNumber(0));
 
       amount = amount.minus(amount.minus(in_amount));
@@ -2496,7 +2500,7 @@ app.extract_sent_amount_from_tx = (tx, addr) => {
 
   const amount = tx.slp.detail.outputs
     .filter((e) => outer_arr.indexOf(e.address) < 0)
-    .map(v => new BigNumber(v.amount))
+    .map((v) => new BigNumber(v.amount))
     .reduce((a, v) => a.plus(v), new BigNumber(0));
 
   return app.util.format_bignum(amount.toFormat(tx.slp.detail.decimals));
@@ -2506,9 +2510,9 @@ app.extract_recv_amount_from_tx = (tx, addr) => {
   return app.util.format_bignum(
     tx.slp.detail.outputs
       .filter((e) => e.address === addr)
-      .map(v => new BigNumber(v.amount))
+      .map((v) => new BigNumber(v.amount))
       .reduce((a, v) => a.plus(v), new BigNumber(0))
-      .toFormat(tx.slp.detail.decimals)
+      .toFormat(tx.slp.detail.decimals),
   );
 };
 
@@ -2530,30 +2534,30 @@ app.init_nonslp_tx_page = (txid, highlight=[], slp=null) =>
 
       const chunk_size = 20;
 
-      const input_txid_vout_pairs = tx.in.map(v => ({
+      const input_txid_vout_pairs = tx.in.map((v) => ({
         txid: v.e.h,
-        vout: v.e.i
+        vout: v.e.i,
       }));
 
-      let input_txid_vout_reqs = [];
+      const input_txid_vout_reqs = [];
       for (let i=0; i<Math.ceil(input_txid_vout_pairs.length / chunk_size); ++i) {
         const chunk = input_txid_vout_pairs.slice(chunk_size*i, (chunk_size*i)+chunk_size);
 
         input_txid_vout_reqs.push(app.bitdb.query(
-          app.bitdb.get_amounts_from_txid_vout_pairs(chunk)
+          app.bitdb.get_amounts_from_txid_vout_pairs(chunk),
         ));
       }
 
       Promise.all(input_txid_vout_reqs)
       .then((results) => {
-        const input_pairs  = results.reduce((a, v) => a.concat(v.u).concat(v.c), []);
+        const input_pairs = results.reduce((a, v) => a.concat(v.u).concat(v.c), []);
         const input_amounts = input_pairs.reduce((a, v) => {
           a[v.txid+':'+v.vout] = v.amount;
           return a;
         }, {});
 
         const total_input_amount = Object.keys(input_amounts)
-          .map(k => new BigNumber(input_amounts[k]))
+          .map((k) => new BigNumber(input_amounts[k]))
           .reduce((a, v) => a.plus(v), new BigNumber(0));
 
         const lookup_missing_spendtxid = (m, txid, vout) =>
@@ -2564,21 +2568,21 @@ app.init_nonslp_tx_page = (txid, highlight=[], slp=null) =>
             m['spendVout'] = null;
             if (ttx !== null) {
               m['spendTxid'] = ttx.tx.h;
-              m['spendVout'] = ttx.in.filter(v => v.e.h === txid && v.e.i === vout)[0].i;
+              m['spendVout'] = ttx.in.filter((v) => v.e.h === txid && v.e.i === vout)[0].i;
               console.log(txid, vout, ttx);
             }
           });
 
         const missing_lookups = tx.out.map((m) => {
-          return lookup_missing_spendtxid(m, tx.tx.h, m.e.i)
+          return lookup_missing_spendtxid(m, tx.tx.h, m.e.i);
         });
 
         Promise.all(missing_lookups)
         .then((lookups) => {
           $('main[role=main]').html(app.template.nonslp_tx_page({
-            tx:            tx,
+            tx: tx,
             input_amounts: input_amounts,
-            slp:           slp,
+            slp: slp,
           }));
 
           app.util.decimal_formatting($('#inputs-list tbody tr td:nth-child(3)'));
@@ -2587,7 +2591,7 @@ app.init_nonslp_tx_page = (txid, highlight=[], slp=null) =>
           for (const h of highlight) {
             if (h.length < 2) continue;
             const type = h[0] == 'i' ? 'input' : 'output';
-            const idx  = parseInt(h.slice(1), 10);
+            const idx = parseInt(h.slice(1), 10);
             const $selector = $('#'+type+'s-list .table tr:nth-child('+(1+idx)+')');
             $selector.addClass('highlight');
             /*
@@ -2599,26 +2603,26 @@ app.init_nonslp_tx_page = (txid, highlight=[], slp=null) =>
           resolve();
         });
       });
-    })
+    });
   });
 
 app.init_error_processing_tx_page = (tx) => new Promise((resolve, reject) => {
   $('main[role=main]').html(app.template.error_processing_tx_page({
-    tx: tx
+    tx: tx,
   }));
   resolve();
 });
 
 app.init_error_notx_page = (txid) => new Promise((resolve, reject) => {
   $('main[role=main]').html(app.template.error_notx_page({
-    txid: txid
+    txid: txid,
   }));
   resolve();
 });
 
 app.init_error_badaddress_page = (address) => new Promise((resolve, reject) => {
   $('main[role=main]').html(app.template.error_badaddress_page({
-    address: address
+    address: address,
   }));
   resolve();
 });
@@ -2632,14 +2636,14 @@ app.init_index_page = () =>
 
     app.slpdb.query(app.slpdb.recent_transactions(10))
     .then((data) => {
-      const transactions =  data.u.concat(data.c);
+      const transactions = data.u.concat(data.c);
       $('#recent-transactions-table tbody').html('');
 
       for (let i=0; i<transactions.length && i<10; ++i) {
         $('#recent-transactions-table tbody').append(
           app.template.latest_transactions_tx({
-            tx: transactions[i]
-          })
+            tx: transactions[i],
+          }),
         );
       }
 
@@ -2656,47 +2660,47 @@ app.init_index_page = () =>
     const create_transaction_graph = (time_period, split_time_period, line_type) => {
       Promise.all([
         app.slpdb.query(app.slpdb.count_txs_per_block({
-          "$and": [
-            { "slp.valid": true },
-            { "blk.t": {
-              "$gte": (+(new Date) / 1000) - time_period,
-              "$lte": (+(new Date) / 1000)
-            } }
-          ]
+          '$and': [
+            {'slp.valid': true},
+            {'blk.t': {
+              '$gte': (+(new Date) / 1000) - time_period,
+              '$lte': (+(new Date) / 1000),
+            }},
+          ],
         })),
         app.slpdb.query({
-          "v": 3,
-          "q": {
-            "aggregate": [
+          'v': 3,
+          'q': {
+            'aggregate': [
               {
-                "$match": {
-                  "blk.t": {
-                    "$gte": (+(new Date) / 1000) - time_period,
-                    "$lte": (+(new Date) / 1000),
-                  }
-                }
+                '$match': {
+                  'blk.t': {
+                    '$gte': (+(new Date) / 1000) - time_period,
+                    '$lte': (+(new Date) / 1000),
+                  },
+                },
               },
               {
-                "$group": {
-                  "_id": "$slp.detail.name",
-                  "count": {
-                    "$sum": 1
-                  }
-                }
+                '$group': {
+                  '_id': '$slp.detail.name',
+                  'count': {
+                    '$sum': 1,
+                  },
+                },
               },
               {
-                "$sort": {
-                  "count": -1
-                }
+                '$sort': {
+                  'count': -1,
+                },
               },
                 {
-                "$limit": 20
-              }
-            ]
+                '$limit': 20,
+              },
+            ],
           },
-          "r": {
-            "f": "[ .[] | {token_name: ._id, txs: .count} ]"
-          }
+          'r': {
+            'f': '[ .[] | {token_name: ._id, txs: .count} ]',
+          },
         }),
       ])
       .then(([monthly_usage, token_usage]) => {
@@ -2706,32 +2710,32 @@ app.init_index_page = () =>
           'Transactions',
           time_period*1000,
           split_time_period*1000,
-          line_type
+          line_type,
         );
-        let token_usage_monthly = token_usage.c;
+        const token_usage_monthly = token_usage.c;
         const total_slp_tx_month = monthly_usage.c.reduce((a, v) => a+v.txs, 0);
         $('#transaction-count').text(Number(total_slp_tx_month).toLocaleString());
 
         token_usage_monthly.push({
           token_name: 'Other',
-          txs: total_slp_tx_month - token_usage_monthly.reduce((a, v) => a + v.txs, 0)
-        })
+          txs: total_slp_tx_month - token_usage_monthly.reduce((a, v) => a + v.txs, 0),
+        });
 
         $('#plot-token-usage').html('');
         try {
           Plotly.newPlot('plot-token-usage', [{
-            x: token_usage_monthly.map(v => v.token_name),
-            y: token_usage_monthly.map(v => v.txs),
+            x: token_usage_monthly.map((v) => v.token_name),
+            y: token_usage_monthly.map((v) => v.txs),
             type: 'bar',
             marker: {
               color: token_usage_monthly.map((v, i) =>
-                (i < token_usage_monthly.length-1) ? 'rgba(100, 167, 205, 1)'
-                                                   : 'rgba(232, 102, 102, 1)'
+                (i < token_usage_monthly.length-1) ? 'rgba(100, 167, 205, 1)' :
+                                                   'rgba(232, 102, 102, 1)',
               ),
             },
           }], {
             title: 'Popular Tokens',
-          })
+          });
         } catch (e) {
           console.error('Plotly.newPlot failed', e);
         }
@@ -2753,19 +2757,19 @@ app.init_index_page = () =>
       {
         id: '#plot-usage-week',
         time_period: 60*60*24*7,
-        split_time_period: 60*60*6
+        split_time_period: 60*60*6,
       },
       {
         id: '#plot-usage-day',
         time_period: 60*60*24,
-        split_time_period: 60*60*2
+        split_time_period: 60*60*2,
       },
     ].forEach((data) => {
       $(data.id).click(function() {
         create_transaction_graph(
           data.time_period,
           data.split_time_period,
-          'hvh'
+          'hvh',
          );
         $('.plot-time-selector span').removeClass('active');
         $(this).addClass('active');
@@ -2785,8 +2789,8 @@ app.init_index_page = () =>
         genesises.forEach((tx) => {
           tbody.append(
             app.template.index_token({
-              tx: tx
-            })
+              tx: tx,
+            }),
           );
         });
 
@@ -2824,8 +2828,8 @@ app.init_index_page = () =>
           tbody.append(
             app.template.index_burn_tx({
               tx: tx,
-              total_burnt: total_burnt
-            })
+              total_burnt: total_burnt,
+            }),
           );
         });
         $('#index-burn-history-table tbody .token-icon-small').each(function() {
@@ -2853,7 +2857,7 @@ app.init_index_page = () =>
           Math.ceil(total_tokens.t / 10),
           (page, done) => {
             load_paginated_tokens(10, 10*page, done);
-          }
+          },
         );
       }
     });
@@ -2872,7 +2876,7 @@ app.init_index_page = () =>
           Math.ceil(total_burn_transactions.g / 10),
           (page, done) => {
             load_paginated_burn_history(10, 10*page, done);
-          }
+          },
         );
       }
     });
@@ -2887,15 +2891,15 @@ app.init_index_page = () =>
         const token = token_data.t[0];
 
         sna.token = [token];
-        sna.slp.detail.outputs = sna.slp.detail.outputs.map(v => {
+        sna.slp.detail.outputs = sna.slp.detail.outputs.map((v) => {
           const bn = new BigNumber(v.amount).dividedBy(10 ** sna.token[0].tokenDetails.decimals);
-          v.amount  = bn.toString();
+          v.amount = bn.toString();
           return v;
         });
 
         const tbody = $('#recent-transactions-table tbody');
         tbody.prepend(
-          app.template.latest_transactions_tx({ tx: sna })
+          app.template.latest_transactions_tx({tx: sna}),
         );
 
         app.util.set_token_icon(tbody.find('.token-icon-small:first'), 32);
@@ -2905,7 +2909,7 @@ app.init_index_page = () =>
 
         tbody.find('tr:last').remove();
       });
-    }
+    };
 
     app.slpstream.on_block = (index, data) => {
       // TODO delete all pending items from list, add add in block
@@ -2914,7 +2918,7 @@ app.init_index_page = () =>
       console.log('on_block', index, data);
     };
     resolve();
-  })
+  });
 
 app.init_all_tokens_page = () =>
   new Promise((resolve, reject) =>
@@ -2936,8 +2940,8 @@ app.init_all_tokens_page = () =>
           tokens.forEach((token) => {
             tbody.append(
               app.template.all_tokens_token({
-                token: token
-              })
+                token: token,
+              }),
             );
           });
 
@@ -2958,20 +2962,20 @@ app.init_all_tokens_page = () =>
           Math.ceil(all_tokens_count.t / 15),
           (page, done) => {
             load_paginated_tokens(15, 15*page, done);
-          }
+          },
         );
       }
 
       resolve();
-    })
-  )
+    }),
+  );
 
 app.init_dividend_page = () =>
   new Promise((resolve, reject) => {
     $('main[role=main]').html(app.template.dividend_page());
     $('#div_calculate').click(() => {
       const tokenIdHex = $('#div_tokenid').val();
-      if(tokenIdHex.length != 64) {
+      if (tokenIdHex.length != 64) {
         alert('tokenid required');
         return;
       }
@@ -2980,8 +2984,8 @@ app.init_dividend_page = () =>
       try {
           ignoreAddresses = $('#div_ignore_addresses').val()
             .split('\n')
-            .filter(v => v.length !== 0)
-            .map(v => slpjs.Utils.toSlpAddress(v));
+            .filter((v) => v.length !== 0)
+            .map((v) => slpjs.Utils.toSlpAddress(v));
       } catch (e) {
         alert('invalid ignore address found');
         return;
@@ -2995,10 +2999,10 @@ app.init_dividend_page = () =>
       .then(([
         total_minted,
         total_burned,
-        total_ignored
+        total_ignored,
       ]) => {
-        total_minted  = app.util.extract_total(total_minted).g;
-        total_burned  = app.util.extract_total(total_burned).g;
+        total_minted = app.util.extract_total(total_minted).g;
+        total_burned = app.util.extract_total(total_burned).g;
         total_ignored = app.util.extract_total(total_ignored).g;
 
         console.log(total_minted, total_burned, total_ignored);
@@ -3013,18 +3017,18 @@ app.init_dividend_page = () =>
           tokenIdHex,
           Number(supply.toFixed()),
           Number($('#div_bch').val()),
-          ignoreAddresses
+          ignoreAddresses,
         ))
         .then((data) => {
           $('#div_results').html(
             data.g.map((v) => `${slpjs.Utils.toCashAddress(v.address)},${Number(v.bchAmount).toFixed(8)}`)
-            .reduce((a, v) => a+v+"\n", "")
+            .reduce((a, v) => a+v+'\n', ''),
           );
         });
-      })
+      });
     });
     resolve();
-  })
+  });
 
 app.init_tx_page = (txid, highlight=[]) =>
   new Promise((resolve, reject) =>
@@ -3047,24 +3051,24 @@ app.init_tx_page = (txid, highlight=[]) =>
 
       const chunk_size = 20;
 
-      const input_txid_vout_pairs = tx.in.map(v => ({
+      const input_txid_vout_pairs = tx.in.map((v) => ({
         txid: v.e.h,
-        vout: v.e.i
+        vout: v.e.i,
       }));
 
 
-      let input_txid_vout_reqs = [];
+      const input_txid_vout_reqs = [];
       for (let i=0; i<Math.ceil(input_txid_vout_pairs.length / chunk_size); ++i) {
         const chunk = input_txid_vout_pairs.slice(chunk_size*i, (chunk_size*i)+chunk_size);
 
         input_txid_vout_reqs.push(app.slpdb.query(
-          app.slpdb.get_amounts_from_txid_vout_pairs(chunk)
+          app.slpdb.get_amounts_from_txid_vout_pairs(chunk),
         ));
       }
 
       Promise.all(input_txid_vout_reqs)
       .then((results) => {
-        const input_pairs  = results.reduce((a, v) => a.concat(v.g), []);
+        const input_pairs = results.reduce((a, v) => a.concat(v.g), []);
 
         const input_amounts = input_pairs.reduce((a, v) => {
           a[v.txid+':'+v.vout] = v.slpAmount;
@@ -3072,7 +3076,7 @@ app.init_tx_page = (txid, highlight=[]) =>
         }, {});
 
         const total_input_amount = Object.keys(input_amounts)
-          .map(k => new BigNumber(input_amounts[k]))
+          .map((k) => new BigNumber(input_amounts[k]))
           .reduce((a, v) => a.plus(v), new BigNumber(0));
 
         app.slpdb.query(app.slpdb.token(tx.slp.detail.tokenIdHex))
@@ -3087,7 +3091,7 @@ app.init_tx_page = (txid, highlight=[]) =>
               m['spendVout'] = null;
               if (ttx !== null) {
                 m['spendTxid'] = ttx.tx.h;
-                const ifilt = ttx.in.filter(v => v.e.h === txid && v.e.i === vout);
+                const ifilt = ttx.in.filter((v) => v.e.h === txid && v.e.i === vout);
                 if (ifilt.length > 0) {
                   m['spendVout'] = ifilt[0].i + 1;
                 }
@@ -3095,15 +3099,15 @@ app.init_tx_page = (txid, highlight=[]) =>
             });
 
           const missing_lookups = tx.graph[0].graphTxn.outputs.map((m) => {
-            return lookup_missing_spendtxid(m, tx.graph[0].graphTxn.txid, m.vout)
+            return lookup_missing_spendtxid(m, tx.graph[0].graphTxn.txid, m.vout);
           });
 
           Promise.all(missing_lookups)
           .then(() => {
             $('main[role=main]').html(app.template.tx_page({
-              tx:    tx,
+              tx: tx,
               token: token.t[0],
-              input_amounts: input_amounts
+              input_amounts: input_amounts,
             }));
 
             app.util.set_token_icon($('main[role=main] .transaction_box .token-icon-large'), 128);
@@ -3114,7 +3118,7 @@ app.init_tx_page = (txid, highlight=[]) =>
             for (const h of highlight) {
               if (h.length < 2) continue;
               const type = h[0] == 'i' ? 'input' : 'output';
-              const idx  = parseInt(h.slice(1), 10) - 1;
+              const idx = parseInt(h.slice(1), 10) - 1;
               const $selector = $('#'+type+'s-list .table tr:nth-child('+(idx+1)+')');
               if ($selector.length > 0) {
                 $selector.addClass('highlight');
@@ -3130,8 +3134,8 @@ app.init_tx_page = (txid, highlight=[]) =>
           });
         });
       });
-    })
-  )
+    }),
+  );
 
 app.init_block_page = (height) =>
   new Promise((resolve, reject) =>
@@ -3141,7 +3145,7 @@ app.init_block_page = (height) =>
 
       $('main[role=main]').html(app.template.block_page({
         height: height,
-        next_block_exists: total_bch_txs_by_next_block.c > 0
+        next_block_exists: total_bch_txs_by_next_block.c > 0,
       }));
 
       const load_paginated_transactions = (limit, skip, done) => {
@@ -3155,8 +3159,8 @@ app.init_block_page = (height) =>
           transactions.forEach((tx) => {
             tbody.append(
               app.template.block_tx({
-                tx: tx
-              })
+                tx: tx,
+              }),
             );
           });
 
@@ -3185,14 +3189,14 @@ app.init_block_page = (height) =>
             Math.ceil(total_txs_by_block / 15),
             (page, done) => {
               load_paginated_transactions(15, 15*page, done);
-            }
+            },
           );
         }
       });
 
       resolve();
-    })
-  )
+    }),
+  );
 
 app.init_block_mempool_page = (height) =>
   new Promise((resolve, reject) =>
@@ -3201,8 +3205,8 @@ app.init_block_mempool_page = (height) =>
       const most_recent_block_height = most_recent_tx.c[0].blk.i;
 
       $('main[role=main]').html(app.template.block_page({
-        height: "mempool",
-        most_recent_block_height: most_recent_block_height
+        height: 'mempool',
+        most_recent_block_height: most_recent_block_height,
       }));
 
       const load_paginated_transactions = (limit, skip, done) => {
@@ -3216,8 +3220,8 @@ app.init_block_mempool_page = (height) =>
           transactions.forEach((tx) => {
             tbody.append(
               app.template.block_tx({
-                tx: tx
-              })
+                tx: tx,
+              }),
             );
           });
 
@@ -3245,7 +3249,7 @@ app.init_block_mempool_page = (height) =>
             Math.ceil(total_txs_in_mempool / 15),
             (page, done) => {
               load_paginated_transactions(15, 15*page, done);
-            }
+            },
           );
         }
       });
@@ -3263,16 +3267,16 @@ app.init_block_mempool_page = (height) =>
           }
           const token = token_data.t[0];
           sna.token = [token];
-          sna.slp.detail.outputs = sna.slp.detail.outputs.map(v => {
+          sna.slp.detail.outputs = sna.slp.detail.outputs.map((v) => {
             const bn = new BigNumber(v.amount).dividedBy(10 ** sna.token[0].tokenDetails.decimals);
-            v.amount  = bn.toString();
+            v.amount = bn.toString();
             return v;
           });
 
 
           const tbody = $('#block-transactions-table tbody');
           tbody.prepend(
-            app.template.block_tx({ tx: sna })
+            app.template.block_tx({tx: sna}),
           );
           tbody.find('tr:last').remove();
 
@@ -3281,11 +3285,11 @@ app.init_block_mempool_page = (height) =>
           app.util.flash_latest_item(tbody);
           app.util.set_token_icon(tbody.find('.token-icon-small:first'), 32);
         });
-      }
+      };
 
       resolve();
-    })
-  )
+    }),
+  );
 
 app.init_token_page = (tokenIdHex) =>
   new Promise((resolve, reject) =>
@@ -3298,7 +3302,7 @@ app.init_token_page = (tokenIdHex) =>
       token = token.t[0];
 
       $('main[role=main]').html(app.template.token_page({
-        token: token
+        token: token,
       }));
 
       app.util.set_token_icon($('main[role=main] .transaction_box .token-icon-large'), 128);
@@ -3318,8 +3322,8 @@ app.init_token_page = (tokenIdHex) =>
               tokens.t.forEach((token) => {
                 tbody.append(
                   app.template.token_child_nft({
-                    token: token
-                  })
+                    token: token,
+                  }),
                 );
               });
 
@@ -3340,7 +3344,7 @@ app.init_token_page = (tokenIdHex) =>
               Math.ceil(total_token_child_nfts.t / 10),
               (page, done) => {
                 load_paginated_token_child_nfts(10, 10*page, done);
-              }
+              },
             );
           }
         });
@@ -3355,9 +3359,9 @@ app.init_token_page = (tokenIdHex) =>
           addresses.g.forEach((address) => {
             tbody.append(
               app.template.token_address({
-                address:  address,
+                address: address,
                 decimals: token.tokenDetails.decimals,
-              })
+              }),
             );
           });
 
@@ -3379,8 +3383,8 @@ app.init_token_page = (tokenIdHex) =>
           transactions.forEach((tx) => {
             tbody.append(
               app.template.token_mint_tx({
-                tx: tx
-              })
+                tx: tx,
+              }),
             );
           });
 
@@ -3416,8 +3420,8 @@ app.init_token_page = (tokenIdHex) =>
             tbody.append(
               app.template.token_burn_tx({
                 tx: tx,
-                total_burnt: total_burnt
-              })
+                total_burnt: total_burnt,
+              }),
             );
           });
 
@@ -3432,7 +3436,7 @@ app.init_token_page = (tokenIdHex) =>
         .then((total_unconfirmed_token_transactions) => {
           total_unconfirmed_token_transactions = app.util.extract_total(total_unconfirmed_token_transactions).u;
 
-          let tasks = [];
+          const tasks = [];
           if (skip < total_unconfirmed_token_transactions) {
             tasks.push(app.slpdb.query(app.slpdb.unconfirmed_token_transaction_history(tokenIdHex, null, limit, skip)));
 
@@ -3443,8 +3447,8 @@ app.init_token_page = (tokenIdHex) =>
                     tokenIdHex,
                     null,
                     limit - (total_unconfirmed_token_transactions % limit),
-                    0
-                  )
+                    0,
+                  ),
                 ));
               }
             }
@@ -3454,8 +3458,8 @@ app.init_token_page = (tokenIdHex) =>
                 tokenIdHex,
                 null,
                 limit,
-                skip - (total_unconfirmed_token_transactions % limit)
-              )
+                skip - (total_unconfirmed_token_transactions % limit),
+              ),
             ));
           }
 
@@ -3478,8 +3482,8 @@ app.init_token_page = (tokenIdHex) =>
             transactions.forEach((tx) => {
               tbody.append(
                 app.template.token_tx({
-                  tx: tx
-                })
+                  tx: tx,
+                }),
               );
             });
 
@@ -3504,7 +3508,7 @@ app.init_token_page = (tokenIdHex) =>
             Math.ceil(total_token_mint_transactions / 10),
             (page, done) => {
               load_paginated_token_mint_history(10, 10*page, done);
-            }
+            },
           );
         }
       });
@@ -3524,7 +3528,7 @@ app.init_token_page = (tokenIdHex) =>
             Math.ceil(total_token_burn_transactions / 10),
             (page, done) => {
               load_paginated_token_burn_history(10, 10*page, done);
-            }
+            },
           );
         }
       });
@@ -3543,7 +3547,7 @@ app.init_token_page = (tokenIdHex) =>
         total_addresses,
         total_satoshis_locked,
         total_minted,
-        total_burned
+        total_burned,
       ]) => {
         total_transactions = app.util.extract_total(total_transactions).g;
         total_utxos = app.util.extract_total(total_utxos).g;
@@ -3577,7 +3581,7 @@ app.init_token_page = (tokenIdHex) =>
             Math.ceil(total_addresses / 10),
             (page, done) => {
               load_paginated_token_addresses(10, 10*page, done);
-            }
+            },
           );
         }
 
@@ -3589,8 +3593,8 @@ app.init_token_page = (tokenIdHex) =>
             total_unconfirmed_token_transactions = app.util.extract_total(total_unconfirmed_token_transactions).u;
 
 
-            const total_confirmed = total_transactions
-                                  - total_unconfirmed_token_transactions;
+            const total_confirmed = total_transactions -
+                                  total_unconfirmed_token_transactions;
 
             app.util.create_pagination(
               $('#token-transactions-table-container'),
@@ -3598,7 +3602,7 @@ app.init_token_page = (tokenIdHex) =>
               Math.ceil((total_confirmed % 10 == 0 ? total_confirmed : (total_confirmed + 1)) / 10),
               (page, done) => {
                 load_paginated_token_txs(10, 10*page, done);
-              }
+              },
             );
           });
         }
@@ -3606,14 +3610,14 @@ app.init_token_page = (tokenIdHex) =>
 
       const create_transaction_graph = (time_period, split_time_period, line_type) => {
         app.slpdb.query(app.slpdb.count_txs_per_block({
-          "$and": [
-            { "slp.valid": true },
-            { "blk.t": {
-              "$gte": (+(new Date) / 1000) - time_period,
-              "$lte": (+(new Date) / 1000)
-            } },
-            { "slp.detail.tokenIdHex": tokenIdHex }
-          ]
+          '$and': [
+            {'slp.valid': true},
+            {'blk.t': {
+              '$gte': (+(new Date) / 1000) - time_period,
+              '$lte': (+(new Date) / 1000),
+            }},
+            {'slp.detail.tokenIdHex': tokenIdHex},
+          ],
         })).then((token_usage) => {
           app.util.create_time_period_plot(
             token_usage,
@@ -3621,7 +3625,7 @@ app.init_token_page = (tokenIdHex) =>
             'Transactions',
             time_period*1000,
             split_time_period*1000,
-            line_type
+            line_type,
           );
           $('#token-usage-count').text(Number(token_usage.c.reduce((a, v) => a+v.txs, 0)).toLocaleString());
         });
@@ -3643,19 +3647,19 @@ app.init_token_page = (tokenIdHex) =>
         {
           id: '#plot-token-usage-week',
           time_period: 60*60*24*7,
-          split_time_period: 60*60*6
+          split_time_period: 60*60*6,
         },
         {
           id: '#plot-token-usage-day',
           time_period: 60*60*24,
-          split_time_period: 60*60*2
+          split_time_period: 60*60*2,
         },
       ].forEach((data) => {
         $(data.id).click(function() {
           create_transaction_graph(
             data.time_period,
             data.split_time_period,
-            'hvh'
+            'hvh',
            );
           $('.plot-time-selector span').removeClass('active');
           $(this).addClass('active');
@@ -3665,27 +3669,27 @@ app.init_token_page = (tokenIdHex) =>
 
       app.slpdb.query(app.slpdb.token_addresses(tokenIdHex, 10))
       .then((token_addresses) => {
-        let data = [];
+        const data = [];
 
-        for (let a of token_addresses.g) {
+        for (const a of token_addresses.g) {
           data.push({
             address: a.address.split(':')[1],
             token_balance: a.token_balance,
-            color: "rgba(100, 167, 205, 1)"
+            color: 'rgba(100, 167, 205, 1)',
           });
         }
 
         const burnt_balance = Number(token.tokenStats.qty_token_burned);
 
-        const other_balance = token.tokenStats.qty_token_circulating_supply
-          - data.reduce((a, v) => a + Number(v.token_balance), 0)
-          - burnt_balance;
+        const other_balance = token.tokenStats.qty_token_circulating_supply -
+          data.reduce((a, v) => a + Number(v.token_balance), 0) -
+          burnt_balance;
 
         if (other_balance > 0) {
           data.push({
             address: 'Other',
             token_balance: other_balance,
-            color: "rgba(232, 102, 102, 1)"
+            color: 'rgba(232, 102, 102, 1)',
           });
         }
 
@@ -3693,17 +3697,17 @@ app.init_token_page = (tokenIdHex) =>
 
         try {
           Plotly.newPlot('plot-token-address-rich', [{
-            x: data.map(v => (v.address !== 'Other')
-              ? `<a href="/#address/${v.address}">${v.address}</a>`
-              : v.address
+            x: data.map((v) => (v.address !== 'Other') ?
+              `<a href="/#address/${v.address}">${v.address}</a>` :
+              v.address,
             ),
-            y: data.map(v => v.token_balance),
+            y: data.map((v) => v.token_balance),
             marker: {
-              color: data.map(v => v.color)
+              color: data.map((v) => v.color),
             },
             type: 'bar',
           }], {
-          })
+          });
         } catch (e) {
           console.error('Plotly.newPlot failed', e);
         }
@@ -3719,9 +3723,9 @@ app.init_token_page = (tokenIdHex) =>
           return;
         }
 
-        sna.slp.detail.outputs = sna.slp.detail.outputs.map(v => {
+        sna.slp.detail.outputs = sna.slp.detail.outputs.map((v) => {
           const bn = new BigNumber(v.amount).dividedBy(10 ** token.tokenDetails.decimals);
-          v.amount  = bn.toString();
+          v.amount = bn.toString();
           return v;
         });
 
@@ -3730,20 +3734,19 @@ app.init_token_page = (tokenIdHex) =>
           console.log('SEND TX');
           const tbody = $('#token-transactions-table tbody');
 
-          tbody.prepend(app.template.token_tx({ tx: sna }));
+          tbody.prepend(app.template.token_tx({tx: sna}));
           tbody.find('tr:last').remove();
 
           app.util.flash_latest_item(tbody);
 
           app.util.set_token_icon(tbody.find('.token-icon-small:first'), 32);
-
         }
       };
 
       app.util.generate_exchange_links($('#token-exchange-exchanges'), token.tokenDetails.tokenIdHex);
       resolve();
-    })
-  )
+    }),
+  );
 
 
 app.init_address_page = (address) =>
@@ -3756,32 +3759,34 @@ app.init_address_page = (address) =>
 
     return app.bitdb.query(
       app.bitdb.get_cashaccount(
-        app.util.cash_address_to_raw_address(slpjs.Utils.toCashAddress(address))
-      )
+        app.util.cash_address_to_raw_address(slpjs.Utils.toCashAddress(address)),
+      ),
     )
     .then((cashaccount) => {
-      cashaccount = cashaccount.u.length > 0 ? cashaccount.u[0]
-                  : cashaccount.c.length > 0 ? cashaccount.c[0]
-                  : null;
+      cashaccount = cashaccount.u.length > 0 ? cashaccount.u[0] :
+                  cashaccount.c.length > 0 ? cashaccount.c[0] :
+                  null;
       const cashaccount_html = cashaccount ? app.template.address_cashaccount(app.util.get_cash_account_data(cashaccount)) : '';
 
 
       $('main[role=main]').html(app.template.address_page({
         address: address,
-        cashaccount_html: cashaccount_html
+        cashaccount_html: cashaccount_html,
       }));
 
       let qrcode = null;
       try {
-        qrcode = new QRCode(document.getElementById("qrcode-address-"+address), {
+        qrcode = new QRCode(document.getElementById('qrcode-address-'+address), {
           text: address,
-          width:  512,
+          width: 512,
           height: 512,
-          colorDark: "#222",
-          colorLight: "#fff",
+          colorDark: '#222',
+          colorLight: '#fff',
           correctLevel: QRCode.CorrectLevel.M,
         });
-      } catch (e) { console.error(e); }
+      } catch (e) {
+ console.error(e);
+}
 
       const load_paginated_tokens = (limit, skip, done) => {
         app.slpdb.query(app.slpdb.tokens_by_slp_address(address, limit, skip))
@@ -3794,8 +3799,8 @@ app.init_address_page = (address) =>
           tokens.forEach((token) => {
             tbody.append(
               app.template.address_token({
-                token: token
-              })
+                token: token,
+              }),
             );
           });
 
@@ -3814,7 +3819,7 @@ app.init_address_page = (address) =>
         .then((total_transactions_by_slp_address) => {
           const total_unconfirmed_transactions_by_slp_address = app.util.extract_total(total_transactions_by_slp_address).u;
 
-          let tasks = [];
+          const tasks = [];
           if (skip < total_unconfirmed_transactions_by_slp_address) {
             tasks.push(app.slpdb.query(app.slpdb.unconfirmed_transactions_by_slp_address(address, limit, skip)));
 
@@ -3824,8 +3829,8 @@ app.init_address_page = (address) =>
                   app.slpdb.confirmed_transactions_by_slp_address(
                     address,
                     limit - (total_unconfirmed_transactions_by_slp_address % limit),
-                    0
-                  )
+                    0,
+                  ),
                 ));
               }
             }
@@ -3834,8 +3839,8 @@ app.init_address_page = (address) =>
               app.slpdb.confirmed_transactions_by_slp_address(
                 address,
                 limit,
-                skip - (total_unconfirmed_transactions_by_slp_address % limit)
-              )
+                skip - (total_unconfirmed_transactions_by_slp_address % limit),
+              ),
             ));
           }
 
@@ -3859,8 +3864,8 @@ app.init_address_page = (address) =>
               tbody.append(
                 app.template.address_transactions_tx({
                   tx: tx,
-                  address: address
-                })
+                  address: address,
+                }),
               );
             });
 
@@ -3901,8 +3906,8 @@ app.init_address_page = (address) =>
             tbody.append(
               app.template.address_burn_tx({
                 tx: tx,
-                total_burnt: total_burnt
-              })
+                total_burnt: total_burnt,
+              }),
             );
           });
           $('#address-burn-history-table tbody .token-icon-small').each(function() {
@@ -3927,7 +3932,7 @@ app.init_address_page = (address) =>
             Math.ceil(total_tokens / 10),
             (page, done) => {
               load_paginated_tokens(10, 10*page, done);
-            }
+            },
           );
         }
       });
@@ -3946,7 +3951,7 @@ app.init_address_page = (address) =>
             Math.ceil(total_address_burn_transactions / 10),
             (page, done) => {
               load_paginated_address_burn_history(10, 10*page, done);
-            }
+            },
           );
         }
       });
@@ -3973,7 +3978,7 @@ app.init_address_page = (address) =>
             Math.ceil(total_transactions / 10),
             (page, done) => {
               load_paginated_transactions(10, 10*page, done);
-            }
+            },
           );
         }
       });
@@ -3981,18 +3986,18 @@ app.init_address_page = (address) =>
       const create_transaction_graph = (time_period, split_time_period, line_type) => {
         Promise.all([
           app.slpdb.query(app.slpdb.count_txs_per_block({
-            "$and": [
-              { "slp.valid": true },
-              { "blk.t": {
-                "$gte": (+(new Date) / 1000) - time_period,
-                "$lte": (+(new Date) / 1000)
-              } }
+            '$and': [
+              {'slp.valid': true},
+              {'blk.t': {
+                '$gte': (+(new Date) / 1000) - time_period,
+                '$lte': (+(new Date) / 1000),
+              }},
             ],
-            "$or": [
-              { "in.e.a":  address },
-              { "out.e.a": address }
-            ]
-          }))
+            '$or': [
+              {'in.e.a': address},
+              {'out.e.a': address},
+            ],
+          })),
         ]).then(([address_usage]) => {
           app.util.create_time_period_plot(
             address_usage,
@@ -4000,7 +4005,7 @@ app.init_address_page = (address) =>
             'Transactions',
             time_period*1000,
             split_time_period*1000,
-            line_type
+            line_type,
           );
           $('#address-usage-count').text(Number(address_usage.c.reduce((a, v) => a+v.txs, 0)).toLocaleString());
         });
@@ -4021,19 +4026,19 @@ app.init_address_page = (address) =>
         {
           id: '#plot-address-usage-week',
           time_period: 60*60*24*7,
-          split_time_period: 60*60*6
+          split_time_period: 60*60*6,
         },
         {
           id: '#plot-address-usage-day',
           time_period: 60*60*24,
-          split_time_period: 60*60*2
+          split_time_period: 60*60*2,
         },
       ].forEach((data) => {
         $(data.id).click(function() {
           create_transaction_graph(
             data.time_period,
             data.split_time_period,
-            'hvh'
+            'hvh',
            );
           $('.plot-time-selector span').removeClass('active');
           $(this).addClass('active');
@@ -4066,7 +4071,6 @@ app.init_address_page = (address) =>
         }
 
         if (sna.slp.detail.transactionType === 'SEND') {
-
           app.slpdb.query(app.slpdb.token(sna.slp.detail.tokenIdHex))
           .then((token_data) => {
             if (token_data.t.length === 0) {
@@ -4076,17 +4080,17 @@ app.init_address_page = (address) =>
             const token = token_data.t[0];
 
             sna.token = [token];
-            sna.slp.detail.outputs = sna.slp.detail.outputs.map(v => {
+            sna.slp.detail.outputs = sna.slp.detail.outputs.map((v) => {
               const bn = new BigNumber(v.amount).dividedBy(10 ** sna.token[0].tokenDetails.decimals);
-              v.amount  = bn.toString();
+              v.amount = bn.toString();
               return v;
-            })
+            });
 
             const tbody = $('#address-transactions-table tbody');
 
             tbody.prepend(app.template.address_transactions_tx({
               tx: sna,
-              address: address
+              address: address,
             }));
             tbody.find('tr:last').remove();
 
@@ -4099,8 +4103,8 @@ app.init_address_page = (address) =>
 
 
       resolve();
-    })
-  })
+    });
+  });
 
 
 app.router = (whash, push_history = true) => {
@@ -4109,7 +4113,6 @@ app.router = (whash, push_history = true) => {
   }
 
   const [_, path, ...key] = whash.split('/');
-
 
   let method = null;
 
@@ -4174,7 +4177,7 @@ app.router = (whash, push_history = true) => {
     jdenticon();
 
     app.util.attach_search_handler($('#header-search-desktop'), $('#header-search-suggestions-container'));
-    app.util.attach_search_handler($('#header-search-mobile'),  $('#header-search-suggestions-container'));
+    app.util.attach_search_handler($('#header-search-mobile'), $('#header-search-suggestions-container'));
 
     $('html').removeClass('loading');
     $('footer').removeClass('display-none');
@@ -4183,7 +4186,7 @@ app.router = (whash, push_history = true) => {
       history.pushState({}, document.title, whash);
     }
   });
-}
+};
 
 $(document).ready(() => {
   $(window).on('popstate', (e) => {
@@ -4191,7 +4194,7 @@ $(document).ready(() => {
   });
 
   $('.button-hamburger').click(() => {
-    const shown  = $('.hamburger-show');
+    const shown = $('.hamburger-show');
     const hidden = $('.hamburger-hide');
     shown.removeClass('hamburger-show').addClass('hamburger-hide');
     hidden.removeClass('hamburger-hide').addClass('hamburger-show');
@@ -4231,23 +4234,23 @@ $(document).ready(() => {
     'search_cashaccount_result',
   ];
 
-  app.template = {}
+  app.template = {};
 
   console.time('loading verified tokens');
   app.util.fetch_retry('/verified_tokens.json')
-  .then(tokens => tokens.json())
-  .then(tokens => {
+  .then((tokens) => tokens.json())
+  .then((tokens) => {
     app.verified_tokens = new Set(tokens);
     console.timeEnd('loading verified tokens');
   })
   .then(() => {
     console.time('loading views');
-    Promise.all(views.map(v => {
+    Promise.all(views.map((v) => {
       const url = 'views/' + v + '.ejs';
       console.info('downloading view: ' + url);
-      return app.util.fetch_retry(url).then(v => v.text())
+      return app.util.fetch_retry(url).then((v) => v.text());
     }))
-    .then(texts => {
+    .then((texts) => {
       texts.forEach((v, i) => {
         console.info('compiling: ' + views[i]);
         app.template[views[i]] = ejs.compile(v);
@@ -4266,7 +4269,7 @@ const error_handler = (modal_text) => {
   return false;
 };
 
-window.onerror = function (message, file, line, col, error) {
+window.onerror = function(message, file, line, col, error) {
   console.error(error, window.location.hash);
   return error_handler(`
     hash: ${window.location.hash}
@@ -4277,12 +4280,12 @@ window.onerror = function (message, file, line, col, error) {
   `);
 };
 
-window.addEventListener("error", function (e) {
+window.addEventListener('error', function(e) {
   console.error(e, window.location.hash);
   return error_handler(window.location.hash + ' ' + e.error.message);
 });
 
-window.addEventListener('unhandledrejection', function (e) {
+window.addEventListener('unhandledrejection', function(e) {
   console.error(e, window.location.hash);
   return error_handler(`
     hash: ${window.location.hash}

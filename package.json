@@ -1,6 +1,7 @@
 {
   "private": true,
   "scripts": {
+    "lint": "eslint src/app.js",
     "build": "babel src/ --out-dir js"
   },
   "devDependencies": {
@@ -8,7 +9,9 @@
     "@babel/core": "^7.9.0",
     "@babel/plugin-transform-arrow-functions": "^7.8.3",
     "@babel/plugin-transform-block-scoping": "^7.8.3",
-    "@babel/preset-env": "^7.9.5"
+    "@babel/preset-env": "^7.9.5",
+    "eslint": "^6.8.0",
+    "eslint-config-google": "^0.14.0"
   },
   "dependencies": {
     "@babel/polyfill": "^7.8.7"
