@@ -258,19 +258,6 @@ app.util = {
       usage_split_t.push(splitset);
     }
 
-    const usage_split = usage_split_t
-    .map((m) =>
-      m.reduce((a, v) =>
-        ({
-          block_epoch: a.block_epoch || v.block_epoch,
-          txs: a.txs + v.txs,
-        }), {
-          block_epoch: null,
-          txs: 0,
-        },
-      ),
-    );
-
     const start_date = new Date((+(new Date)) - time_period);
 
     const split_data = [];
@@ -2556,10 +2543,6 @@ app.init_nonslp_tx_page = (txid, highlight=[], slp=null) =>
           return a;
         }, {});
 
-        const total_input_amount = Object.keys(input_amounts)
-          .map((k) => new BigNumber(input_amounts[k]))
-          .reduce((a, v) => a.plus(v), new BigNumber(0));
-
         const lookup_missing_spendtxid = (m, txid, vout) =>
           app.bitdb.query(app.bitdb.lookup_tx_by_input(txid, vout))
           .then((tx) => {
@@ -3075,14 +3058,8 @@ app.init_tx_page = (txid, highlight=[]) =>
           return a;
         }, {});
 
-        const total_input_amount = Object.keys(input_amounts)
-          .map((k) => new BigNumber(input_amounts[k]))
-          .reduce((a, v) => a.plus(v), new BigNumber(0));
-
         app.slpdb.query(app.slpdb.token(tx.slp.detail.tokenIdHex))
         .then((token) => {
-          const txid = tx.graph[0].graphTxn.txid;
-
           const lookup_missing_spendtxid = (m, txid, vout) =>
             app.bitdb.query(app.bitdb.lookup_tx_by_input(txid, vout))
             .then((tx) => {
@@ -3764,8 +3741,8 @@ app.init_address_page = (address) =>
     )
     .then((cashaccount) => {
       cashaccount = cashaccount.u.length > 0 ? cashaccount.u[0] :
-                  cashaccount.c.length > 0 ? cashaccount.c[0] :
-                  null;
+                    cashaccount.c.length > 0 ? cashaccount.c[0] :
+                    null;
       const cashaccount_html = cashaccount ? app.template.address_cashaccount(app.util.get_cash_account_data(cashaccount)) : '';
 
 
@@ -3774,9 +3751,8 @@ app.init_address_page = (address) =>
         cashaccount_html: cashaccount_html,
       }));
 
-      let qrcode = null;
       try {
-        qrcode = new QRCode(document.getElementById('qrcode-address-'+address), {
+        new QRCode(document.getElementById('qrcode-address-'+address), {
           text: address,
           width: 512,
           height: 512,
@@ -3785,8 +3761,8 @@ app.init_address_page = (address) =>
           correctLevel: QRCode.CorrectLevel.M,
         });
       } catch (e) {
- console.error(e);
-}
+        console.error(e);
+      }
 
       const load_paginated_tokens = (limit, skip, done) => {
         app.slpdb.query(app.slpdb.tokens_by_slp_address(address, limit, skip))
