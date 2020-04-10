@@ -25,15 +25,11 @@
         <tbody>
           <tr>
             <th role="col">SLP Address</th>
-            <td><%= slpjs.Utils.toSlpAddress(address) %></td>
+            <td><%= app.util.to_slp_address(address) %></td>
           </tr>
           <tr>
             <th role="col">Cash Address</th>
-            <td><%= slpjs.Utils.toCashAddress(address) %></td>
-          </tr>
-          <tr>
-            <th role="col">Legacy Address</th>
-            <td><%= slpjs.Utils.toLegacyAddress(address) %></td>
+            <td><%= app.util.to_cash_address(address) %></td>
           </tr>
           <tr>
             <th role="col">Cash Account</th>

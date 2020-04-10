@@ -191,7 +191,7 @@
                         </td>
                         <td>
                           <% if (typeof m.e.a !== 'undefined') { %>
-                            <a class="address" href="/#address/<%= slpjs.Utils.toSlpAddress(m.e.a) %>"><%= slpjs.Utils.toSlpAddress(m.e.a) %></a>
+                            <a class="address" href="/#address/<%= app.util.to_slp_address(m.e.a) %>"><%= app.util.to_slp_address(m.e.a) %></a>
                           <% } else { %>
                             SLPDB Address Error
                           <% } %>

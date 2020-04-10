@@ -98,7 +98,7 @@
                       </td>
                       <td>
                         <% if (typeof m.e.a !== 'undefined') { %>
-                          <a class="address" href="/#address/<%= slpjs.Utils.toCashAddress(m.e.a) %>"><%= slpjs.Utils.toCashAddress(m.e.a) %></a>
+                          <a class="address" href="/#address/bitcoincash:<%= m.e.a %>">bitcoincash:<%= m.e.a %></a>
                         <% } else { %>
                           SLPDB Address Error
                         <% } %>
@@ -148,8 +148,8 @@
                       </td>
                       <td>
                         <% if (m.e.a) { %>
-                          <a class="address" href="/#address/<%= slpjs.Utils.toCashAddress(m.e.a) %>">
-                            <%= slpjs.Utils.toCashAddress(m.e.a) %>
+                          <a class="address" href="/#address/bitcoincash:<= m.e.a %>">
+                            bitcoincash:<%= m.e.a %>
                           </a>
                         <% } else { %>
                           <%= m.str %>

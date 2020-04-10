@@ -339,20 +339,11 @@ app.util = {
         const search_value = $selector.val().trim();
 
         // check if address entered
-        if (slpjs.Utils.isSlpAddress(search_value)) {
+        try {
+          const decoded = cashaddr.decode(search_value);
           $selector.val('');
-          return app.router('/#address/'+slpjs.Utils.toSlpAddress(search_value));
-        }
-
-        if (slpjs.Utils.isCashAddress(search_value)) {
-          $selector.val('');
-          return app.router('/#address/'+slpjs.Utils.toSlpAddress(search_value));
-        }
-
-        if (slpjs.Utils.isLegacyAddress(search_value)) {
-          $selector.val('');
-          return app.router('/#address/'+slpjs.Utils.toSlpAddress(search_value));
-        }
+          return app.router('/#address/'+cashaddr.encode('simpleledger', decoded.type, decoded.hash));
+        } catch (e) {}
 
         Promise.all([
           app.slpdb.query({
@@ -466,7 +457,7 @@ app.util = {
           for (const m of cashaccounts) {
             const cash_addr = app.util.raw_address_to_cash_address(m.data);
             if (cash_addr !== null) {
-              const slp_addr = slpjs.Utils.toSlpAddress(cash_addr);
+              const slp_addr = app.util.to_slp_address(cash_addr);
               sugs.push({
                 value: slp_addr,
                 data: {
@@ -625,6 +616,16 @@ app.util = {
       setTimeout(() => resolve(app.util.fetch_retry(url, options, n - 1)), 500);
     });
   }),
+
+  to_slp_address: (addr) => {
+    const decoded = cashaddr.decode(addr);
+    return cashaddr.encode('simpleledger', decoded.type, decoded.hash);
+  },
+
+  to_cash_address: (addr) => {
+    const decoded = cashaddr.decode(addr);
+    return cashaddr.encode('bitcoincash', decoded.type, decoded.hash);
+  }
 };
 
 const btoa_ext = (buf) => Buffer.Buffer.from(buf).toString('base64');
@@ -2968,7 +2969,7 @@ app.init_dividend_page = () =>
           ignoreAddresses = $('#div_ignore_addresses').val()
             .split('\n')
             .filter((v) => v.length !== 0)
-            .map((v) => slpjs.Utils.toSlpAddress(v));
+            .map((v) => app.util.to_slp_address(v));
       } catch (e) {
         alert('invalid ignore address found');
         return;
@@ -3004,7 +3005,7 @@ app.init_dividend_page = () =>
         ))
         .then((data) => {
           $('#div_results').html(
-            data.g.map((v) => `${slpjs.Utils.toCashAddress(v.address)},${Number(v.bchAmount).toFixed(8)}`)
+            data.g.map((v) => `${app.util.to_slp_address(v.address)},${Number(v.bchAmount).toFixed(8)}`)
             .reduce((a, v) => a+v+'\n', ''),
           );
         });
@@ -3729,14 +3730,14 @@ app.init_token_page = (tokenIdHex) =>
 app.init_address_page = (address) =>
   new Promise((resolve, reject) => {
     try {
-      address = slpjs.Utils.toSlpAddress(address);
+      address = app.util.to_slp_address(address);
     } catch (e) {
       return resolve(app.init_error_badaddress_page(address));
     }
 
     return app.bitdb.query(
       app.bitdb.get_cashaccount(
-        app.util.cash_address_to_raw_address(slpjs.Utils.toCashAddress(address)),
+        app.util.cash_address_to_raw_address(app.util.to_cash_address(address)),
       ),
     )
     .then((cashaccount) => {
