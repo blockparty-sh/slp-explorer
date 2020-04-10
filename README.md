@@ -14,6 +14,13 @@ The explorer has a list of "verified" tokens in `verified_tokens.json`. This is 
 
 If you would like your token to be considered verified open a PR adding the token id to the list and provide some proof you are the owner of the token.
 
+## Building
+
+```
+npm i
+npm run build
+```
+
 ## Credits
 
 [blockparty-sh](https://github.com/blockparty-sh) for all the dev work, [James Cramer](https://github.com/jcramer) ([simpleledger](https://github.com/simpleledger)), [kosinusbch](https://github.com/kosinusbch) for stylesheet, and [Evan](https://twitter.com/evanluza) from bitcoin.com for original design files
