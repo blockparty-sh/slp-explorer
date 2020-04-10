@@ -3761,6 +3761,11 @@ app.init_address_page = (address) =>
           colorLight: '#fff',
           correctLevel: QRCode.CorrectLevel.M,
         });
+        $('#qrcode-address-'+address).click(function() {
+          // TODO
+          console.log('CLICKED');
+          $(this).toggleClass('expanded');
+        });
       } catch (e) {
         console.error(e);
       }

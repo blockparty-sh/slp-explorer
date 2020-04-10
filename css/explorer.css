@@ -698,6 +698,9 @@ html.index-page header {
     margin-right: 15px;
     vertical-align: middle;
 }
+.address-qr-code:hover {
+    cursor: pointer;
+}
 
 .token-icon-large img {
     border-radius: 5px;
@@ -710,6 +713,20 @@ html.index-page header {
     image-rendering: pixelated;
     max-width: 128px;
     max-height: 128px;
+}
+
+.address-qr-code.expanded img,
+.address-qr-code.expanded canvas {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.transaction_box .address-qr-code.expanded {
+    width: 100%;
+    float: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .hide-desktop {
