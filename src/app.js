@@ -135,6 +135,7 @@ app.util = {
     const email_regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
     const url_regex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
+    const bitcoinfile_regex = /^bitcoinfile:[0-9a-fA-F]{64}$/;
 
     const protocol_regex = /^[a-zA-Z]+:\/\/(.*)$/;
 
@@ -148,6 +149,10 @@ app.util = {
       }
 
       return `http://${doc}`;
+    }
+
+    if (bitcoinfile_regex.test(doc)) {
+      return `https://bitcoinfiles.com/${doc}`;
     }
 
     if (protocol_regex.test(doc)) {
