@@ -909,6 +909,8 @@ html.index-page header {
     background-color: transparent;
     border: 0;
     outline: 0;
+    margin: 0px 0px 0px 3px;
+    vertical-align: middle;
 }
 
 .copybtn:hover {
