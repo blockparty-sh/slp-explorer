@@ -18,6 +18,7 @@
     "@babel/plugin-transform-spread",
     ["@babel/plugin-transform-block-scoping", {
       "throwIfClosureRequired": false
-    }]
+    }],
+    "@babel/plugin-transform-exponentiation-operator"
   ]
 }
