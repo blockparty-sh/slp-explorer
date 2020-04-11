@@ -2046,13 +2046,15 @@ app.slpdb = {
     return obj;
   },
 
-  get_amounts_from_txid_vout_pairs: (pairs=[]) => ({
+  get_amounts_from_txid_vout_pairs: (pairs=[], tokenIdHex, versionType) => ({
     'v': 3,
     'q': {
       'db': ['g'],
       'aggregate': [
         {
           '$match': {
+            'graphTxn.details.tokenIdHex': tokenIdHex,
+            'graphTxn.details.versionType': versionType,
             'graphTxn.txid': {
               '$in': [...new Set(pairs.map((v) => v.txid))],
             },
@@ -3062,7 +3064,11 @@ app.init_tx_page = (txid, highlight=[]) =>
         const chunk = input_txid_vout_pairs.slice(chunk_size*i, (chunk_size*i)+chunk_size);
 
         input_txid_vout_reqs.push(app.slpdb.query(
-          app.slpdb.get_amounts_from_txid_vout_pairs(chunk),
+          app.slpdb.get_amounts_from_txid_vout_pairs(
+            chunk,
+            tx.slp.detail.tokenIdHex,
+            tx.slp.detail.versionType
+          ),
         ));
       }
 
@@ -3198,7 +3204,6 @@ app.init_tx_page = (txid, highlight=[]) =>
                 },
               });
 
-
               cy.once('render', (e) => {
                 cy.on('tap', (e) => {
                   const tdata = e.target.json();
@@ -3208,9 +3213,6 @@ app.init_tx_page = (txid, highlight=[]) =>
                   }
                 });
               });
-
-
-
 
               return cy;
             };
