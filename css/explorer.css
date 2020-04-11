@@ -247,12 +247,6 @@ header li input::placeholder {
 .header_infobox {
     background-color: #07212b;
     padding: 60px 5% 100px 10%;
-    /*
-    text-align: center;
-    margin: auto;
-    background: url('/img/bg-header-infobox.png') no-repeat;
-    background-size: cover;
-    */
 }
 
 .header_infobox p a {
@@ -966,6 +960,10 @@ html.index-page header {
     }
     .autocomplete-suggestion {
         padding:1rem;
+    }
+
+    .header_infobox input[type=text] {
+        width: 95%;
     }
     #main-search-suggestions-container {
         position: absolute;
