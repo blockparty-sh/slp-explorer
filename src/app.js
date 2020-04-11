@@ -3193,6 +3193,20 @@ app.init_tx_page = (txid, highlight=[]) =>
                 },
               });
 
+
+              cy.once('render', (e) => {
+                cy.on('tap', (e) => {
+                  const tdata = e.target.json();
+
+                  if (tdata.data && tdata.data.url) {
+                    app.router(tdata.data.url);
+                  }
+                });
+              });
+
+
+
+
               return cy;
             };
 
@@ -3307,8 +3321,10 @@ app.init_tx_page = (txid, highlight=[]) =>
               }
 
               inputs.forEach((v) => {
+                const [tx, vout] = v.split(':');
                 items.push({ data: {
                   id:       v,
+                  url:     `/#tx/${tx}/o${vout}`,
                   color:   cytoscape_colors.input,
                   type:    'square',
                   kind:    'input',
@@ -3319,6 +3335,7 @@ app.init_tx_page = (txid, highlight=[]) =>
               addresses.forEach((v) => {
                 items.push({ data: {
                   id:       v,
+                  url:     `/#address/${v}`,
                   color:   cytoscape_colors.address,
                   type:    'square',
                   kind:    'address',
@@ -3328,10 +3345,11 @@ app.init_tx_page = (txid, highlight=[]) =>
               });
               burn_txids.forEach((v) => {
                 items.push({ data: {
-                  id:       v,
+                  id:      v,
+                  url:     `/#tx/${v}`,
                   color:   cytoscape_colors.burn,
                   type:    'square',
-                  kind:    'burn',
+                  kind:    'tx',
                   val:     v,
                   padding: 0,
                 }});
