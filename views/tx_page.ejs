@@ -154,8 +154,8 @@
                           </td>
                           <td>
                             <% if (typeof m.e.a !== 'undefined') { %>
-                              <a class="address" href="/#address/<%= app.util.to_slp_address(m.e.a) %>"><%= app.util.to_slp_address(m.e.a) %></a>
-                              <button class="copybtn" data-clipboard-text="<%= app.util.to_slp_address(m.e.a) %>"></button>
+                              <a class="address" href="/#address/<%= bchaddr.toSlpAddress(m.e.a) %>"><%= bchaddr.toSlpAddress(m.e.a) %></a>
+                              <button class="copybtn" data-clipboard-text="<%= bchaddr.toSlpAddress(m.e.a) %>"></button>
                             <% } else { %>
                               SLPDB Address Error
                             <% } %>
@@ -234,7 +234,7 @@
                             <a class="address" href="/#address/<%= m.address %>">
                               <%= m.address %>
                             </a>
-                            <button class="copybtn" data-clipboard-text="<%= app.util.to_slp_address(m.address) %>"></button>
+                            <button class="copybtn" data-clipboard-text="<%= bchaddr.toSlpAddress(m.address) %>"></button>
                           <% } %>
                         </td>
                       </tr>

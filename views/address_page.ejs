@@ -9,7 +9,7 @@
       </div>
       <h6>
         <%= address %>
-        <button class="copybtn" data-clipboard-text="<%= app.util.to_slp_address(address) %>"></button>
+        <button class="copybtn" data-clipboard-text="<%= bchaddr.toSlpAddress(address) %>"></button>
       </h6>
       <a target="_blank" href="https://explorer.bitcoin.com/bch/address/<%= address %>">
         <button type="button" class="button right">View on BCH Explorer</button>
@@ -30,15 +30,22 @@
             <tr>
               <th role="col">SLP Address</th>
               <td>
-                <%= app.util.to_slp_address(address) %>
-                <button class="copybtn" data-clipboard-text="<%= app.util.to_slp_address(address) %>"></button>
+                <%= bchaddr.toSlpAddress(address) %>
+                <button class="copybtn" data-clipboard-text="<%= bchaddr.toSlpAddress(address) %>"></button>
               </td>
             </tr>
             <tr>
               <th role="col">Cash Address</th>
               <td>
-                <%= app.util.to_cash_address(address) %>
-                <button class="copybtn" data-clipboard-text="<%= app.util.to_cash_address(address) %>"></button>
+                <%= bchaddr.toCashAddress(address) %>
+                <button class="copybtn" data-clipboard-text="<%= bchaddr.toCashAddress(address) %>"></button>
+              </td>
+            </tr>
+            <tr>
+              <th role="col">Legacy Address</th>
+              <td>
+                <%= bchaddr.toLegacyAddress(address) %>
+                <button class="copybtn" data-clipboard-text="<%= bchaddr.toLegacyAddress(address) %>"></button>
               </td>
             </tr>
             <tr>

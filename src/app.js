@@ -345,9 +345,9 @@ app.util = {
 
         // check if address entered
         try {
-          const decoded = cashaddr.decode(search_value);
+          const addr = bchaddr.toSlpAddress(search_value);
           $selector.val('');
-          return app.router('/#address/'+cashaddr.encode('simpleledger', decoded.type, decoded.hash));
+          return app.router('/#address/'+addr);
         } catch (e) {}
 
         Promise.all([
@@ -460,18 +460,19 @@ app.util = {
 
           cashaccounts = cashaccounts.c;
           for (const m of cashaccounts) {
-            const cash_addr = app.util.raw_address_to_cash_address(m.data);
-            if (cash_addr !== null) {
-              const slp_addr = app.util.to_slp_address(cash_addr);
+            try {
+              const cash_addr = app.util.raw_address_to_cash_address(m.data);
+              const slp_addr = bchaddr.toSlpAddress(cash_addr);
+
               sugs.push({
                 value: slp_addr,
                 data: {
-                  url: '/#address/'+slp_addr, // TODO decode address
+                  url: '/#address/'+slp_addr,
                   html: app.template.search_cashaccount_result(app.util.get_cash_account_data(m)),
                   category: 'Cash Accounts',
                 },
               });
-            }
+            } catch (e) { }
           }
 
           if (search_value.match(/^\d+$/)) {
@@ -530,13 +531,12 @@ app.util = {
       default: source_value = 'bitcoincash:'+address;
     }
 
-    const raw = cashaddr.decode(source_value);
+    const raw = bchaddr.decodeAddress(source_value);
     const payload_hex = raw.hash
       .reduce((str, byte) => str + byte.toString(16).padStart(2, '0'), '')
       .toLowerCase();
     const payload_type = raw.type;
-
-    const types = {'P2PKH': '01', 'P2SH': '02', 'P2PC': '03', 'P2SK': '04'};
+    const types = {'p2pkh': '01', 'p2sh': '02', 'p2pc': '03', 'p2sk': '04'};
 
     return types[payload_type]+payload_hex;
   },
@@ -545,14 +545,19 @@ app.util = {
     try {
       const arrayFromHex = (hexString) => new Uint8Array(hexString.match(/.{1,2}/g).map((byte) => parseInt(byte, 16)));
 
-      const types = {'01': 'P2PKH', '02': 'P2SH', '03': 'P2PC', '04': 'P2SK'};
+      const types = {'01': 'p2pkh', '02': 'p2sh', '03': 'p2pc', '04': 'p2sk'};
       const type = types[address.substring(0, 2)];
       const payment_data = address.substring(2);
 
-      return cashaddr.encode('bitcoincash', type, arrayFromHex(payment_data));
+      return bchaddr.encodeAsCashaddr({
+        hash: arrayFromHex(payment_data),
+        format: 'bchaddr',
+        network: 'mainnet',
+        type: type
+      });
     } catch (e) {
- return null;
-}
+      return null;
+    }
   },
 
   get_cash_account_data: (cashaccount) => {
@@ -621,16 +626,6 @@ app.util = {
       setTimeout(() => resolve(app.util.fetch_retry(url, options, n - 1)), 500);
     });
   }),
-
-  to_slp_address: (addr) => {
-    const decoded = cashaddr.decode(addr);
-    return cashaddr.encode('simpleledger', decoded.type, decoded.hash);
-  },
-
-  to_cash_address: (addr) => {
-    const decoded = cashaddr.decode(addr);
-    return cashaddr.encode('bitcoincash', decoded.type, decoded.hash);
-  },
 
   attach_clipboard: (container_selector) => {
     const clipboard = new ClipboardJS(`${container_selector} .copybtn`);
@@ -2567,7 +2562,6 @@ app.init_nonslp_tx_page = (txid, highlight=[], slp=null) =>
             if (ttx !== null) {
               m['spendTxid'] = ttx.tx.h;
               m['spendVout'] = ttx.in.filter((v) => v.e.h === txid && v.e.i === vout)[0].i;
-              console.log(txid, vout, ttx);
             }
           });
 
@@ -2987,7 +2981,7 @@ app.init_dividend_page = () =>
           ignoreAddresses = $('#div_ignore_addresses').val()
             .split('\n')
             .filter((v) => v.length !== 0)
-            .map((v) => app.util.to_slp_address(v));
+            .map((v) => bchaddr.toSlpAddress(v));
       } catch (e) {
         alert('invalid ignore address found');
         return;
@@ -3007,13 +3001,9 @@ app.init_dividend_page = () =>
         total_burned = app.util.extract_total(total_burned).g;
         total_ignored = app.util.extract_total(total_ignored).g;
 
-        console.log(total_minted, total_burned, total_ignored);
-
         const supply = new BigNumber(total_minted)
           .minus(new BigNumber(total_burned))
           .minus(new BigNumber(total_ignored));
-
-        console.log('supply', supply.toString());
 
         app.slpdb.query(app.slpdb.dividend_calculate_bch_mempool(
           tokenIdHex,
@@ -3023,7 +3013,7 @@ app.init_dividend_page = () =>
         ))
         .then((data) => {
           $('#div_results').html(
-            data.g.map((v) => `${app.util.to_slp_address(v.address)},${Number(v.bchAmount).toFixed(8)}`)
+            data.g.map((v) => `${bchaddr.toSlpAddress(v.address)},${Number(v.bchAmount).toFixed(8)}`)
             .reduce((a, v) => a+v+'\n', ''),
           );
         });
@@ -3983,7 +3973,6 @@ app.init_token_page = (tokenIdHex) =>
 
 
         if (sna.slp.detail.transactionType === 'SEND') {
-          console.log('SEND TX');
           const tbody = $('#token-transactions-table tbody');
 
           tbody.prepend(app.template.token_tx({tx: sna}));
@@ -4004,14 +3993,14 @@ app.init_token_page = (tokenIdHex) =>
 app.init_address_page = (address) =>
   new Promise((resolve, reject) => {
     try {
-      address = app.util.to_slp_address(address);
+      address = bchaddr.toSlpAddress(address);
     } catch (e) {
       return resolve(app.init_error_badaddress_page(address));
     }
 
     return app.bitdb.query(
       app.bitdb.get_cashaccount(
-        app.util.cash_address_to_raw_address(app.util.to_cash_address(address)),
+        app.util.cash_address_to_raw_address(bchaddr.toCashAddress(address)),
       ),
     )
     .then((cashaccount) => {
@@ -4019,7 +4008,6 @@ app.init_address_page = (address) =>
                     cashaccount.c.length > 0 ? cashaccount.c[0] :
                     null;
       const cashaccount_html = cashaccount ? app.template.address_cashaccount(app.util.get_cash_account_data(cashaccount)) : '';
-
 
       $('main[role=main]').html(app.template.address_page({
         address: address,
