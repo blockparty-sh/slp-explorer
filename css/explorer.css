@@ -401,6 +401,10 @@ tr.burnt-tx {
     margin-bottom: 10px;
 }
 
+.input_output .table-responsive {
+    max-height: 24rem;
+}
+
 .transaction_box {
     max-width: 100%;
     background: #ffffff;
