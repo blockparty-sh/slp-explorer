@@ -1,8 +1,98 @@
 'use strict';
+import verified_tokens from '../verified_tokens.json';
 
-const app = {};
+window.app = {};
+app.verified_tokens = new Set(JSON.parse(verified_tokens));
 
-app.verified_tokens = [];
+import index_page from '../views/index_page.ejs';
+import index_burn_tx from '../views/index_burn_tx.ejs';
+import index_token from '../views/index_token.ejs';
+import latest_transactions_tx from '../views/latest_transactions_tx.ejs';
+import all_tokens_page from '../views/all_tokens_page.ejs';
+import all_tokens_token from '../views/all_tokens_token.ejs';
+import dividend_page from '../views/dividend_page.ejs';
+import tx_page from '../views/tx_page.ejs';
+import nonslp_tx_page from '../views/nonslp_tx_page.ejs';
+import block_page from '../views/block_page.ejs';
+import block_tx from '../views/block_tx.ejs';
+import token_page from '../views/token_page.ejs';
+import token_mint_tx from '../views/token_mint_tx.ejs';
+import token_burn_tx from '../views/token_burn_tx.ejs';
+import token_address from '../views/token_address.ejs';
+import token_child_nft from '../views/token_child_nft.ejs';
+import token_tx from '../views/token_tx.ejs';
+import address_page from '../views/address_page.ejs';
+import address_cashaccount from '../views/address_cashaccount.ejs';
+import address_transactions_tx from '../views/address_transactions_tx.ejs';
+import address_token from '../views/address_token.ejs';
+import address_burn_tx from '../views/address_burn_tx.ejs';
+import error_404_page from '../views/error_404_page.ejs';
+import error_processing_tx_page from '../views/error_processing_tx_page.ejs';
+import error_notx_page from '../views/error_notx_page.ejs';
+import error_badaddress_page from '../views/error_badaddress_page.ejs';
+import search_token_result from '../views/search_token_result.ejs';
+import search_cashaccount_result from '../views/search_cashaccount_result.ejs';
+
+app.template = Object.fromEntries(Object.entries({
+  index_page,
+  index_burn_tx,
+  index_token,
+  latest_transactions_tx,
+  all_tokens_page,
+  all_tokens_token,
+  dividend_page,
+  tx_page,
+  nonslp_tx_page,
+  block_page,
+  block_tx,
+  token_page,
+  token_mint_tx,
+  token_burn_tx,
+  token_address,
+  token_child_nft,
+  token_tx,
+  address_page,
+  address_cashaccount,
+  address_transactions_tx,
+  address_token,
+  address_burn_tx,
+  error_404_page,
+  error_processing_tx_page,
+  error_notx_page,
+  error_badaddress_page,
+  search_token_result,
+  search_cashaccount_result
+}).map(([k, v]) => ([k, ejs.compile(v)])));
+
+import translation_en from '../lang/en.json';
+const i18next_config = {
+  fallbackLng: 'en',
+  debug: true,
+  resources: {
+    en: { translation: JSON.parse(translation_en) },
+  }
+};
+i18next.init(i18next_config);
+
+$(document).ready(() => {
+  $(window).on('popstate', (e) => {
+    app.router(window.location.pathname+window.location.hash, false);
+  });
+
+  $('.button-hamburger').click(() => {
+    const shown = $('.hamburger-show');
+    const hidden = $('.hamburger-hide');
+    shown.removeClass('hamburger-show').addClass('hamburger-hide');
+    hidden.removeClass('hamburger-hide').addClass('hamburger-show');
+    $('#header-search-mobile').focus();
+  });
+
+  app.slpstream.init();
+
+  app.router(window.location.pathname+window.location.hash, false);
+  $('header').removeClass('loading');
+});
+
 
 app.util = {
   generate_exchange_links: ($el, tokenIdHex) => {
@@ -4457,86 +4547,6 @@ app.router = (whash, push_history = true) => {
     }
   });
 };
-
-$(document).ready(() => {
-  $(window).on('popstate', (e) => {
-    app.router(window.location.pathname+window.location.hash, false);
-  });
-
-  $('.button-hamburger').click(() => {
-    const shown = $('.hamburger-show');
-    const hidden = $('.hamburger-hide');
-    shown.removeClass('hamburger-show').addClass('hamburger-hide');
-    hidden.removeClass('hamburger-hide').addClass('hamburger-show');
-    $('#header-search-mobile').focus();
-  });
-
-  app.slpstream.init();
-
-  const views = [
-    'index_page',
-    'index_burn_tx',
-    'index_token',
-    'latest_transactions_tx',
-    'all_tokens_page',
-    'all_tokens_token',
-    'dividend_page',
-    'tx_page',
-    'nonslp_tx_page',
-    'block_page',
-    'block_tx',
-    'token_page',
-    'token_mint_tx',
-    'token_burn_tx',
-    'token_address',
-    'token_child_nft',
-    'token_tx',
-    'address_page',
-    'address_cashaccount',
-    'address_transactions_tx',
-    'address_token',
-    'address_burn_tx',
-    'error_404_page',
-    'error_processing_tx_page',
-    'error_notx_page',
-    'error_badaddress_page',
-    'search_token_result',
-    'search_cashaccount_result',
-  ];
-
-  app.template = {};
-
-  console.time('loading verified tokens');
-  app.util.fetch_retry('/verified_tokens.json')
-  .then((tokens) => tokens.json())
-  .then((tokens) => {
-    app.verified_tokens = new Set(tokens);
-    console.timeEnd('loading verified tokens');
-  })
-  .then(() => i18next.init({
-	fallbackLng: 'en',
-    debug: true,
-    resources: translations
-  }))
-  .then(() => {
-    console.time('loading views');
-    Promise.all(views.map((v) => {
-      const url = 'views/' + v + '.ejs';
-      console.info('downloading view: ' + url);
-      return app.util.fetch_retry(url).then((v) => v.text());
-    }))
-    .then((texts) => {
-      texts.forEach((v, i) => {
-        console.info('compiling: ' + views[i]);
-        app.template[views[i]] = ejs.compile(v);
-      });
-
-      console.timeEnd('loading views');
-      app.router(window.location.pathname+window.location.hash, false);
-      $('header').removeClass('loading');
-    });
-  });
-});
 
 const error_handler = (modal_text) => {
   $('#error-modal-text').text(modal_text);

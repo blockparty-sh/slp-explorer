@@ -19,6 +19,12 @@
     ["@babel/plugin-transform-block-scoping", {
       "throwIfClosureRequired": false
     }],
-    "@babel/plugin-transform-exponentiation-operator"
+    "@babel/plugin-transform-exponentiation-operator",
+    ["babel-plugin-inline-import", {
+      "extensions": [
+        ".json",
+        ".ejs"
+      ]
+    }]
   ]
 }

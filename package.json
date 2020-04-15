@@ -11,6 +11,7 @@
     "@babel/plugin-transform-block-scoping": "^7.8.3",
     "@babel/plugin-transform-exponentiation-operator": "^7.8.3",
     "@babel/preset-env": "^7.9.5",
+    "babel-plugin-inline-import": "^3.0.0",
     "eslint": "^6.8.0",
     "eslint-config-google": "^0.14.0"
   },
