@@ -129,5 +129,6 @@
   "cash_accounts": "Cash Accounts",
   "go_back": "Go Back",
   "go_home": "Go Home",
-  "reload_page": "Reload Page"
+  "reload_page": "Reload Page",
+  "search_placeholder": "Search by txid, address or token name..."
 }

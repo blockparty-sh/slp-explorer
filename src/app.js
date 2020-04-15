@@ -1,7 +1,7 @@
 'use strict';
-import verified_tokens from '../verified_tokens.json';
-
 window.app = {};
+
+import verified_tokens from '../verified_tokens.json';
 app.verified_tokens = new Set(JSON.parse(verified_tokens));
 
 import index_page from '../views/index_page.ejs';
@@ -726,7 +726,13 @@ app.util = {
 
   internationalize: ($el) => {
     $el.find('[data-i18n]').each(function() {
-      $(this).html(i18next.t($(this).data('i18n')));
+      const trans = i18next.t($(this).data('i18n'));
+
+      if (typeof($(this).attr('placeholder')) !== 'undefined') {
+        $(this).attr('placeholder', trans);
+      } else {
+        $(this).html(trans);
+      }
     });
   },
 };
