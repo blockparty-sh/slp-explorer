@@ -1,12 +1,12 @@
 <div class="transaction_box">
-  <h1>Bad Address</h1>
+  <h1 data-i18n="bad_address_page_header">Bad Address</h1>
   <h6><%= address %></h6>
-  <p>Sorry, we cannot decode the address given. Double check it isn't mispelled.</p>
+  <p data-i18n="bad_address_page_subtext">Sorry, we cannot decode the address given. Double check it isn't mispelled.</p>
   <hr>
   <p>
-    <a class="button" onclick="window.history.back()" role="button">Go Back</a>
+    <a class="button" onclick="window.history.back()" role="button" data-i18n="go_back">Go Back</a>
     <a target="_blank" href="https://explorer.bitcoin.com/bch/address/<%= address %>">
-      <button type="button" class="button right">View on BCH Explorer</button>
+      <button type="button" class="button right" data-i18n="view_on_bch_explorer">View on BCH Explorer</button>
     </a>
   </p>
 </div>

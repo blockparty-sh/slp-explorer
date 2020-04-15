@@ -1,13 +1,13 @@
 <div class="header_infobox">
-  <h1>SLP Tokens Explorer</h1>
-  <h2>Browse tokens built on Bitcoin Cash</h2>
+  <h1 data-i18n="index_page_header">SLP Tokens Explorer</h1>
+  <h2 data-i18n="index_page_subheader">Browse tokens built on Bitcoin Cash</h2>
   <form class="form">
     <div class="md-form index-search-wrapper">
       <input class="index-search-input form-control" type="text" placeholder="Search by txid, address or token name.." aria-label="Search" id="main-search">
       <div class="suggestions-container" id="main-search-suggestions-container"></div>
     </div>
   </form>
-  <p class="normal">This website is built on top of <a target="_blank" href="https://github.com/simpleledger/SLPDB">SLPDB</a>, an offshoot of <a target="_blank" href="https://github.com/fountainhead-cash/bitd">BitDB FH</a>, view code and submit issues on <a target="_blank" href="https://github.com/blockparty-sh/slp-explorer">Github</a>.<br>Make your own tokens using <a href="https://simpleledger.cash/project/electron-cash-slp-edition/">Electron Cash SLP Edition</a>.</p>
+  <p class="normal" data-i18n="index_page_subtext">This website is built on top of <a target="_blank" href="https://github.com/simpleledger/SLPDB">SLPDB</a>, an offshoot of <a target="_blank" href="https://github.com/fountainhead-cash/bitd">BitDB FH</a>, view code and submit issues on <a target="_blank" href="https://github.com/blockparty-sh/slp-explorer">Github</a>.<br>Make your own tokens using <a href="https://simpleledger.cash/project/electron-cash-slp-edition/">Electron Cash SLP Edition</a>.</p>
   <a href="#alltokens" id="index-view-all-tokens" class="button button-large align-center">View all tokens</a>
   <a href="#dividend" id="index-divided" class="button button-large align-center">Dividend Helper</a>
 </div>
@@ -15,22 +15,22 @@
 <div class="row super-wrapper">
   <div class="rounded_row">
     <div id="recent-transactions-table-container" class="table-container loading">
-      <h3>Latest Transactions</h3>
+      <h3 data-i18n="index_page_latest_transactions">Latest Transactions</h3>
 
         <div class="table-responsive">
           <table id="recent-transactions-table">
             <thead>
               <tr>
-                <th><div class="flex-hcenter">Transaction Hash</div></th>
-                <th><div class="flex-hcenter">Symbol</div></th>
-                <th><div class="flex-hcenter amount">Amount</div></th>
-                <th><div class="flex-hcenter">Version</div></th>
-                <th><div class="flex-hcenter">Block Height</div></th>
-                <th><div class="flex-hcenter">Block Time</div></th>
+                <th><div class="flex-hcenter" data-i18n="transaction_hash">Transaction Hash</div></th>
+                <th><div class="flex-hcenter" data-i18n="symbol">Symbol</div></th>
+                <th><div class="flex-hcenter amount" data-i18n="amount">Amount</div></th>
+                <th><div class="flex-hcenter" data-i18n="version">Version</div></th>
+                <th><div class="flex-hcenter" data-i18n="block_height">Block Height</div></th>
+                <th><div class="flex-hcenter" data-i18n="block_time">Block Time</div></th>
               </tr>
             </thead>
             <tbody>
-              <tr><td>Loading...</td></tr>
+              <tr><td data-i18n="loading">Loading...</td></tr>
             </tbody>
           </table>
         </div>
@@ -38,14 +38,14 @@
   </div>
 
   <div class="rounded_row graph">
-    <h3>Transaction Charts (<span id="transaction-count">...</span>)</h3>
+    <h3><span data-i18n="index_page_transaction_charts">Transaction Charts</span> (<span id="transaction-count">...</span>)</h3>
     <div class="plot-time-selector">
-        <span id="plot-usage-year">year</span>
-        <span id="plot-usage-month">month</span>
-        <span id="plot-usage-week">week</span>
-        <span id="plot-usage-day">day</span>
+        <span id="plot-usage-year" data-i18n="year">year</span>
+        <span id="plot-usage-month" data-i18n="month">month</span>
+        <span id="plot-usage-week" data-i18n="week">week</span>
+        <span id="plot-usage-day" data-i18n="day">day</span>
     </div>
-    <div id="plot-usage" style="width:100%">Loading...</div>
+    <div id="plot-usage" style="width:100%" data-i18n="loading">Loading...</div>
     <div id="plot-token-usage" style="width:100%;"></div>
   </div>
 
@@ -62,14 +62,14 @@
           <table class="table" id="index-tokens-table">
             <thead>
               <tr>
-                <th>Token Id</th>
-                <th>Token</th>
-                <th>Block Height</th>
-                <th>Block Time</th>
+                <th data-i18n="token_id">Token Id</th>
+                <th data-i18n="token">Token</th>
+                <th data-i18n="block_height">Block Height</th>
+                <th data-i18n="block_time">Block Time</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td>loading...</td><tr>
+              <tr><td data-i18n="loading">Loading...</td><tr>
             </tbody>
           </table>
         </div>
@@ -80,20 +80,20 @@
 
     <div class="rounded_row">
       <div id="index-burn-history-table-container" class="rounded box-shadow table-container">
-        <h3>Token Burns (<span id="index-burn-count">...</span>)</h3>
+        <h3><span data-i18n="index_page_token_burns">Token Burns</span> (<span id="index-burn-count">...</span>)</h3>
         <div class="table-responsive">
           <table class="table" id="index-burn-history-table">
             <thead>
               <tr>
-                <th>Txid</th>
-                <th>Token</th>
-                <th class="amount">Amount Burnt</th>
-                <th>Block Height</th>
-                <th>Block Time</th>
+                <th data-i18n="txid">Txid</th>
+                <th data-i18n="token">Token</th>
+                <th class="amount" data-i18n="amount">Amount</th>
+                <th data-i18n="block_height">Block Height</th>
+                <th data-i18n="block_time">Block Time</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td>Loading...</td></tr>
+              <tr><td data-i18n="loading">Loading...</td></tr>
             </tbody>
           </table>
           <ul class="pagination">
@@ -106,7 +106,7 @@
   </div>
 
   <div class="row">
-    <h3>Exchanges:</h3>
+    <h3 data-i18n="index_page_exchanges">Exchanges:</h3>
     <div id="exchange-exchanges">
       <a href="https://cryptophyl.com/?r=blockparty" target="blank"><img src="img/cryptophyl.png" /></a>
       <a href="https://sideshift.ai/a/jsKIdsWiF" target="blank"><img src="img/sideshift-ai.png" /></a>

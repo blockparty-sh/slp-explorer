@@ -14,5 +14,11 @@
       <a href="#block/mempool">Pending</a>
     <% } %>
   </td>
-  <td><% if (tx.blk) { %><%= new Date(tx.blk.t*1000).toLocaleString() %><% } else { %>Pending<% } %></td>
+  <td>
+    <% if (tx.blk) { %>
+      <%= new Date(tx.blk.t*1000).toLocaleString() %>
+    <% } else { %>
+      Pending
+    <% } %>
+  </td>
 </tr>

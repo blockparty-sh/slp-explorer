@@ -12,14 +12,14 @@
   
           <%= tx.slp.detail.transactionType[0].toUpperCase() + tx.slp.detail.transactionType.substring(1).toLocaleLowerCase() %>
   
-          Transaction
+          <span data-i18n="transaction">Transaction</span>
         </h2>
         <h6>
           <%= tx.tx.h %>
           <button class="copybtn" data-clipboard-text="<%= tx.tx.h %>"></button>
         </h6>
         <a target="_blank" href="https://explorer.bitcoin.com/bch/tx/<%= tx.tx.h %>">
-          <button type="button" class="button right">View on BCH Explorer</button>
+          <button type="button" class="button right" data-i18n="view_on_bch_explorer">View on BCH Explorer</button>
         </a>
       </div>
     </div>
@@ -33,36 +33,36 @@
             <table class="table">
               <thead>
                 <tr>
-                  <th><h3>Details</h3></th>
+                  <th><h3 data-i18n="details">Details</h3></th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <th role="col">Type</th>
+                  <th role="col" data-i18n="type">Type</th>
                   <td><%= tx.slp.detail.transactionType %></td>
                 </tr>
                 <tr>
-                  <th role="col">Block</th>
+                  <th role="col" data-i18n="block">Block</th>
                   <td>
                     <% if (tx.blk) { %>
                       <a href="#block/<%= tx.blk.i %>"><%= tx.blk.i %></a>
                     <% } else { %>
-                      <a href="#block/mempool">Pending</a>
+                      <a href="#block/mempool" data-i18n="pending">Pending</a>
                     <% } %>
                   </td>
                 </tr>
                 <tr>
-                  <th role="col">Block Time</th>
+                  <th role="col" data-i18n="block_time">Block Time</th>
                   <td>
                     <% if (tx.blk) { %>
                       <%= new Date(tx.blk.t*1000).toLocaleString() %>
                     <% } else { %>
-                      Pending
+                      <span data-i18n="pending">Pending</span>
                     <% } %>
                   </td>
                 </tr>
                 <tr>
-                  <th role="col">Txid</th>
+                  <th role="col" data-i18n="txid">Txid</th>
                   <td>
                     <a class="txid" href="#tx/<%= tx.tx.h %>"><%= tx.tx.h %></a>
                     <button class="copybtn" data-clipboard-text="<%= tx.tx.h %>"></button>
@@ -71,7 +71,7 @@
     
                 <% if (tx.slp.detail.transactionType == 'GENESIS') { %>
                   <tr>
-                    <th role="col">Creator</th>
+                    <th role="col" data-i18n="creator">Creator</th>
                     <td>
                       <a class="address" href="#address/<%= tx.slp.detail.outputs[0].address %>"><%= tx.slp.detail.outputs[0].address %></a>
                       <button class="copybtn" data-clipboard-text="<%= tx.slp.detail.outputs[0].address %>"></button>
@@ -79,32 +79,32 @@
                   </tr>
                 <% } %>
                 <tr>
-                  <th scope="row">Token Id</th>
+                  <th scope="row" data-i18n="token_id">Token Id</th>
                   <td>
                     <a class="tokenid" href="/#token/<%= tx.slp.detail.tokenIdHex %>"><%= tx.slp.detail.tokenIdHex %></a>
                     <button class="copybtn" data-clipboard-text="<%= tx.slp.detail.tokenIdHex %>"></button>
                   </td>
                 </tr>
                 <tr>
-                  <th scope="row">Version</th>
+                  <th scope="row" data-i18n="version">Version</th>
                   <td>
-                  <% if(token.tokenDetails.versionType === 1) { %>Type1<% } %>
-                  <% if(token.tokenDetails.versionType === 129) { %>NFT1-Group<% } %>
+                  <% if(token.tokenDetails.versionType === 1) { %><span data-i18n="type1">Type1</span><% } %>
+                  <% if(token.tokenDetails.versionType === 129) { %><span data-i18n="nft1_child">NFT1-Group</span><% } %>
                   <% if(token.tokenDetails.versionType === 65) { %>
-                    <a href="/#token/<%= token.nftParentId %>">NFT1-Child [view parent]</a>
+                    <a href="/#token/<%= token.nftParentId %>"><span data-i18n="nft1_child">NFT1-Child [view parent]</span></a>
                   <% } %>
                   </td>
                 </tr>
                 <tr>
-                  <th scope="row">Name</th>
+                  <th scope="row" data-i18n="name">Name</th>
                   <td><%= token.tokenDetails.name %></td>
                 </tr>
                 <tr>
-                  <th scope="row">Symbol</th>
+                  <th scope="row" data-i18n="symbol">Symbol</th>
                   <td><%= token.tokenDetails.symbol %></td>
                 </tr>
                 <tr>
-                  <th scope="row">Verified</th>
+                  <th scope="row" data-i18n="verified">Verified</th>
                   <td>
                     <% if (app.util.is_verified(token.tokenDetails.tokenIdHex)) { %>
                       <img src="/img/verified-checkmark.png">
@@ -129,14 +129,14 @@
       <div class="input_output" id="inputs-list">
         <div class="rounded box-shadow table-container">
           <% if (tx.slp.detail.transactionType !== 'GENESIS') { %>
-            <h3>Inputs (<%= Number(Object.keys(input_amounts).length).toLocaleString() %>)</h3>
+            <h3><span data-i18n="inputs">Inputs</span> (<%= Number(Object.keys(input_amounts).length).toLocaleString() %>)</h3>
             <div class="table-responsive">
               <table class="table fixed-header">
                 <thead>
                   <tr>
-                    <th>Tx</th>
-                    <th class="amount">Amount</th>
-                    <th>Address</th>
+                    <th data-i18n="tx">Tx</th>
+                    <th class="amount" data-i18n="amount">Amount</th>
+                    <th data-i18n="address">Address</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -147,7 +147,7 @@
                           <td><a class="txid" href="/#tx/<%= m.e.h %>/o<%= m.e.i %>" style="font-weight:bold">&larr;</a></td>
                           <td class="amount">
                             <% if(tx.slp.detail.transactionType == 'MINT' && m.e.i == tx.slp.detail.txnBatonVout) { %>
-                                Mint Baton
+                                <span data-i18n="mint_baton">Mint Baton</span>
                             <% } else { %>
                                 <%= app.util.format_bignum_str(input_amounts[m.e.h+':'+m.e.i], token.tokenDetails.decimals)  %>
                             <% } %>
@@ -157,7 +157,7 @@
                               <a class="address" href="/#address/<%= bchaddr.toSlpAddress(m.e.a) %>"><%= bchaddr.toSlpAddress(m.e.a) %></a>
                               <button class="copybtn" data-clipboard-text="<%= bchaddr.toSlpAddress(m.e.a) %>"></button>
                             <% } else { %>
-                              SLPDB Address Error
+                              <span data-i18n="slpdb_address_error">SLPDB Address Error</span>
                             <% } %>
                           </td>
                         </tr>
@@ -166,15 +166,15 @@
                   <% } %>
                   <% if (Object.keys(input_amounts).length === 0) { %>
                     <tr>
-                      <td>No inputs.</td>
+                      <td data-i18n="no_inputs">No inputs.</td>
                     </tr>
                   <% } %>
                 </tbody>
               </table>
             </div>
           <% } else { %>
-            <h3>Genesis</h3>
-            <p>TokenType1 genesis transactions do not have any SLP inputs.<br>NFT1 Child transactions can see the input from looking at the Version row in the Token Details pane.</p>
+            <h3 data-i18n="genesis">Genesis</h3>
+            <p data-i18n="genesis_description">TokenType1 genesis transactions do not have any SLP inputs.<br>NFT1 Child transactions can see the input from looking at the Version row in the Token Details pane.</p>
           <% } %>
         </div>
       </div>
@@ -182,14 +182,14 @@
     <div class="rounded_row">
         <div class="input_output" id="outputs-list">
           <div class="rounded box-shadow table-container">
-            <h3>Outputs (<%= Number(tx.graph[0].graphTxn.outputs.length).toLocaleString() %>)</h3>
+            <h3><span data-i18n="outputs">Outputs</span> (<%= Number(tx.graph[0].graphTxn.outputs.length).toLocaleString() %>)</h3>
             <div class="table-responsive">
               <table class="table">
                 <thead>
                   <tr>
-                    <th>Tx</th>
-                    <th class="amount">Amount</th>
-                    <th>Address</th>
+                    <th data-i18n="tx">Tx</th>
+                    <th class="amount" data-i18n="amount">Amount</th>
+                    <th data-i18n="address">Address</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -222,7 +222,7 @@
                         </td>
                         <td class="amount">
                           <% if (m.status === 'BATON_UNSPENT' || m.status ==='BATON_SPENT_IN_MINT') { %>
-                          Mint Baton
+                          <span data-i18n="mint_baton">Mint Baton</span>
                           <% } else { %>
                             <%= app.util.format_bignum_str(m.slpAmount, tx.slp.detail.decimals) %>
                           <% }%>
@@ -241,7 +241,7 @@
                     <% } %>
                   <% } else { %>
                     <tr>
-                      <td>No outputs.</td>
+                      <td data-i18n="no_outputs">No outputs.</td>
                     </tr>
                   <% } %>
                 </tbody>

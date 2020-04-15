@@ -13,7 +13,7 @@
       <% if (tx.token[0].tokenDetails.symbol) { %>
         <%= tx.token[0].tokenDetails.symbol %>
       <% } else { %>
-        <span class="mono">[none]</span>
+        <span class="mono" data-i18n="none">[none]</span>
       <% } %>
       </a>
     </div>
@@ -23,10 +23,10 @@
   </td>
   <td>
     <div>
-      <% if(tx.token[0].tokenDetails.versionType === 1) { %>Type1<% } %>
-      <% if(tx.token[0].tokenDetails.versionType === 129) { %>NFT1-Group<% } %>
-      <% if(tx.token[0].tokenDetails.versionType === 65) { console.log(tx); %>
-        <a href="/#token/<%= tx.token[0].nftParentId %>">NFT1-Child [view parent]</a>
+      <% if(tx.token[0].tokenDetails.versionType === 1) { %><span data-i18n="type1">Type1</span><% } %>
+      <% if(tx.token[0].tokenDetails.versionType === 129) { %><span data-i18n="nft1_group">NFT1-Group</span><% } %>
+      <% if(tx.token[0].tokenDetails.versionType === 65) { %>
+        <a href="/#token/<%= tx.token[0].nftParentId %>" data-i18n="nft1_child">NFT1-Child [view parent]</a>
       <% } %>
     </div>
   </td>
@@ -35,7 +35,7 @@
       <% if (tx.blk) { %>
         <a href="#block/<%= tx.blk.i %>"><%= tx.blk.i %></a>
       <% } else { %>
-        <a href="#block/mempool">Pending</a>
+        <a href="#block/mempool" data-i18n="pending">Pending</a>
       <% } %>
     </div>
   </td>
@@ -44,7 +44,7 @@
       <% if (tx.blk) { %>
         <%= new Date(tx.blk.t*1000).toLocaleString() %>
       <% } else { %>
-        Pending
+        <span data-i18n="pending">Pending</span>
       <% } %>
     </div>
   </td>

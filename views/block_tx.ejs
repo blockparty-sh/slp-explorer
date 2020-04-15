@@ -21,7 +21,7 @@
           <%= tx.token[0].tokenDetails.name %> $<%= tx.token[0].tokenDetails.symbol %>
         </a>
       <% } else { %>
-        <span class="mono"><a href="#token/<%= tx.slp.detail.tokenIdHex %>">[none]</a></span>
+        <span class="mono"><a href="#token/<%= tx.slp.detail.tokenIdHex %>" data-i18n="none">[none]</a></span>
       <% } %>
     </div>
   </td>

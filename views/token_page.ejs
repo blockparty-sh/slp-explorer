@@ -9,7 +9,7 @@
           <% } else if (token.tokenDetails.name !== '') { %>
             <%= token.tokenDetails.name %>
           <% } %>
-          Token
+          <span data-i18n="token">Token</span>
         </h2>
       </div>
       <h6>
@@ -17,7 +17,7 @@
         <button class="copybtn" data-clipboard-text="<%= token.tokenDetails.tokenIdHex %>"></button>
       </h6>
       <a target="_blank" href="https://explorer.bitcoin.com/bch/tx/<%= token.tokenDetails.tokenIdHex %>">
-        <button type="button" class="button right">View on BCH Explorer</button>
+        <button type="button" class="button right" data-i18n="view_on_bch_explorer">View on BCH Explorer</button>
       </a>
     </div>
   </div>
@@ -30,53 +30,53 @@
             <thead>
               <tr>
                 <td>
-                    <h3>Details</h3>
+                    <h3 data-i18n="details">Details</h3>
                 </td>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <th scope="row">Token Id</th>
+                <th scope="row" data-i18n="token_id">Token Id</th>
                 <td>
                   <a class="tokenid" href="/#token/<%= token.tokenDetails.tokenIdHex %>"><%= token.tokenDetails.tokenIdHex %></a>
                   <button class="copybtn" data-clipboard-text="<%= token.tokenDetails.tokenIdHex %>"></button>
                 </td>
               </tr>
               <tr>
-                <th scope="row">Version</th>
+                <th scope="row" data-i18n="version">Version</th>
                 <td>
-                <% if(token.tokenDetails.versionType === 1) { %>Type1<% } %>
-                <% if(token.tokenDetails.versionType === 129) { %>NFT1-Group<% } %>
+                <% if(token.tokenDetails.versionType === 1) { %><span data-i18n="type1">Type1</span><% } %>
+                <% if(token.tokenDetails.versionType === 129) { %><span data-i18n="nft1_group">NFT1-Group</span><% } %>
                 <% if(token.tokenDetails.versionType === 65) { %>
-                  <a href="/#token/<%= token.nftParentId %>">NFT1-Child [view parent]</a>
+                  <a href="/#token/<%= token.nftParentId %>"><span data-i18n="nft1_child">NFT1-Child [view parent]</span></a>
                   <button class="copybtn" data-clipboard-text="<%= token.nftParentId %>"></button>
                 <% } %>
                 </td>
               </tr>
               <tr>
-                <th scope="row">Name</th>
+                <th scope="row" data-i18n="name">Name</th>
                 <td><%= token.tokenDetails.name %></td>
               </tr>
               <tr>
-                <th scope="row">Symbol</th>
+                <th scope="row" data-i18n="symbol">Symbol</th>
                 <td><%= token.tokenDetails.symbol %></td>
               </tr>
               <tr>
-                <th scope="row">Timestamp</th>
+                <th scope="row" data-i18n="timestamp">Timestamp</th>
                 <td>
                   <% if (token.tokenDetails.timestamp_unix === null) { %>
-                    Pending
+                    <span data-i18n="pending">Pending</span>
                   <% } else { %>
                     <%= new Date(token.tokenDetails.timestamp_unix*1000).toLocaleString() %>
                   <% } %>
                 </td>
               </tr>
               <tr>
-                <th scope="row">Decimals</th>
+                <th scope="row" data-i18n="details">Decimals</th>
                 <td><%= token.tokenDetails.decimals %></td>
               </tr>
               <tr>
-                <th scope="row">Document URI</th>
+                <th scope="row" data-i18n="document_uri">Document URI</th>
                 <td>
                   <% if (token.tokenDetails.documentUri) { %>
                     <% const url = app.util.document_link(token.tokenDetails.documentUri); %>
@@ -89,11 +89,11 @@
                 </td>
               </tr>
               <tr>
-                <th scope="row">Document Checksum</th>
+                <th scope="row" data-i18n="document_checksum">Document Checksum</th>
                 <td><span class="mono word-break-all"><%= token.tokenDetails.documentSha256Hex %></span></td>
               </tr>
               <tr>
-                <th scope="row">Verified</th>
+                <th scope="row" data-i18n="verified">Verified</th>
                 <td>
                   <% if (app.util.is_verified(token.tokenDetails.tokenIdHex)) { %>
                     <img src="/img/verified-checkmark.png">
@@ -121,30 +121,30 @@
             <thead>
               <tr>
                 <td>
-                    <h3>Stats</h3>
+                    <h3 data-i18n="stats">Stats</h3>
                 </td>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <th>Block Created</th>
+                <th data-i18n="block_created">Block Created</th>
                 <td>
                   <% if (token.tokenStats.block_created !== null) { %>
                     <a href="#block/<%= token.tokenStats.block_created %>"><%= token.tokenStats.block_created %></a>
                   <% } else { %>
-                    <a href="#block/mempool">Pending</a>
+                    <a href="#block/mempool" data-i18n="pending">Pending</a>
                   <% } %>
                 </td>
               </tr>
               <tr>
-                <th scope="row">Minting Baton Status</th>
+                <th scope="row" data-i18n="minting_baton_status">Minting Baton Status</th>
                 <td>
                   <%= token.mintBatonStatus.split('_').map(v => v[0].toUpperCase() + v.substring(1).toLowerCase()).join(' ') %>
                 </td>
               </tr>
               <% if (token.mintBatonUtxo && token.mintBatonUtxo.split(':').length === 2) { %>
               <tr>
-                <th scope="row">Minting Baton UTXO</th>
+                <th scope="row" data-i18n="minting_baton_utxo">Minting Baton UTXO</th>
                 <td>
                   <a href="#tx/<%= token.mintBatonUtxo.split(':')[0] %>">
                     <% const mintBatonUtxoParts = token.mintBatonUtxo.split(':'); %>
@@ -154,31 +154,31 @@
               </tr>
               <% } %>
               <tr>
-                <th scope="row">Valid Txns Since Genesis</th>
+                <th scope="row" data-i18n="tokenstats_valid_token_transactions">Valid Txns Since Genesis</th>
                 <td class="amount" id="tokenstats_valid_token_transactions">...</span></td>
               </tr>
               <tr>
-                <th scope="row">Valid Token Utxos</th>
+                <th scope="row" data-i18n="tokenstats_valid_token_utxos">Valid Token Utxos</th>
                 <td class="amount" id="tokenstats_valid_token_utxos">...</td>
               </tr>
               <tr>
-                <th scope="row">Valid Token Addresses</th>
+                <th scope="row" data-i18n="tokenstats_valid_token_addresses">Valid Token Addresses</th>
                 <td class="amount" id="tokenstats_valid_token_addresses">...</td>
               </tr>
               <tr>
-                <th scope="row">Satoshis Locked Up</th>
+                <th scope="row" data-i18n="tokenstats_satoshis_locked_up">Satoshis Locked Up</th>
                 <td class="amount" id="tokenstats_satoshis_locked_up">...</td>
               </tr>
               <tr class="decimal-stats">
-                <th scope="row">Tokens Minted</th>
+                <th scope="row" data-i18n="tokenstats_tokens_minted">Tokens Minted</th>
                 <td class="amount" id="tokenstats_tokens_minted">...</td>
               </tr>
               <tr class="decimal-stats">
-                <th scope="row">Tokens Burned</th>
+                <th scope="row" data-i18n="tokenstats_tokens_burned">Tokens Burned</th>
                 <td class="amount" id="tokenstats_tokens_burned">...</td>
               </tr>
               <tr class="decimal-stats">
-                <th scope="row">Circulating Supply</th>
+                <th scope="row" data-i18n="tokenstats_circulating_supply">Circulating Supply</th>
                 <td class="amount" id="tokenstats_circulating_supply">...</td>
               </tr>
             </tbody>
@@ -190,20 +190,20 @@
   
   <div class="rounded_row">
     <div id="token-transactions-table-container" class="rounded box-shadow table-container loading">
-      <h3 class="border-bottom border-gray">Transactions (<span id="token_transactions_count">...</span>)</h3>
+      <h3 class="border-bottom border-gray"><span data-i18n="transactions">Transactions</span> (<span id="token_transactions_count">...</span>)</h3>
       <div class="table-responsive">
         <table class="table" id="token-transactions-table">
           <thead>
             <tr>
-              <th>Txid</th>
-              <th>Type</th>
-              <th class="amount">Amount</th>
-              <th>Block Height</th>
-              <th>Block Time</th>
+              <th data-i18n="txid">Txid</th>
+              <th data-i18n="type">Type</th>
+              <th class="amount" data-i18n="amount">Amount</th>
+              <th data-i18n="block_height">Block Height</th>
+              <th data-i18n="block_time">Block Time</th>
             </tr>
           </thead>
           <tbody>
-            <tr><td>Loading...</td></tr>
+            <tr><td data-i18n="loading">Loading...</td></tr>
           </tbody>
         </table>
         <ul class="pagination">
@@ -213,32 +213,32 @@
   </div>
   
   <div class="rounded_row">
-    <h3>Transactions Chart (<span id="token-usage-count">...</span>)</h3>
+    <h3><span data-i18n="transactions_chart">Transactions Chart</span> (<span id="token-usage-count">...</span>)</h3>
     <div class="plot-time-selector">
-        <span id="plot-token-usage-year">year</span>
-        <span id="plot-token-usage-month">month</span>
-        <span id="plot-token-usage-week">week</span>
-        <span id="plot-token-usage-day">day</span>
+        <span id="plot-token-usage-year" data-i18n="year">year</span>
+        <span id="plot-token-usage-month" data-i18n="month">month</span>
+        <span id="plot-token-usage-week" data-i18n="week">week</span>
+        <span id="plot-token-usage-day" data-i18n="day">day</span>
     </div>
-    <div id="plot-token-usage" style="width:100%">Loading...</div>
+    <div id="plot-token-usage" style="width:100%" data-i18n="loading">Loading...</div>
   </div>
   
   <% if (token.tokenDetails.versionType === 129) { %>
     <div class="rounded_row">
       <div id="token-child-nfts-table-container" class="rounded box-shadow table-container">
-        <h3>Child NFTs</h3>
+        <h3 data-i18n="child_nfts">Child NFTs</h3>
         <div class="table-responsive">
           <table class="table" id="token-child-nfts-table">
             <thead>
               <tr>
-                <th>Token Id</th>
-                <th>Symbol</th>
-                <th>Name</th>
-                <th>Block Height</th>
+                <th data-i18n="token_id">Token Id</th>
+                <th data-i18n="symbol">Symbol</th>
+                <th data-i18n="name">Name</th>
+                <th data-i18n="block_height">Block Height</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td>Loading...</td></tr>
+              <tr><td data-i18n="loading">Loading...</td></tr>
             </tbody>
           </table>
           <ul class="pagination">
@@ -250,20 +250,20 @@
   
   <div class="rounded_row">
     <div id="token-mint-history-table-container" class="rounded box-shadow table-container loading">
-      <h3>Mint History (<span id="total_token_mint_transactions">...</span>)</h3>
+      <h3><span data-i18n="mint_history">Mint History</span> (<span id="total_token_mint_transactions">...</span>)</h3>
       <div class="table-responsive">
         <table class="table" id="token-mint-history-table">
           <thead>
             <tr>
-              <th>Txid</th>
-              <th>Type</th>
-              <th class="amount">Amount</th>
-              <th>Block Height</th>
-              <th>Block Time</th>
+              <th data-i18n="txid">Txid</th>
+              <th data-i18n="type">Type</th>
+              <th class="amount" data-i18n="amount">Amount</th>
+              <th data-i18n="block_height">Block Height</th>
+              <th data-i18n="block_time">Block Time</th>
             </tr>
           </thead>
           <tbody>
-            <tr><td>Loading...</td></tr>
+            <tr><td data-i18n="loading">Loading...</td></tr>
           </tbody>
         </table>
         <ul class="pagination">
@@ -274,17 +274,17 @@
   
   <div class="rounded_row">
     <div id="token-addresses-table-container" class="rounded box-shadow table-container loading">
-      <h3 class="border-bottom border-gray">Addresses (<span id="token_addresses_count">...</span>)</h3>
+      <h3 class="border-bottom border-gray"><span data-i18n="addresses">Addresses</span> (<span id="token_addresses_count">...</span>)</h3>
       <div class="table-responsive">
         <table class="table" id="token-addresses-table">
           <thead>
             <tr>
-              <th>Address</th>
-              <th class="amount">Token Balance</th>
+              <th data-i18n="address">Address</th>
+              <th class="amount" data-i18n="token_balance">Token Balance</th>
             </tr>
           </thead>
           <tbody>
-            <tr><td>Loading...</td></tr>
+            <tr><td data-i18n="loading">Loading...</td></tr>
           </tbody>
         </table>
         <ul class="pagination">
@@ -294,25 +294,25 @@
   </div>
   
   <div class="rounded_row">
-    <h3>Rich List</h3>
+    <h3 data-i18n="rich_list">Rich List</h3>
     <div id="plot-token-address-rich" style="width:100%"></div>
   </div>
   
   <div class="rounded_row">
     <div id="token-burn-history-table-container" class="rounded box-shadow table-container loading">
-      <h3>Burn History (<span id="total_token_burn_transactions">...</span>)</h3>
+      <h3><span data-i18n="burn_history">Burn History</span> (<span id="total_token_burn_transactions">...</span>)</h3>
       <div class="table-responsive">
         <table class="table" id="token-burn-history-table">
           <thead>
             <tr>
-              <th>Txid</th>
-              <th class="amount">Amount Burnt</th>
-              <th>Block Height</th>
-              <th>Block Time</th>
+              <th data-i18n="txid">Txid</th>
+              <th class="amount" data-i18n="amount">Amount</th>
+              <th data-i18n="block_height">Block Height</th>
+              <th data-i18n="block_time">Block Time</th>
             </tr>
           </thead>
           <tbody>
-            <tr><td>Loading...</td></tr>
+            <tr><td data-i18n="loading">Loading...</td></tr>
           </tbody>
         </table>
         <ul class="pagination">

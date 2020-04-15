@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
     <link rel="stylesheet" href="css/explorer.css" rel="stylesheet">
     <title>SLP Token Explorer</title>
+    <meta name="description" content="SLP Token Explorer is an open source block explorer for Bitcoin Cash tokens based on the Simple Ledger Protocol (SLP).">
 
     <!-- Favicon -->
     <link rel="apple-touch-icon" sizes="60x60" href="/apple-touch-icon.png">
@@ -33,17 +34,17 @@
     <meta property="og:image" content="https://simpleledger.info/img/social.png" />
   </head>
   <body>
-    <div class="maintenance">
+    <div class="maintenance" data-i18n="maintenance">
       simpleledger.info currently undergoing maintenance, expect degraded performance.
     </div>
     <header class="loading">
-      <div class="maintenance">
+      <div class="maintenance" data-i18n="maintenance">
         simpleledger.info currently undergoing maintenance, expect degraded performance.
       </div>
       <ul id="top-menu" class="hide-mobile">
         <li><a href="#" id="header-logo"></a></li>
-        <li><a href="#">Explorer</a></li>
-        <li><a href="#alltokens">All Tokens</a></li>
+        <li><a href="#" data-i18n="mainmenu_explorer">Explorer</a></li>
+        <li><a href="#alltokens" data-i18n="mainmenu_all_tokens">All Tokens</a></li>
         <li class="search">
           <form>
             <input type="text" placeholder="Search by txid, address or token name..." autocapitalize="off" spellcheck="off" class="header-search" id="header-search-desktop">
@@ -52,8 +53,8 @@
       </ul>
       <ul id="top-menu" class="hide-desktop show-mobile">
         <li><a href="#" id="header-logo"></a></li>
-        <li><a href="#">Explorer</a></li>
-        <li><a href="#alltokens">All Tokens</a></li>
+        <li><a href="#" data-i18n="mainmenu_explorer">Explorer</a></li>
+        <li><a href="#alltokens" data-i18n="mainmenu_all_tokens">All Tokens</a></li>
         <li class="right"><div class="button button-hamburger">.</div></li>
       </ul>
       <ul class="search hide-desktop show-mobile hamburger-hide">
@@ -74,7 +75,7 @@
     <div class="loading-modal">
       <div class="loading_dank_memes">
         <img height="135px" src="/img/loading_green.svg">
-        <h3>Loading view...</h3>
+        <h3 data-i18n="loading_dank_memes">Loading view...</h3>
       </div>
     </div>
 
@@ -84,7 +85,7 @@
           <a href="#"><img id="logo" src="img/slp-logo.svg" alt="Simple Ledger Protocol" /></a>
         </div>
         <div class="col">
-          <h4>Source Code</h4>
+          <h4 data-i18n="footer_source_code">Source Code</h4>
           <ul class="list-unstyled text-small">
             <li><a class="text-muted" href="http://github.com/blockparty-sh/slp-explorer">SLP Explorer</a></li>
             <li><a class="text-muted" href="https://github.com/simpleledger/SLPDB">SLPDB</a></li>
@@ -95,7 +96,7 @@
           </ul>
         </div>
         <div class="col">
-          <h4>Resources</h4>
+          <h4 data-i18n="footer_resources">Resources</h4>
           <ul class="list-unstyled text-small">
             <li><a class="text-muted" href="https://simpleledger.cash">simpleledger.cash</a></li>
             <li><a class="text-muted" href="https://github.com/simpleledger/slp-specifications">specification</a></li>
@@ -103,7 +104,7 @@
           </ul>
         </div>
         <div class="col">
-          <h4>Connect</h4>
+          <h4 data-i18n="footer_connect">Connect</h4>
           <ul class="list-unstyled text-small">
             <li><a class="text-muted" href="https://t.me/simpleledger">SimpleLedger Chat</a></li>
             <li><a class="text-muted" href="https://www.youtube.com/channel/UC_WJO3lyHAhdU6oEk0lhMLw">SimpleLedger Youtube</a></li>
@@ -114,18 +115,18 @@
       </div>
     </footer>
     <div id="error-modal" class="display-none">
-      <h1>Oops... an error occured!</h1>
+      <h1 data-i18n="error_modal_header">Oops... an error occured!</h1>
       <pre id="error-modal-text"></pre>
-      <p>
+      <p data-i18n="error_modal_subtext">
         Sorry for the inconvenience, we will look into this as soon as possible. If you'd like, you can report this error <a href="https://github.com/blockparty-sh/slp-explorer">here</a>.<br>Reloading the page might help.
       </p>
 
       <a onclick="reload_page()">
-        <button type="button" class="button">Reload Page</button>
+        <button type="button" class="button" data-i18n="reload_page">Reload Page</button>
       </a>
       <br><br>
       <a href="/">
-        <button type="button" class="button">Go Home</button>
+        <button type="button" class="button" data-i18n="go_home">Go Home</button>
       </a>
     </div>
 
@@ -148,6 +149,9 @@
     <script src="https://unpkg.com/cytoscape@3.14.1/dist/cytoscape.min.js" integrity="sha384-I69mq17d9MnbAqpz7UjreMLdonMYVaAwNXTBWN9J5g3oJF0ruDyCyDok5WgzIPoc" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/klayjs@0.4.1/klay.js" integrity="sha384-GQW6kISetAn3YwGwDs56aaBYfPg7xP6Uz2qPaWteSZWMZYdtf+bvrgq2aKvdyqrg" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/clipboard@2.0.1/dist/clipboard.min.js" integrity="sha384-JbuAF+8+4FF8uR/7D07/5IWwIj2FoNw5jJQGg1s8GtGIfQXFxWPRdMNWYmU35KjP" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/i18next@19.4.1/dist/umd/i18next.min.js" integrity="sha384-0K350ngocaICNR2EzKMi97LSQXcmL2EVcv9g5Tq4YZFEEQiW4UhsdhfRxtKTM1a4" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/jquery-i18next@1.2.1/jquery-i18next.min.js" integrity="sha384-fLTSt6zHOb152KeFkj7kSiXdkyjKf6fjk5bdzWYLDPDo9evwd9PVs3TKoYYaaxdl" crossorigin="anonymous"></script>
+
     <script src="js/cytoscape-klay.js"></script>
     <script>
     window.__SIDESHIFT__ = {
@@ -163,6 +167,7 @@
     <script src="js/buffer.min.js"></script>
     <script src="js/qrcode.min.js"></script>
     <script src="js/EventSource.js"></script>
+	<script src="js/translations.js"></script>
     <script src="js/app.js"></script>
   </body>
 </html>

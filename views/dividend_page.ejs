@@ -1,7 +1,7 @@
 <div class="row super-wrapper">
   <div class="transaction_box">
     <div class="page-header box-shadow">
-      <h2>Dividend Helper</h2>
+      <h2 data-i18next="dividend_helper">Dividend Helper</h2>
     </div>
   </div>
   <div class="rounded_row">
@@ -9,8 +9,8 @@
       <table id="dividend-helper-table">
         <tr>
           <td>
-            <label for="div_tokenid">tokenid</label>
-            <p>which token's holders should receive bch</p>
+            <label for="div_tokenid" data-i18next="token_id">tokenid</label>
+            <p data-i18next="dividend_helper_tokenid_subtext"></p>
           </td>
           <td>
             <input id="div_tokenid" type="text" placeholder="7f8889682d57369ed0e32336f8b7e0ffec625a35cca183f4e81fde4e71a538a1" pattern="[0-9a-f]{32}">
@@ -18,8 +18,8 @@
         </tr>
         <tr>
           <td>
-            <label for="div_bch">bch</label>
-            <p>how much bch to send between the token holders</p>
+            <label for="div_bch" data-i18next="bch">bch</label>
+            <p data-i18next="dividend_helper_bch_subtext"></p>
           </td>
           <td>
             <input id="div_bch" type="number" value="1" min="0" max="21000000" step="0.00000001">
@@ -27,8 +27,8 @@
         </tr>
         <tr>
           <td>
-            <label for="div_ignore_addresses">ignore addresses</label>
-            <p>enter one simpleledger: address per line</p>
+            <label for="div_ignore_addresses" data-i18next="ignore_addresses">ignore addresses</label>
+            <p data-i18next="dividend_helper_ignore_addresses_subtext">enter one simpleledger: address per line</p>
           </td>
           <td>
             <textarea id="div_ignore_addresses" placeholder="simpleledger:qpygaungmfry8xzxphj4pw24kk5l9vfxlymlyey6rp"></textarea>
@@ -36,8 +36,8 @@
         </tr>
         <tr>
           <td>
-            <button id="div_calculate" class="button">calculate</button>
-            <p>Use "Pay to Many" with electron cash</p>
+            <button id="div_calculate" class="button" data-i18next="calculate">calculate</button>
+            <p data-i18next="dividend_helper_calculate_subtext">Use "Pay to Many" with electron cash</p>
           </td>
           <td></td>
         </tr>
