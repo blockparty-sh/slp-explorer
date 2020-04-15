@@ -14,7 +14,7 @@
         <% if (tx.token[0].tokenDetails.symbol.length > 0) { %>
           <a href="#token/<%= tx.token[0].tokenDetails.tokenIdHex %>"><%= tx.token[0].tokenDetails.name %> $<%= tx.token[0].tokenDetails.symbol %></a>
         <% } else { %>
-          <span class="mono"><a href="#token/<%= tx.token[0].tokenDetails.tokenIdHex %>" data-i18n="none">[none]</a></span>
+          <span class="mono"><a href="#token/<%= tx.token[0].tokenDetails.tokenIdHex %>" data-i18n="none"></a></span>
         <% } %>
       <% } else { console.log('TODO: remove when mongo transactions fix this', tx); } %>
     </div>
@@ -23,14 +23,14 @@
     <% if (tx.blk) { %>
       <a href="#block/<%= tx.blk.i %>"><%= tx.blk.i %></a>
     <% } else { %>
-      <a href="#block/mempool" data-i18n="pending">Pending</a>
+      <a href="#block/mempool" data-i18n="pending"></a>
     <% } %>
   </td>
   <td>
     <% if (tx.blk) { %>
       <%= new Date(tx.blk.t*1000).toLocaleString() %>
     <% } else { %>
-      <span data-i18n="pending">Pending</span>
+      <span data-i18n="pending"></span>
     <% } %>
   </td>
 </tr>

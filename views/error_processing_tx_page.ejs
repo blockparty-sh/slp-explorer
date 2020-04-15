@@ -1,14 +1,12 @@
 <div class="transaction_box">
-  <h1 data-i18n="processing_tx_page_header">Processing SLP Transaction</h1>
+  <h1 data-i18n="processing_tx_page_header"></h1>
   <h6><%= tx.tx.h %></h6>
-  <p data-i18n="processing_tx_page_subtext">
-    SLPDB is currently processing this transaction. During high load it may take longer to process transactions. Please try again in a few moments.
-  </p>
+  <p data-i18n="processing_tx_page_subtext"></p>
   <hr>
   <p>
-    <a class="button" onclick="window.location.reload()" role="button" data-i18n="reload_page">Reload Page</a>
+    <a class="button" onclick="window.location.reload()" role="button" data-i18n="reload_page"></a>
     <a target="_blank" href="https://explorer.bitcoin.com/bch/tx/<%= tx.tx.h %>">
-      <button type="button" class="button right" data-i18n="view_on_bch_explorer">View on BCH Explorer</button>
+      <button type="button" class="button right" data-i18n="view_on_bch_explorer"></button>
     </a>
   </p>
 </div>

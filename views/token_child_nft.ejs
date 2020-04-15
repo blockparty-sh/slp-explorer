@@ -14,7 +14,7 @@
       <% if (token.tokenDetails.symbol) { %>
         <%= token.tokenDetails.symbol %>
       <% } else { %>
-        <span class="mono" data-i18n="none">[none]</span>
+        <span class="mono" data-i18n="none"></span>
       <% } %>
       </a>
     </div>
@@ -35,7 +35,7 @@
       <% if (token.tokenStats.block_created) { %>
         <a href="#block/<%= token.tokenStats.block_created %>"><%= token.tokenStats.block_created %></a>
       <% } else { %>
-        <a href="#block/mempool" data-i18n="pending">Pending</a>
+        <a href="#block/mempool" data-i18n="pending"></a>
       <% } %>
     </div>
   </td>

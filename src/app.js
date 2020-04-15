@@ -728,7 +728,8 @@ app.util = {
     $el.find('[data-i18n]').each(function() {
       const trans = i18next.t($(this).data('i18n'));
 
-      if (typeof($(this).attr('placeholder')) !== 'undefined') {
+      if (typeof($(this).attr('placeholder')) === 'string') {
+        // TODO why doesnt this work?
         $(this).attr('placeholder', trans);
       } else {
         $(this).html(trans);

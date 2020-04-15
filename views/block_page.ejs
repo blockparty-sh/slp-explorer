@@ -2,28 +2,28 @@
   <div class="transaction_box">
     <div>
       <% if (height !== 'mempool') { %>
-        <h2 class="text-white"><span data-i18n="block">Block</span> <%= height %> | <span id="total_txs">...</span> transactions</h2>
-        <h6 data-i18n="block_page_view_all_block">View all transactions confirmed in block</h6>
+        <h2 class="text-white"><span data-i18n="block"></span> <%= height %> | <span id="total_txs">...</span> transactions</h2>
+        <h6 data-i18n="block_page_view_all_block"></h6>
   
         <a href="#block/<%= height-1 %>">
-          <button type="button" class="button left" >&larr; <span data-i18n="block">block</span> <%= height-1 %></button>
+          <button type="button" class="button left" >&larr; <span data-i18n="block"></span> <%= height-1 %></button>
         </a>
         <% if (next_block_exists) { %>
           <a href="#block/<%= height+1 %>">
-            <button type="button" class="button left"><span data-i18n="block">block</span> <%= height+1 %> &rarr;</button>
+            <button type="button" class="button left"><span data-i18n="block"></span> <%= height+1 %> &rarr;</button>
           </a>
         <% } else { %>
           <a href="#block/mempool %>">
-            <button type="button" class="button left"><span data-i18n="mempool">mempool</span> &rarr;</button>
+            <button type="button" class="button left"><span data-i18n="mempool"></span> &rarr;</button>
           </a>
         <% } %>
   
         <a target="_blank" href="https://explorer.bitcoin.com/bch/block/<%= height %>">
-          <button type="button" class="button right" data-i18n="view_on_bch_explorer">View on BCH Explorer</button>
+          <button type="button" class="button right" data-i18n="view_on_bch_explorer"></button>
         </a>
       <% } else { %>
-        <h2 class="text-white"><span data-i18n="mempool">Mempool</span> | <span id="total_txs">...</span> transactions</h2>
-        <h6 data-i18n="block_page_view_all_mempool">View all transactions waiting to be confirmed in block</h6>
+        <h2 class="text-white"><span data-i18n="mempool"></span> | <span id="total_txs">...</span> transactions</h2>
+        <h6 data-i18n="block_page_view_all_mempool"></h6>
         <a href="#block/<%= most_recent_block_height %>">
           <button type="button" class="button left" >&larr; block <%= most_recent_block_height %></button>
         </a>
@@ -33,19 +33,19 @@
   
   <div class="rounded_row">
     <div id="block-transactions-table-container" class="rounded box-shadow table-container loading <%= (height == 'mempool' ? 'mempool' : '') %>">
-      <h3 class="border-bottom border-gray"><span data-i18n="transactions">Transactions</span> (<span id="total_transactions">...</span>)</h3>
+      <h3 class="border-bottom border-gray"><span data-i18n="transactions"></span> (<span id="total_transactions">...</span>)</h3>
       <div class="table-responsive">
         <table class="table" id="block-transactions-table">
           <thead>
             <tr>
-              <th data-i18n="txid">Txid</th>
-              <th data-i18n="type">Type</th>
-              <th class="amount" data-i18n="amount">Amount</th>
-              <th data-i18n="token">Token</th>
+              <th data-i18n="txid"></th>
+              <th data-i18n="type"></th>
+              <th class="amount" data-i18n="amount"></th>
+              <th data-i18n="token"></th>
             </tr>
           </thead>
           <tbody>
-            <tr><td data-i18n="loading">Loading...</td></tr>
+            <tr><td data-i18n="loading"></td></tr>
           </tbody>
         </table>
         <ul class="pagination">

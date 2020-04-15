@@ -5,14 +5,14 @@
         <div class="address-qr-code left" id="qrcode-address-<%= address %>"></div>
       </div>
       <div>
-        <h2 class="nowrap"><%- cashaccount_html %> <span data-i18n="address">Address</span></h2>
+        <h2 class="nowrap"><%- cashaccount_html %> <span data-i18n="address"></span></h2>
       </div>
       <h6>
         <%= address %>
         <button class="copybtn" data-clipboard-text="<%= bchaddr.toSlpAddress(address) %>"></button>
       </h6>
       <a target="_blank" href="https://explorer.bitcoin.com/bch/address/<%= address %>">
-        <button type="button" class="button right" data-i18n="view_on_bch_explorer">View on BCH Explorer</button>
+        <button type="button" class="button right" data-i18n="view_on_bch_explorer"></button>
       </a>
     </div>
   </div>
@@ -23,43 +23,43 @@
         <table class="table">
           <thead>
             <tr>
-              <th><h3 data-i18n="details">Details</h3></th>
+              <th><h3 data-i18n="details"></h3></th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <th role="col" data-i18n="slp_address">SLP Address</th>
+              <th role="col" data-i18n="slp_address"></th>
               <td>
                 <%= bchaddr.toSlpAddress(address) %>
                 <button class="copybtn" data-clipboard-text="<%= bchaddr.toSlpAddress(address) %>"></button>
               </td>
             </tr>
             <tr>
-              <th role="col" data-i18n="cash_address">Cash Address</th>
+              <th role="col" data-i18n="cash_address"></th>
               <td>
                 <%= bchaddr.toCashAddress(address) %>
                 <button class="copybtn" data-clipboard-text="<%= bchaddr.toCashAddress(address) %>"></button>
               </td>
             </tr>
             <tr>
-              <th role="col" data-i18n="legacy_address">Legacy Address</th>
+              <th role="col" data-i18n="legacy_address"></th>
               <td>
                 <%= bchaddr.toLegacyAddress(address) %>
                 <button class="copybtn" data-clipboard-text="<%= bchaddr.toLegacyAddress(address) %>"></button>
               </td>
             </tr>
             <tr>
-              <th role="col" data-i18n="cash_account">Cash Account</th>
+              <th role="col" data-i18n="cash_account"></th>
               <td>
                 <%- cashaccount_html %>
               </td>
             </tr>
             <tr>
-              <th role="col" data-i18n="address_page_sent_slp_transactions">Sent SLP Transactions</th>
+              <th role="col" data-i18n="address_page_sent_slp_transactions"></th>
               <td><span id="total_sent_transactions">...</span></td>
             </tr>
             <tr>
-              <th role="col" data-i18n="address_page_received_slp_transactions">Received SLP Transactions</th>
+              <th role="col" data-i18n="address_page_received_slp_transactions"></th>
               <td><span id="total_recv_transactions">...</span></td>
             </tr>
           </tbody>
@@ -70,19 +70,19 @@
     
   <div class="rounded_row">
     <div id="address-tokens-table-container" class="rounded box-shadow table-container loading">
-      <h3><span data-i18n="address_page_token_balances">Token Balances</span> (<span id="total_tokens">...</span>)</h3>
+      <h3><span data-i18n="address_page_token_balances"></span> (<span id="total_tokens">...</span>)</h3>
       <div class="table-responsive">
         <table class="table" id="address-tokens-table">
           <thead>
             <tr>
-              <th data-i18n="token_id">Token Id</th>
-              <th data-i18n="name">Name</th>
-              <th data-i18n="symbol">Symbol</th>
-              <th class="amount" data-i18n="balance">Balance</th>
+              <th data-i18n="token_id"></th>
+              <th data-i18n="name"></th>
+              <th data-i18n="symbol"></th>
+              <th class="amount" data-i18n="balance"></th>
             </tr>
           </thead>
           <tbody>
-            <tr><td data-i18n="loading">loading...</td><tr>
+            <tr><td data-i18n="loading"></td><tr>
           </tbody>
         </table>
       </div>
@@ -93,21 +93,21 @@
   
   <div class="rounded_row">
     <div id="address-transactions-table-container" class="rounded box-shadow table-container loading">
-      <h3><span data-i18n="transactions">Transactions</span> (<span id="total_transactions">...</span>)</h3>
+      <h3><span data-i18n="transactions"></span> (<span id="total_transactions">...</span>)</h3>
       <div class="table-responsive">
         <table class="table" id="address-transactions-table">
           <thead>
             <tr>
-              <th data-i18n="txid">Txid</th>
-              <th data-i18n="type">Type</th>
-              <th class="amount" data-i18n="amount">Amount</th>
-              <th data-i18n="token">Token</th>
-              <th data-i18n="block_height">Block Height</th>
-              <th data-i18n="block_time">Block Time</th>
+              <th data-i18n="txid"></th>
+              <th data-i18n="type"></th>
+              <th class="amount" data-i18n="amount"></th>
+              <th data-i18n="token"></th>
+              <th data-i18n="block_height"></th>
+              <th data-i18n="block_time"></th>
             </tr>
           </thead>
           <tbody>
-            <tr><td data-i18n="loading">loading...</td></tr>
+            <tr><td data-i18n="loading"></td></tr>
           </tbody>
         </table>
         <ul class="pagination">
@@ -117,32 +117,32 @@
   </div>
   
   <div class="rounded_row">
-    <h3><span data-i18n="address_page_transactions_chart">Transactions Chart</span> (<span id="address-usage-count">...</span>)</h3>
+    <h3><span data-i18n="address_page_transactions_chart"></span> (<span id="address-usage-count">...</span>)</h3>
     <div class="plot-time-selector">
-        <span id="plot-address-usage-year" data-i18n="year">year</span>
-        <span id="plot-address-usage-month" data-i18n="month">month</span>
-        <span id="plot-address-usage-week" data-i18n="week">week</span>
-        <span id="plot-address-usage-day" data-i18n="day">day</span>
+        <span id="plot-address-usage-year" data-i18n="year"></span>
+        <span id="plot-address-usage-month" data-i18n="month"></span>
+        <span id="plot-address-usage-week" data-i18n="week"></span>
+        <span id="plot-address-usage-day" data-i18n="day"></span>
     </div>
     <div id="plot-address-usage" style="width:100%"></div>
   </div>
   
   <div class="rounded_row">
     <div id="address-burn-history-table-container" class="rounded box-shadow table-container loading">
-      <h3><span data-i18n="burn_history">Burn History</span> (<span id="total_address_burn_transactions">...</span>)</h3>
+      <h3><span data-i18n="burn_history"></span> (<span id="total_address_burn_transactions">...</span>)</h3>
       <div class="table-responsive">
         <table class="table" id="address-burn-history-table">
           <thead>
             <tr>
-              <th data-i18n="txid">Txid</th>
-              <th class="amount" data-i18n="amount">Amount</th>
-              <th data-i18n="token">Token</th>
-              <th data-i18n="block_height">Block Height</th>
-              <th data-i18n="block_time">Block Time</th>
+              <th data-i18n="txid"></th>
+              <th class="amount" data-i18n="amount"></th>
+              <th data-i18n="token"></th>
+              <th data-i18n="block_height"></th>
+              <th data-i18n="block_time"></th>
             </tr>
           </thead>
           <tbody>
-            <tr><td data-i18n="loading">Loading...</td></tr>
+            <tr><td data-i18n="loading"></td></tr>
           </tbody>
         </table>
         <ul class="pagination">
