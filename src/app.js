@@ -3092,61 +3092,62 @@ app.init_all_tokens_page = () =>
     }),
   );
 
-app.init_dividend_page = () =>
-  new Promise((resolve, reject) => {
-    $('main[role=main]').html(app.template.dividend_page());
-    $('#div_calculate').click(() => {
-      const tokenIdHex = $('#div_tokenid').val();
-      if (tokenIdHex.length != 64) {
-        alert('tokenid required');
-        return;
-      }
+app.init_dividend_page = () => new Promise((resolve, reject) => {
+  $('main[role=main]').html(app.template.dividend_page());
 
-      let ignoreAddresses = [];
-      try {
-          ignoreAddresses = $('#div_ignore_addresses').val()
-            .split('\n')
-            .filter((v) => v.length !== 0)
-            .map((v) => bchaddr.toSlpAddress(v));
-      } catch (e) {
-        alert('invalid ignore address found');
-        return;
-      }
+  $('#div_calculate').click(() => {
+    const tokenIdHex = $('#div_tokenid').val();
+    if (tokenIdHex.length != 64) {
+      alert(i18next.t('tokenid_required'));
+      return;
+    }
 
-      Promise.all([
-        app.slpdb.query(app.slpdb.token_get_total_minted(tokenIdHex)),
-        app.slpdb.query(app.slpdb.token_get_total_burned(tokenIdHex)),
-        app.slpdb.query(app.slpdb.dividend_count_ignore_amounts(tokenIdHex, ignoreAddresses)),
-      ])
-      .then(([
-        total_minted,
-        total_burned,
-        total_ignored,
-      ]) => {
-        total_minted = app.util.extract_total(total_minted).g;
-        total_burned = app.util.extract_total(total_burned).g;
-        total_ignored = app.util.extract_total(total_ignored).g;
+    let ignoreAddresses = [];
+    try {
+        ignoreAddresses = $('#div_ignore_addresses').val()
+          .split('\n')
+          .filter((v) => v.length !== 0)
+          .map((v) => bchaddr.toSlpAddress(v));
+    } catch (e) {
+      alert('invalid ignore address found');
+      return;
+    }
 
-        const supply = new BigNumber(total_minted)
-          .minus(new BigNumber(total_burned))
-          .minus(new BigNumber(total_ignored));
+    Promise.all([
+      app.slpdb.query(app.slpdb.token_get_total_minted(tokenIdHex)),
+      app.slpdb.query(app.slpdb.token_get_total_burned(tokenIdHex)),
+      app.slpdb.query(app.slpdb.dividend_count_ignore_amounts(tokenIdHex, ignoreAddresses)),
+    ])
+    .then(([
+      total_minted,
+      total_burned,
+      total_ignored,
+    ]) => {
+      total_minted = app.util.extract_total(total_minted).g;
+      total_burned = app.util.extract_total(total_burned).g;
+      total_ignored = app.util.extract_total(total_ignored).g;
 
-        app.slpdb.query(app.slpdb.dividend_calculate_bch_mempool(
-          tokenIdHex,
-          Number(supply.toFixed()),
-          Number($('#div_bch').val()),
-          ignoreAddresses,
-        ))
-        .then((data) => {
-          $('#div_results').html(
-            data.g.map((v) => `${bchaddr.toSlpAddress(v.address)},${Number(v.bchAmount).toFixed(8)}`)
-            .reduce((a, v) => a+v+'\n', ''),
-          );
-        });
+      const supply = new BigNumber(total_minted)
+        .minus(new BigNumber(total_burned))
+        .minus(new BigNumber(total_ignored));
+
+      app.slpdb.query(app.slpdb.dividend_calculate_bch_mempool(
+        tokenIdHex,
+        Number(supply.toFixed()),
+        Number($('#div_bch').val()),
+        ignoreAddresses,
+      ))
+      .then((data) => {
+        $('#div_results').html(
+          data.g.map((v) => `${bchaddr.toSlpAddress(v.address)},${Number(v.bchAmount).toFixed(8)}`)
+          .reduce((a, v) => a+v+'\n', ''),
+        );
       });
     });
-    resolve();
   });
+
+  resolve();
+});
 
 app.init_tx_page = (txid, highlight=[]) =>
   new Promise((resolve, reject) =>

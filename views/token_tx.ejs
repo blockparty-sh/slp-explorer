@@ -11,14 +11,14 @@
     <% if (tx.blk) { %>
       <a href="#block/<%= tx.blk.i %>"><%= tx.blk.i %></a>
     <% } else { %>
-      <a href="#block/mempool">Pending</a>
+      <a href="#block/mempool" data-i18n="pending"></a>
     <% } %>
   </td>
   <td>
     <% if (tx.blk) { %>
       <%= new Date(tx.blk.t*1000).toLocaleString() %>
     <% } else { %>
-      Pending
+      <span data-i18n="pending"></span>
     <% } %>
   </td>
 </tr>

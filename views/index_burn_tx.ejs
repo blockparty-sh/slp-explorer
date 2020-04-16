@@ -22,14 +22,14 @@
     <% if (tx.tx && tx.tx.blk) { %>
       <a href="#block/<%= tx.tx.blk.i %>"><%= tx.tx.blk.i %></a>
     <% } else { %>
-      <a href="#block/mempool" class="pending">Pending</a>
+      <a href="#block/mempool" class="pending" data-i18n="pending"></a>
     <% } %>
   </td>
   <td>
     <% if (tx.tx && tx.tx.blk) { %>
       <%= new Date(tx.tx.blk.t*1000).toLocaleString() %>
     <% } else { %>
-      <span class="pending">Pending</span>
+      <span class="pending" data-i18n="pending"></span>
     <% } %>
   </td>
 </tr>
