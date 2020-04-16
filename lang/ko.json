@@ -135,5 +135,9 @@
   "search_placeholder": "Search by txid, address or token name...",
   "nonslp_transaction": "NON-SLP Transaction",
   "slp_invalid_reason": "SLP Invalid Reason",
-  "this_is_not_a_slp_transaction": "This is not a SLP transaction."
+  "this_is_not_a_slp_transaction": "This is not a SLP transaction.",
+  "tokens_created": "Tokens Created",
+  "sent": "Sent",
+  "received": "Received",
+  "tokenid_required": "Token Id Required"
 }
