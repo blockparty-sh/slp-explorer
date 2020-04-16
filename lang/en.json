@@ -29,7 +29,7 @@
   "address_page_transactions_chart": "Transactions Chart",
 
   "bad_address_page_header": "Bad Address",
-  "bad_address_page_subtext": "Sorry, we cannot decode the address given. Double check it isn\"t mispelled.",
+  "bad_address_page_subtext": "Sorry, we cannot decode the address given. Double check it isn't misspelled.",
 
   "processing_tx_page_header": "Processing SLP Transaction",
   "processing_tx_page_subtext": "SLPDB is currently processing this transaction. During high load it may take longer to process transactions. Please try again in a few moments.",
@@ -38,13 +38,13 @@
   "no_tx_subtext": "This transaction was not found in SLPDB or BitDB. It may have been very old or mispelled.",
 
   "404_page_header": "404 Not Found :(",
-  "404_page_subtext1": "Sorry, can\"t find the page you were looking for.",
+  "404_page_subtext1": "Sorry, can't find the page you were looking for.",
   "404_page_subtext2": "Please try another search or go back in your browser, this may have been a bug. If it was, please <a href=\"https://github.com/blockparty-sh/slp-explorer\">report</a> it!</p>",
 
   "block_page_view_all_block": "View all transactions confirmed in a block",
   "block_page_view_all_mempool": "View all transactions waiting to be confirmed in a block",
 
-  "dividend_helper_tokenid_subtext": "which token\"s holders should receive bch",
+  "dividend_helper_tokenid_subtext": "which token's holders should receive BCH",
   "dividend_helper_bch_subtext": "how much bch to send between the token holders",
   "dividend_helper_ignore_addresses_subtext": "enter one simpleledger: address per line",
   "dividend_helper_calculate_subtext": "Use \"Pay to Many\" with Electron Cash",
