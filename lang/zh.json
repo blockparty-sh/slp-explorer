@@ -2,8 +2,8 @@
   "maintenance": "simpleledger.info currently undergoing maintenance, expect degraded performance.",
   "loading_dank_memes": "Loading view...",
 
-  "homepage_btn_view_all_tokens": "View All Tokens",
-  "homepage_btn_dividend_helper": "Dividend Helper",
+  "homepage_btn_view_all_tokens": "查看所有令牌",
+  "homepage_btn_dividend_helper": "股息助手界面",
 
   "footer_source_code": "Source Code",
   "footer_resources": "Resources",
@@ -15,8 +15,8 @@
   "mainmenu_explorer": "Explorer",
   "mainmenu_all_tokens": "All Tokens",
    
-  "index_page_header": "SLP Tokens Explorer",
-  "index_page_subheader": "Browse tokens built on Bitcoin Cash",
+  "index_page_header": "简单分类帐协议令牌浏览器",
+  "index_page_subheader": "浏览基于比特币现金的代币",
   "index_page_subtext": "This website is built on top of <a target=\"_blank\" href=\"https://github.com/simpleledger/SLPDB\">SLPDB</a>, an offshoot of <a target=\"_blank\" href=\"https://github.com/fountainhead-cash/bitd\">BitDB FH</a>, view code and submit issues on <a target=\"_blank\" href=\"https://github.com/blockparty-sh/slp-explorer\">Github</a>.<br>Make your own tokens using <a href=\"https://simpleledger.cash/project/electron-cash-slp-edition/\">Electron Cash SLP Edition</a>.</p>",
   "index_page_latest_transactions": "Latest Transactions",
   "index_page_transaction_charts": "Transactions Charts",
@@ -132,8 +132,9 @@
   "go_back": "Go Back",
   "go_home": "Go Home",
   "reload_page": "Reload Page",
-  "search_placeholder": "Search by txid, address or token name...",
+  "search_placeholder": "按交易标识符，地址或令牌名称搜索...",
   "nonslp_transaction": "NON-SLP Transaction",
   "slp_invalid_reason": "SLP Invalid Reason",
   "this_is_not_a_slp_transaction": "This is not a SLP transaction."
 }
+

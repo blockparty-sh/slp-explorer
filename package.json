@@ -9,6 +9,7 @@
     "@babel/core": "^7.9.0",
     "@babel/plugin-transform-arrow-functions": "^7.8.3",
     "@babel/plugin-transform-block-scoping": "^7.8.3",
+    "@babel/plugin-transform-destructuring": "^7.9.5",
     "@babel/plugin-transform-exponentiation-operator": "^7.8.3",
     "@babel/preset-env": "^7.9.5",
     "babel-plugin-inline-import": "^3.0.0",

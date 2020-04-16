@@ -65,16 +65,34 @@ app.template = Object.fromEntries(Object.entries({
 }).map(([k, v]) => ([k, ejs.compile(v)])));
 
 import translation_en from '../lang/en.json';
+import translation_zh from '../lang/zh.json';
+import translation_hi from '../lang/hi.json';
+import translation_es from '../lang/es.json';
+import translation_ru from '../lang/ru.json';
+import translation_ko from '../lang/ko.json';
+import translation_ms from '../lang/ms.json';
 const i18next_config = {
-  fallbackLng: 'en',
+  fallbackLng: 'en-US',
   debug: true,
   resources: {
-    en: { translation: JSON.parse(translation_en) },
-  }
-};
-i18next.init(i18next_config);
+    'en-US': { translation: JSON.parse(translation_en) },
+    'zh-CN': { translation: JSON.parse(translation_zh) },
+    'hi':    { translation: JSON.parse(translation_hi) },
+    'es':    { translation: JSON.parse(translation_es) },
+    'ru':    { translation: JSON.parse(translation_ru) },
+    'ko':    { translation: JSON.parse(translation_ko) },
+    'ms':    { translation: JSON.parse(translation_ms) },
 
-$(document).ready(() => {
+  },
+};
+
+i18next
+  .use(new i18nextBrowserLanguageDetector())
+  .init(i18next_config)
+  .then(() => $(document).ready(() => {
+
+  app.util.internationalize($('body'));
+
   $(window).on('popstate', (e) => {
     app.router(window.location.pathname+window.location.hash, false);
   });
@@ -91,7 +109,7 @@ $(document).ready(() => {
 
   app.router(window.location.pathname+window.location.hash, false);
   $('header').removeClass('loading');
-});
+}));
 
 
 app.util = {
@@ -4608,3 +4626,4 @@ const start_simclick = (interval=6000) => {
     }
   }, interval);
 };
+

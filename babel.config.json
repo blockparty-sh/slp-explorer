@@ -16,6 +16,7 @@
     "@babel/plugin-transform-block-scoped-functions",
     "@babel/plugin-transform-for-of",
     "@babel/plugin-transform-spread",
+    "@babel/plugin-transform-destructuring",
     ["@babel/plugin-transform-block-scoping", {
       "throwIfClosureRequired": false
     }],

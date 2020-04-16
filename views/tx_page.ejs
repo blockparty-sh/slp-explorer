@@ -222,7 +222,7 @@
                         </td>
                         <td class="amount">
                           <% if (m.status === 'BATON_UNSPENT' || m.status ==='BATON_SPENT_IN_MINT') { %>
-                          <span data-i18n="mint_baton"></span>
+                            <span data-i18n="mint_baton"></span>
                           <% } else { %>
                             <%= app.util.format_bignum_str(m.slpAmount, tx.slp.detail.decimals) %>
                           <% }%>

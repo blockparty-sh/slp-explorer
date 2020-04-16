@@ -3,15 +3,13 @@
     <div>
       <div class="token-icon-large left"><img src="/img/bch-logo.png"></div>
       <div>
-        <h2 class="text-white">
-          NON-SLP Transaction
-        </h2>
+        <h2 class="text-white" data-i18n="nonslp_transaction"></h2>
         <h6>
           <%= tx.tx.h %>
           <button class="copybtn" data-clipboard-text="<%= tx.tx.h %>"></button>
         </h6>
         <a target="_blank" href="https://explorer.bitcoin.com/bch/tx/<%= tx.tx.h %>">
-          <button type="button" class="button right">View on BCH Explorer</button>
+          <button type="button" class="button right" data-i18n="view_on_bch_explorer"></button>
         </a>
       </div>
     </div>
@@ -25,48 +23,48 @@
             <table class="table">
               <thead>
                 <tr>
-                  <th><h3>Details</h3></th>
+                  <th><h3 data-i18n="details"></h3></th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <th role="col">Type</th>
-                  <td>BCH</td>
+                  <th role="col" data-i18n="type"></th>
+                  <td data-i18n="bch"></td>
                 </tr>
                 <tr>
-                  <th role="col">Block</th>
+                  <th role="col" data-i18n="block"></th>
                   <td>
                     <% if (tx.blk) { %>
                       <a href="#block/<%= tx.blk.i %>"><%= tx.blk.i %></a>
                     <% } else { %>
-                      <a href="#block/mempool">Pending</a>
+                      <a href="#block/mempool" data-i18n="pending">Pending</a>
                     <% } %>
                   </td>
                 </tr>
                 <tr>
-                  <th role="col">Block Time</th>
+                  <th role="col" data-i18n="block_time"></th>
                   <td>
                     <% if (tx.blk) { %>
                       <%= new Date(tx.blk.t*1000).toLocaleString() %>
                     <% } else { %>
-                      Pending
+                      <span data-i18n="pending"></span>
                     <% } %>
                   </td>
                 </tr>
                 <tr>
-                  <th role="col">Txid</th>
+                  <th role="col" data-i18n="txid"></th>
                   <td>
                     <a class="txid" href="#tx/<%= tx.tx.h %>"><%= tx.tx.h %></a>
                     <button class="copybtn" data-clipboard-text="<%= tx.tx.h %>"></button>
                   </td>
                 </tr>
                 <tr>
-                  <th role="col">SLP Invalid Reason</th>
+                  <th role="col" data-i18n="slp_invalid_reason"></th>
                   <td>
                     <% if (slp) { %>
                       <%= slp.invalidReason %>
                     <% } else { %>
-                      This is not a SLP transaction.
+                      <span data-i18n="this_is_not_a_slp_transaction"></span>
                     <% } %>
                   </td>
                 </tr>
@@ -82,15 +80,15 @@
     <div class="rounded_row">
       <div class="input_output" id="inputs-list">
         <div class="rounded box-shadow table-container">
-          <h3>Inputs</h3>
+          <h3 data-i18n="inputs"></h3>
           <div class="table-responsive">
             <table class="table">
               <thead>
                 <tr>
-                  <th>Tx</th>
-                  <th>Vout</th>
-                  <th class="amount">Amount</th>
-                  <th>Address</th>
+                  <th data-i18n="tx"></th>
+                  <th data-i18n="vout"></th>
+                  <th class="amount" data-i18n="amount"></th>
+                  <th data-i18n="address"></th>
                 </tr>
               </thead>
               <tbody>
@@ -108,7 +106,7 @@
                             <a class="address" href="/#address/bitcoincash:<%= m.e.a %>">bitcoincash:<%= m.e.a %></a>
                             <button class="copybtn" data-clipboard-text="bitcoincash:<%= m.e.a %>"></button>
                           <% } else { %>
-                            SLPDB Address Error
+                            <span data-i18n="slpdb_address_error"></span>
                           <% } %>
                         </td>
                       </tr>
@@ -116,7 +114,7 @@
                   <% } %>
                 <% } else { %>
                   <tr>
-                    <td>No inputs.</td>
+                    <td data-i18n="no_inputs"></td>
                   </tr>
                 <% } %>
               </tbody>
@@ -128,15 +126,15 @@
     <div class="rounded_row">
         <div class="input_output" id="outputs-list">
           <div class="rounded box-shadow table-container">
-            <h3>Outputs</h3>
+            <h3 data-i18n="outputs"></h3>
             <div class="table-responsive">
               <table class="table">
                 <thead>
                   <tr>
-                    <th>Tx</th>
-                    <th>Vout</th>
-                    <th class="amount">Amount</th>
-                    <th>Address</th>
+                    <th data-i18n="tx"></th>
+                    <th data-i18n="vout"></th>
+                    <th class="amount" data-i18n="amount"></th>
+                    <th data-i18n="address"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -168,7 +166,7 @@
                     <% } %>
                   <% } else { %>
                     <tr>
-                      <td>No outputs.</td>
+                      <td data-i18n="no_outputs"></td>
                     </tr>
                   <% } %>
                 </tbody>

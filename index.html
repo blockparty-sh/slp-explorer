@@ -34,33 +34,29 @@
     <meta property="og:image" content="https://simpleledger.info/img/social.png" />
   </head>
   <body>
-    <div class="maintenance" data-i18n="maintenance">
-      simpleledger.info currently undergoing maintenance, expect degraded performance.
-    </div>
+    <div class="maintenance" data-i18n="maintenance"></div>
     <header class="loading">
-      <div class="maintenance" data-i18n="maintenance">
-        simpleledger.info currently undergoing maintenance, expect degraded performance.
-      </div>
+      <div class="maintenance" data-i18n="maintenance"></div>
       <ul id="top-menu" class="hide-mobile">
         <li><a href="#" id="header-logo"></a></li>
-        <li><a href="#" data-i18n="mainmenu_explorer">Explorer</a></li>
-        <li><a href="#alltokens" data-i18n="mainmenu_all_tokens">All Tokens</a></li>
+        <li><a href="#" data-i18n="mainmenu_explorer"></a></li>
+        <li><a href="#alltokens" data-i18n="mainmenu_all_tokens"></a></li>
         <li class="search">
           <form>
-            <input type="text" placeholder="Search by txid, address or token name..." autocapitalize="off" spellcheck="off" class="header-search" id="header-search-desktop" data-i18n="search_placeholder">
+            <input type="text" placeholder="" autocapitalize="off" spellcheck="off" class="header-search" id="header-search-desktop" data-i18n="search_placeholder">
           </form>
         </li>
       </ul>
       <ul id="top-menu" class="hide-desktop show-mobile">
         <li><a href="#" id="header-logo"></a></li>
-        <li><a href="#" data-i18n="mainmenu_explorer">Explorer</a></li>
-        <li><a href="#alltokens" data-i18n="mainmenu_all_tokens">All Tokens</a></li>
+        <li><a href="#" data-i18n="mainmenu_explorer"></a></li>
+        <li><a href="#alltokens" data-i18n="mainmenu_all_tokens"></a></li>
         <li class="right"><div class="button button-hamburger">.</div></li>
       </ul>
       <ul class="search hide-desktop show-mobile hamburger-hide">
         <li>
           <form>
-            <input type="text" placeholder="Search by txid, address or token name..." autocapitalize="off" spellcheck="off" class="header-search" id="header-search-mobile" data-i18n="search_placeholder">
+            <input type="text" placeholder="" autocapitalize="off" spellcheck="off" class="header-search" id="header-search-mobile" data-i18n="search_placeholder">
           </form>
         </li>
       </ul>
@@ -75,7 +71,7 @@
     <div class="loading-modal">
       <div class="loading_dank_memes">
         <img height="135px" src="/img/loading_green.svg">
-        <h3 data-i18n="loading_dank_memes">Loading view...</h3>
+        <h3 data-i18n="loading_dank_memes"></h3>
       </div>
     </div>
 
@@ -85,7 +81,7 @@
           <a href="#"><img id="logo" src="img/slp-logo.svg" alt="Simple Ledger Protocol" /></a>
         </div>
         <div class="col">
-          <h4 data-i18n="footer_source_code">Source Code</h4>
+          <h4 data-i18n="footer_source_code"></h4>
           <ul class="list-unstyled text-small">
             <li><a class="text-muted" href="http://github.com/blockparty-sh/slp-explorer">SLP Explorer</a></li>
             <li><a class="text-muted" href="https://github.com/simpleledger/SLPDB">SLPDB</a></li>
@@ -96,7 +92,7 @@
           </ul>
         </div>
         <div class="col">
-          <h4 data-i18n="footer_resources">Resources</h4>
+          <h4 data-i18n="footer_resources"></h4>
           <ul class="list-unstyled text-small">
             <li><a class="text-muted" href="https://simpleledger.cash">simpleledger.cash</a></li>
             <li><a class="text-muted" href="https://github.com/simpleledger/slp-specifications">specification</a></li>
@@ -104,7 +100,7 @@
           </ul>
         </div>
         <div class="col">
-          <h4 data-i18n="footer_connect">Connect</h4>
+          <h4 data-i18n="footer_connect"></h4>
           <ul class="list-unstyled text-small">
             <li><a class="text-muted" href="https://t.me/simpleledger">SimpleLedger Chat</a></li>
             <li><a class="text-muted" href="https://www.youtube.com/channel/UC_WJO3lyHAhdU6oEk0lhMLw">SimpleLedger Youtube</a></li>
@@ -115,18 +111,16 @@
       </div>
     </footer>
     <div id="error-modal" class="display-none">
-      <h1 data-i18n="error_modal_header">Oops... an error occured!</h1>
+      <h1 data-i18n="error_modal_header"></h1>
       <pre id="error-modal-text"></pre>
-      <p data-i18n="error_modal_subtext">
-        Sorry for the inconvenience, we will look into this as soon as possible. If you'd like, you can report this error <a href="https://github.com/blockparty-sh/slp-explorer">here</a>.<br>Reloading the page might help.
-      </p>
+      <p data-i18n="error_modal_subtext"></p>
 
       <a onclick="reload_page()">
-        <button type="button" class="button" data-i18n="reload_page">Reload Page</button>
+        <button type="button" class="button" data-i18n="reload_page"></button>
       </a>
       <br><br>
       <a href="/">
-        <button type="button" class="button" data-i18n="go_home">Go Home</button>
+        <button type="button" class="button" data-i18n="go_home"></button>
       </a>
     </div>
 
@@ -150,6 +144,7 @@
     <script src="https://unpkg.com/klayjs@0.4.1/klay.js" integrity="sha384-GQW6kISetAn3YwGwDs56aaBYfPg7xP6Uz2qPaWteSZWMZYdtf+bvrgq2aKvdyqrg" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/clipboard@2.0.1/dist/clipboard.min.js" integrity="sha384-JbuAF+8+4FF8uR/7D07/5IWwIj2FoNw5jJQGg1s8GtGIfQXFxWPRdMNWYmU35KjP" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/i18next@19.4.1/dist/umd/i18next.min.js" integrity="sha384-0K350ngocaICNR2EzKMi97LSQXcmL2EVcv9g5Tq4YZFEEQiW4UhsdhfRxtKTM1a4" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/i18next-browser-languagedetector@4.0.2/i18nextBrowserLanguageDetector.min.js" integrity="sha384-FYlRD8WE3hzVKyoaW6rmqYtUfv1ajxElK/c9bKM1NUnbsJ/VUiUv2YFEQP1AJdOQ" crossorigin="anonymous"></script>
 
     <script>
     window.__SIDESHIFT__ = {
