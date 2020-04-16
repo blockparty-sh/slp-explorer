@@ -17,7 +17,7 @@
    
   "index_page_header": "SLP Tokens Explorer",
   "index_page_subheader": "Browse tokens built on Bitcoin Cash",
-  "index_page_subtext": "This website is built on top of <a target=\"_blank\" href=\"https://github.com/simpleledger/SLPDB\">SLPDB</a>, an offshoot of <a target=\"_blank\" href=\"https://github.com/fountainhead-cash/bitd\">BitDB FH</a>, view code and submit issues on <a target=\"_blank\" href=\"https://github.com/blockparty-sh/slp-explorer\">Github</a>.<br>Make your own tokens using <a href=\"https://simpleledger.cash/project/electron-cash-slp-edition/\">Electron Cash SLP Edition</a>.</p>",
+  "index_page_subtext": "This website is built on top of <a target=\"_blank\" href=\"https://github.com/simpleledger/SLPDB\">SLPDB</a>, an offshoot of <a target=\"_blank\" href=\"https://github.com/fountainhead-cash/bitd\">BitDB FH</a>, view code and submit issues on <a target=\"_blank\" href=\"https://github.com/blockparty-sh/slp-explorer\">Github</a>.<br>Make your own tokens using <a href=\"https://simpleledger.cash/project/electron-cash-slp-edition/\">Electron Cash SLP Edition</a>.",
   "index_page_latest_transactions": "Latest Transactions",
   "index_page_transaction_charts": "Transactions Charts",
   "index_page_token_burns": "Token Burns",
@@ -39,7 +39,7 @@
 
   "404_page_header": "404 Not Found :(",
   "404_page_subtext1": "Sorry, can't find the page you were looking for.",
-  "404_page_subtext2": "Please try another search or go back in your browser, this may have been a bug. If it was, please <a href=\"https://github.com/blockparty-sh/slp-explorer\">report</a> it!</p>",
+  "404_page_subtext2": "Please try another search or go back in your browser, this may have been a bug. If it was, please <a href=\"https://github.com/blockparty-sh/slp-explorer\">report</a> it!",
 
   "block_page_view_all_block": "View all transactions confirmed in a block",
   "block_page_view_all_mempool": "View all transactions waiting to be confirmed in a block",
