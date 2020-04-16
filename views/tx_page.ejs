@@ -147,7 +147,7 @@
                           <td><a class="txid" href="/#tx/<%= m.e.h %>/o<%= m.e.i %>" style="font-weight:bold">&larr;</a></td>
                           <td class="amount">
                             <% if(tx.slp.detail.transactionType == 'MINT' && m.e.i == tx.slp.detail.txnBatonVout) { %>
-                                <span data-i18n="mint_baton"></span>
+                                <span data-i18n="mint_baton">Mint Baton</span>
                             <% } else { %>
                                 <%= app.util.format_bignum_str(input_amounts[m.e.h+':'+m.e.i], token.tokenDetails.decimals)  %>
                             <% } %>
@@ -222,7 +222,7 @@
                         </td>
                         <td class="amount">
                           <% if (m.status === 'BATON_UNSPENT' || m.status ==='BATON_SPENT_IN_MINT') { %>
-                            <span data-i18n="mint_baton"></span>
+                            <span class="amount" data-i18n="mint_baton">Mint Baton</span>
                           <% } else { %>
                             <%= app.util.format_bignum_str(m.slpAmount, tx.slp.detail.decimals) %>
                           <% }%>
