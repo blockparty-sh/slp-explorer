@@ -238,6 +238,7 @@ header input[type='text'] {
     margin-top: 9px;
     padding: 0px 10px;
     font-size: 0.9em;
+    font-family: 'Montserrat', sans-serif;
 }
 
 header li input::placeholder {
@@ -297,6 +298,7 @@ header li input::placeholder {
     -ms-transition: background 0.25s;
     -o-transition: background 0.25s;
     transition: background 0.25s;
+    font-family: 'Montserrat', sans-serif;
 }
 
 .header_infobox input[type=text]:active, .header_infobox input[type=text]:focus {
