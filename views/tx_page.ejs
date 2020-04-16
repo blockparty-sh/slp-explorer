@@ -10,7 +10,7 @@
             <%= token.tokenDetails.name %>
           <% } %>
   
-          <%= tx.slp.detail.transactionType[0].toUpperCase() + tx.slp.detail.transactionType.substring(1).toLocaleLowerCase() %>
+          <span class="capitalized"><%= app.util.transaction_type_trans(tx.slp.detail.transactionType) %></span>
   
           <span data-i18n="transaction"></span>
         </h2>
@@ -39,7 +39,7 @@
               <tbody>
                 <tr>
                   <th role="col" data-i18n="type"></th>
-                  <td><%= tx.slp.detail.transactionType %></td>
+                  <td class="capitalized"><%= app.util.transaction_type_trans(tx.slp.detail.transactionType) %></td>
                 </tr>
                 <tr>
                   <th role="col" data-i18n="block"></th>

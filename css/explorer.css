@@ -60,6 +60,10 @@ h1, h2, h3, h4, h5, h6, p {
     float: right;
 }
 
+.capitalized {
+    text-transform: capitalize;
+}
+
 .left {
     float: left;
 }

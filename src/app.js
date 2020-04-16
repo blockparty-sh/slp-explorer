@@ -71,6 +71,7 @@ import translation_es from '../lang/es.json';
 import translation_ru from '../lang/ru.json';
 import translation_ko from '../lang/ko.json';
 import translation_ms from '../lang/ms.json';
+import translation_ja from '../lang/ja.json';
 const i18next_config = {
   fallbackLng: 'en-US',
   debug: true,
@@ -82,7 +83,7 @@ const i18next_config = {
     'ru':    { translation: JSON.parse(translation_ru) },
     'ko':    { translation: JSON.parse(translation_ko) },
     'ms':    { translation: JSON.parse(translation_ms) },
-
+    'ja':    { translation: JSON.parse(translation_ja) },
   },
 };
 
@@ -755,6 +756,15 @@ app.util = {
         $(this).html(trans);
       }
     });
+  },
+  transaction_type_trans: (translation_type) => {
+    switch (translation_type) {
+      case 'SEND':    return i18next.t('send');
+      case 'MINT':    return i18next.t('mint');
+      case 'GENESIS': return i18next.t('genesis');
+    }
+
+    return translation_type;
   },
 };
 

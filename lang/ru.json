@@ -100,6 +100,8 @@
   "mint_baton": "Mint Baton",
   "minting_baton_status": "Minting Baton Status",
   "minting_baton_utxo": "Minting Baton UTXO",
+  "send": "send",
+  "mint": "mint",
   "genesis": "Genesis",
   "genesis_description": "TokenType1 genesis transactions do not have any SLP inputs.<br>NFT1 Child transactions can see the input from looking at the Version row in the Token Details pane.",
 

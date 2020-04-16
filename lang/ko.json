@@ -100,6 +100,8 @@
   "mint_baton": "민트 배턴",
   "minting_baton_status": "배턴 상태",
   "minting_baton_utxo": "배턴 미사용 거래 출력",
+  "send": "보내다",
+  "mint": "민트",
   "genesis": "창세기",
   "genesis_description": "토큰 유형 1 생성 트랜잭션에는 SLP 입력이 없습니다. <br> 대체 불가능 토큰 하나의 하위 트랜잭션은 토큰 세부 사항 분할 창의 버전 행에서 입력을 볼 수 있습니다.",
 

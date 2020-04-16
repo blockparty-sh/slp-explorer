@@ -100,6 +100,8 @@
   "mint_baton": "薄荷棒",
   "minting_baton_status": "铸棒状态",
   "minting_baton_utxo": "铸币指挥棒未使用的交易输出",
+  "send": "发送",
+  "mint": "薄荷",
   "genesis": "建立",
   "genesis_description": "代币类型一生成交易没有任何SLP输入。<br>不可替代的代币子事务可以通过查看“代币详细信息”窗格中的“版本”行来看到输入。",
   "tokenstats_valid_token_transactions": "自创世以来的有效交易",
