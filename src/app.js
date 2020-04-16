@@ -451,6 +451,8 @@ app.util = {
       lookup: function(query, done) {
         const search_value = $selector.val().trim();
 
+        _paq.push(['trackSiteSearch', search_value, false, 0]);
+
         // check if address entered
         try {
           const addr = bchaddr.toSlpAddress(search_value);
@@ -4549,6 +4551,7 @@ app.router = (whash, push_history = true) => {
       break;
   }
 
+
   $('html').removeClass();
   $('html').addClass('loading');
   $('html').scrollTop(0);
@@ -4557,6 +4560,8 @@ app.router = (whash, push_history = true) => {
   $('#header-search-mobile').autocomplete('dispose');
 
   app.slpstream.reset();
+
+  const loading_timer_start = +(new Date)/1000|0;
   method().then(() => {
 	app.util.internationalize($('main[role=main]'));
     tippy('[data-tippy-content]');
@@ -4569,8 +4574,17 @@ app.router = (whash, push_history = true) => {
     $('footer').removeClass('display-none');
 
     if (push_history) {
+      // _paq.push(['setReferrerUrl', previousPageUrl]); // TODO
       history.pushState({}, document.title, whash);
     }
+
+    _paq.push(['setCustomUrl', whash]);
+    _paq.push(['setDocumentTitle', document.title]);
+    _paq.push(['deleteCustomVariables', 'page']);
+    _paq.push(['setGenerationTimeMs', +(new Date)/1000|0-loading_timer_start]);
+    _paq.push(['trackPageView']);
+	_paq.push(['enableHeartBeatTimer']);
+    _paq.push(['enableLinkTracking']);
   });
 };
 
