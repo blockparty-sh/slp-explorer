@@ -1,16 +1,16 @@
 CURL := curl --create-dirs
 LINTER := npx eslint
-RM := rm -r
+RM := rm -rf
 
 LANGS :=  $(wildcard lang/*.json)
 VIEWS :=  $(wildcard views/*.ejs)
 
-all: dist/combined.js dist/app.js dist/combined.css
+all: public/dist/combined.js public/dist/app.js public/dist/combined.css
 
-dist/app.js: src/app.js babel.config.json verified_tokens.json $(LANGS) $(VIEWS)
+public/dist/app.js: src/app.js babel.config.json public/verified_tokens.json $(LANGS) $(VIEWS)
 	npx babel $< > $@
 
-dist/combined.js: build/unpkg.com/core-js-bundle@3.6.5/minified.js \
+public/dist/combined.js: build/unpkg.com/core-js-bundle@3.6.5/minified.js \
 	build/unpkg.com/jquery@3.3.1/dist/jquery.min.js \
 	build/unpkg.com/@popperjs/core@2.2.2/dist/umd/popper.min.js \
 	build/unpkg.com/tippy.js@6.1.1/dist/tippy-bundle.umd.min.js \
@@ -81,13 +81,13 @@ build/unpkg.com/i18next@19.4.1/dist/umd/i18next.min.js:
 build/unpkg.com/i18next-browser-languagedetector@4.0.2/i18nextBrowserLanguageDetector.min.js:
 	$(CURL) https://unpkg.com/i18next-browser-languagedetector@4.0.2/i18nextBrowserLanguageDetector.min.js -o $@
 
-dist/combined.css: src/css/nice-select.css src/css/explorer.css
+public/dist/combined.css: src/css/nice-select.css src/css/explorer.css
 	cat $^ > $@
 
 .PHONY: clean lint
 
 clean:
-	$(RM) build/* dist/*
+	$(RM) build/* public/dist/*
 
 lint:
 	$(LINTER) src/app.js

@@ -1,7 +1,7 @@
 'use strict';
 window.app = {};
 
-import verified_tokens from '../verified_tokens.json';
+import verified_tokens from '../public/verified_tokens.json';
 app.verified_tokens = new Set(JSON.parse(verified_tokens));
 
 import index_page from '../views/index_page.ejs';
