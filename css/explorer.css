@@ -1019,3 +1019,7 @@ html.index-page header {
 #lottie-web-react {
     display: none!important;
 }
+
+.nice-select {
+    float:right;
+}
