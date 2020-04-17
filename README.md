@@ -4,6 +4,10 @@ A open source block explorer for Bitcoin Cash tokens based on the Simple Ledger 
 
 ![screenshot](/img/screenshot_large.jpg)
 
+## Translations
+
+Please see [TRANSLATIONS.md](TRANSLATIONS.md).
+
 ## How to add Token Icon?
 
 Open a PR at https://github.com/kosinusbch/slp-token-icons
