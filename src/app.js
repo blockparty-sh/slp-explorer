@@ -347,7 +347,7 @@ app.util = {
   create_time_period_plot: (
     usage,
     dom_id,
-    y_title='Transactions',
+    y_title=i18next.t('transactions'),
     time_period=60*60*24*30*1000,
     split_time_period=60*60*24*1000,
     line_type='hvh',
@@ -2843,7 +2843,7 @@ app.init_index_page = () =>
         app.util.create_time_period_plot(
           monthly_usage,
           'plot-usage',
-          'Transactions',
+          i18next.t('transactions'),
           time_period*1000,
           split_time_period*1000,
           line_type,
@@ -2853,7 +2853,7 @@ app.init_index_page = () =>
         $('#transaction-count').text(Number(total_slp_tx_month).toLocaleString());
 
         token_usage_monthly.push({
-          token_name: 'Other',
+          token_name: i18next.t('other'),
           txs: total_slp_tx_month - token_usage_monthly.reduce((a, v) => a + v.txs, 0),
         });
 
@@ -4019,7 +4019,7 @@ app.init_token_page = (tokenIdHex) =>
           app.util.create_time_period_plot(
             token_usage,
             'plot-token-usage',
-            'Transactions',
+            i18next.t('transactions'),
             time_period*1000,
             split_time_period*1000,
             line_type,
@@ -4408,7 +4408,7 @@ app.init_address_page = (address) =>
           app.util.create_time_period_plot(
             address_usage,
             'plot-address-usage',
-            'Transactions',
+            i18next.t('transactions'),
             time_period*1000,
             split_time_period*1000,
             line_type,
