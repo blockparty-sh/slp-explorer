@@ -20,9 +20,11 @@ If you would like your token to be considered verified open a PR adding the toke
 
 ## Building
 
+You need `Make`, `curl`, `npm` installed. 
+
 ```
 npm i
-npm run build
+make
 ```
 
 ## Credits
