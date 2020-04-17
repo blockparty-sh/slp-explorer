@@ -72,6 +72,7 @@ import translation_ru from '../lang/ru.json';
 import translation_ko from '../lang/ko.json';
 import translation_ms from '../lang/ms.json';
 import translation_ja from '../lang/ja.json';
+import translation_bn from '../lang/bn.json';
 const i18next_config = {
   fallbackLng: 'en-US',
   debug: true,
@@ -84,6 +85,7 @@ const i18next_config = {
     'ko':    { translation: JSON.parse(translation_ko) },
     'ms':    { translation: JSON.parse(translation_ms) },
     'ja':    { translation: JSON.parse(translation_ja) },
+    'bn':    { translation: JSON.parse(translation_bn) },
   },
 };
 
