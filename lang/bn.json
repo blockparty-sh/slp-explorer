@@ -10,14 +10,14 @@
   "footer_connect": "জুড়ুন",
 
   "error_modal_header": "ওহ! একটি ত্রুটি ঘটেছে!",
-  "error_modal_subtext": "অসুবিধার জন্য দুঃখিত, আমরা যত তাড়াতাড়ি সম্ভব এটিকে দেখব। আপনি যদি চান, আপনি এই ত্রুটি রিপোর্ট করতে পারেন <a href=\"https://github.com/blockparty-sh/slp-explorer\"> यहाँ </a>। <<br> पृष्ठ को पुनः लोड करने में मदद मिल सकती है। ।",
+  "error_modal_subtext": "অসুবিধার জন্য দুঃখিত, আমরা যত তাড়াতাড়ি সম্ভব এটিকে দেখব। আপনি যদি চান, আপনি এই ত্রুটি রিপোর্ট করতে পারেন <a href=\"https://github.com/blockparty-sh/slp-explorer\"> এখানে </a>। <br> পৃষ্ঠাটি পুনরায় লোড করুন এটি আপনাকে সহায়তা করতে পারে। ।",
 
   "mainmenu_explorer": "অনুসন্ধানকারী",
   "mainmenu_all_tokens": "সমস্ত টোকেনগুলি",
    
   "index_page_header": "সাধারণ লেজার প্রোটোকল(এসএলপি) টোকেন এক্সপ্লোরার",
   "index_page_subheader": "বিটকয়েন ক্যাশে তৈরিকৃত টোকেনগুলি দেখুন",
-  "index_page_subtext": "এই ওয়েবসাইটটি শীর্ষে তৈরি করা হয়েছে<a target=\"_blank\" href=\"https://github.com/simpleledger/SLPDB\"> SLPDB </a>की कमी<a target=\"_blank\" href=\"https://github.com/fountainhead-cash/bitd\"> BitDB FH </a>,कोड देखें और मुद्दों को सबमिट करें<a target=\"_blank\" href=\"https://github.com/blockparty-sh/slp-explorer\"> Github </a>।<br>का उपयोग कर अपने खुद के टोकन बनाओ<a href=\"https://simpleledger.cash/project/electron-cash-slp-edition/\"> इलेक्ट्रॉन नकद SLP संस्करण </a>।",
+  "index_page_subtext": "এই ওয়েবসাইটটি  নির্মিত হয়েছে<a target=\"_blank\" href=\"https://github.com/simpleledger/SLPDB\"> SLPDB </a>একটি শাখার শীর্ষে<a target=\"_blank\" href=\"https://github.com/fountainhead-cash/bitd\"> BitDB FH </a>,কোড দেখুন এবং সমস্যাগুলি জমা দিন<a target=\"_blank\" href=\"https://github.com/blockparty-sh/slp-explorer\"> Github </a>।<br>আপনার নিজের টোকেন তৈরি করুন<a href=\"https://simpleledger.cash/project/electron-cash-slp-edition/\">ইলেক্ট্রন ক্যাশ এসএলপি সংস্করণ ব্যবহার করে</a>।",
 
   "index_page_latest_transactions": "সর্বশেষ লেনদেনগুলো",
   "index_page_transaction_charts": "লেনদেনের তালিকা",
