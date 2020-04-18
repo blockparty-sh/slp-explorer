@@ -1,22 +1,22 @@
 {
   "private": true,
-  "devDependencies": {
+  "dependencies": {
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.0",
     "@babel/plugin-transform-arrow-functions": "^7.8.3",
     "@babel/plugin-transform-block-scoping": "^7.8.3",
     "@babel/plugin-transform-destructuring": "^7.9.5",
     "@babel/plugin-transform-exponentiation-operator": "^7.8.3",
+    "@babel/polyfill": "^7.8.7",
     "@babel/preset-env": "^7.9.5",
     "babel-plugin-inline-import": "^3.0.0",
+    "btoa": "^1.2.1",
     "dotenv": "^8.2.0",
     "eslint": "^6.8.0",
     "eslint-config-google": "^0.14.0",
+    "express": "^4.17.1",
     "isbot": "^2.5.7",
+    "node-fetch": "^2.6.0",
     "puppeteer": "^3.0.0"
-  },
-  "dependencies": {
-    "@babel/polyfill": "^7.8.7",
-    "express": "^4.17.1"
   }
 }
