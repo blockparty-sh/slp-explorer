@@ -31,6 +31,7 @@ const loadPage = async (res, req, url) => {
   });
 
   let content = await page.content();
+  page.close();
 
   // for bots we want them stuck in pre-rendered land
   if (isBot(req.headers['user-agent'])) {
