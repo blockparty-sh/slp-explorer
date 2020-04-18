@@ -194,6 +194,11 @@ app.util = {
       const $obj = $(`<a href="${m.link}" target="blank"><div class="exchange-icon ${m.class}"></div></a>`);
       if (m.type === 'sideshift') {
         $obj.click((event) => {
+          // if sideshift hasnt loaded yet
+          if (typeof(sideshift) === 'undefined') {
+            return;
+          }
+
           event.preventDefault();
           window.scrollTo(0, 0);
           window.__SIDESHIFT__ = {
