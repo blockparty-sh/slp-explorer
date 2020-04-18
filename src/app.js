@@ -779,6 +779,16 @@ app.util = {
 
     return translation_type;
   },
+  set_meta_description: (description) => {
+    $('meta[name="description"]').attr('content', description);
+    $('meta[name="twitter:description"]').attr('content', description);
+    $('meta[property="og:description"]').attr('content', description);
+  },
+  set_title: (title) => {
+    document.title = title;
+    $('meta[name="twitter:title"]').attr('content', title);
+    $('meta[property="og:title"]').attr('content', title);
+  },
 };
 
 const btoa_ext = (buf) => Buffer.Buffer.from(buf).toString('base64');
@@ -2662,7 +2672,7 @@ app.extract_recv_amount_from_tx = (tx, addr) => {
 
 app.init_404_page = () => new Promise((resolve, reject) => {
   $('main[role=main]').html(app.template.error_404_page());
-  $('meta[name="description"]').attr('content', `404 page not found`);
+  app.util.set_meta_description(`404 page not found`);
   resolve();
 });
 
@@ -2724,7 +2734,7 @@ app.init_nonslp_tx_page = (txid, highlight=[], slp=null) =>
             input_amounts: input_amounts,
             slp: slp,
           }));
-          $('meta[name="description"]').attr('content', `View information about the Bitcoin Cash transaction ${txid}`);
+          app.util.set_meta_description(`View information about the Bitcoin Cash transaction ${txid}`);
           app.util.attach_clipboard('main[role=main]');
           app.util.decimal_formatting($('#inputs-list tbody tr td:nth-child(3)'));
           app.util.decimal_formatting($('#outputs-list tbody tr td:nth-child(3)'));
@@ -2751,7 +2761,7 @@ app.init_error_processing_tx_page = (tx) => new Promise((resolve, reject) => {
   $('main[role=main]').html(app.template.error_processing_tx_page({
     tx: tx,
   }));
-  $('meta[name="description"]').attr('content', `Processing transaction... please check back later`);
+  app.util.set_meta_description(`Processing transaction... please check back later`);
   resolve();
 });
 
@@ -2759,7 +2769,7 @@ app.init_error_notx_page = (txid) => new Promise((resolve, reject) => {
   $('main[role=main]').html(app.template.error_notx_page({
     txid: txid,
   }));
-  $('meta[name="description"]').attr('content', `This transaction was not found in SLPDB or BitDB. It may have been very old or mispelled.`);
+  app.util.set_meta_description(`This transaction was not found in SLPDB or BitDB. It may have been very old or mispelled.`);
   resolve();
 });
 
@@ -2767,7 +2777,7 @@ app.init_error_badaddress_page = (address) => new Promise((resolve, reject) => {
   $('main[role=main]').html(app.template.error_badaddress_page({
     address: address,
   }));
-  $('meta[name="description"]').attr('content', `Sorry, we cannot decode the address given. Double check it isn't misspelled.`);
+  app.util.set_meta_description(`Sorry, we cannot decode the address given. Double check it isn't misspelled.`);
   resolve();
 });
 
@@ -3084,7 +3094,7 @@ app.init_all_tokens_page = () =>
 
       $('main[role=main]').html(app.template.all_tokens_page());
       $('#all-tokens-total-tokens').text(Number(all_tokens_count.t).toLocaleString());
-      $('meta[name="description"]').attr('content', `View all ${$('#all-tokens-total-tokens').html()} tokens created with Simple Ledger Protocol on Bitcoin Cash`);
+      app.util.set_meta_description(`View all ${$('#all-tokens-total-tokens').html()} tokens created with Simple Ledger Protocol on Bitcoin Cash`);
 
       const load_paginated_tokens = (limit, skip, done) => {
         app.slpdb.query(app.slpdb.all_tokens(limit, skip))
@@ -3131,7 +3141,7 @@ app.init_all_tokens_page = () =>
 
 app.init_dividend_page = () => new Promise((resolve, reject) => {
   $('main[role=main]').html(app.template.dividend_page());
-  $('meta[name="description"]').attr('content', `Calculate Bitcoin Cash Dividend Payments to SLP Tokens`);
+  app.util.set_meta_description(`Calculate Bitcoin Cash Dividend Payments to SLP Tokens`);
 
   $('#div_calculate').click(() => {
     const tokenIdHex = $('#div_tokenid').val();
@@ -3264,7 +3274,7 @@ app.init_tx_page = (txid, highlight=[]) =>
               token: token.t[0],
               input_amounts: input_amounts,
             }));
-            $('meta[name="description"]').attr('content', `View information about ${txid} which was a ${tx.slp.detail.transactionType} of ${token.t[0].tokenDetails.name}`);
+            app.util.set_meta_description(`View information about ${txid} which was a ${tx.slp.detail.transactionType} of ${token.t[0].tokenDetails.name}`);
             app.util.attach_clipboard('main[role=main]');
             app.util.set_token_icon($('main[role=main] .transaction_box .token-icon-large'), 128);
 
@@ -3582,7 +3592,7 @@ app.init_block_page = (height) =>
       .then((total_txs_by_block) => {
         total_txs_by_block = app.util.extract_total(total_txs_by_block).c;
         $('#total_txs, #total_transactions').html(Number(total_txs_by_block).toLocaleString());
-        $('meta[name="description"]').attr('content', `Block ${height} has ${$('#total_txs').html()} SLP transactions.`);
+        app.util.set_meta_description(`Block ${height} has ${$('#total_txs').html()} SLP transactions.`);
 
         if (total_txs_by_block === 0) {
           $('#block-transactions-table tbody').html('<tr><td>No transactions found.</td></tr>');
@@ -3612,7 +3622,7 @@ app.init_block_mempool_page = (height) =>
         height: 'mempool',
         most_recent_block_height: most_recent_block_height,
       }));
-      $('meta[name="description"]').attr('content', `The Bitcoin Cash Mempool contains all transactions waiting to be confirmed in a block.`);
+      app.util.set_meta_description(`The Bitcoin Cash Mempool contains all transactions waiting to be confirmed in a block.`);
 
       const load_paginated_transactions = (limit, skip, done) => {
         app.slpdb.query(app.slpdb.txs_in_mempool(limit, skip))
@@ -3988,7 +3998,7 @@ app.init_token_page = (tokenIdHex) =>
         app.util.decimal_formatting($('#token-stats-table tr.decimal-stats td'));
         $('#token-stats-table-container').removeClass('loading');
 
-        $('meta[name="description"]').attr('content', `${token.tokenDetails.name} (${token.tokenDetails.symbol}) is a ${token.tokenDetails.versionType === 1 ? 'Type1' : token.tokenDetails.versionType === 129 ? 'NFT1-Group' : token.tokenDetails.versionType === 65 ? 'NFT1-Child' : ''} token built on SLP. There have been ${$('#tokenstats_valid_token_transactions').html()} transactions, and ${$('#tokenstats_valid_token_addresses').html()} addresses currently holding. ${$('#tokenstats_circulating_supply').html()} tokens are in circulation.`);
+        app.util.set_meta_description(`${token.tokenDetails.name} (${token.tokenDetails.symbol}) is a ${token.tokenDetails.versionType === 1 ? 'Type1' : token.tokenDetails.versionType === 129 ? 'NFT1-Group' : token.tokenDetails.versionType === 65 ? 'NFT1-Child' : ''} token built on SLP. There have been ${$('#tokenstats_valid_token_transactions').html()} transactions, and ${$('#tokenstats_valid_token_addresses').html()} addresses currently holding. ${$('#tokenstats_circulating_supply').html()} tokens are in circulation.`);
 
 
         if (total_addresses === 0) {
@@ -4398,7 +4408,7 @@ app.init_address_page = (address) =>
         const total_transactions = total_sent_transactions + total_recv_transactions;
         $('#total_transactions').html(Number(total_transactions).toLocaleString());
 
-        $('meta[name="description"]').attr('content', `The ${cashaccount_data ? cashaccount_data.name : address} address has performed ${$('#total_sent_transactions').html()} transactions and received ${$('#total_recv_transactions').html()} transactions, and is holding a balance of ${$('#total_tokens').html()} different tokens.`);
+        app.util.set_meta_description(`The ${cashaccount_data ? cashaccount_data.name : address} address has performed ${$('#total_sent_transactions').html()} transactions and received ${$('#total_recv_transactions').html()} transactions, and is holding a balance of ${$('#total_tokens').html()} different tokens.`);
 
         if (total_transactions === 0) {
           $('#address-transactions-table tbody').html('<tr><td>No transactions found.</td></tr>');
@@ -4556,30 +4566,30 @@ app.router = (whash, push_history = true) => {
   switch (path) {
     case '':
     case '#':
-      document.title = i18next.t('slp_explorer');
+      app.util.set_title(i18next.t('slp_explorer'));
       method = () => {
           $('html').addClass('index-page');
           return app.init_index_page();
       };
       break;
     case '#alltokens':
-      document.title = `${i18next.t('all_tokens')} - ${i18next.t('slp_explorer')}`;
+      app.util.set_title(`${i18next.t('all_tokens')} - ${i18next.t('slp_explorer')}`);
       method = () => app.init_all_tokens_page();
       break;
     case '#dividend':
-      document.title = `${i18next.t('dividend_helper')} - ${i18next.t('slp_explorer')}`;
+      app.util.set_title(`${i18next.t('dividend_helper')} - ${i18next.t('slp_explorer')}`);
       method = () => app.init_dividend_page();
       break;
     case '#tx':
-      document.title = `${i18next.t('transaction')} ${key[0]} - ${i18next.t('slp_explorer')}`;
+      app.util.set_title(`${i18next.t('transaction')} ${key[0]} - ${i18next.t('slp_explorer')}`);
       method = () => app.init_tx_page(key[0], key.slice(1));
       break;
     case '#bchtx':
-      document.title = `${i18next.t('bitcoin_cash_transaction')} ${key[0]} - ${i18next.t('slp_explorer')}`;
+      app.util.set_title(`${i18next.t('bitcoin_cash_transaction')} ${key[0]} - ${i18next.t('slp_explorer')}`);
       method = () => app.init_nonslp_tx_page(key[0], key.slice(1));
       break;
     case '#block':
-      document.title = `${i18next.t('block')} ${key[0]} - ${i18next.t('slp_explorer')}`;
+      app.util.set_title(`${i18next.t('block')} ${key[0]} - ${i18next.t('slp_explorer')}`);
       if (key[0] === 'mempool') {
         method = () => app.init_block_mempool_page();
       } else {
@@ -4587,15 +4597,15 @@ app.router = (whash, push_history = true) => {
       }
       break;
     case '#token':
-      document.title = `${i18next.t('token')} ${key[0]} - ${i18next.t('slp_explorer')}`;
+      app.util.set_title(`${i18next.t('token')} ${key[0]} - ${i18next.t('slp_explorer')}`);
       method = () => app.init_token_page(key[0]);
       break;
     case '#address':
-      document.title = `${i18next.t('address')} ${key[0]} - ${i18next.t('slp_explorer')}`;
+      app.util.set_title(`${i18next.t('address')} ${key[0]} - ${i18next.t('slp_explorer')}`);
       method = () => app.init_address_page(key[0]);
       break;
     default:
-      document.title = `404 | ${i18next.t('slp_explorer')}`;
+      app.util.set_title(`404 | ${i18next.t('slp_explorer')}`);
       console.error('app.router path not found', whash);
       method = () => app.init_404_page();
       break;
@@ -4608,6 +4618,7 @@ app.router = (whash, push_history = true) => {
   $('#main-search').autocomplete('dispose');
   $('#header-search-desktop').autocomplete('dispose');
   $('#header-search-mobile').autocomplete('dispose');
+  $('meta[property="og:url"]').attr('content', window.location.origin + '/' + window.location.hash.substring(1));
 
   app.slpstream.reset();
 
