@@ -76,7 +76,7 @@ import translation_bn from '../lang/bn.json';
 import translation_yo from '../lang/yo.json';
 import translation_fil from '../lang/fil.json';
 const i18next_config = {
-  fallbackLng: 'en-US',
+  fallbackLng: 'en',
   debug: true,
   resources: {
     'en':    { translation: JSON.parse(translation_en) },
