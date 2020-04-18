@@ -200,6 +200,7 @@ app.util = {
           }
 
           event.preventDefault();
+          _paq.push(['trackGoal', 4]);
           window.scrollTo(0, 0);
           window.__SIDESHIFT__ = {
             testerId: '9a8b1c79b64edf17',
