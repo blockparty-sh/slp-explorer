@@ -111,9 +111,7 @@ i18next
   });
 
   app.slpstream.init();
-  if (document.location.pathname === '/') {
-    app.router(window.location.pathname+window.location.hash, false);
-  }
+  app.router(window.location.pathname+window.location.hash, false);
   $('header').removeClass('loading');
 }));
 
@@ -2381,11 +2379,6 @@ app.slpstream = {
       return false;
     }
 
-    // this is for puppeteer
-    if (location.search.indexOf('disablesse=') >=0) {
-      return false;
-    }
-
     const b64 = btoa_ext(JSON.stringify(query));
     const url = 'https://slpstream.fountainhead.cash/s/' + b64;
 
@@ -4523,6 +4516,12 @@ app.init_address_page = (address) =>
 
 
 app.router = (whash, push_history = true) => {
+  // non-spa like /tx/xxx -- we make it look like its spa to simplify logic
+  // TODO maybe we should strip # from this method alltogether?
+  if (document.location.pathname !== '/') {
+    whash = '/#'+window.location.pathname.substring(1);
+  }
+
   if (! whash) {
     whash = window.location.hash.substring(1);
   }

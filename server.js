@@ -31,7 +31,7 @@ const loadPage = async (res, req, url) => {
   let content = await page.content();
 
   // for bots we want them stuck in pre-rendered land
-  if (isBot(req.headers['users-agent'])) {
+  if (isBot(req.headers['user-agent'])) {
     content = replaceLinksIfBot(content);
   }
 
@@ -42,37 +42,38 @@ const router = express.Router();
 
 // this is the normal website it is treated a bit differently to the others
 // to allow for self-crawling without recursion hell
-router.get('/', (req,res) => {
+router.get('/', (req, res) => {
   let html = fs.readFileSync(path.join(__dirname+'/public/index.html'), 'utf-8');
+  console.log(req.headers['user-agent']);
 
   // for bots we want them stuck in pre-rendered land
-  if (isBot(req.headers['users-agent'])) {
-    html = replaceLinks(html);
+  if (isBot(req.headers['user-agent'])) {
+    html = replaceLinksIfBot(html);
   }
 
   return res.send(html);
 });
 
 router.get('/alltokens', async (req, res) => 
-  loadPage(res, req, `http://127.0.0.1:8000/?disablesse=1#alltokens`));
+  loadPage(res, req, `http://127.0.0.1:8000/?isbot=${isBot(req.header['user-agent'])}#alltokens`));
 
 router.get('/dividend', async (req, res) => 
-  loadPage(res, req, `http://127.0.0.1:8000/?disablesse=1#dividend`));
+  loadPage(res, req, `http://127.0.0.1:8000/?isbot=${isBot(req.header['user-agent'])}#dividend`));
 
 router.get('/tx/:item', async (req, res) => 
-  loadPage(res, req, `http://127.0.0.1:8000/?disablesse=1#tx/${req.params.item}`));
+  loadPage(res, req, `http://127.0.0.1:8000/?isbot=${isBot(req.header['user-agent'])}#tx/${req.params.item}`));
 
 router.get('/bchtx/:item', async (req, res) => 
-  loadPage(res, req, `http://127.0.0.1:8000/?disablesse=1#bchtx/${req.params.item}`));
+  loadPage(res, req, `http://127.0.0.1:8000/?isbot=${isBot(req.header['user-agent'])}#bchtx/${req.params.item}`));
 
 router.get('/token/:item', async (req, res) =>
-  loadPage(res, req, `http://127.0.0.1:8000/?disablesse=1#token/${req.params.item}`));
+  loadPage(res, req, `http://127.0.0.1:8000/?isbot=${isBot(req.header['user-agent'])}#token/${req.params.item}`));
 
 router.get('/address/:item', async (req, res) =>
-  loadPage(res, req, `http://127.0.0.1:8000/?disablesse=1#address/${req.params.item}`));
+  loadPage(res, req, `http://127.0.0.1:8000/?isbot=${isBot(req.header['user-agent'])}#address/${req.params.item}`));
 
 router.get('/block/:item', async (req, res) => 
-  loadPage(res, req, `http://127.0.0.1:8000/?disablesse=1#block/${req.params.item}`));
+  loadPage(res, req, `http://127.0.0.1:8000/?isbot=${isBot(req.header['user-agent'])}#block/${req.params.item}`));
 
 app.use('/', router);
 app.use('/', express.static('public'));
