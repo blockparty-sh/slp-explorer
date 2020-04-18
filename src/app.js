@@ -77,7 +77,7 @@ import translation_yo from '../lang/yo.json';
 import translation_fil from '../lang/fil.json';
 const i18next_config = {
   fallbackLng: 'en',
-  debug: true,
+  debug: false,
   resources: {
     'en':    { translation: JSON.parse(translation_en) },
     'zh':    { translation: JSON.parse(translation_zh) },
@@ -2788,6 +2788,9 @@ app.init_index_page = () =>
 
     app.util.attach_search_handler($('#main-search'), $('#main-search-suggestions-container'));
     $('#language_selector').val(i18next.language.split('-')[0]);
+    if($('#language_selector').val() === null) {
+      $('#language_selector').val('en');
+    }
     $('#language_selector').change(function() {
       window.location = update_query_string_value('lng', $(this).val());
     });
