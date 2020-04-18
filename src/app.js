@@ -2806,7 +2806,7 @@ app.init_index_page = () =>
         );
       }
 
-	  app.util.internationalize($('#recent-transactions-table'));
+      app.util.internationalize($('#recent-transactions-table'));
       app.util.attach_clipboard('#recent-transactions-table');
       $('#recent-transactions-table tbody .token-icon-small').each(function() {
         app.util.set_token_icon($(this), 32);
@@ -2955,7 +2955,7 @@ app.init_index_page = () =>
           );
         });
 
-	    app.util.internationalize($('#index-tokens-table'));
+        app.util.internationalize($('#index-tokens-table'));
         app.util.attach_clipboard('#index-tokens-table');
         $('#index-tokens-table tbody .token-icon-small').each(function() {
           app.util.set_token_icon($(this), 32);
@@ -2995,7 +2995,7 @@ app.init_index_page = () =>
             }),
           );
         });
-	    app.util.internationalize($('#index-burn-history-table'));
+        app.util.internationalize($('#index-burn-history-table'));
         app.util.attach_clipboard('#index-burn-history-table');
         $('#index-burn-history-table tbody .token-icon-small').each(function() {
           app.util.set_token_icon($(this), 32);
@@ -3067,7 +3067,7 @@ app.init_index_page = () =>
           app.template.latest_transactions_tx({tx: sna}),
         );
 
-	    app.util.internationalize(tbody);
+        app.util.internationalize(tbody);
         app.util.set_token_icon(tbody.find('.token-icon-small:first'), 32);
         app.util.flash_latest_item(tbody);
 
@@ -3112,7 +3112,7 @@ app.init_all_tokens_page = () =>
             );
           });
 
-		  app.util.internationalize($('#all-tokens-table'));
+          app.util.internationalize($('#all-tokens-table'));
           app.util.attach_clipboard('#all-tokens-table');
           $('#all-tokens-table tbody .token-icon-small').each(function() {
             app.util.set_token_icon($(this), 32);
@@ -3575,7 +3575,7 @@ app.init_block_page = (height) =>
             );
           });
 
-		  app.util.internationalize($('#block-transactions-table'));
+          app.util.internationalize($('#block-transactions-table'));
           app.util.attach_clipboard('#block-transactions-table');
           $('#block-transactions-table tbody .token-icon-small').each(function() {
             app.util.set_token_icon($(this), 32);
@@ -3640,7 +3640,7 @@ app.init_block_mempool_page = (height) =>
             );
           });
 
-		  app.util.internationalize($('#block-transactions-table'));
+          app.util.internationalize($('#block-transactions-table'));
           app.util.attach_clipboard('#block-transactions-table');
           $('#block-transactions-table tbody .token-icon-small').each(function() {
             app.util.set_token_icon($(this), 32);
@@ -3744,7 +3744,7 @@ app.init_token_page = (tokenIdHex) =>
                 );
               });
 
-			  app.util.internationalize($('#token-child-nfts-table'));
+              app.util.internationalize($('#token-child-nfts-table'));
               app.util.attach_clipboard('#token-child-nfts-table');
               $('#token-child-nfts-table tbody .token-icon-small').each(function() {
                 app.util.set_token_icon($(this), 32);
@@ -3784,7 +3784,7 @@ app.init_token_page = (tokenIdHex) =>
             );
           });
 
-		  app.util.internationalize($('#token-addresses-table'));
+          app.util.internationalize($('#token-addresses-table'));
           app.util.attach_clipboard('#token-addresses-table');
           app.util.decimal_formatting($('#token-addresses-table tbody tr td:nth-child(2)'));
 
@@ -3809,7 +3809,7 @@ app.init_token_page = (tokenIdHex) =>
             );
           });
 
-		  app.util.internationalize($('#token-mint-history-table'));
+          app.util.internationalize($('#token-mint-history-table'));
           app.util.attach_clipboard('#token-mint-history-table');
           app.util.decimal_formatting($('#token-mint-history-table tbody tr td:nth-child(3)'));
 
@@ -3848,7 +3848,7 @@ app.init_token_page = (tokenIdHex) =>
             );
           });
 
-		  app.util.internationalize($('#token-burn-history-table'));
+          app.util.internationalize($('#token-burn-history-table'));
           app.util.attach_clipboard('#token-burn-history-table');
           app.util.decimal_formatting($('#token-burn-history-table tbody tr td:nth-child(2)'));
 
@@ -3912,7 +3912,7 @@ app.init_token_page = (tokenIdHex) =>
               );
             });
 
-		    app.util.internationalize($('#token-transactions-table'));
+            app.util.internationalize($('#token-transactions-table'));
             app.util.attach_clipboard('#token-transactions-table');
             app.util.decimal_formatting($('#token-transactions-table tbody tr td:nth-child(3)'));
 
@@ -4237,7 +4237,7 @@ app.init_address_page = (address) =>
             );
           });
 
-		  app.util.internationalize($('#address-tokens-table'));
+          app.util.internationalize($('#address-tokens-table'));
           app.util.attach_clipboard('#address-tokens-table');
           $('#address-tokens-table tbody .token-icon-small').each(function() {
             app.util.set_token_icon($(this), 32);
@@ -4304,7 +4304,7 @@ app.init_address_page = (address) =>
               );
             });
 
-		    app.util.internationalize($('#address-transactions-table'));
+            app.util.internationalize($('#address-transactions-table'));
             app.util.attach_clipboard('#address-transactions-table');
             $('#address-transactions-table tbody .token-icon-small').each(function() {
               app.util.set_token_icon($(this), 32);
@@ -4347,7 +4347,7 @@ app.init_address_page = (address) =>
               }),
             );
           });
-		  app.util.internationalize($('#address-burn-history-table'));
+          app.util.internationalize($('#address-burn-history-table'));
           app.util.attach_clipboard('#address-burn-history-table');
           $('#address-burn-history-table tbody .token-icon-small').each(function() {
             app.util.set_token_icon($(this), 32);
@@ -4624,7 +4624,7 @@ app.router = (whash, push_history = true) => {
 
   const loading_timer_start = +(new Date)/1000|0;
   method().then(() => {
-	app.util.internationalize($('main[role=main]'));
+    app.util.internationalize($('main[role=main]'));
     tippy('[data-tippy-content]');
     jdenticon();
 
@@ -4644,7 +4644,7 @@ app.router = (whash, push_history = true) => {
     _paq.push(['deleteCustomVariables', 'page']);
     _paq.push(['setGenerationTimeMs', +(new Date)/1000|0-loading_timer_start]);
     _paq.push(['trackPageView']);
-	_paq.push(['enableHeartBeatTimer']);
+    _paq.push(['enableHeartBeatTimer']);
     _paq.push(['enableLinkTracking']);
   });
 };
