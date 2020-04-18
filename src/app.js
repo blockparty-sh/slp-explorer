@@ -74,6 +74,7 @@ import translation_ms from '../lang/ms.json';
 import translation_ja from '../lang/ja.json';
 import translation_bn from '../lang/bn.json';
 import translation_yo from '../lang/yo.json';
+import translation_fil from '../lang/fil.json';
 const i18next_config = {
   fallbackLng: 'en-US',
   debug: true,
@@ -88,6 +89,7 @@ const i18next_config = {
     'ja':    { translation: JSON.parse(translation_ja) },
     'bn':    { translation: JSON.parse(translation_bn) },
     'yo':    { translation: JSON.parse(translation_yo) },
+    'fil':   { translation: JSON.parse(translation_fil) },
   },
 };
 
