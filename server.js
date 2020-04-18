@@ -102,7 +102,7 @@ router.get('/sitemap.xml', async (req, res) => {
       "db": ["t"],
       "find": {
         "tokenStats.approx_txns_since_genesis": {
-          "$gte": 100
+          "$gte": 10
         }
       },
       "sort": {
@@ -175,29 +175,29 @@ router.get('/sitemap.xml', async (req, res) => {
   .then((data) => data.json());
   
   response += `<?xml version="1.0" encoding="UTF-8"?>
-  <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://simpleledger.info/</loc></url>
-  <url><loc>https://simpleledger.info/alltokens</loc></url>
-  <url><loc>https://simpleledger.info/dividend</loc></url>
-  <url><loc>https://simpleledger.info/block/mempool</loc></url>`;
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url><loc>https://simpleledger.info/</loc></url>
+<url><loc>https://simpleledger.info/alltokens</loc></url>
+<url><loc>https://simpleledger.info/dividend</loc></url>
+<url><loc>https://simpleledger.info/block/mempool</loc></url>`;
   
   
   return slpdbQuery(tokens_query)
   .then((data) => {
     for (let m of data.t) {
-      response += `<url><loc>https://simpleledger.info/token/${m.tokenDetails.tokenIdHex}</loc></url>`;
+      response += `<url><loc>https://simpleledger.info/token/${m.tokenDetails.tokenIdHex}</loc></url>\n`;
     }
   
     return slpdbQuery(addresses_query)
     .then((data) => {
       for (let m of data.g) {
-        response += `<url><loc>https://simpleledger.info/address/${m._id}</loc></url>`;
+        response += `<url><loc>https://simpleledger.info/address/${m._id}</loc></url>\n`;
       }
 
       return slpdbQuery(transactions_query)
       .then((data) => {
         for (let m of data.c) {
-          response += `<url><loc>https://simpleledger.info/tx/${m.tx.h}</loc></url>`;
+          response += `<url><loc>https://simpleledger.info/tx/${m.tx.h}</loc></url>\n`;
         }
   
         response += `</urlset>`;
