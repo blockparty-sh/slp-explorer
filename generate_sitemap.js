@@ -70,7 +70,6 @@ console.log(`<?xml version="1.0" encoding="UTF-8"?>
 
 slpdbQuery(tokens_query)
 .then((data) => {
-  console.log(data);
   for (let m of data.t) {
     console.log(`<url><loc>https://simpleledger.info/token/${m.tokenDetails.tokenIdHex}</loc></url>`);
   }
