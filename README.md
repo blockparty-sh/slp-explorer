@@ -22,6 +22,14 @@ If you would like your token to be considered verified open a PR adding the toke
 
 You need `Make`, `curl`, `npm` installed. 
 
+For running puppeteer you need additional libraries:
+
+```
+sudo apt install libx11-xcb-dev libxcb-dri3-dev libxcomposite-dev libxcursor-dev libxdamage-dev libxi-dev libxtst-dev libnss3-dev libcups2-dev libxss-dev libxrandr-dev libgbm-devlibasound2-dev libatk1.0-dev libatk-bridge2.0-dev libpangocairo-1.0-0 libgtk-3-dev
+```
+
+To actually build and start perform the following:
+
 ```
 cp .env.example .env
 npm i

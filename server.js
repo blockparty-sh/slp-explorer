@@ -7,6 +7,8 @@ const express = require('express');
 const app = express();
 const path = require('path');
 
+const port = process.env.port || 8000;
+
 let browser = null;
 
 const replaceLinksIfBot = (html) => html.replace(/href="\/#/g, 'href="/');
@@ -55,25 +57,25 @@ router.get('/', (req, res) => {
 });
 
 router.get('/alltokens', async (req, res) => 
-  loadPage(res, req, `http://127.0.0.1:8000/?isbot=${isBot(req.header['user-agent'])}#alltokens`));
+  loadPage(res, req, `http://127.0.0.1:${port}/?isbot=${isBot(req.header['user-agent'])}#alltokens`));
 
 router.get('/dividend', async (req, res) => 
-  loadPage(res, req, `http://127.0.0.1:8000/?isbot=${isBot(req.header['user-agent'])}#dividend`));
+  loadPage(res, req, `http://127.0.0.1:${port}/?isbot=${isBot(req.header['user-agent'])}#dividend`));
 
 router.get('/tx/:item', async (req, res) => 
-  loadPage(res, req, `http://127.0.0.1:8000/?isbot=${isBot(req.header['user-agent'])}#tx/${req.params.item}`));
+  loadPage(res, req, `http://127.0.0.1:${port}/?isbot=${isBot(req.header['user-agent'])}#tx/${req.params.item}`));
 
 router.get('/bchtx/:item', async (req, res) => 
-  loadPage(res, req, `http://127.0.0.1:8000/?isbot=${isBot(req.header['user-agent'])}#bchtx/${req.params.item}`));
+  loadPage(res, req, `http://127.0.0.1:${port}/?isbot=${isBot(req.header['user-agent'])}#bchtx/${req.params.item}`));
 
 router.get('/token/:item', async (req, res) =>
-  loadPage(res, req, `http://127.0.0.1:8000/?isbot=${isBot(req.header['user-agent'])}#token/${req.params.item}`));
+  loadPage(res, req, `http://127.0.0.1:${port}/?isbot=${isBot(req.header['user-agent'])}#token/${req.params.item}`));
 
 router.get('/address/:item', async (req, res) =>
-  loadPage(res, req, `http://127.0.0.1:8000/?isbot=${isBot(req.header['user-agent'])}#address/${req.params.item}`));
+  loadPage(res, req, `http://127.0.0.1:${port}/?isbot=${isBot(req.header['user-agent'])}#address/${req.params.item}`));
 
 router.get('/block/:item', async (req, res) => 
-  loadPage(res, req, `http://127.0.0.1:8000/?isbot=${isBot(req.header['user-agent'])}#block/${req.params.item}`));
+  loadPage(res, req, `http://127.0.0.1:${port}/?isbot=${isBot(req.header['user-agent'])}#block/${req.params.item}`));
 
 app.use('/', router);
 app.use('/', express.static('public'));
@@ -81,7 +83,6 @@ app.use('/', express.static('public'));
 (async () => {
   browser = await puppeteer.launch();
 
-  const port = process.env.port || 8000;
   app.listen(port);
   console.log(`listening on port: ${port}`);
 })();
