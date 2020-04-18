@@ -213,7 +213,19 @@ app.use('/', router);
 app.use('/', express.static('public'));
 
 (async () => {
-  browser = await puppeteer.launch();
+  browser = await puppeteer.launch({
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
+      '--disable-accelerated-2d-canvas',
+      '--no-first-run',
+      '--no-zygote',
+      '--single-process',
+      '--disable-gpu',
+    ],
+    headless: true
+  });
 
   app.listen(port);
   console.log(`listening on port: ${port}`);
