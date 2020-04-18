@@ -14,6 +14,16 @@ const replaceLinksIfBot = (html) => html.replace(/href="\/#/g, 'href="/');
 const loadPage = async (res, req, url) => {
   const page = await browser.newPage();
 
+  await page.setRequestInterception(true);
+  page.on('request', req => {
+    const whitelist = ['document', 'script', 'xhr', 'fetch', 'image'];
+    if (! whitelist.includes(req.resourceType())) {
+      return req.abort();
+    }
+
+    req.continue();
+  });
+
   await page.goto(url, {
     waitUntil: "networkidle0"
   });
@@ -22,7 +32,7 @@ const loadPage = async (res, req, url) => {
 
   // for bots we want them stuck in pre-rendered land
   if (isBot(req.headers['users-agent'])) {
-    content = replaceLinks(content);
+    content = replaceLinksIfBot(content);
   }
 
   return res.send(content);
@@ -30,6 +40,8 @@ const loadPage = async (res, req, url) => {
 
 const router = express.Router();
 
+// this is the normal website it is treated a bit differently to the others
+// to allow for self-crawling without recursion hell
 router.get('/', (req,res) => {
   let html = fs.readFileSync(path.join(__dirname+'/public/index.html'), 'utf-8');
 
@@ -54,7 +66,7 @@ router.get('/bchtx/:item', async (req, res) =>
   loadPage(res, req, `http://127.0.0.1:8000/?disablesse=1#bchtx/${req.params.item}`));
 
 router.get('/token/:item', async (req, res) =>
-  loadPage(res,`req, http://127.0.0.1:8000/?disablesse=1#token/${req.params.item}`));
+  loadPage(res, req, `http://127.0.0.1:8000/?disablesse=1#token/${req.params.item}`));
 
 router.get('/address/:item', async (req, res) =>
   loadPage(res, req, `http://127.0.0.1:8000/?disablesse=1#address/${req.params.item}`));
