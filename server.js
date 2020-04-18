@@ -8,30 +8,45 @@ const app = express();
 const path = require('path');
 
 const port = process.env.port || 8000;
+const host = process.env.port || "localhost";
 
 let browser = null;
 
 const replaceLinksIfBot = (html) => html.replace(/href="\/#/g, 'href="/');
 
 const loadPage = async (res, req, url) => {
-  const page = await browser.newPage();
+  let page = null;
+  let content = null;
 
-  await page.setRequestInterception(true);
-  page.on('request', req => {
-    const whitelist = ['document', 'script', 'xhr', 'fetch', 'image'];
-    if (! whitelist.includes(req.resourceType())) {
-      return req.abort();
-    }
+  try {
+    page = await browser.newPage();
 
-    req.continue();
-  });
+    await page.setRequestInterception(true);
+    page.on('request', req => {
+      const whitelist = ['document', 'script', 'xhr', 'fetch', 'image'];
+      if (! whitelist.includes(req.resourceType())) {
+        return req.abort();
+      }
 
-  await page.goto(url, {
-    waitUntil: "networkidle0"
-  });
+      req.continue();
+    });
 
-  let content = await page.content();
-  page.close();
+    await page.goto(url, {
+      waitUntil: "networkidle0"
+    });
+
+    content = await page.content();
+    page.close();
+  } catch(e) {
+    console.log(e);
+    res.status(500);
+    res.render('error', {error: e});
+    return;
+  }
+  try {
+    page.close();
+  } catch (e) {}
+
 
   // for bots we want them stuck in pre-rendered land
   if (isBot(req.headers['user-agent'])) {
