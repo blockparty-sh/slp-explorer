@@ -35,9 +35,9 @@
                   <th role="col" data-i18n="block"></th>
                   <td>
                     <% if (tx.blk) { %>
-                      <a href="#block/<%= tx.blk.i %>"><%= tx.blk.i %></a>
+                      <a href="/#block/<%= tx.blk.i %>"><%= tx.blk.i %></a>
                     <% } else { %>
-                      <a href="#block/mempool" data-i18n="pending"></a>
+                      <a href="/#block/mempool" data-i18n="pending"></a>
                     <% } %>
                   </td>
                 </tr>
@@ -54,7 +54,7 @@
                 <tr>
                   <th role="col" data-i18n="txid"></th>
                   <td>
-                    <a class="txid" href="#tx/<%= tx.tx.h %>"><%= tx.tx.h %></a>
+                    <a class="txid" href="/#tx/<%= tx.tx.h %>"><%= tx.tx.h %></a>
                     <button class="copybtn" data-clipboard-text="<%= tx.tx.h %>"></button>
                   </td>
                 </tr>

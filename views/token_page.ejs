@@ -130,9 +130,9 @@
                 <th data-i18n="block_created"></th>
                 <td>
                   <% if (token.tokenStats.block_created !== null) { %>
-                    <a href="#block/<%= token.tokenStats.block_created %>"><%= token.tokenStats.block_created %></a>
+                    <a href="/#block/<%= token.tokenStats.block_created %>"><%= token.tokenStats.block_created %></a>
                   <% } else { %>
-                    <a href="#block/mempool" data-i18n="pending"></a>
+                    <a href="/#block/mempool" data-i18n="pending"></a>
                   <% } %>
                 </td>
               </tr>
@@ -146,7 +146,7 @@
               <tr>
                 <th scope="row" data-i18n="minting_baton_utxo"></th>
                 <td>
-                  <a href="#tx/<%= token.mintBatonUtxo.split(':')[0] %>">
+                  <a href="/#tx/<%= token.mintBatonUtxo.split(':')[0] %>">
                     <% const mintBatonUtxoParts = token.mintBatonUtxo.split(':'); %>
                     <%= app.util.compress_txid(mintBatonUtxoParts[0]) %>:<%= mintBatonUtxoParts[1] %>
                   </a>

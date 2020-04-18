@@ -9,7 +9,7 @@
   <td>
     <div class="flex-vcenter">
       <span class="token-icon-small" data-tokenid="<%= tx.slp.detail.tokenIdHex %>"></span>
-      <a href="#token/<%= tx.slp.detail.tokenIdHex %>">
+      <a href="/#token/<%= tx.slp.detail.tokenIdHex %>">
       <% if (tx.token[0].tokenDetails.symbol) { %>
         <%= tx.token[0].tokenDetails.symbol %>
       <% } else { %>
@@ -33,9 +33,9 @@
   <td>
     <div class="flex-vcenter">
       <% if (tx.blk) { %>
-        <a href="#block/<%= tx.blk.i %>"><%= tx.blk.i %></a>
+        <a href="/#block/<%= tx.blk.i %>"><%= tx.blk.i %></a>
       <% } else { %>
-        <a href="#block/mempool" data-i18n="pending"></a>
+        <a href="/#block/mempool" data-i18n="pending"></a>
       <% } %>
     </div>
   </td>

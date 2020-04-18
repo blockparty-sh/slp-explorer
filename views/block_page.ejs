@@ -5,15 +5,15 @@
         <h2 class="text-white"><span data-i18n="block"></span> <%= height %> | <span id="total_txs">...</span> transactions</h2>
         <h6 data-i18n="block_page_view_all_block"></h6>
   
-        <a href="#block/<%= height-1 %>">
+        <a href="/#block/<%= height-1 %>">
           <button type="button" class="button left" >&larr; <span data-i18n="block"></span> <%= height-1 %></button>
         </a>
         <% if (next_block_exists) { %>
-          <a href="#block/<%= height+1 %>">
+          <a href="/#block/<%= height+1 %>">
             <button type="button" class="button left"><span data-i18n="block"></span> <%= height+1 %> &rarr;</button>
           </a>
         <% } else { %>
-          <a href="#block/mempool %>">
+          <a href="/#block/mempool %>">
             <button type="button" class="button left"><span data-i18n="mempool"></span> &rarr;</button>
           </a>
         <% } %>
@@ -24,7 +24,7 @@
       <% } else { %>
         <h2 class="text-white"><span data-i18n="mempool"></span> | <span id="total_txs">...</span> transactions</h2>
         <h6 data-i18n="block_page_view_all_mempool"></h6>
-        <a href="#block/<%= most_recent_block_height %>">
+        <a href="/#block/<%= most_recent_block_height %>">
           <button type="button" class="button left" >&larr; block <%= most_recent_block_height %></button>
         </a>
       <% } %>

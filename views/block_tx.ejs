@@ -17,11 +17,11 @@
     <div class="flex-vcenter">
       <span class="token-icon-small" data-tokenid="<%= tx.slp.detail.tokenIdHex %>"></span>
       <% if (tx.token[0].tokenDetails.symbol.length > 0) { %>
-        <a href="#token/<%= tx.slp.detail.tokenIdHex %>">
+        <a href="/#token/<%= tx.slp.detail.tokenIdHex %>">
           <%= tx.token[0].tokenDetails.name %> $<%= tx.token[0].tokenDetails.symbol %>
         </a>
       <% } else { %>
-        <span class="mono"><a href="#token/<%= tx.slp.detail.tokenIdHex %>" data-i18n="none"></a></span>
+        <span class="mono"><a href="/#token/<%= tx.slp.detail.tokenIdHex %>" data-i18n="none"></a></span>
       <% } %>
     </div>
   </td>

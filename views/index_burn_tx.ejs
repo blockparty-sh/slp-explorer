@@ -8,9 +8,9 @@
       <% if (tx.token.length > 0) { %>
         <span class="token-icon-small" data-tokenid="<%= tx.token[0].tokenDetails.tokenIdHex %>"></span>
         <% if (tx.token[0].tokenDetails.symbol.length > 0) { %>
-          <a href="#token/<%= tx.token[0].tokenDetails.tokenIdHex %>"><%= tx.token[0].tokenDetails.name %> $<%= tx.token[0].tokenDetails.symbol %></a>
+          <a href="/#token/<%= tx.token[0].tokenDetails.tokenIdHex %>"><%= tx.token[0].tokenDetails.name %> $<%= tx.token[0].tokenDetails.symbol %></a>
         <% } else { %>
-          <span class="mono"><a href="#token/<%= tx.token[0].tokenDetails.tokenIdHex %>" data-i18n="none"></a></span>
+          <span class="mono"><a href="/#token/<%= tx.token[0].tokenDetails.tokenIdHex %>" data-i18n="none"></a></span>
         <% } %>
       <% } else { console.log('TODO: remove when mongo transactions fix this', tx); } %>
     </div>
@@ -20,9 +20,9 @@
   </td>
   <td>
     <% if (tx.tx && tx.tx.blk) { %>
-      <a href="#block/<%= tx.tx.blk.i %>"><%= tx.tx.blk.i %></a>
+      <a href="/#block/<%= tx.tx.blk.i %>"><%= tx.tx.blk.i %></a>
     <% } else { %>
-      <a href="#block/mempool" class="pending" data-i18n="pending"></a>
+      <a href="/#block/mempool" class="pending" data-i18n="pending"></a>
     <% } %>
   </td>
   <td>

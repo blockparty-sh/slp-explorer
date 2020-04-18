@@ -8,9 +8,9 @@
   </td>
   <td>
     <% if (tx.tx && tx.tx.blk) { %>
-      <a href="#block/<%= tx.tx.blk.i %>"><%= tx.tx.blk.i %></a>
+      <a href="/#block/<%= tx.tx.blk.i %>"><%= tx.tx.blk.i %></a>
     <% } else { %>
-      <a href="#block/mempool" data-i18n="pending"></a>
+      <a href="/#block/mempool" data-i18n="pending"></a>
     <% } %>
   </td>
   <td>
