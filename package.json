@@ -9,9 +9,11 @@
     "@babel/plugin-transform-exponentiation-operator": "^7.8.3",
     "@babel/preset-env": "^7.9.5",
     "babel-plugin-inline-import": "^3.0.0",
+    "dotenv": "^8.2.0",
     "eslint": "^6.8.0",
     "eslint-config-google": "^0.14.0",
-    "prerender": "^5.6.0"
+    "isbot": "^2.5.7",
+    "puppeteer": "^3.0.0"
   },
   "dependencies": {
     "@babel/polyfill": "^7.8.7",

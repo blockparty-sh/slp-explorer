@@ -1,6 +1,7 @@
 CURL := curl --create-dirs
 LINTER := npx eslint
 RM := rm -rf
+UNZIP := unzip
 
 LANGS :=  $(wildcard lang/*.json)
 VIEWS :=  $(wildcard views/*.ejs)

@@ -111,8 +111,9 @@ i18next
   });
 
   app.slpstream.init();
-
-  app.router(window.location.pathname+window.location.hash, false);
+  if (document.location.pathname === '/') {
+    app.router(window.location.pathname+window.location.hash, false);
+  }
   $('header').removeClass('loading');
 }));
 
@@ -2377,8 +2378,14 @@ app.slpstream = {
 
   init_listener: (query, fn) => {
     if (! query) {
-      return resolve(false);
+      return false;
     }
+
+    // this is for puppeteer
+    if (location.search.indexOf('disablesse=') >=0) {
+      return false;
+    }
+
     const b64 = btoa_ext(JSON.stringify(query));
     const url = 'https://slpstream.fountainhead.cash/s/' + b64;
 
