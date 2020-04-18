@@ -6,7 +6,7 @@ UNZIP := unzip
 LANGS :=  $(wildcard lang/*.json)
 VIEWS :=  $(wildcard views/*.ejs)
 
-all: public/dist/combined.js public/dist/app.js public/dist/combined.css public/sitemap.xml
+all: public/dist/combined.js public/dist/app.js public/dist/combined.css
 
 public/dist/app.js: src/app.js babel.config.json public/verified_tokens.json $(LANGS) $(VIEWS)
 	npx babel $< > $@
@@ -84,9 +84,6 @@ build/unpkg.com/i18next-browser-languagedetector@4.0.2/i18nextBrowserLanguageDet
 
 public/dist/combined.css: src/css/nice-select.css src/css/explorer.css
 	cat $^ > $@
-
-public/sitemap.xml:
-	node generate_sitemap.js > $@
 
 .PHONY: clean lint
 
