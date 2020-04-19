@@ -1,14 +1,15 @@
 {
-    "name": "",
-    "short_name": "",
+    "name": "Simpleledger.info Token Explorer",
+    "short_name": "SLP Explorer",
+    "description": "Browse and explore tokens built on top of Bitcoin Cash",
+    "start_url": "/?homescreen=1",
     "icons": [
         {
-            "src": "/android-chrome-48x48.png",
-            "sizes": "48x48",
-            "type": "image/png"
+            "src": "/img/slp-logo.svg",
+            "sizes": "257x257"
         }
     ],
-    "theme_color": "#ffffff",
-    "background_color": "#ffffff",
+    "theme_color": "#60bd6c",
+    "background_color": "#07212b",
     "display": "standalone"
 }
