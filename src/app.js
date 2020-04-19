@@ -4625,8 +4625,8 @@ app.router = (whash, push_history = true) => {
   $('#header-search-mobile').autocomplete('dispose');
 
 
-  const canonical_url = window.location.origin + '/' + whash.substring(1);
-  $('meta[property="og:url"]').attr('content', canonical_url);
+  const canonical_url = 'https://simpleledger.info/' + whash.substring(1);
+  $('mta[property="og:url"]').attr('content', canonical_url);
   $('link[rel="canonical"]').attr('href', canonical_url);
   $('link[rel="alternate"]').each(function() {
       $(this).attr('href', `${canonical_url}?lng=${$(this).attr('hreflang')}`);
