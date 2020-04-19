@@ -4552,46 +4552,48 @@ app.init_address_page = (address) =>
 
 
 app.router = (whash, push_history = true) => {
-  // non-spa like /tx/xxx -- we make it look like its spa to simplify logic
-  // TODO maybe we should strip # from this method alltogether?
-  if (document.location.pathname !== '/') {
-    whash = '/#'+window.location.pathname.substring(1);
+  // non-spa like /tx/xxx
+  if (! whash && document.location.pathname !== '/') {
+    whash = window.location.pathname.substring(1);
   }
 
   if (! whash) {
     whash = window.location.hash.substring(1);
   }
 
+  // simplify routing to treat fragment and regular urls as the same
+  whash = whash.replace(/#/, '');
+
   const [_, path, ...key] = whash.split('/');
+  console.log(path, key);
 
   let method = null;
 
   switch (path) {
     case '':
-    case '#':
       app.util.set_title(i18next.t('slp_explorer'));
       method = () => {
           $('html').addClass('index-page');
           return app.init_index_page();
       };
       break;
-    case '#alltokens':
+    case 'alltokens':
       app.util.set_title(`${i18next.t('all_tokens')} - ${i18next.t('slp_explorer')}`);
       method = () => app.init_all_tokens_page();
       break;
-    case '#dividend':
+    case 'dividend':
       app.util.set_title(`${i18next.t('dividend_helper')} - ${i18next.t('slp_explorer')}`);
       method = () => app.init_dividend_page();
       break;
-    case '#tx':
+    case 'tx':
       app.util.set_title(`${i18next.t('transaction')} ${key[0]} - ${i18next.t('slp_explorer')}`);
       method = () => app.init_tx_page(key[0], key.slice(1));
       break;
-    case '#bchtx':
+    case 'bchtx':
       app.util.set_title(`${i18next.t('bitcoin_cash_transaction')} ${key[0]} - ${i18next.t('slp_explorer')}`);
       method = () => app.init_nonslp_tx_page(key[0], key.slice(1));
       break;
-    case '#block':
+    case 'block':
       app.util.set_title(`${i18next.t('block')} ${key[0]} - ${i18next.t('slp_explorer')}`);
       if (key[0] === 'mempool') {
         method = () => app.init_block_mempool_page();
@@ -4599,11 +4601,11 @@ app.router = (whash, push_history = true) => {
         method = () => app.init_block_page(parseInt(key[0]));
       }
       break;
-    case '#token':
+    case 'token':
       app.util.set_title(`${i18next.t('token')} ${key[0]} - ${i18next.t('slp_explorer')}`);
       method = () => app.init_token_page(key[0]);
       break;
-    case '#address':
+    case 'address':
       app.util.set_title(`${i18next.t('address')} ${key[0]} - ${i18next.t('slp_explorer')}`);
       method = () => app.init_address_page(key[0]);
       break;
@@ -4621,7 +4623,15 @@ app.router = (whash, push_history = true) => {
   $('#main-search').autocomplete('dispose');
   $('#header-search-desktop').autocomplete('dispose');
   $('#header-search-mobile').autocomplete('dispose');
-  $('meta[property="og:url"]').attr('content', window.location.origin + '/' + window.location.hash.substring(1));
+
+
+  const canonical_url = window.location.origin + '/' + whash.substring(1);
+  $('meta[property="og:url"]').attr('content', canonical_url);
+  $('link[rel="canonical"]').attr('href', canonical_url);
+  $('link[rel="alternate"]').each(function() {
+      $(this).attr('href', `${canonical_url}?lng=${$(this).attr('hreflang')}`);
+  });
+  
 
   app.slpstream.reset();
 
