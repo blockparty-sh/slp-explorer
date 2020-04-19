@@ -2790,6 +2790,8 @@ app.init_index_page = () =>
     $('#language_selector').val(i18next.language.split('-')[0]);
     if($('#language_selector').val() === null) {
       $('#language_selector').val('en');
+    } else {
+      $('html').attr('lang', $('#language_selector').val());
     }
     $('#language_selector').change(function() {
       window.location = update_query_string_value('lng', $(this).val());

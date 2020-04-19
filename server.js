@@ -74,26 +74,28 @@ router.get('/', (req, res) => {
   return res.send(html);
 });
 
+const genUrlParams = (req) => `?isbot=${isBot(req.header['user-agent'])}&lng=${req.query.lng || 'en'}`;
+
 router.get('/alltokens', async (req, res) => 
-  loadPage(res, req, `http://127.0.0.1:${port}/?isbot=${isBot(req.header['user-agent'])}#alltokens`));
+  loadPage(res, req, `http://127.0.0.1:${port}/${genUrlParams(req)}#alltokens`));
 
 router.get('/dividend', async (req, res) => 
-  loadPage(res, req, `http://127.0.0.1:${port}/?isbot=${isBot(req.header['user-agent'])}#dividend`));
+  loadPage(res, req, `http://127.0.0.1:${port}/${genUrlParams(req)}#dividend`));
 
 router.get('/tx/:item', async (req, res) => 
-  loadPage(res, req, `http://127.0.0.1:${port}/?isbot=${isBot(req.header['user-agent'])}#tx/${req.params.item}`));
+  loadPage(res, req, `http://127.0.0.1:${port}/${genUrlParams(req)}#tx/${req.params.item}`));
 
 router.get('/bchtx/:item', async (req, res) => 
-  loadPage(res, req, `http://127.0.0.1:${port}/?isbot=${isBot(req.header['user-agent'])}#bchtx/${req.params.item}`));
+  loadPage(res, req, `http://127.0.0.1:${port}/${genUrlParams(req)}#bchtx/${req.params.item}`));
 
 router.get('/token/:item', async (req, res) =>
-  loadPage(res, req, `http://127.0.0.1:${port}/?isbot=${isBot(req.header['user-agent'])}#token/${req.params.item}`));
+  loadPage(res, req, `http://127.0.0.1:${port}/${genUrlParams(req)}#token/${req.params.item}`));
 
 router.get('/address/:item', async (req, res) =>
-  loadPage(res, req, `http://127.0.0.1:${port}/?isbot=${isBot(req.header['user-agent'])}#address/${req.params.item}`));
+  loadPage(res, req, `http://127.0.0.1:${port}/${genUrlParams(req)}#address/${req.params.item}`));
 
 router.get('/block/:item', async (req, res) => 
-  loadPage(res, req, `http://127.0.0.1:${port}/?isbot=${isBot(req.header['user-agent'])}#block/${req.params.item}`));
+  loadPage(res, req, `http://127.0.0.1:${port}/${genUrlParams(req)}#block/${req.params.item}`));
 
 router.get('/sitemap.xml', async (req, res) => {
   const tokens_query = {
