@@ -4681,11 +4681,26 @@ window.onerror = function(message, file, line, col, error) {
 
 window.addEventListener('error', function(e) {
   console.error(e, window.location.hash);
+  if (! e || ! e.error) {
+    e = {
+      error: {
+        message: 'no message available',
+      }
+    };
+  }
   return error_handler(window.location.hash + ' ' + e.error.message);
 });
 
 window.addEventListener('unhandledrejection', function(e) {
   console.error(e, window.location.hash);
+  if (! e || ! e.reason) {
+    e = {
+      reason: {
+        message: 'no message available',
+        stack: 'no stack available',
+      }
+    };
+  }
   return error_handler(`
     hash: ${window.location.hash}
     message: ${e.reason.message}
