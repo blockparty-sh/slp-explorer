@@ -27,3 +27,4 @@ If you noticed something that could be worded better:
 * Hindi -- NajmusSakib
 * Spanish -- @kriker007
 * Yoruba -- @Osunbiyi
+* Portuguese -- @criptoph
