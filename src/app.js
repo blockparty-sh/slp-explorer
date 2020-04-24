@@ -127,6 +127,7 @@ app.util = {
       '527a337f34e04b1974cb8a1edc7ca30b2e444bea111afc122259552243c1dbe3': 'LLM',
       '077c832a3ef15068ca2c72dd262883fb24a8a0f612e8a92f579f7dee3eaca372': 'YCLO',
       '4de69e374a8ed21cbddd47f2338cc0f479dc58daa2bbe11cd604ca488eca0ddf': 'SPICE',
+      '7f8889682d57369ed0e32336f8b7e0ffec625a35cca183f4e81fde4e71a538a1': 'HONK',
     };
 
     const coinex_tokens = {
@@ -154,6 +155,14 @@ app.util = {
       '0f3f223902c44dc2bee6d3f77d565904d8501affba5ee0c56f7b32e8080ce14b': 'https://cryptophyl.com/trade/DROP-BCH',
     };
 
+    const custom_tokens = {
+      '7f8889682d57369ed0e32336f8b7e0ffec625a35cca183f4e81fde4e71a538a1': {
+        'type': 'honk_faucet',
+        'link': `https://faucet.honkhonk.io/r/dx1OP`,
+        'class': 'exchange-honkfaucet-icon',
+      },
+    };
+
     const links = [];
     if (cryptophyl_tokens.hasOwnProperty(tokenIdHex)) {
       links.push({
@@ -161,6 +170,10 @@ app.util = {
         'link': `${cryptophyl_tokens[tokenIdHex]}?r=blockparty`,
         'class': 'exchange-cryptophyl-icon',
       });
+    }
+
+    if (custom_tokens.hasOwnProperty(tokenIdHex)) {
+      links.push(custom_tokens[tokenIdHex]);
     }
 
     if (sideshift_tokens.hasOwnProperty(tokenIdHex)) {
@@ -185,7 +198,7 @@ app.util = {
     if (altilly_tokens.hasOwnProperty(tokenIdHex)) {
       links.push({
         'type': 'altilly',
-        'link': `https://www.altilly.com/asset/${altilly_tokens[tokenIdHex]}`,
+        'link': `https://www.altilly.com/asset/${altilly_tokens[tokenIdHex]}?a=fae60`,
         'class': 'exchange-altilly-icon',
       });
     }
