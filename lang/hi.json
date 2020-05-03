@@ -127,6 +127,7 @@
   "outputs": "आउटपुट",
   "vout": "आउटपुट वेक्टर",
   "timestamp": "टाइमस्टैम्प",
+  "decimals": "दशमलव",
   "slp_address": "एसएलपी ठिकाना",
   "cash_address": "कॅश ठिकाना",
   "legacy_address": "लिगेसी  ठिकाना",

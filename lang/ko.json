@@ -126,6 +126,7 @@
   "outputs": "출력",
   "vout": "출력 벡터",
   "timestamp": "타임 스탬프",
+  "decimals": "소수",
   "slp_address": "SLP 주소",
   "cash_address": "현금 주소",
   "legacy_address": "레거시 주소",

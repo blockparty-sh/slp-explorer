@@ -127,6 +127,7 @@
   "outputs": "Saidas",
   "vout": "Vout",
   "timestamp": "Marca de tempo",
+  "decimals": "Decimais",
   "slp_address": "Endereço SLP",
   "cash_address": "Endereço de efectivo",
   "legacy_address": "Endereço legacy",

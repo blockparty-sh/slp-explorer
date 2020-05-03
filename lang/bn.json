@@ -127,6 +127,7 @@
   "outputs": "আউটপুট",
   "vout": "আউটপুট ভেক্টর",
   "timestamp": "টাইমস্ট্যাম্প",
+  "decimals": "দশমিক",
   "slp_address": "এসএলপি ঠিকানা",
   "cash_address": "ক্যাশ এড্রেস",
   "legacy_address": "লিগ্যাসি এড্রেস",

@@ -126,6 +126,7 @@
   "outputs": "Выходы",
   "vout": "Вектор выхода",
   "timestamp": "Отметка",
+  "decimals": "десятичные",
   "slp_address": "Адрес SLP",
   "cash_address": "Адрес наличными",
   "legacy_address": "Наследственный адрес",

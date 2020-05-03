@@ -126,6 +126,7 @@
   "outputs": "Outputs",
   "vout": "Vout",
   "timestamp": "Timestamp",
+  "decimals": "mga decimals",
   "slp_address": "SLP Address",
   "cash_address": "Cash Address",
   "legacy_address": "Legacy Address",

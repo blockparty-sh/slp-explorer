@@ -126,6 +126,7 @@
   "outputs": "Keluaran",
   "vout": "Vektor Keluaran",
   "timestamp": "Cap waktu",
+  "decimals": "Perpuluhan",
   "slp_address": "Alamat SLP",
   "cash_address": "Alamat Tunai",
   "legacy_address": "Alamat Warisan",

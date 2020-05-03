@@ -125,6 +125,7 @@
   "outputs": "アウトプット",
   "vout": "出力ベクトル",
   "timestamp": "タイムスタンプ",
+  "decimals": "小数",
   "slp_address": "SLPアドレス",
   "cash_address": "現金住所",
   "legacy_address": "旧住所",

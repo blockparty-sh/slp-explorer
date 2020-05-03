@@ -125,6 +125,7 @@
   "outputs": "产出",
   "vout": "输出向量",
   "timestamp": "时间戳记",
+  "decimals": "小数点",
   "slp_address": "SLP地址",
   "cash_address": "收款地址",
   "legacy_address": "旧版地址",
