@@ -450,7 +450,7 @@ app.util = {
 
     if (window.sessionStorage.getItem('tokenimgerr_'+tokenIdHex) === null) {
       const $img = $('<img>');
-      $img.attr('src', `https://tokens.bch.sx/${size}/${tokenIdHex}.png`);
+      $img.attr('src', `https://icons.fountainhead.cash/${size}/${tokenIdHex}.png`);
 
       $img.on('error', function() {
         window.sessionStorage.setItem('tokenimgerr_'+tokenIdHex, true);
