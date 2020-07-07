@@ -16,6 +16,31 @@ let browser = null;
 
 const replaceLinksIfBot = (html) => html.replace(/href="\/#/g, 'href="/');
 
+const maxPageLifeTime = 1000*60 // close pages older than 60 seconds
+const pageScanFrequency = 1000*60 // scan pages every 60 seconds
+
+const setIntervalAsync = (fn, ms) => {
+  fn().then(() => {
+    setTimeout(() => setIntervalAsync(fn, ms), ms)
+  })
+}
+
+const closeOldPages = async () => {
+  if (browser) {
+    for (const page of await browser.pages()) {
+      if (!await page.isClosed()) {
+        const pageTimestamp = await page.evaluate(`window.performance.now()`)
+        if (pageTimestamp > maxPageLifeTime) {
+          await page.close()
+        }
+      }
+    }
+  }
+}
+
+setIntervalAsync(closeOldPages, pageScanFrequency)
+
+
 const loadPage = async (res, req, url) => {
   let page = null;
   let content = null;
@@ -214,7 +239,7 @@ router.get('/sitemap.xml', async (req, res) => {
 app.use('/', router);
 app.use('/', express.static('public'));
 
-(async () => {
+async function resetBrowser() {
   browser = await puppeteer.launch({
     args: [
       '--no-sandbox',
@@ -228,7 +253,14 @@ app.use('/', express.static('public'));
     ],
     headless: true
   });
+}
 
+(async () => {
+  await resetBrowser();
   app.listen(port);
   console.log(`listening on port: ${port}`);
+
+  setInterval(async () => {
+    await resetBrowser();
+  }, 1000*60*60);
 })();
