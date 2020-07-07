@@ -139,7 +139,6 @@ app.util = {
       'c4b0d62156b3fa5c8f3436079b5394f7edc1bef5dc1cd2f9d0c4d46f82cca479': 'https://sideshift.ai/bch/usdh',
       '4de69e374a8ed21cbddd47f2338cc0f479dc58daa2bbe11cd604ca488eca0ddf': 'https://sideshift.ai/bch/spice',
       '7853218e23fdabb103b4bccbe6e987da8974c7bc775b7e7e64722292ac53627f': 'https://sideshift.ai/bch/saislp',
-      '4abbea22956e7db07ac3ae7eb88b14f23ccc5dce4273728275cb17ec91e6f57c': 'https://sideshift.ai/bch/btc2',
       '9fc89d6b7d5be2eac0b3787c5b8236bca5de641b5bafafc8f450727b63615c11': 'https://sideshift.ai/bch/usdtBch',
     };
 
@@ -147,7 +146,6 @@ app.util = {
       'c4b0d62156b3fa5c8f3436079b5394f7edc1bef5dc1cd2f9d0c4d46f82cca479': 'usdh',
       '4de69e374a8ed21cbddd47f2338cc0f479dc58daa2bbe11cd604ca488eca0ddf': 'spice',
       '7853218e23fdabb103b4bccbe6e987da8974c7bc775b7e7e64722292ac53627f': 'saislp',
-      '4abbea22956e7db07ac3ae7eb88b14f23ccc5dce4273728275cb17ec91e6f57c': 'btc2',
       '9fc89d6b7d5be2eac0b3787c5b8236bca5de641b5bafafc8f450727b63615c11': 'usdtBch',
     };
 
