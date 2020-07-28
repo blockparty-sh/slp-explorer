@@ -20,6 +20,6 @@
     "express": "^4.17.1",
     "isbot": "^2.5.7",
     "node-fetch": "^2.6.0",
-    "puppeteer": "^3.0.0"
+    "puppeteer": "^5.0.0"
   }
 }
