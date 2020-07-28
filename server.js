@@ -31,7 +31,7 @@ const closeOldPages = async () => {
       if (!await page.isClosed()) {
         const pageTimestamp = await page.evaluate(`window.performance.now()`)
         if (pageTimestamp > maxPageLifeTime) {
-          await page.close()
+          await page.close();
         }
       }
     }
@@ -65,6 +65,9 @@ const loadPage = async (res, req, url) => {
     content = await page.content();
     page.close();
   } catch(e) {
+    if(page) {
+      page.close();
+    }
     console.log(e);
     res.status(500);
     res.render('error', {error: e});
