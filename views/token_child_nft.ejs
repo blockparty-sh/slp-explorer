@@ -9,7 +9,7 @@
   </td>
   <td>
     <div class="flex-vcenter">
-      <span class="token-icon-small" data-tokenid="<%= token.tokenDetails.tokenIdHex %>"></span>
+      <span class="token-icon-small" data-tokenid="<%= token.tokenDetails.tokenIdHex %>" data-tokengroup="<%= token.nftParentId %>"></span>
       <a href="/#token/<%= token.tokenDetails.tokenIdHex %>">
       <% if (token.tokenDetails.symbol) { %>
         <%= token.tokenDetails.symbol %>

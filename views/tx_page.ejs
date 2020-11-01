@@ -1,7 +1,7 @@
 <div class="row super-wrapper">
   <div class="transaction_box">
     <div>
-      <div class="token-icon-large left" data-tokenid="<%= tx.slp.detail.tokenIdHex %>"></div>
+      <div class="token-icon-large left" data-tokenid="<%= tx.token[0].tokenDetails.tokenIdHex %>" data-tokengroup="<%= tx.token[0].nftParentId %>"></div>
       <div>
         <h2 class="text-white">
           <% if (token.tokenDetails.symbol) { %>
