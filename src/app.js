@@ -4,6 +4,9 @@ window.app = {};
 import verified_tokens from '../public/verified_tokens.json';
 app.verified_tokens = new Set(JSON.parse(verified_tokens));
 
+import group_icon_repos from '../public/group_icon_repos.json';
+app.group_icon_repos = JSON.parse(group_icon_repos);
+
 import index_page from '../views/index_page.ejs';
 import index_burn_tx from '../views/index_burn_tx.ejs';
 import index_token from '../views/index_token.ejs';
@@ -441,6 +444,12 @@ app.util = {
 
   set_token_icon: ($el, size) => {
     const tokenIdHex = $el.data('tokenid');
+    const tokenGroup = $el.data('tokengroup');
+
+    let icon_repo = 'https://icons.fountainhead.cash';
+    if (tokenGroup && app.group_icon_repos.hasOwnProperty(tokenGroup)) {
+        icon_repo = app.group_icon_repos[tokenGroup];
+    }
 
     const append_jdenticon = () => {
       const $jdenticon = $(`<svg width="${size}" height="${size}" data-jdenticon-hash="${tokenIdHex}"></svg>`);
@@ -450,7 +459,7 @@ app.util = {
 
     if (window.sessionStorage.getItem('tokenimgerr_'+tokenIdHex) === null) {
       const $img = $('<img>');
-      $img.attr('src', `https://icons.fountainhead.cash/${size}/${tokenIdHex}.png`);
+      $img.attr('src', `${icon_repo}/${size}/${tokenIdHex}.png`);
 
       $img.on('error', function() {
         window.sessionStorage.setItem('tokenimgerr_'+tokenIdHex, true);

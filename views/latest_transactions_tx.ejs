@@ -8,7 +8,7 @@
   </td>
   <td>
     <div class="flex-vcenter">
-      <span class="token-icon-small" data-tokenid="<%= tx.slp.detail.tokenIdHex %>"></span>
+      <span class="token-icon-small" data-tokenid="<%= tx.token[0].tokenDetails.tokenIdHex %>" data-tokengroup="<%= tx.token[0].nftParentId %>"></span>
       <a href="/#token/<%= tx.slp.detail.tokenIdHex %>">
       <% if (tx.token[0].tokenDetails.symbol) { %>
         <%= tx.token[0].tokenDetails.symbol %>
