@@ -782,6 +782,10 @@ html.index-page header {
 .exchange-coinex-icon {
     background-image:url('/img/coinex.png');
 }
+.exchange-coinflex-icon {
+    background-image:url('/img/coinflex.png');
+    height: 71px;
+}
 .exchange-sideshift-icon {
     background-image:url('/img/sideshift-ai.png');
     height: 71px;

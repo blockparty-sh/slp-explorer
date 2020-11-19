@@ -138,9 +138,14 @@ app.util = {
       '4de69e374a8ed21cbddd47f2338cc0f479dc58daa2bbe11cd604ca488eca0ddf': 'https://www.coinex.com/exchange?currency=bch&dest=spice',
     };
 
+    const coinflex_tokens = {
+      'dd21be4532d93661e8ffe16db6535af0fb8ee1344d1fef81a193e2b4cfa9fbc9': 'https://www.coinflex.com/flexassets',
+      '5fba436097410a1d69d90a1188c341609647ebd2eeac0615e3d275e4b88e790b': 'https://www.coinflex.com/flexassets',
+      '78630e16ac2155f6953edeb033654c04665acb8a34eb2d11af9725f8e0f873d0': 'https://www.coinflex.com/flexassets',
+    };
+
     const sideshift_tokens = {
       'c4b0d62156b3fa5c8f3436079b5394f7edc1bef5dc1cd2f9d0c4d46f82cca479': 'https://sideshift.ai/bch/usdh',
-      '4de69e374a8ed21cbddd47f2338cc0f479dc58daa2bbe11cd604ca488eca0ddf': 'https://sideshift.ai/bch/spice',
       '7853218e23fdabb103b4bccbe6e987da8974c7bc775b7e7e64722292ac53627f': 'https://sideshift.ai/bch/saislp',
       '9fc89d6b7d5be2eac0b3787c5b8236bca5de641b5bafafc8f450727b63615c11': 'https://sideshift.ai/bch/usdtBch',
     };
@@ -172,6 +177,14 @@ app.util = {
         'type': 'cryptophyl',
         'link': `${cryptophyl_tokens[tokenIdHex]}?r=blockparty`,
         'class': 'exchange-cryptophyl-icon',
+      });
+    }
+
+    if (coinflex_tokens.hasOwnProperty(tokenIdHex)) {
+      links.push({
+        'type': 'coinflex',
+        'link': `${coinflex_tokens[tokenIdHex]}`,
+        'class': 'exchange-coinflex-icon',
       });
     }
 
