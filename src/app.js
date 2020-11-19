@@ -157,12 +157,6 @@ app.util = {
       '9fc89d6b7d5be2eac0b3787c5b8236bca5de641b5bafafc8f450727b63615c11': 'usdtBch',
     };
 
-    const cryptophyl_tokens = {
-      '4de69e374a8ed21cbddd47f2338cc0f479dc58daa2bbe11cd604ca488eca0ddf': 'https://cryptophyl.com/trade/SPICE-BCH',
-      'c4b0d62156b3fa5c8f3436079b5394f7edc1bef5dc1cd2f9d0c4d46f82cca479': 'https://cryptophyl.com/trade/BCH-USDH',
-      '0f3f223902c44dc2bee6d3f77d565904d8501affba5ee0c56f7b32e8080ce14b': 'https://cryptophyl.com/trade/DROP-BCH',
-    };
-
     const custom_tokens = {
       '7f8889682d57369ed0e32336f8b7e0ffec625a35cca183f4e81fde4e71a538a1': {
         'type': 'honk_faucet',
@@ -172,13 +166,6 @@ app.util = {
     };
 
     const links = [];
-    if (cryptophyl_tokens.hasOwnProperty(tokenIdHex)) {
-      links.push({
-        'type': 'cryptophyl',
-        'link': `${cryptophyl_tokens[tokenIdHex]}?r=blockparty`,
-        'class': 'exchange-cryptophyl-icon',
-      });
-    }
 
     if (coinflex_tokens.hasOwnProperty(tokenIdHex)) {
       links.push({
