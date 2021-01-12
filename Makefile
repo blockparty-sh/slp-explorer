@@ -8,7 +8,7 @@ VIEWS :=  $(wildcard views/*.ejs)
 
 all: public/dist/combined.js public/dist/app.js public/dist/combined.css
 
-public/dist/app.js: src/app.js babel.config.json public/verified_tokens.json $(LANGS) $(VIEWS)
+public/dist/app.js: src/app.js babel.config.json public/verified_tokens.json public/group_icon_repos.json $(LANGS) $(VIEWS)
 	npx babel $< > $@
 
 public/dist/combined.js: build/unpkg.com/core-js-bundle@3.6.5/minified.js \
