@@ -248,6 +248,7 @@
     </div>
   <% } %>
   
+  <% if (token.tokenDetails.versionType !== 65) { %>
   <div class="rounded_row">
     <div id="token-mint-history-table-container" class="rounded box-shadow table-container loading">
       <h3><span data-i18n="mint_history"></span> (<span id="total_token_mint_transactions">...</span>)</h3>
@@ -271,6 +272,7 @@
       </div>
     </div>
   </div>
+  <% } %>
   
   <div class="rounded_row">
     <div id="token-addresses-table-container" class="rounded box-shadow table-container loading">
@@ -293,10 +295,12 @@
     </div>
   </div>
   
+  <% if (token.tokenDetails.versionType !== 65) { %>
   <div class="rounded_row">
     <h3 data-i18n="rich_list"></h3>
     <div id="plot-token-address-rich" style="width:100%"></div>
   </div>
+  <% } %>
   
   <div class="rounded_row">
     <div id="token-burn-history-table-container" class="rounded box-shadow table-container loading">
