@@ -19,6 +19,7 @@ import nonslp_tx_page from '../views/nonslp_tx_page.ejs';
 import block_page from '../views/block_page.ejs';
 import block_tx from '../views/block_tx.ejs';
 import token_page from '../views/token_page.ejs';
+import token_page_nft from '../views/token_page_nft.ejs';
 import token_mint_tx from '../views/token_mint_tx.ejs';
 import token_burn_tx from '../views/token_burn_tx.ejs';
 import token_address from '../views/token_address.ejs';
@@ -49,6 +50,7 @@ app.template = Object.fromEntries(Object.entries({
   block_page,
   block_tx,
   token_page,
+  token_page_nft,
   token_mint_tx,
   token_burn_tx,
   token_address,
@@ -452,10 +454,12 @@ app.util = {
     }
 
     const append_jdenticon = () => {
-      const $jdenticon = $(`<svg width="${size}" height="${size}" data-jdenticon-hash="${tokenIdHex}"></svg>`);
+      const size_px = size != 'original' ? size : 128;
+      const $jdenticon = $(`<svg width="${size_px}" height="${size_px}" data-jdenticon-hash="${tokenIdHex}"></svg>`);
       $jdenticon.jdenticon();
       $el.append($jdenticon);
     };
+
 
     if (window.sessionStorage.getItem('tokenimgerr_'+tokenIdHex) === null) {
       const $img = $('<img>');
@@ -1875,8 +1879,7 @@ app.slpdb = {
       'aggregate': [
         {
           '$match': {
-            'slp.valid': true,
-            'slp.detail.transactionType': 'SEND',
+            'slp.valid': true
           },
         },
         {
@@ -3747,11 +3750,19 @@ app.init_token_page = (tokenIdHex) =>
 
       token = token.t[0];
 
-      $('main[role=main]').html(app.template.token_page({
-        token: token,
-      }));
+      if (token.tokenDetails.versionType === 65) {
+        $('main[role=main]').html(app.template.token_page_nft({
+          token: token,
+        }));
+        app.util.set_token_icon($('main[role=main] .transaction_box--nft .token-icon-large'), 'original');
+      } else {
+        $('main[role=main]').html(app.template.token_page({
+          token: token,
+        }));
+        app.util.set_token_icon($('main[role=main] .transaction_box .token-icon-large'), 128);
+      }
+
       app.util.attach_clipboard('main[role=main]');
-      app.util.set_token_icon($('main[role=main] .transaction_box .token-icon-large'), 128);
 
 
       if (token.tokenDetails.versionType === 129) {
@@ -3802,10 +3813,17 @@ app.init_token_page = (tokenIdHex) =>
       const load_paginated_token_addresses = (limit, skip, done) => {
         app.slpdb.query(app.slpdb.token_addresses(tokenIdHex, limit, skip))
         .then((addresses) => {
-         const tbody = $('#token-addresses-table tbody');
-         tbody.html('');
+          const tbody = $('#token-addresses-table tbody');
+          tbody.html('');
 
           addresses.g.forEach((address) => {
+            if (token.tokenDetails.versionType === 65) {
+              $('#tokenstats_nft_owner').html(`
+                <a href="/#address/${address.address}">${address.address}</a>
+                <button class="copybtn" data-clipboard-text="${address.address}"></button>
+              `);
+              app.util.attach_clipboard('#tokenstats_nft_owner');
+            }
             tbody.append(
               app.template.token_address({
                 address: address,
@@ -3856,6 +3874,13 @@ app.init_token_page = (tokenIdHex) =>
           tbody.html('');
 
           transactions.forEach((tx) => {
+            if (token.tokenDetails.versionType === 65) {
+              $('#tokenstats_nft_burnt').html(`
+                <a href="/#tx/${tx.graphTxn.txid}">${tx.graphTxn.txid}</a>
+                <button class="copybtn" data-clipboard-text="${tx.graphTxn.txid}"></button>
+              `);
+              app.util.attach_clipboard('#tokenstats_nft_burnt');
+            }
             const total_burnt = tx.graphTxn.outputs.reduce((a, v) => {
               switch (v.status) {
                 case 'UNSPENT':
@@ -3978,6 +4003,7 @@ app.init_token_page = (tokenIdHex) =>
 
         if (total_token_burn_transactions === 0) {
           $('#token-burn-history-table tbody').html('<tr><td>No burns found.</td></tr>');
+          $('#tokenstats_nft_burnt').html('');
         } else {
           app.util.create_pagination(
             $('#token-burn-history-table-container'),
@@ -4033,6 +4059,7 @@ app.init_token_page = (tokenIdHex) =>
 
         if (total_addresses === 0) {
           $('#token-addresses-table tbody').html('<tr><td>No addresses found.</td></tr>');
+          $('#tokenstats_nft_owner').html('');
         } else {
           app.util.create_pagination(
             $('#token-addresses-table-container'),
