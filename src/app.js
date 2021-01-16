@@ -3075,7 +3075,8 @@ app.init_index_page = () =>
     });
 
     app.slpstream.on_mempool = (sna) => {
-      app.slpdb.query(app.slpdb.token(sna.slp.detail.tokenIdHex))
+      const tokenIdHex = (sna.slp.detail.transactionType === 'GENESIS') ? sna.tx.h : sna.slp.detail.tokenIdHex;
+      app.slpdb.query(app.slpdb.token(tokenIdHex))
       .then((token_data) => {
         if (token_data.t.length === 0) {
           console.error('slpstream token not found');
