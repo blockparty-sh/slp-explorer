@@ -569,7 +569,7 @@ app.util = {
               return app.router('/#token/'+m.tokenDetails.tokenIdHex);
             }
 
-            const verified = app.util.is_verified(m.tokenDetails.tokenIdHex);
+            const verified = app.util.is_verified(m.nftParentId || m.tokenDetails.tokenIdHex);
             const tval = app.template.search_token_result({
               verified: verified,
               token: m,
