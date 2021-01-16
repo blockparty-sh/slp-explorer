@@ -3757,7 +3757,8 @@ app.init_token_page = (tokenIdHex) =>
       if (token.tokenDetails.versionType === 129) {
         app.slpdb.query(app.slpdb.count_token_child_nfts(tokenIdHex))
         .then((total_token_child_nfts) => {
-          total_token_child_nfts = app.util.extract_total(total_token_child_nfts);
+          total_token_child_nfts = app.util.extract_total(total_token_child_nfts).t;
+          $('#total_token_child_nfts').html(Number(total_token_child_nfts).toLocaleString());
 
           const load_paginated_token_child_nfts = (limit, skip, done) => {
             app.slpdb.query(app.slpdb.token_child_nfts(tokenIdHex, limit, skip))
@@ -3783,13 +3784,13 @@ app.init_token_page = (tokenIdHex) =>
             });
           };
 
-          if (total_token_child_nfts.t === 0) {
+          if (total_token_child_nfts === 0) {
             $('#token-child-nfts-table tbody').html('<tr><td>No children found.</td></tr>');
           } else {
             app.util.create_pagination(
               $('#token-child-nfts-table-container'),
               0,
-              Math.ceil(total_token_child_nfts.t / 10),
+              Math.ceil(total_token_child_nfts / 10),
               (page, done) => {
                 load_paginated_token_child_nfts(10, 10*page, done);
               },
