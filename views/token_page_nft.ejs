@@ -1,0 +1,154 @@
+<div class="row super-wrapper">
+  <div class="transaction_box transaction_box--nft">
+    <div>
+      <div>
+        <h2 class="text-white">
+          <% if (token.tokenDetails.name !== '') { %>
+            <%= token.tokenDetails.name %>
+          <% } %>
+          <% if (token.tokenDetails.symbol) { %>
+            [<%= token.tokenDetails.symbol %>]
+          <% } %>
+          <span data-i18n="nft"></span>
+        </h2>
+      </div>
+      <div>
+          <div class="token-icon-large" data-tokenid="<%= token.tokenDetails.tokenIdHex %>" data-tokengroup="<%= token.nftParentId %>"></div>
+      </div>
+
+      <div id="token-details-table-container" class="rounded box-shadow table-container">
+        <div class="table-responsive">
+          <table class="table" id="token-details-table">
+            <thead>
+              <tr>
+                <td>
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row" data-i18n="token_id"></th>
+                <td>
+                  <a class="tokenid" href="/#token/<%= token.tokenDetails.tokenIdHex %>"><%= token.tokenDetails.tokenIdHex %></a>
+                  <button class="copybtn" data-clipboard-text="<%= token.tokenDetails.tokenIdHex %>"></button>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row" data-i18n="version"></th>
+                <td>
+                <% if(token.tokenDetails.versionType === 1) { %><span data-i18n="type1"></span><% } %>
+                <% if(token.tokenDetails.versionType === 129) { %><span data-i18n="nft1_group"></span><% } %>
+                <% if(token.tokenDetails.versionType === 65) { %>
+                  <a href="/#token/<%= token.nftParentId %>"><span data-i18n="nft1_child"></span></a>
+                  <button class="copybtn" data-clipboard-text="<%= token.nftParentId %>"></button>
+                <% } %>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row" data-i18n="name"></th>
+                <td><%= token.tokenDetails.name %></td>
+              </tr>
+              <tr>
+                <th scope="row" data-i18n="symbol"></th>
+                <td><%= token.tokenDetails.symbol %></td>
+              </tr>
+              <tr>
+                <th data-i18n="block_created"></th>
+                <td>
+                  <% if (token.tokenStats.block_created !== null) { %>
+                    <a href="/#block/<%= token.tokenStats.block_created %>"><%= token.tokenStats.block_created %></a>
+                  <% } else { %>
+                    <a href="/#block/mempool" data-i18n="pending"></a>
+                  <% } %>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row" data-i18n="timestamp"></th>
+                <td>
+                  <% if (token.tokenDetails.timestamp_unix === null) { %>
+                    <span data-i18n="pending"></span>
+                  <% } else { %>
+                    <%= new Date(token.tokenDetails.timestamp_unix*1000).toLocaleString() %>
+                  <% } %>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row" data-i18n="decimals"></th>
+                <td><%= token.tokenDetails.decimals %></td>
+              </tr>
+              <tr>
+                <th scope="row" data-i18n="document_uri"></th>
+                <td>
+                  <% if (token.tokenDetails.documentUri) { %>
+                    <% const url = app.util.document_link(token.tokenDetails.documentUri); %>
+                    <% if (url.length) { %>
+                      <a href="<%= url %>" target="blank"><%= token.tokenDetails.documentUri %></a>
+                    <% } else { %>
+                      <%= token.tokenDetails.documentUri %>
+                    <% } %>
+                  <% } %>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row" data-i18n="document_checksum"></th>
+                <td><span class="mono word-break-all"><%= token.tokenDetails.documentSha256Hex %></span></td>
+              </tr>
+              <tr>
+                <th scope="row" data-i18n="tokenstats_satoshis_locked_up"></th>
+                <td id="tokenstats_satoshis_locked_up">...</td>
+              </tr>
+              <tr>
+                <th scope="row" data-i18n="tokenstats_nft_owner"></th>
+                <td class="mono" id="tokenstats_nft_owner">...</td>
+              </tr>
+              <tr>
+                <th scope="row" data-i18n="tokenstats_nft_burnt"></th>
+                <td class="mono word-break-all" id="tokenstats_nft_burnt">...</td>
+              </tr>
+              <tr>
+                <th scope="row" data-i18n="verified"></th>
+                <td>
+                  <% if (app.util.is_verified(token.nftParentId)) { %>
+                    <img src="/img/verified-checkmark.png">
+                  <% } else { %>
+                    <img src="/img/verified-empty.png">
+                  <% } %>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+    
+        <div>
+          <!-- <div id="token-exchange-title">Exchange</div> -->
+          <div id="token-exchange-exchanges">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="rounded_row">
+    <div id="token-transactions-table-container" class="rounded box-shadow table-container loading">
+      <h3 class="border-bottom border-gray"><span data-i18n="transactions"></span> (<span id="token_transactions_count">...</span>)</h3>
+      <div class="table-responsive">
+        <table class="table" id="token-transactions-table">
+          <thead>
+            <tr>
+              <th data-i18n="txid"></th>
+              <th data-i18n="type"></th>
+              <th class="amount" data-i18n="amount"></th>
+              <th data-i18n="block_height"></th>
+              <th data-i18n="block_time"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td data-i18n="loading"></td></tr>
+          </tbody>
+        </table>
+        <ul class="pagination">
+        </ul>
+      </div>
+    </div>
+  </div>
+</div> 

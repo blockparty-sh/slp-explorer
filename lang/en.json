@@ -142,5 +142,8 @@
   "tokens_created": "Tokens Created",
   "sent": "Sent",
   "received": "Received",
-  "tokenid_required": "Token Id Required"
+  "tokenid_required": "Token Id Required",
+  "nft": "NFT",
+  "tokenstats_nft_owner": "Owner",
+  "tokenstats_nft_burnt": "Burnt Txid"
 }

@@ -9,9 +9,11 @@
   <td>
     <div class="flex-vcenter">
       <span class="token-icon-small" data-tokenid="<%= tx.token[0].tokenDetails.tokenIdHex %>" data-tokengroup="<%= tx.token[0].nftParentId %>"></span>
-      <a href="/#token/<%= tx.slp.detail.tokenIdHex %>">
-      <% if (tx.token[0].tokenDetails.symbol) { %>
-        <%= tx.token[0].tokenDetails.symbol %>
+      <a href="/#token/<%= tx.token[0].tokenDetails.tokenIdHex %>">
+      <% if (tx.slp.detail.symbol || tx.slp.detail.name) { %>
+        <%= tx.slp.detail.name %> $<%= tx.slp.detail.symbol %>
+      <% } else if (tx.token[0].tokenDetails.symbol || tx.token[0].tokenDetails.tokenIdHex) { %>
+        <%= tx.token[0].tokenDetails.name %> $<%= tx.token[0].tokenDetails.symbol %>
       <% } else { %>
         <span class="mono" data-i18n="none"></span>
       <% } %>
