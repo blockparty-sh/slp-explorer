@@ -106,7 +106,7 @@
                 <tr>
                   <th scope="row" data-i18n="verified"></th>
                   <td>
-                    <% if (app.util.is_verified(token.tokenDetails.tokenIdHex)) { %>
+                    <% if (app.util.is_verified(token.nftParentId || token.tokenDetails.tokenIdHex)) { %>
                       <img src="/img/verified-checkmark.png">
                     <% } else { %>
                       <img src="/img/verified-empty.png">

@@ -422,6 +422,10 @@ tr.burnt-tx {
     box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.2);
 }
 
+.transaction_box--nft {
+    text-align: center;
+}
+
 .autocomplete-suggestions {
     background-color:#010608;
     color:#fff;
@@ -703,6 +707,15 @@ html.index-page header {
     margin-right: 15px;
     vertical-align: middle;
     border-radius: 50%;
+}
+
+.transaction_box--nft .token-icon-large {
+    width: 100%;
+}
+
+.transaction_box--nft .token-icon-large img {
+    max-width: calc(100vw - 60px);
+    max-height: calc(100vw - 60px);
 }
 
 .address-qr-code {
@@ -1015,6 +1028,20 @@ html.index-page header {
         float: none;
         width: 128px;
         margin:0px auto;
+    }
+
+    .transaction_box--nft {
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+
+    .transaction_box--nft .token-icon-large {
+        width: auto;
+    }
+
+    .transaction_box--nft .token-icon-large img {
+        max-width: calc(100vw);
+        max-height: calc(100vw);
     }
 }
 
