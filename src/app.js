@@ -128,13 +128,6 @@ i18next
 
 app.util = {
   generate_exchange_links: ($el, tokenIdHex) => {
-    const altilly_tokens = {
-      '527a337f34e04b1974cb8a1edc7ca30b2e444bea111afc122259552243c1dbe3': 'LLM',
-      '077c832a3ef15068ca2c72dd262883fb24a8a0f612e8a92f579f7dee3eaca372': 'YCLO',
-      '4de69e374a8ed21cbddd47f2338cc0f479dc58daa2bbe11cd604ca488eca0ddf': 'SPICE',
-      '7f8889682d57369ed0e32336f8b7e0ffec625a35cca183f4e81fde4e71a538a1': 'HONK',
-    };
-
     const coinex_tokens = {
       'c4b0d62156b3fa5c8f3436079b5394f7edc1bef5dc1cd2f9d0c4d46f82cca479': 'https://www.coinex.com/exchange?currency=usdt&dest=usdh',
       '4de69e374a8ed21cbddd47f2338cc0f479dc58daa2bbe11cd604ca488eca0ddf': 'https://www.coinex.com/exchange?currency=bch&dest=spice',
@@ -197,14 +190,6 @@ app.util = {
         'type': 'coinex',
         'link': `${coinex_tokens[tokenIdHex]}&refer_code=c39pv`,
         'class': 'exchange-coinex-icon',
-      });
-    }
-
-    if (altilly_tokens.hasOwnProperty(tokenIdHex)) {
-      links.push({
-        'type': 'altilly',
-        'link': `https://www.altilly.com/asset/${altilly_tokens[tokenIdHex]}?a=fae60`,
-        'class': 'exchange-altilly-icon',
       });
     }
 
