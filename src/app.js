@@ -143,6 +143,7 @@ app.util = {
       'c4b0d62156b3fa5c8f3436079b5394f7edc1bef5dc1cd2f9d0c4d46f82cca479': 'https://sideshift.ai/bch/usdh',
       '7853218e23fdabb103b4bccbe6e987da8974c7bc775b7e7e64722292ac53627f': 'https://sideshift.ai/bch/saislp',
       '9fc89d6b7d5be2eac0b3787c5b8236bca5de641b5bafafc8f450727b63615c11': 'https://sideshift.ai/bch/usdtBch',
+      'dd21be4532d93661e8ffe16db6535af0fb8ee1344d1fef81a193e2b4cfa9fbc9': 'https://sideshift.ai/bch/flexusd',
     };
 
     const sideshift_tokens_settle = {
@@ -150,6 +151,7 @@ app.util = {
       '4de69e374a8ed21cbddd47f2338cc0f479dc58daa2bbe11cd604ca488eca0ddf': 'spice',
       '7853218e23fdabb103b4bccbe6e987da8974c7bc775b7e7e64722292ac53627f': 'saislp',
       '9fc89d6b7d5be2eac0b3787c5b8236bca5de641b5bafafc8f450727b63615c11': 'usdtBch',
+      'dd21be4532d93661e8ffe16db6535af0fb8ee1344d1fef81a193e2b4cfa9fbc9': 'flexusd',
     };
 
     const custom_tokens = {
