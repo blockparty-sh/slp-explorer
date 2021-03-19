@@ -81,6 +81,7 @@ import translation_bn from '../lang/bn.json';
 import translation_yo from '../lang/yo.json';
 import translation_fil from '../lang/fil.json';
 import translation_pt from '../lang/pt.json';
+import translation_tr from '../lang/tr.json';
 const i18next_config = {
   fallbackLng: 'en',
   debug: false,
@@ -97,6 +98,7 @@ const i18next_config = {
     'yo':    { translation: JSON.parse(translation_yo) },
     'fil':   { translation: JSON.parse(translation_fil) },
     'pt':    { translation: JSON.parse(translation_pt) },
+    'tr':    { translation: JSON.parse(translation_tr) },
   },
 };
 
