@@ -17,7 +17,7 @@
    
   "index_page_header": "단순 원장 프로토콜 토큰 탐색기",
   "index_page_subheader": "비트 코인 캐시에 구축 된 토큰 탐색",
-  "index_page_subtext": "이 웹 사이트는<a target=\"_blank\" href=\"https://github.com/simpleledger/SLPDB\"> SLPDB </a>의 파생물<a target=\"_blank\" href=\"https://github.com/fountainhead-cash/bitd\"> BitDB FH </a>, 코드보기 및 문제 제출<a target=\"_blank\" href=\"https://github.com/blockparty-sh/slp-explorer\"> Github </a>.<br>를 사용하여 자신의 토큰을 만드십시오<a href=\"https://simpleledger.cash/project/electron-cash-slp-edition/\"> Electron Cash SLP 에디션 </a>.",
+  "index_page_subtext": "이 웹 사이트는<a target=\"_blank\" href=\"https://github.com/simpleledger/SLPDB\"> SLPDB </a>의 파생물<a target=\"_blank\" href=\"https://github.com/fountainhead-cash/bitd\"> BitDB FH </a>, 코드보기 및 문제 제출<a target=\"_blank\" href=\"https://github.com/blockparty-sh/slp-explorer\"> Github </a>.<br>를 사용하여 자신의 토큰을 만드십시오<a href=\"https://github.com/simpleledger/Electron-Cash-SLP/releases\"> Electron Cash SLP 에디션 </a>.",
   "index_page_latest_transactions": "최신 거래",
   "index_page_transaction_charts": "거래 차트",
   "index_page_token_burns": "토큰 화상",

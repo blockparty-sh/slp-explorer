@@ -17,7 +17,7 @@
    
   "index_page_header": "SLP Обозреватель токенов",
   "index_page_subheader": "Просмотр токенов, построенных на Bitcoin Cash",
-  "index_page_subtext": "Этот сайт построен поверх<a target=\"_blank\" href=\"https://github.com/simpleledger/SLPDB\"> SLPDB </a>,ответвление<a target=\"_blank\" href=\"https://github.com/fountainhead-cash/bitd\"> BitDB FH </a>,просмотреть код и отправить вопросы на<a target=\"_blank\" href=\"https://github.com/blockparty-sh/slp-explorer\"> Github </a>.<br>Сделайте свои собственные токены, используя<a href=\"https://simpleledger.cash/project/electron-cash-slp-edition/\"> Электронное кассовое издание SLP </a>.",
+  "index_page_subtext": "Этот сайт построен поверх<a target=\"_blank\" href=\"https://github.com/simpleledger/SLPDB\"> SLPDB </a>,ответвление<a target=\"_blank\" href=\"https://github.com/fountainhead-cash/bitd\"> BitDB FH </a>,просмотреть код и отправить вопросы на<a target=\"_blank\" href=\"https://github.com/blockparty-sh/slp-explorer\"> Github </a>.<br>Сделайте свои собственные токены, используя<a href=\"https://github.com/simpleledger/Electron-Cash-SLP/releases\"> Электронное кассовое издание SLP </a>.",
   "index_page_latest_transactions": "Последние транзакции",
   "index_page_transaction_charts": "Графики транзакций",
   "index_page_token_burns": "Обозначения маркеров",

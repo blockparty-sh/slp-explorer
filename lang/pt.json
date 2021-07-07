@@ -17,7 +17,7 @@
    
   "index_page_header": "Explorador de tokens SLP",
   "index_page_subheader": "Busque tokens criados com Bitcoin Cash",
-  "index_page_subtext": "Este site é construído sobre<a target=\"_blank\" href=\"https://github.com/simpleledger/SLPDB \"> SLPDB </a>,una rama de<a target=\"_blank\" href=\"https://github.com/fountainhead-cash/bitd\"> BitDB FH </a>, visualizar código e enviar problemas em<a target=\"_blank\" href=\"https://github.com/blockparty-sh/slp-explorer\"> Github </a>.<br>Crie seus próprios tokens usando<a href=\"https://simpleledger.cash/project/electron-cash-slp-edition/\"> Electron Cash SLP Edition </a>",
+  "index_page_subtext": "Este site é construído sobre<a target=\"_blank\" href=\"https://github.com/simpleledger/SLPDB \"> SLPDB </a>,una rama de<a target=\"_blank\" href=\"https://github.com/fountainhead-cash/bitd\"> BitDB FH </a>, visualizar código e enviar problemas em<a target=\"_blank\" href=\"https://github.com/blockparty-sh/slp-explorer\"> Github </a>.<br>Crie seus próprios tokens usando<a href=\"https://github.com/simpleledger/Electron-Cash-SLP/releases\"> Electron Cash SLP Edition </a>",
 
   "index_page_latest_transactions": "Últimas transações",
   "index_page_transaction_charts": "Gráficos de transações",

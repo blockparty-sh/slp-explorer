@@ -17,7 +17,7 @@
    
   "index_page_header": "SLPトークンエクスプローラー",
   "index_page_subheader": "Bitcoin Cashで構築されたトークンを閲覧する",
-  "index_page_subtext": "「このウェブサイトは、<a target=\"_blank\" href=\"https://github.com/simpleledger/S LPDB\"> SLPDB </a>、の派生<a target=\"_blank\" href=\"https://github.com/fountainhead-cash/bitd\"> BitDB FH </a>、コードを表示して問題を送信<a target=\"_blank\" href=\"https://github.com/blockparty-sh/slp-explorer\"> Github </a>。<br>を使用して独自のトークンを作成する<a href=\"https://simpleledger.cash/project/electron-cash-slp-edition/\"> Electron Cash SLP Edition </a>。",
+  "index_page_subtext": "「このウェブサイトは、<a target=\"_blank\" href=\"https://github.com/simpleledger/S LPDB\"> SLPDB </a>、の派生<a target=\"_blank\" href=\"https://github.com/fountainhead-cash/bitd\"> BitDB FH </a>、コードを表示して問題を送信<a target=\"_blank\" href=\"https://github.com/blockparty-sh/slp-explorer\"> Github </a>。<br>を使用して独自のトークンを作成する<a href=\"https://github.com/simpleledger/Electron-Cash-SLP/releases\"> Electron Cash SLP Edition </a>。",
   "index_page_latest_transactions": "最新のトランザクション",
   "index_page_transaction_charts": "取引チャート",
   "index_page_token_burns": "トークン抹消",

@@ -17,7 +17,7 @@
    
   "index_page_header": "साधारण लेजर प्रोटोकॉल (एसएलपी) टोकन एक्सप्लोरर",
   "index_page_subheader": "बिटकॉइन कैश पर निर्मित टोकन ब्राउज़ करें",
-  "index_page_subtext": "यह वेबसाइट बनाई जा चुकी है<a target=\"_blank\" href=\"https://github.com/simpleledger/SLPDB\"> SLPDB </a>एक शाखा के शीर्ष पर<a target=\"_blank\" href=\"https://github.com/fountainhead-cash/bitd\"> BitDB FH </a>,कोड की जाँच करें और मुद्दों को जमा करें<a target=\"_blank\" href=\"https://github.com/blockparty-sh/slp-explorer\"> Github </a>।<br>अपना खुद का टोकन बनाएं<a href=\"https://simpleledger.cash/project/electron-cash-slp-edition/\"> इलेक्ट्रॉन कैश एसएलपी संस्करण का उपयोग करता है</a>।",
+  "index_page_subtext": "यह वेबसाइट बनाई जा चुकी है<a target=\"_blank\" href=\"https://github.com/simpleledger/SLPDB\"> SLPDB </a>एक शाखा के शीर्ष पर<a target=\"_blank\" href=\"https://github.com/fountainhead-cash/bitd\"> BitDB FH </a>,कोड की जाँच करें और मुद्दों को जमा करें<a target=\"_blank\" href=\"https://github.com/blockparty-sh/slp-explorer\"> Github </a>।<br>अपना खुद का टोकन बनाएं<a href=\"https://github.com/simpleledger/Electron-Cash-SLP/releases\"> इलेक्ट्रॉन कैश एसएलपी संस्करण का उपयोग करता है</a>।",
 
   "index_page_latest_transactions": "नवीनतम लेनदेन",
   "index_page_transaction_charts": "लेन-देन चार्ट",
