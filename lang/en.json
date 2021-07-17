@@ -1,5 +1,5 @@
 {
-  "maintenance": "simpleledger.info currently undergoing maintenance, expect degraded performance.",
+  "maintenance": "simpleledger.info currently undergoing maintenance; expect degraded performance.",
   "loading_dank_memes": "Loading view...",
 
   "homepage_btn_view_all_tokens": "View All Tokens",
@@ -9,44 +9,44 @@
   "footer_resources": "Resources",
   "footer_connect": "Connect",
 
-  "error_modal_header": "Oops... an error occured!",
-  "error_modal_subtext": "Sorry for the inconvenience, we will look into this as soon as possible. If you'd like, you can report this error <a href=\"https://github.com/blockparty-sh/slp-explorer\">here</a>.<br>Reloading the page might help.",
+  "error_modal_header": "Oops... an error occurred!",
+  "error_modal_subtext": "Sorry for the inconvenience; we will look into this as soon as possible. If you'd like, you can report this error <a href=\"https://github.com/blockparty-sh/slp-explorer\">here</a>.<br>Reloading the page might help.",
 
   "mainmenu_explorer": "Explorer",
   "mainmenu_all_tokens": "All Tokens",
    
   "index_page_header": "SLP Tokens Explorer",
   "index_page_subheader": "Browse tokens built on Bitcoin Cash",
-  "index_page_subtext": "This website is built on top of <a target=\"_blank\" href=\"https://github.com/simpleledger/SLPDB\">SLPDB</a>, an offshoot of <a target=\"_blank\" href=\"https://github.com/fountainhead-cash/bitd\">BitDB FH</a>, view code and submit issues on <a target=\"_blank\" href=\"https://github.com/blockparty-sh/slp-explorer\">Github</a>.<br>Make your own tokens using <a href=\"https://simpleledger.cash/project/electron-cash-slp-edition/\">Electron Cash SLP Edition</a>.",
+  "index_page_subtext": "This website is built on top of <a href=\"https://github.com/simpleledger/SLPDB\">SLPDB</a>, an offshoot of <a href=\"https://github.com/fountainhead-cash/bitd\">BitDB FH</a>. View code and submit issues on <a href=\"https://github.com/blockparty-sh/slp-explorer\">Github</a>.<br>Make your own tokens using <a href=\"https://simpleledger.cash/project/electron-cash-slp-edition/\">Electron Cash SLP Edition</a>.",
   "index_page_latest_transactions": "Latest Transactions",
   "index_page_transaction_charts": "Transactions Charts",
   "index_page_token_burns": "Token Burns",
   "index_page_exchanges": "Exchanges:",
 
-  "address_page_sent_slp_transactions": "Sent SLP Transactions ",
-  "address_page_received_slp_transactions": "Received SLP Transactions ",
+  "address_page_sent_slp_transactions": "Sent SLP Transactions",
+  "address_page_received_slp_transactions": "Received SLP Transactions",
   "address_page_token_balances": "Token Balances",
   "address_page_transactions_chart": "Transactions Chart",
 
   "bad_address_page_header": "Bad Address",
-  "bad_address_page_subtext": "Sorry, we cannot decode the address given. Double check it isn't misspelled.",
+  "bad_address_page_subtext": "Sorry, we cannot decode the address given. Double check that it isn't misspelled.",
 
   "processing_tx_page_header": "Processing SLP Transaction",
   "processing_tx_page_subtext": "SLPDB is currently processing this transaction. During high load it may take longer to process transactions. Please try again in a few moments.",
 
   "no_tx_header": "Transaction Not Found",
-  "no_tx_subtext": "This transaction was not found in SLPDB or BitDB. It may have been very old or mispelled.",
+  "no_tx_subtext": "This transaction was not found in SLPDB or BitDB. It may have been very old or misspelled.",
 
   "404_page_header": "404 Not Found :(",
   "404_page_subtext1": "Sorry, can't find the page you were looking for.",
-  "404_page_subtext2": "Please try another search or go back in your browser, this may have been a bug. If it was, please <a href=\"https://github.com/blockparty-sh/slp-explorer\">report</a> it!",
+  "404_page_subtext2": "Please try another search or go back in your browser; this may have been a bug. If it was, please <a href=\"https://github.com/blockparty-sh/slp-explorer\">report it</a>!",
 
   "block_page_view_all_block": "View all transactions confirmed in a block",
   "block_page_view_all_mempool": "View all transactions waiting to be confirmed in a block",
 
-  "dividend_helper_tokenid_subtext": "which token's holders should receive BCH",
-  "dividend_helper_bch_subtext": "how much bch to send between the token holders",
-  "dividend_helper_ignore_addresses_subtext": "enter one simpleledger: address per line",
+  "dividend_helper_tokenid_subtext": "Which token's holders should receive BCH",
+  "dividend_helper_bch_subtext": "How much BCH to send between the token holders",
+  "dividend_helper_ignore_addresses_subtext": "Enter one simpleledger: address per line",
   "dividend_helper_calculate_subtext": "Use \"Pay to Many\" with Electron Cash",
 
   "slp_explorer": "SLP Explorer",
@@ -61,9 +61,9 @@
   "transactions": "Transactions",
   "transaction_hash": "Transaction Hash",
   "transactions_chart": "Transactions Chart",
-  "txid": "Txid",
-  "tx": "Tx",
-  "token_id": "Token Id",
+  "txid": "Transaction ID",
+  "tx": "Transaction",
+  "token_id": "Token ID",
   "token_balance": "Token Balance",
   "token": "Token",
   "tokens": "Tokens",
@@ -103,9 +103,9 @@
   "send": "send",
   "mint": "mint",
   "genesis": "Genesis",
-  "genesis_description": "TokenType1 genesis transactions do not have any SLP inputs.<br>NFT1 Child transactions can see the input from looking at the Version row in the Token Details pane.",
+  "genesis_description": "Type1 token genesis transactions do not have any SLP inputs.<br>NFT1 Child transactions can see the input from looking at the Version row in the Token Details pane.",
 
-  "tokenstats_valid_token_transactions": "Valid Txns Since Genesis",
+  "tokenstats_valid_token_transactions": "Valid Transactions Since Genesis",
   "tokenstats_valid_token_utxos": "Valid Token UTXOs",
   "tokenstats_valid_token_addresses": "Valid Token Addresses",
   "tokenstats_satoshis_locked_up": "Satoshis Locked Up",
@@ -124,7 +124,7 @@
   "verified": "Verified",
   "inputs": "Inputs",
   "outputs": "Outputs",
-  "vout": "Vout",
+  "vout": "V<sub>out</sub>",
   "timestamp": "Timestamp",
   "decimals": "Decimals",
   "slp_address": "SLP Address",
@@ -135,15 +135,15 @@
   "go_back": "Go Back",
   "go_home": "Go Home",
   "reload_page": "Reload Page",
-  "search_placeholder": "Search by txid, address or token name...",
+  "search_placeholder": "Search by transaction ID, address or token name...",
   "nonslp_transaction": "NON-SLP Transaction",
   "slp_invalid_reason": "SLP Invalid Reason",
   "this_is_not_a_slp_transaction": "This is not a SLP transaction.",
   "tokens_created": "Tokens Created",
   "sent": "Sent",
   "received": "Received",
-  "tokenid_required": "Token Id Required",
+  "tokenid_required": "Token ID Required",
   "nft": "NFT",
   "tokenstats_nft_owner": "Owner",
-  "tokenstats_nft_burnt": "Burnt Txid"
+  "tokenstats_nft_burnt": "Burnt Transaction ID"
 }
