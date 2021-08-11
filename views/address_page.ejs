@@ -11,7 +11,7 @@
         <%= address %>
         <button class="copybtn" data-clipboard-text="<%= bchaddr.toSlpAddress(address) %>"></button>
       </h6>
-      <a target="_blank" href="https://explorer.bitcoin.com/bch/address/<%= address %>">
+      <a target="_blank" href="https://explorer.bitcoin.com/bch/address/<%= bchaddr.toCashAddress(address) %>">
         <button type="button" class="button right" data-i18n="view_on_bch_explorer"></button>
       </a>
     </div>
