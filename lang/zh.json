@@ -17,7 +17,7 @@
    
   "index_page_header": "简单分类帐协议代币浏览器",
   "index_page_subheader": "查询基于比特币现金的代币",
-  "index_page_subtext": "本站基于SLPDB构建，SLPDB<a target=\"_blank\" href=\"https://github.com/simpleledger/SLPDB\">SLPDB</a>，是<a target=\"_blank\" href=\"https://github.com/fountainhead-cash/bitd\">BitDB FH 的分支</a>，<a target=\"_blank\" href=\"https://github.com/blockparty-sh/slp-explorer\">Github</a>。<br>在Github上查看代码并提交问题。<a href=\"https://simpleledger.cash/project/electron-cash-slp-edition/\">Electron Cash SLP Edition</a>.",
+  "index_page_subtext": "本站基于SLPDB构建，SLPDB<a target=\"_blank\" href=\"https://github.com/simpleledger/SLPDB\">SLPDB</a>，是<a target=\"_blank\" href=\"https://github.com/fountainhead-cash/bitd\">BitDB FH 的分支</a>，<a target=\"_blank\" href=\"https://github.com/blockparty-sh/slp-explorer\">Github</a>。<br>在Github上查看代码并提交问题。<a href=\"https://github.com/simpleledger/Electron-Cash-SLP/releases\">Electron Cash SLP Edition</a>.",
   "index_page_latest_transactions": "最新交易",
   "index_page_transaction_charts": "交易统计图表",
   "index_page_token_burns": "已毁灭代币",

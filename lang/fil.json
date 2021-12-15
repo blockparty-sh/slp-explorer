@@ -17,7 +17,7 @@
    
   "index_page_header": "SLP Tokens Eksplorer",
   "index_page_subheader": "Hanapin ang mga tokens na ginawa sa Bitcoin Cash",
-  "index_page_subtext": "Ang website naito ay ginawa sa <a target=\"_blank\" href=\"https://github.com/simpleledger/SLPDB\">SLPDB</a>, offshoot ng <a target=\"_blank\" href=\"https://github.com/fountainhead-cash/bitd\">BitDB FH</a>, tignan ang kodigo at i-submit ang lahat ng mga isyu sa <a target=\"_blank\" href=\"https://github.com/blockparty-sh/slp-explorer\">Github</a>.<br>Gumawa ng sarili mong tokens gamit ang <a href=\"https://simpleledger.cash/project/electron-cash-slp-edition/\">Electron Cash SLP Edition</a>.",
+  "index_page_subtext": "Ang website naito ay ginawa sa <a target=\"_blank\" href=\"https://github.com/simpleledger/SLPDB\">SLPDB</a>, offshoot ng <a target=\"_blank\" href=\"https://github.com/fountainhead-cash/bitd\">BitDB FH</a>, tignan ang kodigo at i-submit ang lahat ng mga isyu sa <a target=\"_blank\" href=\"https://github.com/blockparty-sh/slp-explorer\">Github</a>.<br>Gumawa ng sarili mong tokens gamit ang <a href=\"https://github.com/simpleledger/Electron-Cash-SLP/releases\">Electron Cash SLP Edition</a>.",
   "index_page_latest_transactions": "Pinakabago na mga Transaksyon",
   "index_page_transaction_charts": "Transaksyon Tsarts",
   "index_page_token_burns": "Sinirang Tokens",

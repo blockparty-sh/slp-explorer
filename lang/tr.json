@@ -17,7 +17,7 @@
      
     "index_page_header": "SLP Tokens Explorer",
     "index_page_subheader": "Bitcoin Cash üzerinde oluşturulan Tokenlere göz atın",
-    "index_page_subtext": "Bu websitesi <a target=\"_blank\" href=\"https://github.com/simpleledger/SLPDB\">SLPDB</a>,  <a target=\"_blank\" href=\"https://github.com/fountainhead-cash/bitd\">'nin bir offshoot'udur. BitDB FH</a>, kodları ve sorunları buraya rapolayabilirsiniz. <a target=\"_blank\" href=\"https://github.com/blockparty-sh/slp-explorer\">Github</a>.<br>Kendi tokenlarını oluştumak için <a href=\"https://simpleledger.cash/project/electron-cash-slp-edition/\">Electron Cash SLP Edition</a>.",
+    "index_page_subtext": "Bu websitesi <a target=\"_blank\" href=\"https://github.com/simpleledger/SLPDB\">SLPDB</a>,  <a target=\"_blank\" href=\"https://github.com/fountainhead-cash/bitd\">'nin bir offshoot'udur. BitDB FH</a>, kodları ve sorunları buraya rapolayabilirsiniz. <a target=\"_blank\" href=\"https://github.com/blockparty-sh/slp-explorer\">Github</a>.<br>Kendi tokenlarını oluştumak için <a href=\"https://github.com/simpleledger/Electron-Cash-SLP/releases\">Electron Cash SLP Edition</a>.",
     "index_page_latest_transactions": "Son İşlemler",
     "index_page_transaction_charts": "İşlem Grafikleri",
     "index_page_token_burns": "Jeton Yakmalar",

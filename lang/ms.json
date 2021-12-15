@@ -17,7 +17,7 @@
    
   "index_page_header": "Penjelajah Token SLP",
   "index_page_subheader": "Semak imbas token yang dibina di Bitcoin Cash",
-  "index_page_subtext": "Laman web ini dibina di atas <a target=\"_blank\" href=\"https://github.com/simpleledger/S LPDB\">SLPDB</a>, cabang dari<a target=\"_blank\" href=\"https://github.com/fountainhead-cash/bitd\">BitDB FH</a>, melihat kod dan mengemukakan masalah pada<a target=\"_blank\" href=\"https://github.com/blockparty-sh/slp-explorer\"> Github </a>.<br>Buat token anda sendiri menggunakan<a href=\"https://simpleledger.cash/project/electron-cash-slp-edition/\"> Edisi SLP Tunai Elektron </a>.",
+  "index_page_subtext": "Laman web ini dibina di atas <a target=\"_blank\" href=\"https://github.com/simpleledger/S LPDB\">SLPDB</a>, cabang dari<a target=\"_blank\" href=\"https://github.com/fountainhead-cash/bitd\">BitDB FH</a>, melihat kod dan mengemukakan masalah pada<a target=\"_blank\" href=\"https://github.com/blockparty-sh/slp-explorer\"> Github </a>.<br>Buat token anda sendiri menggunakan<a href=\"https://github.com/simpleledger/Electron-Cash-SLP/releases\"> Edisi SLP Tunai Elektron </a>.",
   "index_page_latest_transactions": "Transaksi Terkini",
   "index_page_transaction_charts": "Carta Transaksi",
   "index_page_token_burns": "Pembakaran Token",
