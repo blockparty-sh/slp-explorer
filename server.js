@@ -201,7 +201,7 @@ router.get('/sitemap.xml', async (req, res) => {
 
   let response = "";
   
-  const slpdbQuery = (query) => fetch(`https://slpdb.fountainhead.cash/q/${btoa(JSON.stringify(query))}`)
+  const slpdbQuery = (query) => fetch(`https://slpdb.bitcoin.com/q/${btoa(JSON.stringify(query))}`)
   .then((data) => data.json());
   
   response += `<?xml version="1.0" encoding="UTF-8"?>
