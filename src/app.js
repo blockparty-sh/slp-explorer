@@ -817,7 +817,7 @@ app.slpdb = {
       return resolve(false);
     }
     const b64 = btoa_ext(JSON.stringify(query));
-    const url = 'https://slpdb.bitcoin.com/q/' + b64;
+    const url = 'https://slpdb.electroncash.de/q/' + b64;
 
     console.log(url);
 
